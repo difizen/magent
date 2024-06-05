@@ -1,0 +1,20 @@
+{
+  "printWidth": 88,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "proseWrap": "always",
+  "overrides": [
+    {
+      "files": ["**/*.md", "**/*.mdx", ".github/**/*.yml"],
+      "options": {
+        "proseWrap": "preserve"
+      }
+    },
+    {
+      "files": ["**/tsconfig.json"],
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ]
+}

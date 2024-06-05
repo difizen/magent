@@ -1,0 +1,23 @@
+name: 'Code: CI'
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+  workflow_call:
+
+jobs:
+  ci-javascript:
+    name: 'CI: JavaScript'
+    uses: difizen/actions/.github/workflows/ci-javascript.yml@main
+    with:
+      node-version: ${{ matrix.node-version }}
+      python-version: ${{ matrix.python-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['16']
+        python-version: ['3.8']
