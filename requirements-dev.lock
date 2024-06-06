@@ -64,6 +64,7 @@ orjson==3.10.3
 psycopg2-binary==2.9.9
 pydantic==2.7.3
     # via fastapi
+    # via magent-api
 pydantic-core==2.18.4
     # via pydantic
 pygments==2.18.0
