@@ -7,14 +7,10 @@
     "dockerfile": "Dockerfile"
   },
   "features": {
-    // "ghcr.io/devcontainers/features/node:1": {
-    // 	"nodeGypDependencies": true,
-    // 	"version": "lts"
-    // },
-    // "ghcr.io/devcontainers-contrib/features/npm-package:1": {
-    // 	"package": "typescript",
-    // 	"version": "latest"
-    // },
+    "ghcr.io/devcontainers/features/node:1": {
+      "nodeGypDependencies": true,
+      "version": "lts"
+    },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": true,
       "azureDnsAutoDetection": true,
@@ -25,7 +21,14 @@
   },
   "customizations": {
     "vscode": {
-      "extensions": ["ms-python.pylint", "GitHub.copilot", "ms-python.python", "esbenp.prettier-vscode", "streetsidesoftware.code-spell-checker", "stylelint.vscode-stylelint"]
+      "extensions": [
+        "ms-python.pylint",
+        "GitHub.copilot",
+        "ms-python.python",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "stylelint.vscode-stylelint"
+      ]
     }
   },
   "postStartCommand": "./.devcontainer/post_start_command.sh",
@@ -35,7 +38,7 @@
   // "features": {},
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [8000,5432]
+  "forwardPorts": [8000, 5432]
 
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "python --version",
