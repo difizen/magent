@@ -316,3 +316,8 @@ objects.inv
 
 pnpm-lock.yaml
 # mana/**/*
+
+
+#volumes
+
+docker/volumes

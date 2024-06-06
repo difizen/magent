@@ -1,4 +1,5 @@
 {
+  "python.defaultInterpreterPath": "./.venv/bin/python",
   "files.associations": {
     // Turborepo
     "turbo.json": "jsonc",

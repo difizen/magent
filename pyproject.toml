@@ -1,0 +1,11 @@
+[project]
+name = "magent"
+version = "0.1.0"
+dependencies = [
+]
+
+[tool.rye]
+virtual = true
+
+[tool.rye.workspace]
+members = ["api"]

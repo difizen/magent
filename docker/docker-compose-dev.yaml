@@ -1,0 +1,24 @@
+version: '3'
+services:
+  # The postgres database.
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      PGUSER: postgres
+      # The password for the default postgres user.
+      POSTGRES_PASSWORD: magent123456
+      # The name of the default postgres database.
+      POSTGRES_DB: magent
+      # postgres data directory
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./volumes/db/data:/var/lib/postgresql/data
+    # uncomment to expose db(postgresql) port to host
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ 'CMD', 'pg_isready' ]
+      interval: 1s
+      timeout: 3s
+      retries: 30

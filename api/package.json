@@ -1,0 +1,15 @@
+{
+  "name": "magent-api",
+  "version": "0.1.0",
+  "description": "## env setup",
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {}
+}
