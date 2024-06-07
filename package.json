@@ -6,6 +6,7 @@
   "description": "JavaScript + Python hybrid monorepo",
   "scripts": {
     "bootstrap": "./scripts/bootstrap.sh",
+    "dev": "nx run @difizen/magent-web:start",
     "test:jest": "jest",
     "test:jest-config": "jest --show-config",
     "coverage": "nx run-many --target=coverage",
