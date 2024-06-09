@@ -1,8 +1,9 @@
 import { ManaModule } from '@difizen/mana-app';
-import { User } from './user.js';
+
 import { UserManager } from './user-manager.js';
 import type { UserMeta } from './user-protocol.js';
 import { UserFactory, UserMetaOption } from './user-protocol.js';
+import { User } from './user.js';
 
 export const UserModule = ManaModule.create()
   .register(User, UserManager)
