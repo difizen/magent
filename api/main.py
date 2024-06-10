@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from db import SessionLocal
 from sqlalchemy.orm import Session
-from models import count_account, Account, AccountModel, AccountStatus
+from models import count_account, SchemaAccount, AccountModel, AccountStatus
 from datetime import datetime
 
 def get_db():
@@ -18,7 +18,7 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/api/v1/acccount", response_model=Account)
+@app.get("/api/v1/acccount", response_model=SchemaAccount)
 async def account(db: Session = Depends(get_db)):
     count = count_account(db)
     act = None
@@ -39,10 +39,10 @@ async def account(db: Session = Depends(get_db)):
         db.add(db_account)
         db.commit()
         db.refresh(db_account)
-        act = Account.model_validate(db_account)
+        act = SchemaAccount.model_validate(db_account)
     else:
         db_account = db.query(AccountModel).first()
-        act = Account.model_validate(db_account)
+        act = SchemaAccount.model_validate(db_account)
 
     if act is not None:
         return act

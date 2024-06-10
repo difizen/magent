@@ -58,7 +58,7 @@ class AccountModel(Base):
         return self.password is not None
 
 
-class Account(BaseModel):
+class SchemaAccount(BaseModel):
     id:int
     name:str
     email:str
