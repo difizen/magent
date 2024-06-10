@@ -5,7 +5,7 @@ import { Model } from './model.js';
 import type { ModelMeta } from './protocol.js';
 import { ModelFactory, ModelOption } from './protocol.js';
 
-export const UserModule = ManaModule.create()
+export const ModelModule = ManaModule.create()
   .register(Model, ModelManager)
   .register({
     token: ModelFactory,
@@ -13,7 +13,7 @@ export const UserModule = ManaModule.create()
       return (meta: ModelMeta) => {
         const child = ctx.container.createChild();
         child.register({ token: ModelOption, useValue: meta });
-        return child.get(ModelFactory);
+        return child.get(Model);
       };
     },
   });

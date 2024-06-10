@@ -1,7 +1,9 @@
 import { ManaAppPreset, ManaComponents } from '@difizen/mana-app';
 
-import { BotModule } from './module.js';
+import { AgentModule } from '../../modules/agent-module.js';
 import { AppBaseModule } from '../../modules/app.module.js';
+
+import { BotModule } from './module.js';
 
 const LibroExecution = (): JSX.Element => {
   return (
@@ -9,7 +11,7 @@ const LibroExecution = (): JSX.Element => {
       <ManaComponents.Application
         key="magent-bot"
         asChild={true}
-        modules={[ManaAppPreset, AppBaseModule, BotModule]}
+        modules={[ManaAppPreset, AppBaseModule, BotModule, AgentModule]}
       />
     </div>
   );

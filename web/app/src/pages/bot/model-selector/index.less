@@ -1,0 +1,53 @@
+.bot-config-model-selector {
+  display: flex;
+
+  &-btn {
+    border: none;
+    background: none;
+    box-shadow: none;
+    padding: 1px 6px 1px 12px;
+
+    .ant-btn-icon {
+      .anticon {
+        font-size: 10px;
+      }
+    }
+  }
+
+  > .ant-btn-default:not(:disabled):hover {
+    background-color: var(--mana-activityBar-background);
+    color: unset;
+  }
+
+  &-option {
+    display: flex;
+    align-items: center;
+    min-height: 16px;
+
+    &-icon {
+      display: inline-block;
+      width: 16px;
+    }
+
+    &-label {
+      margin-left: 4px;
+      color: var(--mana-text-secondary);
+      column-gap: 4px;
+      display: flex;
+      font-size: 12px;
+    }
+  }
+
+  &-popover {
+    width: 480px;
+
+    .ant-popover-inner {
+      padding: 16px;
+    }
+
+    .ant-popover-title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+}

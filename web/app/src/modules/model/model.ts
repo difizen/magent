@@ -1,7 +1,8 @@
-import { inject, prop } from '@difizen/mana-app';
+import { inject, prop, transient } from '@difizen/mana-app';
 
 import { ModelOption, type ModelConfigMeta, type ModelMeta } from './protocol';
 
+@transient()
 export class Model {
   key: string;
   name: string;

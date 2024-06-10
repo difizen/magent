@@ -8,9 +8,12 @@ import { ModelFactory } from './protocol.js';
 export class ModelManager {
   @inject(ModelFactory) factory: ModelFactory;
   metas = builtinModels;
-  models: Model[];
+  models: Model[] = [];
+
+  defaultModel?: Model;
 
   updateModels = () => {
     this.models = this.metas.map((item) => this.factory(item));
+    this.defaultModel = this.models[0];
   };
 }
