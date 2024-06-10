@@ -24,4 +24,5 @@ export default defineConfig({
   plugins: ['./dumi-plugin-nodenext', './umi-plugin-router'],
   mfsu: false,
   jsMinifier: 'none',
+  favicons: ['/favicon.ico'],
 });
