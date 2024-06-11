@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from db import SessionLocal
 from sqlalchemy.orm import Session
-from models import count_account, SchemaAccount, AccountModel, AccountStatus
+from models import AgentBotHelper, AgentBotModel, SchemaAgentBot, AccountHelper, SchemaAccount, AccountModel, AccountStatus
 from datetime import datetime
 
 def get_db():
@@ -20,36 +20,20 @@ async def root():
 
 @app.get("/api/v1/acccount", response_model=SchemaAccount)
 async def account(db: Session = Depends(get_db)):
-    count = count_account(db)
-    act = None
-    if count == 0:
-        now = datetime.now()
-        db_account = AccountModel(**{
-            "name": "default",
-            "email": "default@magent.com",
-            "avatar": "https://api.dicebear.com/7.x/miniavs/svg?seed=1",
-            "language":"zh_cn",
-            "theme":"light",
-            "status": AccountStatus.ACTIVE,
-            "last_active_at": now,
-            "initialized_at": now,
-            "created_at": now,
-            "updated_at": now,
-        })
-        db.add(db_account)
-        db.commit()
-        db.refresh(db_account)
-        act = SchemaAccount.model_validate(db_account)
-    else:
-        db_account = db.query(AccountModel).first()
-        act = SchemaAccount.model_validate(db_account)
-
-    if act is not None:
-        return act
+    account = AccountHelper.get_or_create(db)
+    if account is not None:
+        return account
     else:
         raise Exception('can not get account')
 
-@app.get("/api/v1/acccount/count")
-async def account_count(db: Session = Depends(get_db)):
-    count = count_account(db)
-    return {"count": count}
+
+@app.get("/api/v1/bot/{bot_id}/draft")
+async def get_bot_draft(bot_id, db: Session = Depends(get_db)):
+    model = db.query(AgentBotModel).filter(AgentBotModel.id == bot_id).scalar()
+    return SchemaAgentBot.model_validate(model)
+
+
+@app.get("/api/v1/bot/get_or_create")
+async def get_or_create_bot(db: Session = Depends(get_db)):
+    bot = AgentBotHelper.get_or_create(db)
+    return bot

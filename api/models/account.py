@@ -77,5 +77,37 @@ class SchemaAccount(BaseModel):
     class Config:
         from_attributes = True
 
-def count_account(session: Session):
-    return session.query(func.count(AccountModel.id)).scalar()
+class AccountHelper:
+    @staticmethod
+    def count_account(db: Session)->int:
+        return db.query(func.count(AccountModel.id)).scalar()
+
+
+    @staticmethod
+    def get_or_create(db: Session)->SchemaAccount:
+        '''
+        TODO: remove after the authentication capability is improved
+        '''
+        count = AccountHelper.count_account(db)
+        if count == 0:
+            now = datetime.now()
+            db_account = AccountModel(**{
+                "name": "default",
+                "email": "default@magent.com",
+                "avatar": "https://api.dicebear.com/7.x/miniavs/svg?seed=1",
+                "language":"zh_cn",
+                "theme":"light",
+                "status": AccountStatus.ACTIVE,
+                "last_active_at": now,
+                "initialized_at": now,
+                "created_at": now,
+                "updated_at": now,
+            })
+            db.add(db_account)
+            db.commit()
+            db.refresh(db_account)
+            return SchemaAccount.model_validate(db_account)
+        else:
+            db_account = db.query(AccountModel).first()
+            return  SchemaAccount.model_validate(db_account)
+
