@@ -61,14 +61,20 @@ mdurl==0.1.2
     # via markdown-it-py
 orjson==3.10.3
     # via fastapi
+psycopg2-binary==2.9.9
+    # via magent-api
 pydantic==2.7.3
     # via fastapi
     # via magent-api
+    # via pydantic-settings
 pydantic-core==2.18.4
     # via pydantic
+pydantic-settings==2.3.2
+    # via magent-api
 pygments==2.18.0
     # via rich
 python-dotenv==1.0.1
+    # via pydantic-settings
     # via uvicorn
 python-multipart==0.0.9
     # via fastapi

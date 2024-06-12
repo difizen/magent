@@ -13,8 +13,6 @@ from sqlalchemy import (
     func
 )
 
-from sqlalchemy.orm import Session
-
 from db import Base
 
 
@@ -25,7 +23,7 @@ class AccountStatus(enum.Enum):
     BANNED = "banned"
 
 
-class AccountModel(Base):
+class AccountORM(Base):
     __tablename__ = "accounts"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True, nullable=False)
@@ -58,56 +56,28 @@ class AccountModel(Base):
         return self.password is not None
 
 
-class SchemaAccount(BaseModel):
-    id:int
-    name:str
-    email:str
-    avatar:Optional[str]
-    language:Optional[str]
-    theme:Optional[str]
-    timezone:Optional[str]
-    last_login_at:Optional[datetime]
-    last_login_ip:Optional[str]
-    last_active_at:datetime
+class AccountCreate(BaseModel):
+    password: str
+    name: str
+    email: str
+    avatar: Optional[str]
+
+
+class AccountModel(BaseModel):
+    id: int
+    name: str
+    email: str
+    avatar: Optional[str]
+    language: Optional[str]
+    theme: Optional[str]
+    timezone: Optional[str]
+    last_login_at: Optional[datetime]
+    last_login_ip: Optional[str]
+    last_active_at: datetime
     status: AccountStatus
-    initialized_at:datetime
-    created_at:datetime
-    updated_at:datetime
+    initialized_at: datetime
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
-
-class AccountHelper:
-    @staticmethod
-    def count_account(db: Session)->int:
-        return db.query(func.count(AccountModel.id)).scalar()
-
-
-    @staticmethod
-    def get_or_create(db: Session)->SchemaAccount:
-        '''
-        TODO: remove after the authentication capability is improved
-        '''
-        count = AccountHelper.count_account(db)
-        if count == 0:
-            now = datetime.now()
-            db_account = AccountModel(**{
-                "name": "default",
-                "email": "default@magent.com",
-                "avatar": "https://api.dicebear.com/7.x/miniavs/svg?seed=1",
-                "language":"zh_cn",
-                "theme":"light",
-                "status": AccountStatus.ACTIVE,
-                "last_active_at": now,
-                "initialized_at": now,
-                "created_at": now,
-                "updated_at": now,
-            })
-            db.add(db_account)
-            db.commit()
-            db.refresh(db_account)
-            return SchemaAccount.model_validate(db_account)
-        else:
-            db_account = db.query(AccountModel).first()
-            return  SchemaAccount.model_validate(db_account)
-

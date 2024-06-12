@@ -1,62 +1,69 @@
-import os
+import warnings
+from pydantic_settings import BaseSettings
+from pydantic_core import MultiHostUrl
+from typing import Literal
+from typing_extensions import Self
 
-DEFAULTS = {
-    'SQLALCHEMY_POOL_SIZE': 30,
-    'SQLALCHEMY_MAX_OVERFLOW': 10,
-    'SQLALCHEMY_POOL_RECYCLE': 3600,
-    'SQLALCHEMY_ECHO': 'False',
-    "DB_USERNAME": "postgres",
-    "DB_PASSWORD": "magent123456",
-    "DB_HOST": "localhost",
-    "DB_PORT": "5432",
-    "DB_DATABASE": "magent",
-    "DB_CHARSET": "",
-}
+from pydantic import (
+    PostgresDsn,
+    computed_field,
+    model_validator,
+)
 
 
-def get_env(key) -> str | int:
-    value = os.environ.get(key, DEFAULTS.get(key))
-    if value is None:
-        return ""
-    return value
+class Settings(BaseSettings):
+    API_V1_STR: str = "/api/v1"
+    DEFAULT_LANGUAGE: str = 'zh_cn'
+    DEFAULT_THEME: str = 'light'
 
+    ENVIRONMENT: Literal["local", "staging", "production"] = "local"
 
-def get_bool_env(key):
-    value = get_env(key)
-    return value.lower() == "true" if value is not None else False
+    SQLALCHEMY_POOL_SIZE: int = 30
+    SQLALCHEMY_MAX_OVERFLOW: int = 10
+    SQLALCHEMY_POOL_RECYCLE: int = 3600
+    SQLALCHEMY_ECHO: bool = False
 
+    POSTGRES_SERVER: str = 'localhost'
+    POSTGRES_PORT: int = 5432
+    POSTGRES_USER: str = 'postgres'
+    POSTGRES_PASSWORD: str = 'magent123456'
+    POSTGRES_DB: str = 'magent'
 
-class Config:
-    def __init__(self):
-        # ------------------------
-        # Database Configurations.
-        # ------------------------
-        db_credentials = {
-            key: get_env(key)
-            for key in [
-                "DB_USERNAME",
-                "DB_PASSWORD",
-                "DB_HOST",
-                "DB_PORT",
-                "DB_DATABASE",
-                "DB_CHARSET",
-            ]
-        }
+    FIRST_SUPERUSER: str = 'default@magent.com'
+    FIRST_SUPERUSER_PASSWORD: str = 'magent123456'
+    FIRST_SUPERUSER_AVATAR: str = 'magent123456'
 
-        db_extras = (
-            f"?client_encoding={db_credentials['DB_CHARSET']}"
-            if db_credentials["DB_CHARSET"]
-            else ""
+    @computed_field  # type: ignore[misc]
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+        return MultiHostUrl.build(
+            scheme="postgresql+psycopg2",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_DB,
         )
 
-        self.SQLALCHEMY_DATABASE_URI = f"postgresql://{db_credentials['DB_USERNAME']}:{db_credentials['DB_PASSWORD']}@{db_credentials['DB_HOST']}:{db_credentials['DB_PORT']}/{db_credentials['DB_DATABASE']}{db_extras}"
-        self.SQLALCHEMY_ENGINE_OPTIONS = {
-            "pool_size": int(get_env("SQLALCHEMY_POOL_SIZE")),
-            "max_overflow": int(get_env("SQLALCHEMY_MAX_OVERFLOW")),
-            "pool_recycle": int(get_env("SQLALCHEMY_POOL_RECYCLE")),
-        }
+    def _check_default_secret(self, var_name: str, value: str | None) -> None:
+        if value == "changethis":
+            message = (
+                f'The value of {var_name} is "changethis", '
+                "for security, please change it, at least for deployments."
+            )
+            if self.ENVIRONMENT == "local":
+                warnings.warn(message, stacklevel=1)
+            else:
+                raise ValueError(message)
 
-        self.SQLALCHEMY_ECHO = get_bool_env("SQLALCHEMY_ECHO")
+    @model_validator(mode="after")
+    def _enforce_non_default_secrets(self) -> Self:
+        self._check_default_secret("POSTGRES_PASSWORD", self.POSTGRES_PASSWORD)
+        self._check_default_secret(
+            "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
+        )
+
+        return self
 
 
-config = Config()
+settings = Settings()
