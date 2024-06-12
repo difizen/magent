@@ -1,5 +1,6 @@
 {
   "python.defaultInterpreterPath": "./.venv/bin/python",
+  "python.analysis.extraPaths": ["./api"],
   "files.associations": {
     // Turborepo
     "turbo.json": "jsonc",
@@ -38,7 +39,7 @@
       "source.organizeImports": "never",
       "source.fixAll": "explicit"
     },
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "ms-python.autopep8"
   },
   "[typescriptreact]": {
     "editor.tabSize": 2,
@@ -110,5 +111,7 @@
       "source.fixAll.eslint": "explicit"
     }
   },
-  "cSpell.words": ["magent"]
+  "cSpell.words": ["magent"],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true
 }
