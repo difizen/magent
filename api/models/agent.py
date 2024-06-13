@@ -25,7 +25,7 @@ class AgentBotORM(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     avatar = Column(String(255))
-    draft = Column(Integer, ForeignKey("agent_configs.id"))
+    draft = Column(Integer, ForeignKey("agent_configs.id"), nullable=True)
     created_by = Column(Integer)
     created_at = Column(
         DateTime(), nullable=False, server_default=func.now()
@@ -65,6 +65,12 @@ class AgentConfigCreate(BaseModel):
     status: AgentConfigStatus
 
 
+class AgentConfigUpdate(BaseModel):
+    id: int
+    status: Optional[AgentConfigStatus]
+    config: Optional[dict]
+
+
 class AgentConfigModel(AgentConfigCreate):
     id: int
     created_by: int
@@ -79,6 +85,13 @@ class AgentConfigModel(AgentConfigCreate):
 class AgentBotCreate(BaseModel):
     name: str
     avatar: Optional[str]
+
+
+class AgentBotUpdate(BaseModel):
+    id: int
+    name: Optional[str]
+    avatar: Optional[str]
+    draft: Optional[int]
 
 
 class AgentBotModel(AgentBotCreate):

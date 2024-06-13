@@ -7,6 +7,7 @@ from db import get_db
 from .crud import AccountHelper
 
 router = APIRouter()
+account_router = router
 
 
 @router.post("/", response_model=AccountModel)

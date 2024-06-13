@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
 from routers.main import api_router
 
@@ -24,6 +25,7 @@ app = FastAPI(
     description="An opensource agent maker",
     version="v0.1.0",
 )
+add_pagination(app)
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 

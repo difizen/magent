@@ -18,7 +18,7 @@ class AccountHelper:
     @staticmethod
     def create(session: Session, account: AccountCreate) -> AccountORM:
         now = datetime.now()
-        account = AccountORM({
+        account = AccountORM(**{
             **account.model_dump(),
             "language": settings.DEFAULT_LANGUAGE,
             "theme": settings.DEFAULT_THEME,
