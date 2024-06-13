@@ -1,6 +1,9 @@
-import { Deferred, inject, postConstruct, prop, transient } from '@difizen/mana-app';
-import { UserMeta, UserMetaOption } from './user-protocol.js';
+import { Deferred, inject, prop, transient } from '@difizen/mana-app';
 import axios from 'axios';
+
+import { defaultSuperUserEmal } from '../../constant/default.js';
+
+import { UserMeta, UserMetaOption } from './user-protocol.js';
 
 /**
  * User
@@ -33,19 +36,15 @@ export class User implements UserMeta {
   protected readyDeferred: Deferred<User> = new Deferred<User>();
   protected readonly meta: UserMeta;
 
-  @postConstruct()
-  init() {
+  constructor(@inject(UserMetaOption) meta: UserMeta) {
+    this.meta = meta;
+    this.ready = this.readyDeferred.promise;
+    this.id = this.meta.id;
     if (UserMeta.isFull(this.meta)) {
       this.fromMeta(this.meta);
     } else {
       this.fetchUserInfo();
     }
-  }
-
-  constructor(@inject(UserMetaOption) meta: UserMeta) {
-    this.meta = meta;
-    this.ready = this.readyDeferred.promise;
-    this.id = this.meta.id;
   }
 
   protected fromMeta(meta: UserMeta) {
@@ -56,7 +55,8 @@ export class User implements UserMeta {
     this.readyDeferred.resolve(this);
   }
   async fetchUserInfo() {
-    const res = await axios.get<UserMeta>('/api/v1/acccount');
+    const superAdminEmail = defaultSuperUserEmal;
+    const res = await axios.get<UserMeta>(`api/v1/account/email/${superAdminEmail}`);
     if (res.status === 200 && UserMeta.is(res.data)) {
       this.fromMeta(res.data);
     }

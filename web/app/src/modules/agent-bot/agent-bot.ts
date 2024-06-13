@@ -1,12 +1,20 @@
 import { inject, prop, transient } from '@difizen/mana-app';
+import axios from 'axios';
+import qs from 'query-string';
+
+import { AsyncModel } from '../../common/async-model.js';
+import { UserManager } from '../user/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
 import type { AgentConfig } from './agent-config.js';
-import { AgentBotOption } from './protocol.js';
+import { AgentBotOption, AgentBotType } from './protocol.js';
 
 @transient()
-export class AgentBot {
+export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
+  @inject(UserManager) userManager: UserManager;
   configManager: AgentConfigManager;
+
+  id: number;
 
   @prop()
   name: string;
@@ -16,20 +24,82 @@ export class AgentBot {
   @prop()
   draft?: AgentConfig;
 
+  draftConfigId?: number;
+
   option: any;
 
   constructor(
-    @inject(AgentBotOption) option: any,
+    @inject(AgentBotOption) option: AgentBotOption,
     @inject(AgentConfigManager) configManager: AgentConfigManager,
   ) {
+    super();
     this.option = option;
     this.configManager = configManager;
-    this.configManager
-      .getDraft()
-      .then((config) => {
-        this.draft = config;
-        return;
-      })
-      .catch(console.error);
+    this.id = option.id;
+    this.initialize(option);
+    this.initializeDraft();
+  }
+
+  shouldInitFromMeta(option: AgentBotOption): boolean {
+    return AgentBotType.isFullOption(option);
+  }
+
+  async initializeDraft(): Promise<AgentConfig> {
+    await this.ready;
+    let config: AgentConfig;
+    if (this.draftConfigId) {
+      config = await this.configManager.getDraft({ id: this.draftConfigId });
+    } else {
+      config = await this.configManager.create();
+      this.draftConfigId = config.id;
+      await this.save();
+    }
+    this.draft = config;
+    return config;
+  }
+
+  protected override fromMeta(option: AgentBotOption) {
+    this.id = option.id;
+    this.name = option.name!;
+    this.avatar = option.avatar!;
+    this.draftConfigId = option.draft;
+    super.fromMeta(option);
+  }
+
+  async fetchInfo(option: AgentBotOption) {
+    const res = await axios.get<AgentBotOption>(`api/v1/agent/bots/${option.id}`);
+    if (res.status === 200) {
+      if (this.shouldInitFromMeta(res.data)) {
+        this.fromMeta(res.data);
+      }
+    }
+  }
+
+  toMeta(): AgentBotOption {
+    return {
+      id: this.id,
+      draft: this.draftConfigId,
+      name: this.name,
+      avatar: this.avatar,
+    };
+  }
+
+  async save(): Promise<boolean> {
+    const user = await this.userManager.currentReady;
+    if (!user) {
+      throw new Error('cannot get user info');
+    }
+
+    const query = qs.stringify({
+      user_id: user.id,
+    });
+    const res = await axios.put<number>(
+      `api/v1/agent/bots/${this.id}?${query}`,
+      this.toMeta(),
+    );
+    if (res.status === 200) {
+      return res.data === 1;
+    }
+    return false;
   }
 }

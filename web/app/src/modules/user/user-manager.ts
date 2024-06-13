@@ -12,14 +12,14 @@ export class UserManager {
   current?: User;
   protected userMap = new Map<string, User>();
 
-  protected initializedDefer = new Deferred<void>();
+  protected initializedDefer = new Deferred<User>();
 
-  initializedResolve() {
-    this.initializedDefer.resolve();
+  get initialized(): Promise<User> {
+    return this.initializedDefer.promise;
   }
 
-  get initialized() {
-    return this.initializedDefer.promise;
+  get currentReady(): Promise<User> {
+    return this.initialized.then((user) => user.ready);
   }
 
   setCurrent(userMeta: UserMeta) {
@@ -27,13 +27,27 @@ export class UserManager {
     this.current = user;
   }
 
+  async initialize() {
+    this.current = await this.getOrCreate({ id: '1' });
+    this.initializedDefer.resolve(this.current);
+  }
+
   getOrCreate(userMeta: UserMeta): User {
-    const exist = this.userMap.get(userMeta.id);
-    if (exist) {
-      return exist;
+    if (userMeta.id) {
+      const exist = this.userMap.get(userMeta.id);
+      if (exist) {
+        return exist;
+      }
     }
     const user = this.factory(userMeta);
-    this.userMap.set(user.id, user);
+    if (!userMeta.id) {
+      user.ready
+        .then(() => {
+          this.userMap.set(user.id, user);
+          return;
+        })
+        .catch(console.error);
+    }
     return user;
   }
 }

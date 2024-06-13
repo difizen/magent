@@ -1,5 +1,6 @@
 import { inject, prop, singleton } from '@difizen/mana-app';
 
+import { defaultAgentBotMeta } from '../../constant/default.js';
 import type { AgentBot } from '../../modules/agent-bot/index.js';
 import { AgentBotManager } from '../../modules/agent-bot/index.js';
 
@@ -13,9 +14,19 @@ export class BotProvider {
   @prop()
   loading = false;
 
-  async init() {
+  async init(botId: number) {
     this.loading = true;
-    this.current = await this.agentBotManager.getBot({});
+    if (!botId) {
+      const page = await this.agentBotManager.getMyBots();
+      const meta = page.items[0];
+      if (!meta) {
+        this.current = await this.agentBotManager.createBot(defaultAgentBotMeta);
+      } else {
+        this.current = await this.agentBotManager.getBot(meta);
+      }
+    } else {
+      this.current = await this.agentBotManager.getBot({ id: botId });
+    }
     this.loading = false;
   }
 }

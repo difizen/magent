@@ -4,4 +4,9 @@ export default [
     component: 'bot',
     routes: [],
   },
+  {
+    path: '/bot/:botId',
+    component: 'bot',
+    routes: [],
+  },
 ];

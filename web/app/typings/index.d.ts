@@ -4,3 +4,11 @@ interface Window {
   routerBase?: string;
   __webpack_require__: any;
 }
+
+interface Pagination<T = any> {
+  items: T[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
+}
