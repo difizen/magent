@@ -1,8 +1,8 @@
 import { inject, prop, transient } from '@difizen/mana-app';
-import axios from 'axios';
 import qs from 'query-string';
 
 import { AsyncModel } from '../../common/async-model.js';
+import { AxiosClient } from '../axios-client/index.js';
 import { UserManager } from '../user/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
@@ -11,7 +11,7 @@ import { AgentBotOption, AgentBotType } from './protocol.js';
 
 @transient()
 export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
-  @inject(UserManager) userManager: UserManager;
+  axios: AxiosClient;
   configManager: AgentConfigManager;
 
   id: number;
@@ -31,20 +31,23 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
   constructor(
     @inject(AgentBotOption) option: AgentBotOption,
     @inject(AgentConfigManager) configManager: AgentConfigManager,
+    @inject(AxiosClient) axios: AxiosClient,
   ) {
     super();
     this.option = option;
     this.configManager = configManager;
+    this.axios = axios;
+
     this.id = option.id;
     this.initialize(option);
-    this.initializeDraft();
+    this.ensureDraft();
   }
 
   shouldInitFromMeta(option: AgentBotOption): boolean {
     return AgentBotType.isFullOption(option);
   }
 
-  async initializeDraft(): Promise<AgentConfig> {
+  async ensureDraft(): Promise<AgentConfig> {
     await this.ready;
     let config: AgentConfig;
     if (this.draftConfigId) {
@@ -67,7 +70,7 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
   }
 
   async fetchInfo(option: AgentBotOption) {
-    const res = await axios.get<AgentBotOption>(`api/v1/agent/bots/${option.id}`);
+    const res = await this.axios.get<AgentBotOption>(`api/v1/agent/bots/${option.id}`);
     if (res.status === 200) {
       if (this.shouldInitFromMeta(res.data)) {
         this.fromMeta(res.data);
@@ -85,16 +88,8 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
   }
 
   async save(): Promise<boolean> {
-    const user = await this.userManager.currentReady;
-    if (!user) {
-      throw new Error('cannot get user info');
-    }
-
-    const query = qs.stringify({
-      user_id: user.id,
-    });
-    const res = await axios.put<number>(
-      `api/v1/agent/bots/${this.id}?${query}`,
+    const res = await this.axios.put<number>(
+      `api/v1/agent/bots/${this.id}`,
       this.toMeta(),
     );
     if (res.status === 200) {

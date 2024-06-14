@@ -1,7 +1,7 @@
 import { inject, singleton } from '@difizen/mana-app';
-import axios from 'axios';
 import qs from 'query-string';
 
+import { AxiosClient } from '../axios-client/index.js';
 import { UserManager } from '../user/user-manager.js';
 
 import type { AgentBot, AgentBotMeta, AgentBotOption } from './protocol.js';
@@ -11,6 +11,7 @@ import { AgentBotFactory } from './protocol.js';
 export class AgentBotManager {
   @inject(AgentBotFactory) botFactory: AgentBotFactory;
   @inject(UserManager) userManager: UserManager;
+  @inject(AxiosClient) axios: AxiosClient;
 
   getMyBots = async (): Promise<Pagination<AgentBotOption>> => {
     const user = await this.userManager.currentReady;
@@ -26,7 +27,7 @@ export class AgentBotManager {
       size: 10,
       user_id: user.id,
     });
-    const res = await axios.get<Pagination>(`api/v1/agent/bots?${query}`);
+    const res = await this.axios.get<Pagination>(`api/v1/agent/bots?${query}`);
     if (res.status === 200) {
       return res.data;
     }
@@ -41,7 +42,10 @@ export class AgentBotManager {
     const query = qs.stringify({
       user_id: user.id,
     });
-    const res = await axios.post<AgentBotOption>(`api/v1/agent/bots?${query}`, meta);
+    const res = await this.axios.post<AgentBotOption>(
+      `api/v1/agent/bots?${query}`,
+      meta,
+    );
     if (res.status !== 200) {
       throw new Error('failed to create agent bot');
     }

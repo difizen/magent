@@ -1,8 +1,8 @@
 import { inject, prop, transient } from '@difizen/mana-app';
-import axios from 'axios';
 import qs from 'query-string';
 
 import { AsyncModel } from '../../common/async-model.js';
+import { AxiosClient } from '../axios-client/index.js';
 import { UserManager } from '../user/index.js';
 
 import type {
@@ -14,7 +14,7 @@ import { AgentConfigOption, AgentConfigType } from './protocol.js';
 
 @transient()
 export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
-  @inject(UserManager) userManager: UserManager;
+  protected axios: AxiosClient;
   id: number;
 
   status: AgentConfigStatus = 'draft';
@@ -30,10 +30,15 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
 
   option?: AgentConfigOption;
 
-  constructor(@inject(AgentConfigOption) option: AgentConfigOption) {
+  constructor(
+    @inject(AgentConfigOption) option: AgentConfigOption,
+    @inject(AxiosClient) axios: AxiosClient,
+  ) {
     super();
     this.option = option;
     this.id = option.id;
+    this.axios = axios;
+
     this.initialize(option);
   }
 
@@ -51,7 +56,9 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
   }
 
   override async fetchInfo(option: AgentConfigOption): Promise<void> {
-    const res = await axios.get<AgentConfigOption>(`api/v1/agent/configs/${option.id}`);
+    const res = await this.axios.get<AgentConfigOption>(
+      `api/v1/agent/configs/${option.id}`,
+    );
     if (res.status === 200) {
       if (this.shouldInitFromMeta(res.data)) {
         this.fromMeta(res.data);
@@ -71,15 +78,8 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
   }
 
   async save(): Promise<boolean> {
-    const user = await this.userManager.currentReady;
-    if (!user) {
-      throw new Error('cannot get user info');
-    }
-    const query = qs.stringify({
-      user_id: user.id,
-    });
-    const res = await axios.put<number>(
-      `api/v1/agent/configs/${this.id}?${query}`,
+    const res = await this.axios.put<number>(
+      `api/v1/agent/configs/${this.id}`,
       this.toMeta(),
     );
     if (res.status === 200) {
