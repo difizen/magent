@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Any
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from models.agent import AgentBotORM, AgentConfigORM, AgentConfigStatus, AgentBotCreate, AgentBotUpdate, AgentConfigUpdate
+from models.agent_bot import AgentBotORM, AgentBotCreate, AgentBotUpdate
+from models.agent_config import AgentConfigCreate, AgentConfigORM, AgentConfigUpdate
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Page
 
@@ -57,19 +58,35 @@ class AgentBotHelper:
 
 class AgentConfigHelper:
     @staticmethod
-    def get(session: Session, config_id: int) -> AgentConfigORM:
-        return session.query(AgentConfigORM).filter(AgentConfigORM.id == config_id).scalar()
+    def get(session: Session, config_id: int) -> AgentConfigORM | None:
+        return session.query(AgentConfigORM).filter(AgentConfigORM.id == config_id).one_or_none()
 
     @staticmethod
-    def create(session: Session, operator: int) -> AgentConfigORM:
+    def get_bot_draft(session: Session, bot_id: int) -> AgentConfigORM | None:
+        return session.query(AgentConfigORM).filter(
+            AgentConfigORM.bot_id == bot_id,
+            AgentConfigORM.is_draft == True
+        ).one_or_none()
+
+    @staticmethod
+    def get_or_create_bot_draft(session: Session, operator: int, bot_id: int) -> AgentConfigORM:
+        exist = AgentConfigHelper.get_bot_draft(session, bot_id)
+        if exist is None:
+            return AgentConfigHelper.create(session, operator, AgentConfigCreate(bot_id=bot_id, is_draft=True, config=None))
+        else:
+            return exist
+
+    @staticmethod
+    def create(session: Session, operator: int, config_model: AgentConfigCreate) -> AgentConfigORM:
         now = datetime.now()
         model = AgentConfigORM(**{
-            "status": AgentConfigStatus.DRAFT,
+            "is_draft": False,
+            "config": {},
+            **config_model.model_dump(),
             "created_by": operator,
             "created_at": now,
             "updated_by": operator,
             "updated_at": now,
-            "config": {}
         })
         session.add(model)
         session.commit()
@@ -78,7 +95,7 @@ class AgentConfigHelper:
 
     @staticmethod
     def update(session: Session, operator: int, config_model: AgentConfigUpdate) -> int:
-        bot_id = config_model.id
+        config_id = config_model.id
         now = datetime.now()
         update_model: dict[Any, Any] = {
             **config_model.model_dump(),
@@ -87,6 +104,6 @@ class AgentConfigHelper:
         }
         update_model.pop('id')
         result = session.query(AgentConfigORM).filter(
-            AgentConfigORM.id == bot_id).update(update_model)
+            AgentConfigORM.id == config_id).update(update_model)
         session.commit()
         return result

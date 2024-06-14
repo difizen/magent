@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 
 from fastapi_pagination import Page
 
-from models.agent import AgentBotModel, AgentBotCreate, AgentBotUpdate, AgentConfigModel, AgentConfigUpdate
+from models.agent_bot import AgentBotModel, AgentBotCreate, AgentBotUpdate
+from models.agent_config import AgentConfigModel, AgentConfigUpdate, AgentConfigCreate
 
 from db import get_db
 
@@ -28,8 +29,21 @@ def get_agent_bots(user_id: int, session: Session = Depends(get_db)):
 
 
 @router.get("/bots/{bot_id}", response_model=AgentBotModel)
-async def get_agent_bot(bot_id, db: Session = Depends(get_db)):
-    model = AgentBotHelper.get(db, bot_id)
+async def get_agent_bot(bot_id, user_id: int, with_draft=False, session: Session = Depends(get_db)):
+    model = AgentBotHelper.get(session, bot_id)
+    if model is None:
+        raise HTTPException(404)
+    bot = AgentBotModel.model_validate(model)
+    if with_draft:
+        draft = AgentConfigHelper.get_or_create_bot_draft(
+            session, user_id, bot.id)
+        bot.draft = draft
+    return bot
+
+
+@router.get("/bots/{bot_id}/draft", response_model=AgentConfigModel)
+async def get_or_create_agent_bot_draft_config(user_id: int, bot_id, session: Session = Depends(get_db)):
+    model = AgentConfigHelper.get_or_create_bot_draft(session, user_id, bot_id)
     if model is None:
         raise HTTPException(404)
     return AgentBotModel.model_validate(model)
@@ -56,6 +70,6 @@ async def update_agent_config(user_id: int, config: AgentConfigUpdate, db: Sessi
 
 
 @router.post("/configs", response_model=AgentConfigModel)
-async def create_agent_config(user_id: int, session: Session = Depends(get_db)):
-    model = AgentConfigHelper.create(session, user_id)
+async def create_agent_config(user_id: int, config: AgentConfigCreate, session: Session = Depends(get_db)):
+    model = AgentConfigHelper.create(session, user_id, config)
     return AgentConfigModel.model_validate(model)
