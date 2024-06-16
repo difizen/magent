@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from models.agent_bot import AgentBotORM, AgentBotCreate, AgentBotUpdate
+from models.agent_bot import AgentBotModel, AgentBotORM, AgentBotCreate, AgentBotUpdate
 from models.agent_config import AgentConfigCreate, AgentConfigORM, AgentConfigUpdate
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Page
@@ -19,7 +19,7 @@ class AgentBotHelper:
         return session.query(AgentBotORM).filter(AgentBotORM.id == bot_id).one_or_none()
 
     @staticmethod
-    def get_all(session: Session, user_id: int) -> Page[AgentBotORM]:
+    def get_all(session: Session, user_id: int) -> Page[AgentBotModel]:
         return paginate(
             session.query(AgentBotORM)
             .filter(AgentBotORM.created_by == user_id)
@@ -79,7 +79,7 @@ class AgentConfigHelper:
     @staticmethod
     def create(session: Session, operator: int, config_model: AgentConfigCreate) -> AgentConfigORM:
         now = datetime.now()
-        model = AgentConfigORM(**{
+        dict = {
             "is_draft": False,
             "config": {},
             **config_model.model_dump(),
@@ -87,7 +87,8 @@ class AgentConfigHelper:
             "created_at": now,
             "updated_by": operator,
             "updated_at": now,
-        })
+        }
+        model = AgentConfigORM(**dict)
         session.add(model)
         session.commit()
         session.refresh(model)

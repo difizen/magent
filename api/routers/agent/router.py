@@ -46,7 +46,7 @@ async def get_or_create_agent_bot_draft_config(user_id: int, bot_id, session: Se
     model = AgentConfigHelper.get_or_create_bot_draft(session, user_id, bot_id)
     if model is None:
         raise HTTPException(404)
-    return AgentBotModel.model_validate(model)
+    return AgentConfigModel.model_validate(model)
 
 
 @router.put("/bots/{bot_id}")

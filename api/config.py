@@ -31,7 +31,7 @@ class Settings(BaseSettings):
 
     FIRST_SUPERUSER: str = 'default@magent.com'
     FIRST_SUPERUSER_PASSWORD: str = 'magent123456'
-    FIRST_SUPERUSER_AVATAR: str = 'magent123456'
+    FIRST_SUPERUSER_AVATAR: str = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1'
 
     @computed_field  # type: ignore[misc]
     @property

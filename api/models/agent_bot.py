@@ -57,7 +57,7 @@ class AgentBotModel(AgentBotCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    draft: Optional[AgentConfigModel]
+    draft: Optional[AgentConfigModel] = None
 
     class Config:
         from_attributes = True
