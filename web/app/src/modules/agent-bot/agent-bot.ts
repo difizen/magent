@@ -1,12 +1,11 @@
 import { inject, prop, transient } from '@difizen/mana-app';
-import qs from 'query-string';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
-import { UserManager } from '../user/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
 import type { AgentConfig } from './agent-config.js';
+import type { AgentConfigOption } from './protocol.js';
 import { AgentBotOption, AgentBotType } from './protocol.js';
 
 @transient()
@@ -24,9 +23,7 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
   @prop()
   draft?: AgentConfig;
 
-  draftConfigId?: number;
-
-  option: any;
+  option: AgentBotOption;
 
   constructor(
     @inject(AgentBotOption) option: AgentBotOption,
@@ -40,32 +37,29 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
 
     this.id = option.id;
     this.initialize(option);
-    this.ensureDraft();
+    this.ensureDraft(option);
   }
 
   shouldInitFromMeta(option: AgentBotOption): boolean {
     return AgentBotType.isFullOption(option);
   }
 
-  async ensureDraft(): Promise<AgentConfig> {
+  async ensureDraft(option: AgentBotOption): Promise<AgentConfig | undefined> {
     await this.ready;
-    let config: AgentConfig;
-    if (this.draftConfigId) {
-      config = await this.configManager.getDraft({ id: this.draftConfigId });
-    } else {
-      config = await this.configManager.create();
-      this.draftConfigId = config.id;
-      await this.save();
+    let draftConfig = option.draft;
+    if (!this.option.draft) {
+      draftConfig = await this.fetchDraftInfo(option);
     }
-    this.draft = config;
-    return config;
+    if (draftConfig) {
+      this.draft = this.configManager.create(draftConfig);
+    }
+    return this.draft;
   }
 
   protected override fromMeta(option: AgentBotOption) {
     this.id = option.id;
     this.name = option.name!;
     this.avatar = option.avatar!;
-    this.draftConfigId = option.draft;
     super.fromMeta(option);
   }
 
@@ -78,10 +72,19 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
     }
   }
 
+  async fetchDraftInfo(option: AgentBotOption) {
+    const res = await this.axios.get<AgentConfigOption>(
+      `api/v1/agent/bots/${option.id}/draft`,
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+    return undefined;
+  }
+
   toMeta(): AgentBotOption {
     return {
       id: this.id,
-      draft: this.draftConfigId,
       name: this.name,
       avatar: this.avatar,
     };

@@ -2,6 +2,7 @@
 
 import type { Syringe } from '@difizen/mana-app';
 import axios from 'axios';
+import qs from 'query-string';
 
 import { UserManager } from '../user/user-manager.js';
 
@@ -10,13 +11,14 @@ export const getContextClient = (ctx: Syringe.Context) => {
   axios.interceptors.request.use(async function (config) {
     // TODO: change to jwt token
     if (config.url) {
-      const url = new URL(config.url);
-      if (!url.searchParams.has('user_id')) {
+      const parsed = qs.parseUrl(config.url);
+      const query = parsed.query;
+      if (!query['user_id']) {
         const userManager = ctx.container.get(UserManager);
         await userManager.initialized;
         if (userManager.current) {
-          url.searchParams.append('user_id', userManager.current.id);
-          config.url = url.toString();
+          query['user_id'] = userManager.current.id;
+          config.url = qs.stringifyUrl(parsed);
         }
       }
     }

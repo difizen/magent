@@ -1,6 +1,6 @@
 import { Syringe } from '@difizen/mana-app';
 
-import type { Model } from './model';
+import type { Model } from './model.js';
 
 export interface ModelMeta {
   key: string;

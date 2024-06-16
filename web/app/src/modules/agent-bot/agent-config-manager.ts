@@ -15,11 +15,7 @@ export class AgentConfigManager {
     return this.configFactory(option);
   };
 
-  create = async (): Promise<AgentConfig> => {
-    const res = await this.axios.post<AgentConfigOption>(`api/v1/agent/configs`);
-    if (res.status !== 200) {
-      throw new Error('failed to create agent config');
-    }
-    return this.configFactory(res.data);
+  create = (option: AgentConfigOption): AgentConfig => {
+    return this.configFactory(option);
   };
 }

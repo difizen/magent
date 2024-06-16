@@ -1,15 +1,9 @@
 import { inject, prop, transient } from '@difizen/mana-app';
-import qs from 'query-string';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
-import { UserManager } from '../user/index.js';
 
-import type {
-  AgentConfigMeta,
-  AgentConfigModelMeta,
-  AgentConfigStatus,
-} from './protocol.js';
+import type { AgentConfigInfo, AgentConfigModelMeta } from './protocol.js';
 import { AgentConfigOption, AgentConfigType } from './protocol.js';
 
 @transient()
@@ -17,7 +11,9 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
   protected axios: AxiosClient;
   id: number;
 
-  status: AgentConfigStatus = 'draft';
+  bot_id: number;
+
+  is_draft = true;
 
   @prop()
   persona?: string;
@@ -26,7 +22,7 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
   model?: AgentConfigModelMeta;
 
   @prop()
-  config?: AgentConfigMeta;
+  config?: AgentConfigInfo;
 
   option?: AgentConfigOption;
 
@@ -48,7 +44,8 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
 
   protected override fromMeta(option: AgentConfigOption): void {
     this.id = option.id;
-    this.status = option.status || 'draft';
+    this.bot_id = option.bot_id;
+    this.is_draft = option.is_draft || true;
     this.persona = option.config?.persona;
     this.model = option.config?.model;
     // TODO: tools & datasets
@@ -69,7 +66,8 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
   toMeta(): AgentConfigOption {
     return {
       id: this.id,
-      status: this.status,
+      bot_id: this.bot_id,
+      is_draft: this.is_draft,
       config: {
         ...(this.config || {}),
         persona: this.persona,

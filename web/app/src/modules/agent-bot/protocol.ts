@@ -15,7 +15,7 @@ export interface AgentConfigModelMeta {
   key: string;
   [key: string]: any;
 }
-export interface AgentConfigMeta {
+export interface AgentConfigInfo {
   persona: string;
   tools: AgentConfigToolMeta[];
   datasets: AgentConfigDatasetMeta[];
@@ -31,8 +31,9 @@ export const AgentConfigOption = Syringe.defineToken('AgentConfigOption', {
 
 export interface AgentConfigOption {
   id: number;
-  status?: AgentConfigStatus;
-  config?: Partial<AgentConfigMeta>;
+  bot_id: number;
+  is_draft?: boolean;
+  config?: Partial<AgentConfigInfo>;
 }
 
 export type AgentConfigFactory = (options: AgentConfigOption) => AgentConfig;
@@ -45,7 +46,7 @@ export const AgentConfigType = {
     return !!(data && 'id' in data);
   },
   isFullOption(data?: Record<string, any>): boolean {
-    return AgentBotType.isOption(data) && 'config' in data;
+    return AgentBotType.isOption(data) && 'bot_id' in data && 'config' in data;
   },
 };
 
@@ -58,7 +59,7 @@ export interface AgentBotMeta {
 
 export interface AgentBotOption extends Partial<AgentBotMeta> {
   id: number;
-  draft?: number;
+  draft?: AgentConfigOption | null;
 }
 
 export const AgentBotOption = Syringe.defineToken('AgentBotOption', {
@@ -78,5 +79,3 @@ export const AgentBotType = {
     return AgentBotType.isOption(data) && 'name' in data && 'avatar' in data;
   },
 };
-
-export type AgentConfigStatus = 'draft' | 'publish';

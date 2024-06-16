@@ -1,4 +1,4 @@
-import type { ModelMeta } from './protocol';
+import type { ModelMeta } from './protocol.js';
 
 const gpt4: ModelMeta = {
   key: 'gpt-4',
