@@ -1,4 +1,5 @@
-import { inject, prop, transient } from '@difizen/mana-app';
+import { Emitter, inject, prop, transient } from '@difizen/mana-app';
+import debounce from 'lodash.debounce';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
@@ -15,11 +16,32 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
 
   is_draft = true;
 
-  @prop()
-  persona?: string;
+  protected onChanagedEmitter = new Emitter<AgentConfig>();
+
+  get onChanged() {
+    return this.onChanagedEmitter.event;
+  }
 
   @prop()
-  model?: AgentConfigModelMeta;
+  protected _persona?: string;
+
+  get persona() {
+    return this._persona;
+  }
+  set persona(v: string | undefined) {
+    this._persona = v;
+    this.changed();
+  }
+
+  @prop()
+  protected _model?: AgentConfigModelMeta;
+  get model() {
+    return this._model;
+  }
+  set model(v: AgentConfigModelMeta | undefined) {
+    this._model = v;
+    this.changed();
+  }
 
   @prop()
   config?: AgentConfigInfo;
@@ -46,8 +68,8 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
     this.id = option.id;
     this.bot_id = option.bot_id;
     this.is_draft = option.is_draft || true;
-    this.persona = option.config?.persona;
-    this.model = option.config?.model;
+    this._persona = option.config?.persona;
+    this._model = option.config?.model;
     // TODO: tools & datasets
     super.fromMeta(option);
   }
@@ -71,15 +93,21 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
       config: {
         ...(this.config || {}),
         persona: this.persona,
+        model: this.model,
       },
     };
   }
 
-  async save(): Promise<boolean> {
-    const res = await this.axios.put<number>(
-      `api/v1/agent/configs/${this.id}`,
-      this.toMeta(),
-    );
+  protected deferSave: (meta?: AgentConfigOption) => Promise<boolean> | undefined =
+    debounce(this.save.bind(this), 500);
+
+  protected changed = () => {
+    this.onChanagedEmitter.fire(this);
+    this.deferSave();
+  };
+
+  async save(meta = this.toMeta()): Promise<boolean> {
+    const res = await this.axios.put<number>(`api/v1/agent/configs/${this.id}`, meta);
     if (res.status === 200) {
       return res.data === 1;
     }

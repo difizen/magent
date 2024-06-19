@@ -11,9 +11,9 @@ import { Button, Form, Select, Popover } from 'antd';
 import { forwardRef, useEffect } from 'react';
 
 import './index.less';
-import type { ModelMeta } from '../../../modules/model';
-import { ModelManager } from '../../../modules/model';
-import { BotProvider } from '../bot-provider';
+import type { ModelMeta } from '../../../modules/model/index.js';
+import { ModelManager } from '../../../modules/model/index.js';
+import { BotProvider } from '../bot-provider.js';
 
 const viewId = 'bot-config-model-selector';
 
@@ -40,12 +40,18 @@ const ModelSelectorComponent = forwardRef<HTMLDivElement>(
     const models = modelManager.models;
 
     useEffect(() => {
-      if (!modelMeta && defaultModel && bot?.draft) {
-        if (bot?.draft) {
-          bot.draft.model = { key: defaultModel.key };
-        }
+      if (!modelMeta && defaultModel) {
+        instance.botProvider.ready
+          .then(async (bot) => {
+            await bot.ensureDraft();
+            if (!bot.draft!.model) {
+              instance.onSelectChange(defaultModel.key);
+            }
+            return;
+          })
+          .catch(console.error);
       }
-    }, [modelMeta, defaultModel, bot?.draft]);
+    }, [modelMeta, defaultModel, instance]);
 
     const currentModel = models.find((item) => item.key === bot?.draft?.model?.key);
 
@@ -62,11 +68,7 @@ const ModelSelectorComponent = forwardRef<HTMLDivElement>(
               <Form layout="vertical">
                 <Form.Item label="模型">
                   <Select
-                    onSelect={(v) => {
-                      if (bot?.draft) {
-                        bot.draft.model = { key: v };
-                      }
-                    }}
+                    onSelect={instance.onSelectChange}
                     value={bot?.draft?.model?.key}
                   >
                     {models.map((item) => (
@@ -99,4 +101,11 @@ const ModelSelectorComponent = forwardRef<HTMLDivElement>(
 export class ModelSelectorView extends BaseView {
   @inject(BotProvider) botProvider: BotProvider;
   override view = ModelSelectorComponent;
+
+  onSelectChange = async (modelKey: string) => {
+    const draft = this.botProvider.current?.draft;
+    if (draft) {
+      draft.model = { key: modelKey };
+    }
+  };
 }

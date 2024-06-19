@@ -1,15 +1,28 @@
 import { inject, prop, singleton } from '@difizen/mana-app';
 
+import { DeferredModel } from '../../common/async-model.js';
 import { defaultAgentBotMeta } from '../../constant/default.js';
 import type { AgentBot } from '../../modules/agent-bot/index.js';
 import { AgentBotManager } from '../../modules/agent-bot/index.js';
 
 @singleton()
-export class BotProvider {
+export class BotProvider extends DeferredModel<AgentBot> {
   @inject(AgentBotManager) agentBotManager: AgentBotManager;
 
   @prop()
-  current?: AgentBot;
+  _current?: AgentBot;
+
+  get current() {
+    return this._current;
+  }
+  set current(v: AgentBot | undefined) {
+    this._current = v;
+    if (v) {
+      this.readyDeferred.resolve(v);
+    } else {
+      this.readyDeferred.reject(new Error('Cannot init curernt bot'));
+    }
+  }
 
   @prop()
   loading = false;

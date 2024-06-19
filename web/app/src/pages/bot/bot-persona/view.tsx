@@ -7,7 +7,6 @@ import {
   view,
 } from '@difizen/mana-app';
 import { Input } from 'antd';
-import debounce from 'lodash.debounce';
 import type { ChangeEvent } from 'react';
 import { forwardRef } from 'react';
 
@@ -48,14 +47,6 @@ export class BotPersonaView extends BaseView {
     const draft = this.botProvider.current?.draft;
     if (draft) {
       draft.persona = e.target.value;
-      this.save();
     }
   };
-
-  save: () => void = debounce(() => {
-    const draft = this.botProvider.current?.draft;
-    if (draft) {
-      draft.save();
-    }
-  }, 500);
 }

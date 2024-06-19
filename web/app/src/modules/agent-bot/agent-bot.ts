@@ -40,12 +40,17 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
     this.ensureDraft(option);
   }
 
-  shouldInitFromMeta(option: AgentBotOption): boolean {
+  shouldInitFromMeta(option: AgentBotOption = this.option): boolean {
     return AgentBotType.isFullOption(option);
   }
 
-  async ensureDraft(option: AgentBotOption): Promise<AgentConfig | undefined> {
+  async ensureDraft(
+    option: AgentBotOption = this.option,
+  ): Promise<AgentConfig | undefined> {
     await this.ready;
+    if (this.draft) {
+      return this.draft;
+    }
     let draftConfig = option.draft;
     if (!this.option.draft) {
       draftConfig = await this.fetchDraftInfo(option);
@@ -56,14 +61,14 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
     return this.draft;
   }
 
-  protected override fromMeta(option: AgentBotOption) {
+  protected override fromMeta(option: AgentBotOption = this.option) {
     this.id = option.id;
     this.name = option.name!;
     this.avatar = option.avatar!;
     super.fromMeta(option);
   }
 
-  async fetchInfo(option: AgentBotOption) {
+  async fetchInfo(option: AgentBotOption = this.option) {
     const res = await this.axios.get<AgentBotOption>(`api/v1/agent/bots/${option.id}`);
     if (res.status === 200) {
       if (this.shouldInitFromMeta(res.data)) {
@@ -72,7 +77,7 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
     }
   }
 
-  async fetchDraftInfo(option: AgentBotOption) {
+  async fetchDraftInfo(option: AgentBotOption = this.option) {
     const res = await this.axios.get<AgentConfigOption>(
       `api/v1/agent/bots/${option.id}/draft`,
     );
