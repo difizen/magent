@@ -26,6 +26,7 @@ class ConversationORM(Base):
         'agent_bots.id'), nullable=False)
     bot_config_id = Column(Integer, ForeignKey(
         'agent_configs.id'), nullable=False)
+    created_by = Column(Integer)
     created_at = Column(DateTime(), default=datetime.now(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.now(),
                         onupdate=datetime.now(), nullable=False)
@@ -72,6 +73,7 @@ class MessageModel(BaseModel):
 
 class ConversationModel(BaseModel):
     messages: List[MessageModel] = []
+    created_by: int
 
     def append_messages(
         self,
