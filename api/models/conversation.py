@@ -61,14 +61,21 @@ class MessageORM(Base):
     conversation = relationship('ConversationORM', back_populates='messages')
 
 
-class MessageModel(BaseModel):
-    id: int
+class MessageModelCreate(BaseModel):
     sender: int
     sender_type: MessageSenderType
+    message_type: MessageType = MessageType.MARKDOWN
     conversation_id: int
-    is_deleted: bool
-    created_at: datetime
     content: str
+
+
+class MessageModel(MessageModelCreate):
+    id: int
+    is_deleted: bool = False
+    created_at: datetime = datetime.now()
+
+    class Config:
+        from_attributes = True
 
 
 class ConversationModel(BaseModel):
@@ -88,3 +95,6 @@ class ConversationModel(BaseModel):
         msg: MessageModel
     ):
         self.messages.append(msg)
+
+    class Config:
+        from_attributes = True
