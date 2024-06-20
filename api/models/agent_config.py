@@ -9,7 +9,6 @@ from sqlalchemy import (
     DateTime,
     JSON,
     ForeignKey,
-    func
 )
 
 from db import Base
@@ -26,11 +25,11 @@ class AgentConfigORM(Base):
     config = Column(JSON)
     created_by = Column(Integer)
     created_at = Column(
-        DateTime(), nullable=False, server_default=func.now()
+        DateTime(), nullable=False, default=datetime.now(),
     )
     updated_by = Column(Integer)
     updated_at = Column(DateTime(),
-                        nullable=False, onupdate=func.now())
+                        nullable=False, onupdate=datetime.now())
 
 
 class AgentConfigCreate(BaseModel):
