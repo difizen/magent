@@ -1,13 +1,26 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 from models.agent_config import AgentConfigModel
-from models.conversation import ConversationORM, MessageModel, MessageModelCreate, MessageORM
+from models.conversation import ConversationORM, MessageModelCreate, MessageORM
 from routers.agent.crud import AgentConfigHelper
+
+from sqlalchemy import inspect
+
+
+def getattr_from_column_name(instance, name, default=Ellipsis):
+    for attr, column in inspect(instance.__class__).c.items():
+        if column.name == name:
+            return getattr(instance, attr)
+
+    if default is Ellipsis:
+        raise KeyError
+    else:
+        return default
 
 
 class ConversationHelper:
     @staticmethod
-    def get_bot_conversation(session: Session, operator: int, agent_config_id: int) -> ConversationORM:
+    def get_or_create_bot_conversation(session: Session, operator: int, agent_config_id: int) -> ConversationORM:
         config = AgentConfigHelper.get(session, config_id=agent_config_id)
         if config is None:
             raise Exception('cannot get agent config')
@@ -46,14 +59,10 @@ class ConversationHelper:
 
     @staticmethod
     def delete_message(session: Session, message_id: int) -> int:
-        msg_orm = ConversationHelper.get_message(session, message_id)
-        msg_model = MessageModel.model_validate(msg_orm)
-        msg_model.is_deleted = True
-        result = session.query(MessageORM).filter(MessageORM.id == message_id).update(MessageORM(**{
-            ** msg_model.model_dump()
-        }))
+        flag = session.query(MessageORM).filter(
+            MessageORM.id == message_id).update({"is_deleted": True})
         session.commit()
-        return result
+        return flag
 
     @staticmethod
     def get_message(session: Session, message_id: int) -> MessageORM | None:
