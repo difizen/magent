@@ -1,0 +1,47 @@
+.chat-message {
+  display: flex;
+  width: 100%;
+
+  &-avatar {
+    width: 32px;
+    height: 32px;
+
+    &-left {
+      margin-left: 8px;
+    }
+
+    &-right {
+      margin-right: 8px;
+    }
+
+    > span {
+      border: 0;
+    }
+  }
+
+  &-content {
+    max-width: calc(100% - 40px);
+
+    &-header {
+      display: flex;
+    }
+
+    &-main {
+      max-width: 520px;
+      border-radius: 8px;
+      word-break: break-all;
+      position: relative;
+
+      &-status {
+        position: absolute;
+        bottom: 0;
+        right: -30px;
+      }
+    }
+
+    &-footer {
+      display: flex;
+      margin-top: 4px;
+    }
+  }
+}

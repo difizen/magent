@@ -111,7 +111,7 @@
       "source.fixAll.eslint": "explicit"
     }
   },
-  "cSpell.words": ["magent"],
+  "cSpell.words": ["magent", "uvicorn"],
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoImportCompletions": true
 }

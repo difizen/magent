@@ -31,6 +31,7 @@
     "@rjsf/validator-ajv8": "^5.18.2",
     "antd": "^5.18.0",
     "axios": "^1.7.2",
+    "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
     "lodash.debounce": "^4.0.8",
     "query-string": "^9.0.0",
