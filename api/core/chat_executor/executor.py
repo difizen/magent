@@ -1,5 +1,6 @@
 from typing import Any
 from abc import ABC, abstractmethod
+from langchain.schema.messages import BaseMessage
 from pydantic import BaseModel
 
 
@@ -12,7 +13,7 @@ class ChatExecutor(BaseModel, ABC):
         self,
         value,
         **kwargs,
-    ) -> Any:
+    ) -> BaseMessage | None:
         """Chat and get result."""
 
 

@@ -2,7 +2,8 @@ from typing import Optional
 from pydantic import Field
 from langchain_openai.chat_models import ChatOpenAI
 
-from langchain.callbacks import get_openai_callback
+from langchain.schema.messages import BaseMessage
+from langchain_community.callbacks.manager import get_openai_callback
 
 from .executor import LLMChat
 
@@ -16,7 +17,7 @@ class OpenAIChat(LLMChat):
         self.chat = ChatOpenAI(model=self.model)
         return True
 
-    def run(self, value, **kwargs):
+    def run(self, value, **kwargs) -> BaseMessage | None:
         if not self.chat:
             self.load()
         try:
@@ -27,4 +28,4 @@ class OpenAIChat(LLMChat):
                 result = chat.invoke(value, **kwargs)
                 return result
         except Exception as e:
-            return ""
+            return None

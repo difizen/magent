@@ -1,7 +1,8 @@
+from typing import List
 from datetime import datetime
 from sqlalchemy.orm import Session
 from models.agent_config import AgentConfigModel
-from models.conversation import ConversationORM, MessageModelCreate, MessageORM
+from models.conversation import ConversationModel, ConversationORM, MessageModelCreate, MessageORM
 from routers.agent.crud import AgentConfigHelper
 
 from sqlalchemy import inspect
@@ -19,6 +20,14 @@ def getattr_from_column_name(instance, name, default=Ellipsis):
 
 
 class ConversationHelper:
+    @staticmethod
+    def get_conversation_bot_config(session: Session, operator: int, coversation_id: int) -> AgentConfigModel:
+        conversation_orm = session.query(ConversationORM).filter(ConversationORM.id ==
+                                                                 coversation_id).one_or_none()
+        conversation_model = ConversationModel.model_validate(conversation_orm)
+        config_id = conversation_model.bot_config_id
+        return AgentConfigHelper.get(session, config_id)
+
     @staticmethod
     def get_or_create_bot_conversation(session: Session, operator: int, agent_config_id: int) -> ConversationORM:
         config = AgentConfigHelper.get(session, config_id=agent_config_id)
@@ -68,3 +77,12 @@ class ConversationHelper:
     def get_message(session: Session, message_id: int) -> MessageORM | None:
         return session.query(MessageORM).filter(
             MessageORM.id == message_id).one_or_none()
+
+    @staticmethod
+    def get_messages(session: Session, conversation_id: int) -> List[MessageORM]:
+        list = session.query(MessageORM).filter(
+            MessageORM.conversation_id == conversation_id,
+            MessageORM.is_deleted == False).order_by(MessageORM.created_at.desc()).all()
+        if list is None:
+            return []
+        return list

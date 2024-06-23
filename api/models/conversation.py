@@ -43,6 +43,7 @@ class MessageSenderType(enum.Enum):
 
 class MessageType(enum.Enum):
     MARKDOWN = "markdown"
+    TEXT = "text"
 
 
 class MessageORM(Base):
@@ -53,8 +54,7 @@ class MessageORM(Base):
         'conversations.id'), nullable=False)
     sender_type = Column(Enum(MessageSenderType), nullable=False)
     sender_id = Column(Integer, nullable=False)
-    message_type = Column(
-        String(50), default=MessageType.MARKDOWN, nullable=False)
+    message_type = Column(Enum(MessageType), nullable=False)
     content = Column(Text, nullable=False)
     is_deleted = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime(), default=datetime.now(), nullable=False)
@@ -62,8 +62,8 @@ class MessageORM(Base):
 
 
 class MessageModelCreate(BaseModel):
-    sender: int
-    sender_type: MessageSenderType
+    sender_id: int
+    sender_type: MessageSenderType = MessageSenderType.HUMAN
     message_type: MessageType = MessageType.MARKDOWN
     conversation_id: int
     content: str
@@ -80,7 +80,10 @@ class MessageModel(MessageModelCreate):
 
 class ConversationModel(BaseModel):
     messages: List[MessageModel] = []
+    bot_id: int
+    bot_config_id: int
     created_by: int
+    created_at: datetime
 
     def append_messages(
         self,
