@@ -83,7 +83,7 @@ class ConversationModel(BaseModel):
     bot_id: int
     bot_config_id: int
     created_by: int
-    created_at: datetime
+    created_at: datetime = datetime.now()
 
     def append_messages(
         self,
