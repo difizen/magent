@@ -2,46 +2,62 @@
   display: flex;
   width: 100%;
 
+  &-box {
+    display: flex;
+    width: 100%;
+    padding: 0 24px;
+  }
+
   &-avatar {
-    width: 32px;
-    height: 32px;
+    margin-right: 24px;
+  }
 
-    &-left {
-      margin-left: 8px;
-    }
+  &-container {
+    flex: 1 1;
+  }
 
-    &-right {
-      margin-right: 8px;
-    }
-
-    > span {
-      border: 0;
-    }
+  &-nickname {
+    color: rgba(29, 28, 35, 60%);
+    display: flex;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
   }
 
   &-content {
-    max-width: calc(100% - 40px);
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    position: relative;
+    width: fit-content;
 
-    &-header {
-      display: flex;
+    &-user {
+      background: #4d53e8;
+      border: 1px solid #e7e7e9;
+      color: #fff;
+      padding: 12px;
     }
 
-    &-main {
-      max-width: 520px;
-      border-radius: 8px;
-      word-break: break-all;
-      position: relative;
-
-      &-status {
-        position: absolute;
-        bottom: 0;
-        right: -30px;
-      }
+    &-bot {
+      background: #f7f7fa;
+      border: 1px solid #e7e7e9;
+      color: #2e3238;
+      padding: 12px;
     }
 
-    &-footer {
-      display: flex;
-      margin-top: 4px;
+    &-inner {
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      max-width: 100%;
+      overflow: hidden;
+      width: fit-content;
     }
+  }
+
+  &-footer {
+    overflow: visible;
   }
 }

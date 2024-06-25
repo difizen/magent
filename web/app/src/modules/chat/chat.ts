@@ -39,8 +39,8 @@ const msgToOption = (msg: ChatMessageModel): ChatMessageOption => {
 
 @transient()
 export class Chat extends AsyncModel<Chat, ChatOption> {
-  @inject(AxiosClient) axios: AxiosClient;
-  @inject(ChatMessageManager) messageManager: ChatMessageManager;
+  messageManager: ChatMessageManager;
+  axios: AxiosClient;
   option: ChatOption;
   botId: string;
   botConfigId?: string;
@@ -49,24 +49,45 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   @prop()
   messages: ChatMessage[] = [];
 
-  constructor(@inject(ChatOption) option: ChatOption) {
+  constructor(
+    @inject(ChatOption) option: ChatOption,
+    @inject(AxiosClient) axios: AxiosClient,
+    @inject(ChatMessageManager) messageManager: ChatMessageManager,
+  ) {
     super();
+    this.axios = axios;
+    this.messageManager = messageManager;
     this.option = option;
     this.botId = option.botId;
+    this.initialize(option);
   }
 
   override shouldInitFromMeta(option: ChatOption): boolean {
     return false;
   }
   override fetchInfo = async (option: ChatOption): Promise<void> => {
-    const res = await this.axios.get<ChatModel>(`api/v1/conversation/${option.botId}`);
+    const { env = 'debug' } = option;
+    let url = `api/v1/conversation/${option.botId}`;
+    switch (env) {
+      case 'debug':
+        url = `api/v1/conversation/${option.botId}/debug`;
+        break;
+      case 'online':
+        break;
+      default:
+        break;
+    }
+    const res = await this.axios.get<ChatModel>(url);
     if (res.status === 200) {
       const model = res.data;
       this.botConfigId = model.bot_config_id.toString();
       this.createdBy = model.created_by.toString();
-      this.messages = model.messages.map((option) =>
-        this.messageManager.getOrCreateMessage(msgToOption(option)),
-      );
+      this.messages = model.messages.map(this.getOrCreateMessage);
     }
+  };
+
+  protected getOrCreateMessage = (option: ChatMessageModel) => {
+    const msg = this.messageManager.getOrCreateMessage(msgToOption(option));
+    return msg;
   };
 }

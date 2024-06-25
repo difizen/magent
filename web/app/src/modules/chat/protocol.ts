@@ -25,13 +25,14 @@ export interface ChatMessageCreate {
 export interface ChatOption {
   botId: string;
   userId: string;
+  env?: 'debug' | 'online';
 }
 export const ChatOption = Syringe.defineToken('ChatOption');
 export type ChatFactory = (option: ChatOption) => Chat;
 export const ChatFactory = Syringe.defineToken('ChatFactory');
 
 export interface ChatMessageOption extends ChatMessageCreate {
-  id?: string;
+  id: string;
   createdAt?: string;
 }
 
@@ -50,3 +51,5 @@ export const ChatMessageType = {
 
 export type { ChatMessage } from './chat-message.js';
 export type { Chat } from './chat.js';
+
+export const ChatInstance = Syringe.defineToken('ChatInstance', { multiple: false });

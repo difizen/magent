@@ -68,15 +68,12 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     prefixCls = 'chat-input',
     tips,
     wrapperClassName = '',
-    tipsPosition = 'top',
     sendEnable = true,
-    sending = false,
     isEnterSend = false,
     onChange,
     onKeyDown,
     onSubmit,
     value,
-    ...textAreaProps
   } = porps;
 
   // fix tips: '/' =>> ''
@@ -123,7 +120,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
           style={{ display: 'flex', alignItems: 'center', minHeight: '46px' }}
         >
           <AntdInput.TextArea
-            placeholder="Type a message..."
+            placeholder="写消息..."
             ref={ref}
             value={value}
             onChange={onInputChange}

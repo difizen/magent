@@ -79,3 +79,5 @@ export const AgentBotType = {
     return AgentBotType.isOption(data) && 'name' in data && 'avatar' in data;
   },
 };
+
+export const BotInstance = Syringe.defineToken('BotInstance', { multiple: false });
