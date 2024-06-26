@@ -3,7 +3,7 @@ from typing import List
 from langchain.schema.messages import BaseMessage, SystemMessage, HumanMessage, AIMessage
 from pydantic import BaseModel
 from models.agent_config import AgentConfigModel
-from models.conversation import MessageModel, MessageSenderType
+from models.chat import MessageModel, MessageSenderType
 from .chat_executor import chat_object_manager
 
 
@@ -30,7 +30,7 @@ def to_message(msg: MessageModel) -> BaseMessage:
     return HumanMessage(content=msg.content)
 
 
-def chat(agent_config: AgentConfigModel, conversation_id: int, history: List[MessageModel], message: MessageModel):
+def chat(agent_config: AgentConfigModel, chat_id: int, history: List[MessageModel], message: MessageModel):
     config = get_config_meta(agent_config)
     system_msg = SystemMessage(content=config.persona)
     msgs = [to_message(m) for m in history]

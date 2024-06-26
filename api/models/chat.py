@@ -1,16 +1,17 @@
 import enum
-from typing import List
-from pydantic import BaseModel
+import uuid
+from typing import List, Optional
+from pydantic import UUID4, BaseModel
 from datetime import datetime
 
 from sqlalchemy import (
     ForeignKey,
     Column,
     Integer,
-    String,
     DateTime,
     Text,
     Boolean,
+    UUID,
     Enum
 )
 from sqlalchemy.orm import relationship
@@ -18,8 +19,8 @@ from sqlalchemy.orm import relationship
 from db import Base
 
 
-class ConversationORM(Base):
-    __tablename__ = 'conversations'
+class ChatORM(Base):
+    __tablename__ = 'chats'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     bot_id = Column(Integer, ForeignKey(
@@ -32,7 +33,7 @@ class ConversationORM(Base):
                         onupdate=datetime.now(), nullable=False)
 
     messages = relationship(
-        'MessageORM', back_populates='conversation')
+        'MessageORM', back_populates='chat')
 
 
 class MessageSenderType(enum.Enum):
@@ -50,35 +51,38 @@ class MessageORM(Base):
     __tablename__ = 'messages'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    conversation_id = Column(Integer, ForeignKey(
-        'conversations.id', ondelete="CASCADE"), nullable=False)
+    chat_id = Column(Integer, ForeignKey(
+        'chats.id', ondelete="CASCADE"), nullable=False)
     sender_type = Column(Enum(MessageSenderType), nullable=False)
     sender_id = Column(Integer, nullable=False)
+    chat_trun_id = Column(UUID, nullable=False)
     message_type = Column(Enum(MessageType), nullable=False)
     content = Column(Text, nullable=False)
     is_deleted = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime(), default=datetime.now(), nullable=False)
-    conversation = relationship('ConversationORM', back_populates='messages')
+    chat = relationship('ChatORM', back_populates='messages')
 
 
 class MessageModelCreate(BaseModel):
     sender_id: int
     sender_type: MessageSenderType = MessageSenderType.HUMAN
     message_type: MessageType = MessageType.MARKDOWN
-    conversation_id: int
+    chat_turn_id: Optional[UUID4] = None
+    chat_id: int
     content: str
 
 
 class MessageModel(MessageModelCreate):
     id: int
     is_deleted: bool = False
+    chat_turn_id: UUID4 = uuid.uuid4()
     created_at: datetime = datetime.now()
 
     class Config:
         from_attributes = True
 
 
-class ConversationModel(BaseModel):
+class ChatModel(BaseModel):
     messages: List[MessageModel] = []
     bot_id: int
     bot_config_id: int
