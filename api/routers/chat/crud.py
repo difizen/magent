@@ -82,7 +82,7 @@ class ChatHelper:
     def get_messages(session: Session, chat_id: int) -> List[MessageORM]:
         list = session.query(MessageORM).filter(
             MessageORM.chat_id == chat_id,
-            MessageORM.is_deleted == False).order_by(MessageORM.created_at.desc()).all()
+            MessageORM.is_deleted == False).order_by(MessageORM.created_at).all()
         if list is None:
             return []
         return list
