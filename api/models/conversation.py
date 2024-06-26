@@ -51,7 +51,7 @@ class MessageORM(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     conversation_id = Column(Integer, ForeignKey(
-        'conversations.id'), nullable=False)
+        'conversations.id', ondelete="CASCADE"), nullable=False)
     sender_type = Column(Enum(MessageSenderType), nullable=False)
     sender_id = Column(Integer, nullable=False)
     message_type = Column(Enum(MessageType), nullable=False)
