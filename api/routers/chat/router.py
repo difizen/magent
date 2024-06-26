@@ -94,6 +94,7 @@ async def send_message_in_chat(chat_id: int,
     if answer_msg is not None:
         new_msg = MessageModelCreate(sender_id=0,
                                      sender_type=MessageSenderType.AI,
+                                     chat_turn_id=msg_model.chat_turn_id,
                                      chat_id=chat_id,
                                      content=get_message_str(answer_msg))
         new_msg_orm = ChatHelper.insert_message(
