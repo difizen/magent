@@ -15,10 +15,10 @@ export enum MessageType {
 }
 
 export interface ChatMessageCreate {
-  senderId: number;
-  senderType?: MessageSenderType;
-  messageType?: MessageType;
-  chatId: number;
+  sender_id: number;
+  sender_type?: MessageSenderType;
+  message_type?: MessageType;
+  chat_id: number;
   content: string;
 }
 
@@ -32,7 +32,7 @@ export type ChatFactory = (option: ChatOption) => Chat;
 export const ChatFactory = Syringe.defineToken('ChatFactory');
 
 export interface ChatMessageOption extends ChatMessageCreate {
-  id: string;
+  id: number;
   createdAt?: string;
 }
 

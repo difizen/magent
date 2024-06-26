@@ -24,7 +24,7 @@ export function Chat(props: ChatProps) {
         </div>
         <div className="chat-content-input">
           <div className="chat-content-input-mask"></div>
-          <Input />
+          <Input onSubmit={(v) => chat.sendMessage(v)} />
         </div>
         <div className="chat-footer">内容由AI生成，无法确保真实准确，仅供参考。</div>
       </div>

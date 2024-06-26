@@ -14,7 +14,7 @@ export class ChatMessage {
   chatId: number;
   @prop()
   content: string;
-  id: string;
+  id: number;
   createdAt?: string;
 
   constructor(

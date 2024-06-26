@@ -3,7 +3,7 @@ import { Button, Input as AntdInput } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classnames from 'classnames';
 import type { ChangeEvent, ReactNode, KeyboardEvent, FC } from 'react';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import './index.less';
 
 function insertAtCaret(e: ChangeEvent<HTMLTextAreaElement>, valueToInsert?: string) {
@@ -64,6 +64,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
   porps: InputProps,
   ref,
 ) {
+  const [v, setV] = useState<string>('');
   const {
     prefixCls = 'chat-input',
     tips,
@@ -73,7 +74,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     onChange,
     onKeyDown,
     onSubmit,
-    value,
+    value = v,
   } = porps;
 
   // fix tips: '/' =>> ''
@@ -86,6 +87,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
   }, [tips, value]);
 
   function onInputChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    setV(e.target.value);
     onChange?.(e);
   }
 
@@ -135,6 +137,9 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
               className={`${prefixCls}-textarea-btn`}
               type="primary"
               icon={<SendOutlined />}
+              onClick={() => {
+                onSubmit?.(value || v);
+              }}
             ></Button>
           </div>
         </div>

@@ -3,7 +3,6 @@ import { inject, singleton } from '@difizen/mana-app';
 import { AxiosClient } from '../axios-client/index.js';
 // import { UserManager } from '../user/user-manager.js';
 
-import type { Chat } from './chat.js';
 import type { ChatMessage, ChatMessageOption } from './protocol.js';
 import { ChatMessageFactory } from './protocol.js';
 

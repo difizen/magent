@@ -56,7 +56,7 @@ export class User implements UserMeta {
   }
   async fetchUserInfo() {
     const superAdminEmail = defaultSuperUserEmal;
-    const res = await axios.get<UserMeta>(`api/v1/account/email/${superAdminEmail}`);
+    const res = await axios.get<UserMeta>(`api/v1/accounts/email/${superAdminEmail}`);
     if (res.status === 200 && UserMeta.is(res.data)) {
       this.fromMeta(res.data);
     }
