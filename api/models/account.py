@@ -36,19 +36,19 @@ class AccountORM(Base):
     last_login_at = Column(DateTime())
     last_login_ip = Column(String(255))
     last_active_at = Column(
-        DateTime(), nullable=False, default=datetime.now()
+        DateTime(), nullable=False, default=datetime.now
     )
     status = Column(
         Enum(AccountStatus),
         nullable=False,
     )
-    initialized_at = Column(DateTime(), default=datetime.now())
+    initialized_at = Column(DateTime(), default=datetime.now)
 
     created_at = Column(
-        DateTime(), nullable=False, default=datetime.now()
+        DateTime(), nullable=False, default=datetime.now
     )
     updated_at = Column(DateTime(),
-                        nullable=False, onupdate=datetime.now())
+                        nullable=False, onupdate=datetime.now)
 
     @property
     def is_password_set(self):

@@ -28,8 +28,8 @@ class ChatORM(Base):
     bot_config_id = Column(Integer, ForeignKey(
         'agent_configs.id'), nullable=False)
     created_by = Column(Integer)
-    created_at = Column(DateTime(), default=datetime.now(), nullable=False)
-    updated_at = Column(DateTime(), default=datetime.now(),
+    created_at = Column(DateTime(), default=datetime.now, nullable=False)
+    updated_at = Column(DateTime(), default=datetime.now,
                         onupdate=datetime.now(), nullable=False)
 
     messages = relationship(
@@ -55,11 +55,11 @@ class MessageORM(Base):
         'chats.id', ondelete="CASCADE"), nullable=False)
     sender_type = Column(Enum(MessageSenderType), nullable=False)
     sender_id = Column(Integer, nullable=False)
-    chat_trun_id = Column(UUID, nullable=False)
+    chat_turn_id = Column(UUID, default=uuid.uuid4, nullable=False)
     message_type = Column(Enum(MessageType), nullable=False)
     content = Column(Text, nullable=False)
     is_deleted = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime(), default=datetime.now(), nullable=False)
+    created_at = Column(DateTime(), default=datetime.now, nullable=False)
     chat = relationship('ChatORM', back_populates='messages')
 
 
@@ -67,7 +67,7 @@ class MessageModelCreate(BaseModel):
     sender_id: int
     sender_type: MessageSenderType = MessageSenderType.HUMAN
     message_type: MessageType = MessageType.MARKDOWN
-    chat_turn_id: Optional[UUID4] = None
+    chat_turn_id: UUID4 = uuid.uuid4()
     chat_id: int
     content: str
 
@@ -75,7 +75,6 @@ class MessageModelCreate(BaseModel):
 class MessageModel(MessageModelCreate):
     id: int
     is_deleted: bool = False
-    chat_turn_id: UUID4 = uuid.uuid4()
     created_at: datetime = datetime.now()
 
     class Config:
@@ -83,6 +82,7 @@ class MessageModel(MessageModelCreate):
 
 
 class ChatModel(BaseModel):
+    id: int
     messages: List[MessageModel] = []
     bot_id: int
     bot_config_id: int

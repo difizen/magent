@@ -3,7 +3,9 @@ chat router
 '''
 import logging
 from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from typing import List
 
 from routers.agent.crud import AgentConfigHelper
 from models.chat import (
@@ -54,7 +56,12 @@ async def clear_messages_in_chat(chat_id: int,
     raise HTTPException(500)
 
 
-@router.post("/{chat_id}/messages", response_model=MessageModel)
+class ChatReply(BaseModel):
+    send: MessageModel
+    reply: List[MessageModel] = []
+
+
+@router.post("/{chat_id}/messages", response_model=ChatReply)
 async def send_message_in_chat(chat_id: int,
                                user_id: int,
                                msg: MessageModelCreate,
@@ -62,11 +69,16 @@ async def send_message_in_chat(chat_id: int,
     '''
     post new message by user
     '''
+    print('-----post(/chat_id/messages')
     msg.sender_id = user_id
     msg.chat_id = chat_id
     msg_orm = ChatHelper.insert_message(
         session, msg)
     msg_model = MessageModel.model_validate(msg_orm)
+
+    reply_msg = ChatReply(send=msg_model)
+
+    logger.debug(reply_msg)
 
     config_orm = ChatHelper.get_chat_bot_config(
         session, user_id, chat_id)
@@ -78,6 +90,7 @@ async def send_message_in_chat(chat_id: int,
     history = [MessageModel.model_validate(
         orm_obj) for orm_obj in history_orm_list]
     answer_msg = chat(config, chat_id, history, msg_model)
+    logger.debug(answer_msg)
     if answer_msg is not None:
         new_msg = MessageModelCreate(sender_id=0,
                                      sender_type=MessageSenderType.AI,
@@ -86,5 +99,5 @@ async def send_message_in_chat(chat_id: int,
         new_msg_orm = ChatHelper.insert_message(
             session, new_msg)
         new_msg_model = MessageModel.model_validate(new_msg_orm)
-        return new_msg_model
-    return None
+        reply_msg.reply = [new_msg_model]
+    return reply_msg

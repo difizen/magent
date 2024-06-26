@@ -23,11 +23,11 @@ class AgentBotORM(Base):
     avatar = Column(String(255))
     created_by = Column(Integer)
     created_at = Column(
-        DateTime(), nullable=False, default=datetime.now()
+        DateTime(), nullable=False, default=datetime.now
     )
     updated_by = Column(Integer)
     updated_at = Column(DateTime(),
-                        nullable=False, onupdate=datetime.now())
+                        nullable=False, onupdate=datetime.now)
 
 
 class AgentBotCreate(BaseModel):
