@@ -25,8 +25,14 @@ router = APIRouter()
 chat_router = router
 
 
+@router.get("/with_bot/{bot_id}", response_model=ChatModel)
+def chat_with_bot_in_online_mode(bot_id, user_id: int, session: Session = Depends(get_db)):
+    # TODO: missing implementation
+    raise HTTPException(500)
+
+
 @router.get("/with_bot/{bot_id}/debug", response_model=ChatModel)
-def get_or_create_bot_chat(bot_id, user_id: int, session: Session = Depends(get_db)):
+def chat_with_bot_in_debug_mode(bot_id, user_id: int, session: Session = Depends(get_db)):
     '''
     get or create chat
     '''
@@ -39,11 +45,20 @@ def get_or_create_bot_chat(bot_id, user_id: int, session: Session = Depends(get_
     return ChatModel.model_validate(model)
 
 
+@router.delete("/{chat_id}/messages", response_model=int)
+async def clear_messages_in_chat(chat_id: int,
+                                 user_id: int,
+                                 msg: MessageModelCreate,
+                                 session: Session = Depends(get_db)):
+    # TODO: missing implementation
+    raise HTTPException(500)
+
+
 @router.post("/{chat_id}/messages", response_model=MessageModel)
-async def add_message_to_chat(chat_id: int,
-                              user_id: int,
-                              msg: MessageModelCreate,
-                              session: Session = Depends(get_db)):
+async def send_message_in_chat(chat_id: int,
+                               user_id: int,
+                               msg: MessageModelCreate,
+                               session: Session = Depends(get_db)):
     '''
     post new message by user
     '''
