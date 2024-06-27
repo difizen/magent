@@ -1,4 +1,6 @@
 import { inject, prop, transient } from '@difizen/mana-app';
+import type { ParsedEvent } from 'eventsource-parser/stream';
+import { EventSourceParserStream } from 'eventsource-parser/stream';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
@@ -7,11 +9,12 @@ import { UserManager } from '../user/user-manager.js';
 import type { ChatMessage } from './chat-message.js';
 import { ChatMessageManager } from './message-manager.js';
 import type {
+  ChatEventChunk,
   ChatMessageCreate,
   ChatMessageModel,
   ChatMessageOption,
 } from './protocol.js';
-import { ChatOption } from './protocol.js';
+import { ChatMessageType, ChatOption } from './protocol.js';
 
 export interface ChatReply {
   reply: ChatMessageModel[];
@@ -27,7 +30,7 @@ export interface ChatModel {
   created_at: string;
 }
 
-const msgToOption = (msg: ChatMessageModel): ChatMessageOption => {
+const msgModelToOption = (msg: ChatMessageModel): ChatMessageOption => {
   return {
     senderId: msg.sender_id,
     senderType: msg.sender_type,
@@ -36,6 +39,7 @@ const msgToOption = (msg: ChatMessageModel): ChatMessageOption => {
     content: msg.content,
     id: msg.id,
     createdAt: msg.created_at,
+    complete: msg.complete,
   };
 };
 
@@ -91,8 +95,16 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
     }
   };
 
-  protected getOrCreateMessage = (option: ChatMessageModel) => {
-    const msg = this.messageManager.getOrCreateMessage(msgToOption(option));
+  protected getOrCreateMessage = (
+    modelOrOption: ChatMessageModel | ChatMessageOption,
+  ) => {
+    let option: ChatMessageOption;
+    if (ChatMessageType.isOption(modelOrOption)) {
+      option = modelOrOption;
+    } else {
+      option = msgModelToOption(modelOrOption);
+    }
+    const msg = this.messageManager.getOrCreateMessage(option);
     return msg;
   };
 
@@ -134,17 +146,55 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   };
 
   protected doSendMessageStream = async (msg: ChatMessageCreate) => {
-    const url = `api/v1/chats/${this.id!}/messages/stream`;
-    const res = await this.axios.post(url, msg, { responseType: 'stream' });
+    const url = `api/v1/chats/${this.id!}/messages`;
+    const res = await this.axios.post<ReadableStream<Uint8Array>>(url, msg, {
+      headers: {
+        Accept: 'text/event-stream',
+      },
+      responseType: 'stream',
+      adapter: 'fetch',
+    });
     if (res.status === 200) {
       const stream = res.data;
-      // stream.on('data', (data) => {
-      //   console.log(data);
-      // });
+      const reader = stream
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new EventSourceParserStream())
+        .getReader();
 
-      // stream.on('end', () => {
-      //   console.log('stream done');
-      // });
+      let alreayDone = false;
+      while (!alreayDone) {
+        const { value, done } = await reader.read();
+        if (done) {
+          alreayDone = true;
+          break;
+        }
+        this.handleChatEvent(value);
+      }
+      return;
+    }
+  };
+
+  protected handleChatEvent = (e: ParsedEvent | undefined) => {
+    if (!e) {
+      return;
+    }
+    try {
+      if (e.event === 'message') {
+        const newMessageModel: ChatMessageModel = JSON.parse(e.data);
+        const message = this.getOrCreateMessage(newMessageModel);
+        this.messages = [...this.messages, message];
+      }
+
+      if (e.event === 'chunk') {
+        const chunk: ChatEventChunk = JSON.parse(e.data);
+        const msg = this.messages.find((item) => item.id === chunk.message_id);
+        if (msg) {
+          msg.appendChunk(chunk);
+        }
+      }
+    } catch (e) {
+      console.warn('[chat] recerved server send event', event);
+      console.error(e);
     }
   };
 

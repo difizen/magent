@@ -21,6 +21,7 @@ annotated-types==0.7.0
 anyio==4.4.0
     # via httpx
     # via openai
+    # via sse-starlette
     # via starlette
     # via watchfiles
 async-timeout==4.0.3
@@ -172,8 +173,11 @@ sqlalchemy==2.0.30
     # via langchain
     # via langchain-community
     # via magent-api
+sse-starlette==2.1.2
+    # via magent-api
 starlette==0.37.2
     # via fastapi
+    # via sse-starlette
 tenacity==8.4.1
     # via langchain
     # via langchain-community
@@ -204,6 +208,7 @@ urllib3==2.2.2
     # via requests
 uvicorn==0.30.1
     # via fastapi
+    # via sse-starlette
 uvloop==0.19.0
     # via uvicorn
 watchfiles==0.22.0

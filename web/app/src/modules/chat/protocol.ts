@@ -36,6 +36,7 @@ export interface ChatMessageModel extends ChatMessageCreate {
   sender_type: MessageSenderType;
   message_type: MessageType;
   created_at: string;
+  complete?: boolean;
 }
 export interface ChatMessageOption {
   id: number;
@@ -45,6 +46,7 @@ export interface ChatMessageOption {
   senderId: number;
   chatId: number;
   content: string;
+  complete?: boolean;
 }
 
 export const ChatMessageOption = Syringe.defineToken('ChatMessageOption');
@@ -64,3 +66,8 @@ export type { ChatMessage } from './chat-message.js';
 export type { Chat } from './chat.js';
 
 export const ChatInstance = Syringe.defineToken('ChatInstance', { multiple: false });
+
+export interface ChatEventChunk {
+  message_id: number;
+  chunk: string;
+}

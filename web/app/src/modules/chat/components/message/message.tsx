@@ -1,4 +1,4 @@
-import { useInject } from '@difizen/mana-app';
+import { useInject, useObserve } from '@difizen/mana-app';
 import { Avatar } from 'antd';
 
 import type { AgentBot } from '../../../agent-bot/protocol.js';
@@ -11,7 +11,7 @@ interface MessageProps {
   message: ChatMessage;
 }
 export const Message = (props: MessageProps) => {
-  const { message } = props;
+  const message = useObserve(props.message);
   const bot = useInject<AgentBot>(BotInstance);
   const chat = useInject(ChatInstance);
   let avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';

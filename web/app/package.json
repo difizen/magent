@@ -14,7 +14,7 @@
   "author": "brokun <brokun0128@gmail.com>",
   "scripts": {
     "build": "umi build",
-    "start": "PORT=3000 umi dev ",
+    "start": "PORT=3000 UMI_DEV_SERVER_COMPRESS=none umi dev ",
     "postinstall": "umi setup",
     "setup": "umi setup",
     "clean": "git clean -fX ."
@@ -33,6 +33,7 @@
     "axios": "^1.7.2",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
+    "eventsource-parser": "^1.1.2",
     "lodash.debounce": "^4.0.8",
     "query-string": "^9.0.0",
     "umi": "^4.1.1"

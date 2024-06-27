@@ -2,6 +2,7 @@ import { inject, prop, transient } from '@difizen/mana-app';
 
 import { AxiosClient } from '../axios-client/index.js';
 
+import type { ChatEventChunk } from './protocol.js';
 import { ChatMessageOption, MessageSenderType, MessageType } from './protocol.js';
 
 @transient()
@@ -16,6 +17,7 @@ export class ChatMessage {
   content: string;
   id: number;
   createdAt?: string;
+  complete?: boolean = true;
 
   constructor(
     @inject(ChatMessageOption) option: ChatMessageOption,
@@ -39,5 +41,12 @@ export class ChatMessage {
     this.content = content;
     this.id = id;
     this.createdAt = createdAt;
+    if (option.complete !== undefined) {
+      this.complete = !!option.complete;
+    }
+  }
+
+  appendChunk(e: ChatEventChunk) {
+    this.content = `${this.content}${e.chunk}`;
   }
 }

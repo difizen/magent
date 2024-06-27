@@ -70,7 +70,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     tips,
     wrapperClassName = '',
     sendEnable = true,
-    isEnterSend = false,
+    isEnterSend = true,
     onChange,
     onKeyDown,
     onSubmit,
@@ -107,7 +107,10 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
       } else if (isEnterSend) {
         e.preventDefault();
         if (sendEnable) {
-          setTimeout(() => onSubmit?.(e.currentTarget.value), 0);
+          setTimeout(() => {
+            const target = e.currentTarget || e.target;
+            onSubmit?.(target.value);
+          }, 0);
         }
       }
     }
