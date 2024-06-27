@@ -2,7 +2,7 @@ from typing import List
 from datetime import datetime
 from sqlalchemy.orm import Session
 from models.agent_config import AgentConfigModel
-from models.chat import ChatModel, ChatORM, MessageModelCreate, MessageORM
+from models.chat import ChatModel, ChatORM, MessageModel, MessageModelCreate, MessageORM
 from routers.agent.crud import AgentConfigHelper
 
 from sqlalchemy import inspect
@@ -67,6 +67,13 @@ class ChatHelper:
         return model
 
     @staticmethod
+    def update_message_content(session: Session, message: MessageModel, content: str) -> int:
+        flag = session.query(MessageORM).filter(
+            MessageORM.id == message.id).update({"content": content})
+        session.commit()
+        return flag
+
+    @staticmethod
     def delete_message(session: Session, message_id: int) -> int:
         flag = session.query(MessageORM).filter(
             MessageORM.id == message_id).update({"is_deleted": True})
@@ -86,3 +93,10 @@ class ChatHelper:
         if list is None:
             return []
         return list
+
+    @staticmethod
+    def clear_messages(session: Session, chat_id: int) -> int:
+        flag = session.query(MessageORM).filter(
+            MessageORM.chat_id == chat_id).delete()
+        session.commit()
+        return flag

@@ -76,6 +76,7 @@ class MessageModel(MessageModelCreate):
     id: int
     is_deleted: bool = False
     created_at: datetime = datetime.now()
+    complete: bool = True
 
     class Config:
         from_attributes = True
