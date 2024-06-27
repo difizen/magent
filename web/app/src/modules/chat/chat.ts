@@ -8,21 +8,10 @@ import type { ChatMessage } from './chat-message.js';
 import { ChatMessageManager } from './message-manager.js';
 import type {
   ChatMessageCreate,
+  ChatMessageModel,
   ChatMessageOption,
-  MessageSenderType,
-  MessageType,
 } from './protocol.js';
 import { ChatOption } from './protocol.js';
-
-export interface ChatMessageModel {
-  id: number;
-  sender_id: number;
-  sender_type: MessageSenderType;
-  message_type: MessageType;
-  conversation_id: number;
-  content: string;
-  created_at: string;
-}
 
 export interface ChatReply {
   reply: ChatMessageModel[];
@@ -43,7 +32,7 @@ const msgToOption = (msg: ChatMessageModel): ChatMessageOption => {
     senderId: msg.sender_id,
     senderType: msg.sender_type,
     messageType: msg.message_type,
-    chatId: msg.conversation_id,
+    chatId: msg.chat_id,
     content: msg.content,
     id: msg.id,
     createdAt: msg.created_at,
@@ -129,5 +118,46 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
       const replys = model.reply.map(this.getOrCreateMessage);
       this.messages = [...this.messages, send, ...replys];
     }
+  };
+
+  sendMessageStream = async (msgContent: string) => {
+    if (!this.id) {
+      return;
+    }
+    const user = await this.userManager.currentReady;
+    const msg: ChatMessageCreate = {
+      sender_id: parseInt(user.id, 10),
+      chat_id: this.id,
+      content: msgContent,
+    };
+    return this.doSendMessageStream(msg);
+  };
+
+  protected doSendMessageStream = async (msg: ChatMessageCreate) => {
+    const url = `api/v1/chats/${this.id!}/messages/stream`;
+    const res = await this.axios.post(url, msg, { responseType: 'stream' });
+    if (res.status === 200) {
+      const stream = res.data;
+      // stream.on('data', (data) => {
+      //   console.log(data);
+      // });
+
+      // stream.on('end', () => {
+      //   console.log('stream done');
+      // });
+    }
+  };
+
+  clear = async () => {
+    if (!this.id) {
+      return;
+    }
+    const url = `api/v1/chats/${this.id!}/messages`;
+    const res = await this.axios.delete<number>(url);
+    if (res.status === 200) {
+      this.messages = [];
+      return true;
+    }
+    return false;
   };
 }

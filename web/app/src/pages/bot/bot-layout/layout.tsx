@@ -22,15 +22,15 @@ export const BotLayoutComponent = forwardRef(function MagentBotLayoutComponent()
   }, [botId, botProvider]);
 
   return (
-    <div className="magent-bot-layout">
+    <div className="bot-layout">
       {botProvider.loading ? (
         <Spin spinning={botProvider.loading}></Spin>
       ) : (
         <BoxPanel direction="left-to-right">
-          <BoxPanel.Pane className="magent-bot-layout-config" flex={1}>
+          <BoxPanel.Pane className="bot-layout-config" flex={1}>
             <Slot name={BotLayoutSlots.config} />
           </BoxPanel.Pane>
-          <BoxPanel.Pane className="magent-bot-layout-preview">
+          <BoxPanel.Pane className="bot-layout-preview">
             <Slot name={BotLayoutSlots.preview} />
           </BoxPanel.Pane>
         </BoxPanel>

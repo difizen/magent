@@ -31,9 +31,20 @@ export const ChatOption = Syringe.defineToken('ChatOption');
 export type ChatFactory = (option: ChatOption) => Chat;
 export const ChatFactory = Syringe.defineToken('ChatFactory');
 
-export interface ChatMessageOption extends ChatMessageCreate {
+export interface ChatMessageModel extends ChatMessageCreate {
   id: number;
-  createdAt?: string;
+  sender_type: MessageSenderType;
+  message_type: MessageType;
+  created_at: string;
+}
+export interface ChatMessageOption {
+  id: number;
+  senderType: MessageSenderType;
+  messageType: MessageType;
+  createdAt: string;
+  senderId: number;
+  chatId: number;
+  content: string;
 }
 
 export const ChatMessageOption = Syringe.defineToken('ChatMessageOption');
