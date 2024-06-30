@@ -3,7 +3,7 @@ import { Button, Input as AntdInput } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classnames from 'classnames';
 import type { ChangeEvent, ReactNode, KeyboardEvent, FC } from 'react';
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useState } from 'react';
 import './index.less';
 
 function insertAtCaret(e: ChangeEvent<HTMLTextAreaElement>, valueToInsert?: string) {
@@ -61,7 +61,7 @@ export interface InputProps {
 export const DOCS_API_INPUT_PROPS: FC<InputProps> = () => null;
 
 export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
-  porps: InputProps,
+  props: InputProps,
   ref,
 ) {
   const [v, setV] = useState<string>('');
@@ -73,9 +73,8 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     isEnterSend = true,
     onChange,
     onKeyDown,
-    onSubmit,
     value = v,
-  } = porps;
+  } = props;
 
   // fix tips: '/' =>> ''
   const open = useMemo(() => {
@@ -85,6 +84,14 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
 
     return !!tips;
   }, [tips, value]);
+
+  const onSubmit = useCallback(
+    (v: string) => {
+      props.onSubmit?.(v);
+      setV('');
+    },
+    [props],
+  );
 
   function onInputChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setV(e.target.value);
@@ -109,7 +116,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
         if (sendEnable) {
           setTimeout(() => {
             const target = e.currentTarget || e.target;
-            onSubmit?.(target.value);
+            onSubmit(target.value);
           }, 0);
         }
       }
@@ -141,7 +148,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
               type="primary"
               icon={<SendOutlined />}
               onClick={() => {
-                onSubmit?.(value || v);
+                onSubmit(value || v);
               }}
             ></Button>
           </div>

@@ -5,24 +5,36 @@
   &-box {
     display: flex;
     width: 100%;
-    padding: 0 24px;
+    padding: 0 24px 24px;
   }
 
   &-avatar {
-    margin-right: 24px;
+    margin-right: 12px;
   }
 
   &-container {
     flex: 1 1;
-  }
 
-  &-nickname {
-    color: rgba(29, 28, 35, 60%);
-    display: flex;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
+    &-header {
+      display: flex;
+      align-items: center;
+
+      &-nickname {
+        color: rgba(29, 28, 35, 60%);
+        display: flex;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 28px;
+      }
+
+      &-created-time {
+        font-size: 12px;
+        margin-left: 18px;
+        line-height: 28px;
+        color: var(--mana-text-tertiary);
+      }
+    }
   }
 
   &-content {
@@ -54,6 +66,7 @@
       max-width: 100%;
       overflow: hidden;
       width: fit-content;
+      display: inline-block;
     }
   }
 

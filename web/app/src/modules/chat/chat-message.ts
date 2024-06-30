@@ -1,4 +1,6 @@
 import { inject, prop, transient } from '@difizen/mana-app';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 import { AxiosClient } from '../axios-client/index.js';
 
@@ -16,7 +18,8 @@ export class ChatMessage {
   @prop()
   content: string;
   id: number;
-  createdAt?: string;
+  createdAt?: Dayjs;
+  @prop()
   complete?: boolean = true;
 
   constructor(
@@ -40,7 +43,7 @@ export class ChatMessage {
     this.chatId = chatId;
     this.content = content;
     this.id = id;
-    this.createdAt = createdAt;
+    this.createdAt = dayjs(createdAt);
     if (option.complete !== undefined) {
       this.complete = !!option.complete;
     }

@@ -1,6 +1,7 @@
 import { inject, prop, transient } from '@difizen/mana-app';
 import type { ParsedEvent } from 'eventsource-parser/stream';
 import { EventSourceParserStream } from 'eventsource-parser/stream';
+import type { RefObject } from 'react';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
@@ -57,6 +58,17 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   @prop()
   messages: ChatMessage[] = [];
 
+  @prop()
+  showToBottomBtn = false;
+
+  protected processingChunk?: ChatMessage;
+
+  /**
+   * A container DOM node for messages,
+   * making it convenient for scroll control and other functions.
+   */
+  protected messageListRef?: RefObject<HTMLDivElement>;
+
   constructor(
     @inject(ChatOption) option: ChatOption,
     @inject(AxiosClient) axios: AxiosClient,
@@ -93,6 +105,7 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
       this.messages = model.messages.map(this.getOrCreateMessage);
       this.id = model.id;
     }
+    setImmediate(() => this.scrollToBottom(true));
   };
 
   protected getOrCreateMessage = (
@@ -130,6 +143,7 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
       const replys = model.reply.map(this.getOrCreateMessage);
       this.messages = [...this.messages, send, ...replys];
     }
+    setImmediate(this.scrollToBottom);
   };
 
   sendMessageStream = async (msgContent: string) => {
@@ -170,6 +184,10 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
         }
         this.handleChatEvent(value);
       }
+      if (this.processingChunk) {
+        this.processingChunk.complete = true;
+        this.processingChunk = undefined;
+      }
       return;
     }
   };
@@ -183,13 +201,16 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
         const newMessageModel: ChatMessageModel = JSON.parse(e.data);
         const message = this.getOrCreateMessage(newMessageModel);
         this.messages = [...this.messages, message];
+        setImmediate(() => this.scrollToBottom(true, false));
       }
 
       if (e.event === 'chunk') {
         const chunk: ChatEventChunk = JSON.parse(e.data);
         const msg = this.messages.find((item) => item.id === chunk.message_id);
         if (msg) {
+          this.processingChunk = msg;
           msg.appendChunk(chunk);
+          setImmediate(() => this.scrollToBottom(true, false));
         }
       }
     } catch (e) {
@@ -209,5 +230,41 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
       return true;
     }
     return false;
+  };
+
+  scrollToBottom = (immediately = false, smoothly = true) => {
+    const dom = this.messageListRef?.current;
+    if (!dom) {
+      return;
+    }
+    const top = dom.scrollHeight - dom.clientHeight;
+
+    // immdiately scroll to bottom
+    if (immediately) {
+      dom.scrollTop = top;
+      return;
+    }
+    // smoothly scroll to bottom
+    dom.scrollTo({
+      top,
+      behavior: smoothly ? 'smooth' : 'instant',
+    });
+  };
+
+  onScroll = () => {
+    const dom = this.messageListRef?.current;
+    if (!dom) {
+      return;
+    }
+    const bottomToTop = dom.scrollTop + dom.clientHeight;
+    if (dom.scrollHeight - bottomToTop < 120) {
+      this.showToBottomBtn = false;
+    } else {
+      this.showToBottomBtn = true;
+    }
+  };
+
+  setMessageListContainer = (domRef: RefObject<HTMLDivElement>) => {
+    this.messageListRef = domRef;
   };
 }
