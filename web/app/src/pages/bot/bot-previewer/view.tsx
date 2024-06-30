@@ -61,7 +61,7 @@ export class BotPreviewerView extends BaseView {
       return;
     }
     const bot = await this.botProvider.ready;
-    const chat = await this.chatManager.getBotDebugChat(bot.id.toString());
+    const chat = await this.chatManager.getBotDebugChat(bot.id);
     const context = this.viewManager.getViewContext(this);
     const child = context.container.createChild();
     child.register({ token: ChatInstance, useValue: chat });

@@ -4,6 +4,8 @@ import { EventSourceParserStream } from 'eventsource-parser/stream';
 import type { RefObject } from 'react';
 
 import { AsyncModel } from '../../common/async-model.js';
+import { AgentBotManager } from '../agent-bot/agent-bot-manager.js';
+import type { AgentBot } from '../agent-bot/protocol.js';
 import { AxiosClient } from '../axios-client/index.js';
 import { UserManager } from '../user/user-manager.js';
 
@@ -47,13 +49,17 @@ const msgModelToOption = (msg: ChatMessageModel): ChatMessageOption => {
 @transient()
 export class Chat extends AsyncModel<Chat, ChatOption> {
   @inject(UserManager) userManager: UserManager;
+  botManager: AgentBotManager;
   id?: number;
   messageManager: ChatMessageManager;
   axios: AxiosClient;
   option: ChatOption;
-  botId: string;
-  botConfigId?: string;
+  botId: number;
+  botConfigId?: number;
   createdBy?: string;
+
+  @prop()
+  bot?: AgentBot;
 
   @prop()
   messages: ChatMessage[] = [];
@@ -73,10 +79,12 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
     @inject(ChatOption) option: ChatOption,
     @inject(AxiosClient) axios: AxiosClient,
     @inject(ChatMessageManager) messageManager: ChatMessageManager,
+    @inject(AgentBotManager) botManager: AgentBotManager,
   ) {
     super();
     this.axios = axios;
     this.messageManager = messageManager;
+    this.botManager = botManager;
     this.option = option;
     this.botId = option.botId;
     this.initialize(option);
@@ -85,6 +93,11 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   override shouldInitFromMeta(option: ChatOption): boolean {
     return false;
   }
+
+  protected getBot = async (botId: number) => {
+    this.bot = await this.botManager.getBot({ id: botId });
+  };
+
   override fetchInfo = async (option: ChatOption): Promise<void> => {
     const { env = 'debug' } = option;
     let url = `api/v1/chats/with_bot/${option.botId}/online`;
@@ -100,11 +113,12 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
     const res = await this.axios.get<ChatModel>(url);
     if (res.status === 200) {
       const model = res.data;
-      this.botConfigId = model.bot_config_id.toString();
+      this.botConfigId = model.bot_config_id;
       this.createdBy = model.created_by.toString();
       this.messages = model.messages.map(this.getOrCreateMessage);
       this.id = model.id;
     }
+    this.getBot(option.botId);
     setImmediate(() => this.scrollToBottom(true));
   };
 

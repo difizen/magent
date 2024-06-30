@@ -10,7 +10,7 @@ export class UserManager {
 
   @prop()
   current?: User;
-  protected userMap = new Map<string, User>();
+  protected cache = new Map<string, User>();
 
   protected initializedDefer = new Deferred<User>();
 
@@ -34,7 +34,7 @@ export class UserManager {
 
   getOrCreate(userMeta: UserMeta): User {
     if (userMeta.id) {
-      const exist = this.userMap.get(userMeta.id);
+      const exist = this.cache.get(userMeta.id);
       if (exist) {
         return exist;
       }
@@ -43,10 +43,12 @@ export class UserManager {
     if (!userMeta.id) {
       user.ready
         .then(() => {
-          this.userMap.set(user.id, user);
+          this.cache.set(user.id, user);
           return;
         })
         .catch(console.error);
+    } else {
+      this.cache.set(userMeta.id, user);
     }
     return user;
   }

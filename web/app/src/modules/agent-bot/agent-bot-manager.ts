@@ -9,6 +9,7 @@ import { AgentBotFactory } from './protocol.js';
 
 @singleton()
 export class AgentBotManager {
+  protected cache: Map<number, AgentBot> = new Map<number, AgentBot>();
   @inject(AgentBotFactory) botFactory: AgentBotFactory;
   @inject(UserManager) userManager: UserManager;
   @inject(AxiosClient) axios: AxiosClient;
@@ -52,7 +53,13 @@ export class AgentBotManager {
     return this.botFactory(res.data);
   };
 
-  getBot = async (options: AgentBotOption): Promise<AgentBot> => {
-    return this.botFactory(options);
+  getBot = (option: AgentBotOption): AgentBot => {
+    const exist = this.cache.get(option.id);
+    if (exist) {
+      return exist;
+    }
+    const bot = this.botFactory(option);
+    this.cache.set(bot.id, bot);
+    return bot;
   };
 }

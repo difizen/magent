@@ -43,7 +43,7 @@ const ModelSelectorComponent = forwardRef<HTMLDivElement>(
       if (!modelMeta && defaultModel) {
         instance.botProvider.ready
           .then(async (bot) => {
-            await bot.ensureDraft();
+            await bot.draftReady;
             if (!bot.draft!.model) {
               instance.onSelectChange(defaultModel.key);
             }

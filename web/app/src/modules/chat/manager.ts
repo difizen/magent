@@ -12,11 +12,11 @@ export class ChatManager {
   @inject(UserManager) userManager: UserManager;
   @inject(AxiosClient) axios: AxiosClient;
 
-  getBotDebugChat = async (botId: string): Promise<Chat> => {
+  getBotDebugChat = async (botId: number): Promise<Chat> => {
     const user = await this.userManager.currentReady;
     const chat = await this.chatFactory({
       botId: botId,
-      userId: user.id,
+      userId: parseInt(user.id),
     });
     return chat;
   };

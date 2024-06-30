@@ -5,9 +5,7 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import type { AgentBot } from '../../../agent-bot/protocol.js';
-import { BotInstance } from '../../../agent-bot/protocol.js';
-import type { ChatMessage } from '../../protocol.js';
+import type { Chat, ChatMessage } from '../../protocol.js';
 import { ChatInstance, MessageSenderType } from '../../protocol.js';
 import Typing from '../typing/index.js';
 
@@ -18,15 +16,18 @@ interface MessageProps {
 }
 export const Message = (props: MessageProps) => {
   const message = useObserve(props.message);
-  const bot = useInject<AgentBot>(BotInstance);
-  const chat = useInject(ChatInstance);
+  const chat = useInject<Chat>(ChatInstance);
 
   const [contentHover, setContentHover] = useState<boolean>(false);
   let avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';
   let nickName = 'user';
-  if (message.senderType === MessageSenderType.AI) {
-    avatarSrc = bot.avatar!;
-    nickName = 'bot';
+  if (message.senderType === MessageSenderType.AI && chat.bot?.avatar) {
+    avatarSrc = chat.bot?.avatar;
+    nickName = chat.bot?.name;
+  }
+  if (message.senderType === MessageSenderType.HUMAN && message.sender?.avatar) {
+    avatarSrc = message.sender?.avatar;
+    nickName = message.sender.name;
   }
 
   let content: ReactNode = message.content;

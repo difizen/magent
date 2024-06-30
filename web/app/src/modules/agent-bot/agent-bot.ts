@@ -1,4 +1,4 @@
-import { inject, prop, transient } from '@difizen/mana-app';
+import { Deferred, inject, prop, transient } from '@difizen/mana-app';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
@@ -22,6 +22,12 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
 
   @prop()
   draft?: AgentConfig;
+
+  protected draftDeferred = new Deferred<AgentConfig>();
+
+  get draftReady() {
+    return this.draftDeferred.promise;
+  }
 
   option: AgentBotOption;
 
@@ -52,11 +58,12 @@ export class AgentBot extends AsyncModel<AgentBot, AgentBotOption> {
       return this.draft;
     }
     let draftConfig = option.draft;
-    if (!this.option.draft) {
+    if (!draftConfig) {
       draftConfig = await this.fetchDraftInfo(option);
     }
     if (draftConfig) {
       this.draft = this.configManager.create(draftConfig);
+      this.draftDeferred.resolve(this.draft);
     }
     return this.draft;
   }

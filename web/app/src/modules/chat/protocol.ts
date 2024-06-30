@@ -23,8 +23,8 @@ export interface ChatMessageCreate {
 }
 
 export interface ChatOption {
-  botId: string;
-  userId: string;
+  botId: number;
+  userId: number;
   env?: 'debug' | 'online';
 }
 export const ChatOption = Syringe.defineToken('ChatOption');
