@@ -18,6 +18,14 @@
 
 # TODO
 
+## major
+
+- [ ] 插件
+- [ ] 知识库
+- [ ] workflow
+- [ ] notebook flow
+- [ ] agentUniverse base
+
 ## minor
 
 - [ ] (api) 升级鉴权访问方案，目前没有登录验证
