@@ -28,7 +28,7 @@ const configs = {
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'js', 'ts', 'tsx'],
   verbose: true,
   testRegex: '(/__test__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  resolver: path.resolve(__dirname, '../scripts/jest-resolver.cjs'),
+  resolver: path.resolve(__dirname, './scripts/jest-resolver.cjs'),
   transform: {
     '^.+\\.(ts|tsx)?$': ['@swc/jest', swcJestConfig],
     '^.+\\.(js|jsx)$': ['@swc/jest', swcJestConfig],

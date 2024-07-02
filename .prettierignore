@@ -13,6 +13,10 @@ pnpm-lock.yaml
 **/.dumi/tmp
 **/.dumi/tmp-production
 **/.docusaurus
+**/.umi
+
+api/alembic
+
 
 # protobuf
 **/*_pb.ts
@@ -21,3 +25,5 @@ pnpm-lock.yaml
 **/*/keyboard/layouts/**
 tinyColor.less
 .changeset
+
+docker

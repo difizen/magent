@@ -1,4 +1,4 @@
-import configs from '../../jest.config.mjs';
+import configs from '../../../jest.config.mjs';
 
 export default {
   ...configs,
