@@ -25,6 +25,7 @@
 - [ ] workflow
 - [ ] notebook flow
 - [ ] agentUniverse base
+- [ ] 卡片
 
 ## minor
 
