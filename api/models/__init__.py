@@ -4,6 +4,9 @@ from .agent_bot import AgentBotORM
 from .agent_config import AgentConfigORM
 from .account import AccountORM
 from .chat import ChatORM, MessageORM
+from .plugin import PluginORM
+from .plugin_config import PluginConfigORM
+from .plugin_api import PluginApiORM
 
 __all__ = [
     'Base',
@@ -14,5 +17,8 @@ __all__ = [
     'AgentBotORM',
     'AgentConfigORM',
     'ChatORM',
-    'MessageORM'
+    'MessageORM',
+    'PluginORM',
+    'PluginConfigORM',
+    'PluginApiORM'
 ]
