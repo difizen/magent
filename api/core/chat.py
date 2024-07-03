@@ -1,19 +1,14 @@
 from typing import List
 
 from langchain.schema.messages import BaseMessage, SystemMessage, HumanMessage, AIMessage
-from pydantic import BaseModel
 from models.agent_config import AgentConfigModel
 from models.chat import MessageModel, MessageSenderType
-from .chat_executor import chat_object_manager
+from .agent_manager import agent_manager
+from .base import ConfigMeta
 
+from .langchain_agent_provider import langchain_agent_provider
 
-class ModelMeta(BaseModel):
-    key: str
-
-
-class ConfigMeta(BaseModel):
-    persona: str
-    model: ModelMeta
+agent_manager.registe_provider(langchain_agent_provider)
 
 
 def get_config_meta(agent_config: AgentConfigModel) -> ConfigMeta:
@@ -35,8 +30,9 @@ def chat(agent_config: AgentConfigModel, chat_id: int, history: List[MessageMode
     system_msg = SystemMessage(content=config.persona)
     msgs = [to_message(m) for m in history]
     msgs.insert(0, system_msg)
-    executor = chat_object_manager.get_executor(config.model.key)
-    answer = executor.run(msgs)
+    provider = agent_manager.get_provider(config)
+    agent = provider.provide(config, chat_id)
+    answer = agent.invoke(config, chat_id, history, message)
     return answer
 
 
@@ -45,6 +41,7 @@ def chat_stream(agent_config: AgentConfigModel, chat_id: int, history: List[Mess
     system_msg = SystemMessage(content=config.persona)
     msgs = [to_message(m) for m in history]
     msgs.insert(0, system_msg)
-    executor = chat_object_manager.get_executor(config.model.key)
-    answer = executor.astream(msgs)
+    provider = agent_manager.get_provider(config)
+    agent = provider.provide(config, chat_id)
+    answer = agent.invoke_astream(config, chat_id, history, message)
     return answer

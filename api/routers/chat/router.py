@@ -2,7 +2,6 @@
 chat router
 '''
 import enum
-import json
 import logging
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -17,7 +16,7 @@ from models.chat import (
 )
 from models.agent_config import AgentConfigModel
 from db import get_db
-from core.chat_executor.utils import get_message_str, message_content_to_str
+from core.langchain_utils import get_message_str, message_content_to_str
 from core.chat import chat, chat_stream
 
 from .crud import ChatHelper
