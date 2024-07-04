@@ -7,6 +7,10 @@ export interface AgentConfigToolMeta {
   key: string;
   [key: string]: any;
 }
+export interface AgentConfigPluginMeta {
+  key: string;
+  [key: string]: any;
+}
 export interface AgentConfigDatasetMeta {
   key: string;
   [key: string]: any;
@@ -18,6 +22,7 @@ export interface AgentConfigModelMeta {
 export interface AgentConfigInfo {
   persona: string;
   tools: AgentConfigToolMeta[];
+  plugins: AgentConfigPluginMeta[];
   datasets: AgentConfigDatasetMeta[];
   model: AgentConfigModelMeta;
   [key: string]: any;
