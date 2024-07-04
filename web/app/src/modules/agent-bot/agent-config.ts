@@ -4,7 +4,11 @@ import debounce from 'lodash.debounce';
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 
-import type { AgentConfigInfo, AgentConfigModelMeta } from './protocol.js';
+import type {
+  AgentConfigInfo,
+  AgentConfigModelMeta,
+  AgentConfigPluginMeta,
+} from './protocol.js';
 import { AgentConfigOption, AgentConfigType } from './protocol.js';
 
 @transient()
@@ -44,6 +48,16 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
   }
 
   @prop()
+  protected _plugins?: AgentConfigPluginMeta[];
+  get plugins() {
+    return this._plugins;
+  }
+  set plugins(v: AgentConfigPluginMeta[] | undefined) {
+    this._plugins = v;
+    this.changed();
+  }
+
+  @prop()
   config?: AgentConfigInfo;
 
   option?: AgentConfigOption;
@@ -70,6 +84,7 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
     this.is_draft = option.is_draft || true;
     this._persona = option.config?.persona;
     this._model = option.config?.model;
+    this._plugins = option.config?.plugins;
     // TODO: tools & datasets
     super.fromMeta(option);
   }
@@ -94,6 +109,7 @@ export class AgentConfig extends AsyncModel<AgentConfig, AgentConfigOption> {
         ...(this.config || {}),
         persona: this.persona,
         model: this.model,
+        plugins: this.plugins,
       },
     };
   }
