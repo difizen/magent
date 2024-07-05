@@ -6,6 +6,8 @@ from sqlalchemy import (
     Column,
     Integer,
     DateTime,
+    String,
+    Text,
 )
 
 from db import Base
@@ -18,6 +20,9 @@ class PluginORM(Base):
     '''
     __tablename__ = "plugin"
     id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)  # 插件名字
+    avatar = Column(String(255))  # 插件图标
+    description = Column(Text)  # 插件描述
     plugin_type = Column(Integer, nullable=False)  # 插件创建类型
     created_by = Column(Integer)
     created_at = Column(
@@ -34,6 +39,9 @@ class PluginCreate(BaseModel):
     plugin create
     '''
     plugin_type: int
+    name: str
+    avatar: Optional[str]
+    description: Optional[str]
 
 
 class PluginUpdate(BaseModel):
@@ -41,7 +49,10 @@ class PluginUpdate(BaseModel):
     plugin update
     '''
     id: int
-    plugin_type: int
+    plugin_type: Optional[int]
+    name: Optional[str]
+    avatar: Optional[str]
+    description: Optional[str]
 
 
 class PluginModel(PluginCreate):
@@ -49,7 +60,6 @@ class PluginModel(PluginCreate):
     plugin
     '''
     id: int
-    plugin_type: int
     created_by: int
     created_at: datetime
     updated_by: int

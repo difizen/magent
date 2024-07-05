@@ -70,14 +70,6 @@ class PluginConfigHelper:
         ).one_or_none()
 
     @staticmethod
-    def get_or_create_plugin_draft(session: Session, operator: int, plugin_id: int,) -> PluginConfigORM:
-        exist = PluginConfigHelper.get_plugin_draft(session, plugin_id)
-        if exist is None:
-            return PluginConfigHelper.create(session, operator, PluginConfigCreate(plugin_id=plugin_id, name='', avatar='', description='', is_draft=True))
-        else:
-            return exist
-
-    @staticmethod
     def create(session: Session, operator: int, config_model: PluginConfigCreate) -> PluginConfigORM:
         now = datetime.now()
         dict = {
