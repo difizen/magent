@@ -7,6 +7,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     DateTime,
+    String,
     Text,
     Boolean
 )
@@ -23,7 +24,9 @@ class PluginApiORM(Base):
     plugin_config_id = Column(Integer, ForeignKey(
         "plugin_config.id"), nullable=True)
     description = Column(Text)  # API 描述
+    name = Column(String(255))  # 插件名字
     openapi_desc = Column(Text)  # openapi 先调研
+
     # request_params = Column(JSON)  # 入参
     # response_params = Column(JSON) # 出参
     # debug_example = Column(JSON) # 调试示例
@@ -47,9 +50,10 @@ class PluginApiCreate(BaseModel):
     plugin api create
     '''
     plugin_config_id: int
-    description: str
     openapi_desc: str
-    disabled: bool
+    name: Optional[str]
+    description: Optional[str]
+    disabled: Optional[bool]
     created_by: int
     created_at: datetime
     updated_by: int
@@ -61,9 +65,10 @@ class PluginApiUpdate(BaseModel):
     plugin api update
     '''
     id: int
-    description: str
-    openapi_desc: str
-    disabled: bool
+    description: Optional[str]
+    name: Optional[str]
+    openapi_desc: Optional[str]
+    disabled: Optional[bool]
 
 
 class PluginApiModel(PluginApiCreate):
@@ -71,10 +76,6 @@ class PluginApiModel(PluginApiCreate):
     plugin api
     '''
     id: int
-    plugin_config_id: int
-    description: str
-    openapi_desc: str
-    disabled: bool
     created_by: int
     created_at: datetime
     updated_by: int

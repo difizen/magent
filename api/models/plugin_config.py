@@ -7,7 +7,6 @@ from sqlalchemy import (
     Integer,
     DateTime,
     ForeignKey,
-    String,
     Text,
 )
 
@@ -20,12 +19,10 @@ class PluginConfigORM(Base):
     '''
     __tablename__ = "plugin_config"
     id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)  # 插件名字
-    avatar = Column(String(255))  # 插件图标
-    description = Column(Text)  # 插件描述
     # meta_info = Column(JSON) # 插件元信息，包含 api url，service_token,oauth_info 等
     plugin_id = Column(Integer, ForeignKey("plugin.id"), nullable=True)
     is_draft = Column(Boolean, nullable=False)  # 是否为草稿
+    plugin_openapi_desc = Column(Text)  # openapi 先调研
     # openapi_desc = Column(Text) # openapi 先调研
     # plugin_desc = Column(Text)
     created_by = Column(Integer)
@@ -42,10 +39,7 @@ class PluginConfigCreate(BaseModel):
     plugin config create
     '''
     plugin_id: int
-    name: str
-    avatar: str
-    description: str
-
+    plugin_openapi_desc: str
     is_draft: Optional[bool]
 
 
@@ -54,10 +48,8 @@ class PluginConfigUpdate(BaseModel):
     plugin config update
     '''
     id: int
+    plugin_openapi_desc: Optional[str]
     is_draft: Optional[bool]
-    name: str
-    avatar: str
-    description: str
 
 
 class PluginConfigModel(PluginConfigCreate):
@@ -65,11 +57,6 @@ class PluginConfigModel(PluginConfigCreate):
     plugin config
     '''
     id: int
-    name: str
-    avatar: str
-    description: str
-
-    plugin_id: int
     created_by: int
     created_at: datetime
     updated_by: int
