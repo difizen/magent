@@ -15,6 +15,7 @@ import { BotLayoutView, BotLayoutSlots } from './bot-layout/layout.js';
 import { BotPersonaView } from './bot-persona/view.js';
 import { BotPreviewerView } from './bot-previewer/index.js';
 import { BotProvider } from './bot-provider.js';
+import { BotSettingView } from './bot-setting/view.js';
 import { MagentBrandView } from './brand/view.js';
 import { ModelSelectorView } from './model-selector/view.js';
 
@@ -29,6 +30,7 @@ export const BotModule = ManaModule.create().register(
   UserAvatarView,
   ModelSelectorView,
   BotPersonaView,
+  BotSettingView,
   createSlotPreference({
     slot: RootSlotId,
     view: MagentBaseLayoutView,
@@ -68,5 +70,9 @@ export const BotModule = ManaModule.create().register(
   createSlotPreference({
     slot: AgentBotConfigSlots.contentLeft,
     view: BotPersonaView,
+  }),
+  createSlotPreference({
+    slot: AgentBotConfigSlots.contentRight,
+    view: BotSettingView,
   }),
 );
