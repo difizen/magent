@@ -22,7 +22,13 @@ def create_plugin(user_id: int, plugin: PluginCreate, session: Session = Depends
 
 @router.get("/", response_model=Page[PluginModel])
 def get_plugins(user_id: int, session: Session = Depends(get_db)):
-    data = PluginHelper.get_all(session, user_id)
+    data = PluginHelper.get_user_plugin(session, user_id)
+    return data
+
+
+@router.get("/", response_model=Page[PluginModel])
+def get_all_plugins(session: Session = Depends(get_db)):
+    data = PluginHelper.get_all_plugin(session)
     return data
 
 
