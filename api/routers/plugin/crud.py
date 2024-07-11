@@ -20,10 +20,18 @@ class PluginHelper:
         return session.query(PluginORM).filter(PluginORM.id == plugin_id).one_or_none()
 
     @staticmethod
-    def get_all(session: Session, user_id: int) -> Page[PluginModel]:
+    def get_user_plugin(session: Session, user_id: int) -> Page[PluginModel]:
+        print('user_id_test', user_id)
         return paginate(
             session.query(PluginORM)
             .filter(PluginORM.created_by == user_id)
+            .order_by(PluginORM.updated_at.desc())
+        )
+
+    @staticmethod
+    def get_all_plugin(session: Session) -> Page[PluginModel]:
+        return paginate(
+            session.query(PluginORM)
             .order_by(PluginORM.updated_at.desc())
         )
 
@@ -68,6 +76,14 @@ class PluginConfigHelper:
             PluginConfigORM.plugin_id == plugin_id,
             PluginConfigORM.is_draft == True
         ).one_or_none()
+
+    @staticmethod
+    def get_or_create_plugin_draft(session: Session, operator: int, plugin_id: int,) -> PluginConfigORM:
+        exist = PluginConfigHelper.get_plugin_draft(session, plugin_id)
+        if exist is None:
+            return PluginConfigHelper.create(session, operator, PluginConfigCreate(plugin_id=plugin_id, plugin_openapi_desc='', is_draft=True))
+        else:
+            return exist
 
     @staticmethod
     def create(session: Session, operator: int, config_model: PluginConfigCreate) -> PluginConfigORM:
