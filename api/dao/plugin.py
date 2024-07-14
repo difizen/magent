@@ -1,12 +1,10 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, List
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from models.plugin_config import PluginConfigCreate, PluginConfigORM, PluginConfigUpdate
-from models.plugin import PluginCreate, PluginORM, PluginUpdate, PluginModel
-from models.plugin_api import PluginApiCreate, PluginApiORM, PluginApiUpdate, PluginApiModel
-from fastapi_pagination.ext.sqlalchemy import paginate
-from fastapi_pagination import Page
+from models.plugin import PluginCreate, PluginORM, PluginUpdate
+from models.plugin_api import PluginApiCreate, PluginApiORM, PluginApiUpdate
 
 
 class PluginHelper:
@@ -20,20 +18,21 @@ class PluginHelper:
         return session.query(PluginORM).filter(PluginORM.id == plugin_id).one_or_none()
 
     @staticmethod
-    def get_user_plugin(session: Session, user_id: int) -> Page[PluginModel]:
-        print('user_id_test', user_id)
-        return paginate(
-            session.query(PluginORM)
-            .filter(PluginORM.created_by == user_id)
-            .order_by(PluginORM.updated_at.desc())
-        )
+    def get_user_plugin(session: Session, user_id: int) -> List[PluginORM]:
+        return session.query(PluginORM).filter(PluginORM.created_by == user_id).order_by(PluginORM.updated_at.desc()).all()
+        # return paginate(
+        #     session.query(PluginORM)
+        #     .filter(PluginORM.created_by == user_id)
+        #     .order_by(PluginORM.updated_at.desc())
+        # )
 
     @staticmethod
-    def get_all_plugin(session: Session) -> Page[PluginModel]:
-        return paginate(
-            session.query(PluginORM)
-            .order_by(PluginORM.updated_at.desc())
-        )
+    def get_all_plugin(session: Session) -> List[PluginORM]:
+        return session.query(PluginORM).order_by(PluginORM.updated_at.desc()).all()
+        # return paginate(
+        #     session.query(PluginORM)
+        #     .order_by(PluginORM.updated_at.desc())
+        # )
 
     @staticmethod
     def update(session: Session, operator: int, plugin_model: PluginUpdate) -> int:
@@ -129,12 +128,17 @@ class PluginAPIHelper:
         return session.query(PluginApiORM).filter(PluginApiORM.id == plugin_api_id).one_or_none()
 
     @staticmethod
-    def get_all(session: Session, user_id: int) -> Page[PluginApiModel]:
-        return paginate(
-            session.query(PluginApiORM)
-            .filter(PluginApiORM.created_by == user_id)
-            .order_by(PluginApiORM.updated_at.desc())
-        )
+    def get_user_all(session: Session, user_id: int) -> List[PluginApiORM]:
+        return session.query(PluginApiORM).filter(PluginApiORM.created_by == user_id).order_by(PluginApiORM.updated_at.desc()).all()
+    # paginate(
+    #         session.query(PluginApiORM)
+    #         .filter(PluginApiORM.created_by == user_id)
+    #         .order_by(PluginApiORM.updated_at.desc())
+    #     )
+
+    @staticmethod
+    def get_all(session: Session) -> List[PluginApiORM]:
+        return session.query(PluginApiORM).order_by(PluginApiORM.updated_at.desc()).all()
 
     @staticmethod
     def update(session: Session, operator: int, plugin_api_model: PluginApiUpdate) -> int:

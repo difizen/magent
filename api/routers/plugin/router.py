@@ -1,13 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 
-from fastapi_pagination import Page
+from fastapi_pagination import Page, paginate
 from models.plugin import PluginModel, PluginCreate, PluginUpdate
 from models.plugin_api import PluginApiCreate, PluginApiModel, PluginApiUpdate
 from models.plugin_config import PluginConfigModel, PluginConfigCreate, PluginConfigUpdate
-
-from db import get_db
-from .crud import PluginHelper, PluginConfigHelper, PluginAPIHelper
+from services.plugin import PluginAPIService, PluginConfigService, PluginService
 
 router = APIRouter()
 
@@ -15,86 +12,85 @@ plugin_router = router
 
 
 @router.post("/", response_model=PluginModel)
-def create_plugin(user_id: int, plugin: PluginCreate, session: Session = Depends(get_db)):
-    model = PluginHelper.create(session, user_id, plugin)
-    return PluginModel.model_validate(model)
+def create_plugin(user_id: int, plugin: PluginCreate):
+    plugin_model = PluginService.create(user_id, plugin)
+    return plugin_model
 
 
 @router.get("/", response_model=Page[PluginModel])
-def get_plugins(user_id: int, session: Session = Depends(get_db)):
-    data = PluginHelper.get_user_plugin(session, user_id)
+def get_plugins(user_id: int):
+    data = paginate(PluginService.get_user_plugin(user_id))
     return data
 
 
 @router.get("/", response_model=Page[PluginModel])
-def get_all_plugins(session: Session = Depends(get_db)):
-    data = PluginHelper.get_all_plugin(session)
+def get_all_plugins():
+    data = paginate(PluginService.get_all())
     return data
 
 
 @router.get("/{plugin_id}", response_model=PluginModel)
-async def get_plugin(plugin_id, user_id: int, with_draft=False, session: Session = Depends(get_db)):
-    model = PluginHelper.get(session, plugin_id)
-    if model is None:
+async def get_plugin(plugin_id, user_id: int, with_draft=False):
+    plugin_model = PluginService.get_by_id(plugin_id)
+    if plugin_model is None:
         raise HTTPException(404)
-    plugin_model = PluginModel.model_validate(model)
     if with_draft:
-        draft = PluginConfigHelper.get_or_create_plugin_draft(
-            session, user_id, plugin_model.id)
+        draft = PluginConfigService.get_or_create_plugin_draft(
+            user_id, plugin_model.id)
         plugin_model.draft = draft
     return plugin_model
 
 
 @router.get("/{plugin_id}/draft", response_model=PluginConfigModel)
-async def get_or_create_plugin_draft_config(user_id: int, plugin_id, session: Session = Depends(get_db)):
-    model = PluginConfigHelper.get_or_create_plugin_draft(
-        session, user_id, plugin_id)
+async def get_or_create_plugin_draft_config(user_id: int, plugin_id):
+    model = PluginConfigService.get_or_create_plugin_draft(
+        user_id, plugin_id)
     if model is None:
         raise HTTPException(404)
-    return PluginConfigModel.model_validate(model)
+    return model
 
 
 @router.put("/{plugin_id}")
-async def update_plugin(user_id: int, plugin: PluginUpdate, db: Session = Depends(get_db)):
-    success = PluginHelper.update(db, user_id,  plugin)
+async def update_plugin(user_id: int, plugin: PluginUpdate):
+    success = PluginService.update(user_id,  plugin)
     return success
 
 
 @router.get("/configs/{config_id}", response_model=PluginConfigModel)
-async def get_plugin_config(config_id, session: Session = Depends(get_db)):
-    model = PluginConfigHelper.get(session, config_id)
+async def get_plugin_config(config_id):
+    model = PluginConfigService.get_by_id(config_id)
     if model is None:
         raise HTTPException(404)
-    return PluginConfigModel.model_validate(model)
+    return model
 
 
 @router.put("/configs/{config_id}")
-async def update_plugin_config(user_id: int, config: PluginConfigUpdate, db: Session = Depends(get_db)):
-    success = PluginConfigHelper.update(db, user_id, config)
+async def update_plugin_config(user_id: int, config: PluginConfigUpdate):
+    success = PluginConfigService.update(user_id, config)
     return success
 
 
 @router.post("/configs", response_model=PluginConfigModel)
-async def create_plugin_config(user_id: int, config: PluginConfigCreate, session: Session = Depends(get_db)):
-    model = PluginConfigHelper.create(session, user_id, config)
-    return PluginConfigModel.model_validate(model)
+async def create_plugin_config(user_id: int, config: PluginConfigCreate):
+    model = PluginConfigService.create(user_id, config)
+    return model
 
 
 @router.get("/api/{api_id}", response_model=PluginApiModel)
-async def get_plugin_api(api_id, session: Session = Depends(get_db)):
-    model = PluginAPIHelper.get(session, api_id)
+async def get_plugin_api(api_id):
+    model = PluginAPIService.get_by_id(api_id)
     if model is None:
         raise HTTPException(404)
-    return PluginApiModel.model_validate(model)
+    return model
 
 
 @router.put("/api/{api_id}")
-async def update_plugin_api(user_id: int, api: PluginApiUpdate, db: Session = Depends(get_db)):
-    success = PluginAPIHelper.update(db, user_id, api)
+async def update_plugin_api(user_id: int, api: PluginApiUpdate):
+    success = PluginAPIService.update(user_id, api)
     return success
 
 
 @router.post("/api", response_model=PluginApiModel)
-async def create_plugin_api(user_id: int, api: PluginApiCreate, session: Session = Depends(get_db)):
-    model = PluginAPIHelper.create(session, user_id, api)
-    return PluginApiModel.model_validate(model)
+async def create_plugin_api(user_id: int, api: PluginApiCreate):
+    model = PluginAPIService.create(user_id, api)
+    return model

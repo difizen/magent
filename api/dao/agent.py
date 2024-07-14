@@ -1,11 +1,9 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, List
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from models.agent_bot import AgentBotModel, AgentBotORM, AgentBotCreate, AgentBotUpdate
+from models.agent_bot import AgentBotORM, AgentBotCreate, AgentBotUpdate
 from models.agent_config import AgentConfigCreate, AgentConfigORM, AgentConfigUpdate
-from fastapi_pagination.ext.sqlalchemy import paginate
-from fastapi_pagination import Page
 
 
 class AgentBotHelper:
@@ -19,12 +17,17 @@ class AgentBotHelper:
         return session.query(AgentBotORM).filter(AgentBotORM.id == bot_id).one_or_none()
 
     @staticmethod
-    def get_all(session: Session, user_id: int) -> Page[AgentBotModel]:
-        return paginate(
-            session.query(AgentBotORM)
-            .filter(AgentBotORM.created_by == user_id)
-            .order_by(AgentBotORM.updated_at.desc())
-        )
+    def get_all(session: Session) -> List[AgentBotORM]:
+        return session.query(AgentBotORM).order_by(AgentBotORM.updated_at.desc()).all()
+
+    @staticmethod
+    def get_by_user(session: Session, user_id: int) -> List[AgentBotORM]:
+        return session.query(AgentBotORM).filter(AgentBotORM.created_by == user_id).order_by(AgentBotORM.updated_at.desc()).all()
+        # return paginate(
+        #     session.query(AgentBotORM)
+        #     .filter(AgentBotORM.created_by == user_id)
+        #     .order_by(AgentBotORM.updated_at.desc())
+        # )
 
     @staticmethod
     def update(session: Session, operator: int, bot_model: AgentBotUpdate) -> int:
