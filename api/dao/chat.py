@@ -1,9 +1,9 @@
 from typing import List
 from datetime import datetime
 from sqlalchemy.orm import Session
-from models.agent_config import AgentConfigModel
+from models.agent_config import AgentConfigModel, AgentConfigORM
 from models.chat import ChatModel, ChatORM, MessageModel, MessageModelCreate, MessageORM
-from routers.agent.crud import AgentConfigHelper
+from dao.agent import AgentConfigHelper
 
 from sqlalchemy import inspect
 
@@ -21,12 +21,16 @@ def getattr_from_column_name(instance, name, default=Ellipsis):
 
 class ChatHelper:
     @staticmethod
-    def get_chat_bot_config(session: Session, operator: int, coversation_id: int) -> AgentConfigModel:
-        chat_orm = session.query(ChatORM).filter(ChatORM.id ==
-                                                 coversation_id).one_or_none()
-        chat_model = ChatModel.model_validate(chat_orm)
-        config_id = chat_model.bot_config_id
-        return AgentConfigHelper.get(session, config_id)
+    def get_chat(session: Session, chat_id: int) -> ChatORM:
+        chat_orm = session.query(ChatORM).filter(
+            ChatORM.id == chat_id).one_or_none()
+        return chat_orm
+
+    @staticmethod
+    def get_chat_by_agent_config(session: Session, agent_config_id: int) -> ChatORM:
+        chat_orm = session.query(ChatORM).filter(
+            ChatORM.bot_config_id == agent_config_id).one_or_none()
+        return chat_orm
 
     @staticmethod
     def get_or_create_bot_chat(session: Session, operator: int, agent_config_id: int) -> ChatORM:

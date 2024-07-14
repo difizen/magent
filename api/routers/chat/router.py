@@ -9,8 +9,9 @@ from sqlalchemy.orm import Session
 from typing import List, AsyncIterable, Optional
 from sse_starlette import ServerSentEvent
 from sse_starlette.sse import EventSourceResponse
+from services.agent import AgentConfigService
+from services.chat import ChatService
 
-from routers.agent.crud import AgentConfigHelper
 from models.chat import (
     ChatModel, MessageModel, MessageModelCreate, MessageSenderType
 )
@@ -18,8 +19,6 @@ from models.agent_config import AgentConfigModel
 from db import get_db
 from core.langchain_utils import get_message_str, message_content_to_str
 from core.chat import chat, chat_stream
-
-from .crud import ChatHelper
 
 logger = logging.getLogger('uvicorn.error')
 logger.setLevel(logging.DEBUG)
@@ -41,13 +40,11 @@ def chat_with_bot_in_debug_mode(bot_id, user_id: int, session: Session = Depends
     '''
     get or create chat
     '''
-    config_orm = AgentConfigHelper.get_bot_draft(session, bot_id)
-    if config_orm is None:
+    config = AgentConfigService.get_bot_draft(bot_id, session)
+    if config is None:
         raise HTTPException(404)
-    config = AgentConfigModel.model_validate(config_orm)
-    model = ChatHelper.get_or_create_bot_chat(
-        session, user_id, config.id)
-    return ChatModel.model_validate(model)
+    model = ChatService.get_or_create_bot_chat(user_id, config.id, session)
+    return model
 
 
 @router.delete("/{chat_id}/messages", response_model=int)
@@ -57,14 +54,14 @@ async def clear_messages_in_chat(chat_id: int,
 
     chat_id = chat_id
     sender_id = user_id
-    config_orm = ChatHelper.get_chat_bot_config(
-        session, sender_id, chat_id)
-    config = AgentConfigModel.model_validate(config_orm)
+    config = ChatService.get_chat_bot_config(
+        sender_id, chat_id, session)
     # TODO: delete or soft delete
-    if config.is_draft:
-        return ChatHelper.clear_messages(session, chat_id)
-    else:
-        return ChatHelper.clear_messages(session, chat_id)
+    if config is not None:
+        if config.is_draft:
+            return ChatService.clear_messages(chat_id, session)
+        else:
+            return ChatService.clear_messages(chat_id, session)
 
 
 class ChatReply(BaseModel):
@@ -82,21 +79,10 @@ async def send_message_in_chat(chat_id: int,
     '''
     msg.sender_id = user_id
     msg.chat_id = chat_id
-    msg_orm = ChatHelper.insert_message(
-        session, msg)
-    msg_model = MessageModel.model_validate(msg_orm)
-
+    msg_model = ChatService.insert_message(msg, session)
     reply_msg = ChatReply(send=msg_model)
-
-    config_orm = ChatHelper.get_chat_bot_config(
-        session, user_id, chat_id)
-    config = AgentConfigModel.model_validate(config_orm)
-
-    history_orm_list = ChatHelper.get_messages(
-        session, chat_id=chat_id)
-
-    history = [MessageModel.model_validate(
-        orm_obj) for orm_obj in history_orm_list]
+    config = ChatService.get_chat_bot_config(user_id, chat_id, session)
+    history = ChatService.get_messages(chat_id, session)
     answer_msg = chat(config, chat_id, history, msg_model)
     if answer_msg is not None:
         new_msg = MessageModelCreate(sender_id=0,
@@ -104,9 +90,7 @@ async def send_message_in_chat(chat_id: int,
                                      chat_turn_id=msg_model.chat_turn_id,
                                      chat_id=chat_id,
                                      content=get_message_str(answer_msg))
-        new_msg_orm = ChatHelper.insert_message(
-            session, new_msg)
-        new_msg_model = MessageModel.model_validate(new_msg_orm)
+        new_msg_model = ChatService.insert_message(new_msg, session)
         reply_msg.reply = [new_msg_model]
     return reply_msg
 
@@ -130,13 +114,8 @@ async def send_message(session: Session, message: MessageModel) -> AsyncIterable
     # user send new message
     yield ServerSentEvent(event=SSEType.MESSAGE.value, id=str(message.chat_turn_id), data=message.model_dump_json())
 
-    config_orm = ChatHelper.get_chat_bot_config(
-        session, sender_id, chat_id)
-    config = AgentConfigModel.model_validate(config_orm)
-    history_orm_list = ChatHelper.get_messages(
-        session, chat_id=chat_id)
-    history = [MessageModel.model_validate(
-        orm_obj) for orm_obj in history_orm_list]
+    config = ChatService.get_chat_bot_config(sender_id, chat_id, session)
+    history = ChatService.get_messages(chat_id, session)
 
     answer_msg = None
     msg_iterator = chat_stream(config, chat_id, history, message)
@@ -152,9 +131,7 @@ async def send_message(session: Session, message: MessageModel) -> AsyncIterable
                                          chat_turn_id=chat_turn_id,
                                          chat_id=chat_id,
                                          content=chunk_content)
-            new_msg_orm = ChatHelper.insert_message(
-                session, new_msg)
-            answer_msg = MessageModel.model_validate(new_msg_orm)
+            answer_msg = ChatService.insert_message(new_msg, session)
             # ai send new message
             answer_msg.complete = False
             yield ServerSentEvent(event=SSEType.MESSAGE.value, id=str(answer_msg.chat_turn_id), data=answer_msg.model_dump_json())
@@ -167,7 +144,7 @@ async def send_message(session: Session, message: MessageModel) -> AsyncIterable
             )
             yield ServerSentEvent(event=SSEType.CHUNK.value, id=str(answer_msg.chat_turn_id), data=new_chunk.model_dump_json())
     if answer_msg is not None:
-        ChatHelper.update_message_content(session, answer_msg, content)
+        ChatService.update_message_content(answer_msg, content, session)
 
 
 @router.post("/{chat_id}/messages")
@@ -181,8 +158,6 @@ async def send_message_stream_in_chat(chat_id: int,
 
     msg.sender_id = user_id
     msg.chat_id = chat_id
-    msg_orm = ChatHelper.insert_message(
-        session, msg)
-    msg_model = MessageModel.model_validate(msg_orm)
+    msg_model = ChatService.insert_message(msg, session)
 
     return EventSourceResponse(send_message(session, msg_model), media_type="text/event-stream")
