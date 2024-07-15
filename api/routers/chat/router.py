@@ -15,7 +15,6 @@ from services.chat import ChatService
 from models.chat import (
     ChatModel, MessageModel, MessageModelCreate, MessageSenderType
 )
-from models.agent_config import AgentConfigModel
 from db import get_db
 from core.langchain_utils import get_message_str, message_content_to_str
 from core.chat import chat, chat_stream

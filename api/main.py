@@ -3,7 +3,7 @@ from fastapi_pagination import add_pagination
 
 from routers.main import api_router
 
-from routers.account.crud import init_db
+from dao.account import init_db
 
 from db import SessionLocal
 
