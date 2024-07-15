@@ -7,8 +7,6 @@ from .chat import ChatORM, MessageORM
 from .plugin import PluginORM
 from .plugin_config import PluginConfigORM
 from .plugin_api import PluginApiORM
-from .knowledge import KnowledgeORM
-from .knowledge_config import KnowledgeConfigORM
 
 __all__ = [
     'Base',
@@ -22,7 +20,5 @@ __all__ = [
     'MessageORM',
     'PluginORM',
     'PluginConfigORM',
-    'PluginApiORM',
-    'KnowledgeORM',
-    'KnowledgeConfigORM'
+    'PluginApiORM'
 ]
