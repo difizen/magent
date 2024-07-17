@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from sqlalchemy import (
+    JSON,
     Column,
     ForeignKey,
     Integer,
@@ -22,10 +23,15 @@ class PluginApiORM(Base):
     __tablename__ = "plugin_api"
     id = Column(Integer, primary_key=True)
     plugin_config_id = Column(Integer, ForeignKey(
-        "plugin_config.id"), nullable=True)
+        "plugin_config.id"))
     description = Column(Text)  # API 描述
     name = Column(String(255))  # 插件名字
-    openapi_desc = Column(Text)  # openapi 先调研
+    server_url = Column(String(255))
+    method = Column(String(255))
+    summary = Column(String(255))
+    parameters = Column(JSON)
+    openapi_desc = Column(JSON)  # openapi 先调研
+    operation_id = Column(String(255))
 
     # request_params = Column(JSON)  # 入参
     # response_params = Column(JSON) # 出参
