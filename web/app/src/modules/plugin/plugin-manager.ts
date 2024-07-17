@@ -29,7 +29,7 @@ export class PluginManager {
       size: 10,
       user_id: user.id,
     });
-    const res = await this.axios.get<Pagination>(`api/v1/plugins?${query}`);
+    const res = await this.axios.get<Pagination>(`api/v1/plugins/?${query}`);
     if (res.status === 200) {
       return res.data;
     }
@@ -42,7 +42,7 @@ export class PluginManager {
       page: 1,
       size: 10,
     });
-    const res = await this.axios.get<Pagination>(`api/v1/plugins?${query}`);
+    const res = await this.axios.get<Pagination>(`api/v1/plugins/?${query}`);
     if (res.status === 200) {
       return res.data;
     }
@@ -57,7 +57,7 @@ export class PluginManager {
     const query = qs.stringify({
       user_id: user.id,
     });
-    const res = await this.axios.post<PluginOption>(`api/v1/plugins?${query}`, meta);
+    const res = await this.axios.post<PluginOption>(`api/v1/plugins/?${query}`, meta);
     if (res.status !== 200) {
       throw new Error('failed to create agent bot');
     }

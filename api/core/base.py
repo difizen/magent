@@ -1,5 +1,6 @@
 '''Base model'''
-from typing import Any, List
+from enum import Enum
+from typing import Any, List, Optional
 from pydantic import BaseModel
 
 
@@ -13,3 +14,19 @@ class ConfigMeta(BaseModel):
     persona: str
     model: ModelMeta
     tools: List[Any] = []
+
+
+class SSEType(Enum):
+    MESSAGE = "message"
+    BLANK_MESSAGE = "blank_message"
+    CHUNK = "chunk"
+    ERROR = "error"
+    EOF = "EOF"
+    RESULT = "result"
+
+
+class ChatStreamChunk(BaseModel):
+    type: SSEType
+    chunk: Optional[str] = None
+    content: Optional[str] = None
+    error_msg: Optional[str] = None

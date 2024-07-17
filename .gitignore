@@ -321,3 +321,4 @@ pnpm-lock.yaml
 #volumes
 
 docker/volumes
+agent_universe.db

@@ -27,14 +27,21 @@
 - [ ] notebook flow
 - [ ] agentUniverse base
 - [ ] 卡片
+- [ ] 模型
 
 ## minor
 
 - [ ] (api) 升级鉴权访问方案，目前没有登录验证
 - [ ] (api) 调研 jwt 与 session，增加一种满足鉴权与获取用户凭证的需求
 - [ ] (api) 数据库部主键改用 uuid
+- [ ] (api) 对话历史在 AU 中的正确使用
+- [ ] (api) 插件在 AU 中的集成
+- [ ] (api) 知识库在 AU 中的集成
+
+-
 - [ ] (app) 模型配置增加参数表单，支持扩展类型
 - [ ] (app) 模型部分增加 model provider 为后端获取模型增加路径
+- [ ] (api) AU 流式对话异常，SSE 效果异常处理
 
 ## patch
 
