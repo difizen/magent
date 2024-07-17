@@ -1,15 +1,17 @@
 '''Agent'''
 from typing import AsyncIterator, List
 from abc import ABC, abstractmethod
+from uuid import uuid4, UUID
 from langchain.schema.messages import BaseMessage, BaseMessageChunk
 from pydantic import BaseModel
 
 from models.chat import MessageModel
 
-from .base import ConfigMeta
+from .base import ChatStreamChunk, ConfigMeta
 
 
 class Agent(BaseModel, ABC):
+    id: UUID = uuid4()
     meta: ConfigMeta
 
     '''Abstract agent'''
@@ -28,5 +30,5 @@ class Agent(BaseModel, ABC):
                        config: ConfigMeta,
                        chat_id: int,
                        history: List[MessageModel],
-                       message: MessageModel,) -> AsyncIterator[BaseMessageChunk] | None:
+                       message: MessageModel,) -> AsyncIterator[BaseMessageChunk] | AsyncIterator[ChatStreamChunk] | None:
         """Chat with agent and get answer via stream"""

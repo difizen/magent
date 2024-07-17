@@ -1,8 +1,7 @@
 [project]
 name = "magent"
 version = "0.1.0"
-dependencies = [
-]
+dependencies = []
 
 [tool.rye]
 virtual = true

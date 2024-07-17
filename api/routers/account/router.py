@@ -26,7 +26,6 @@ async def get_account_by_id(user_id, session: Session = Depends(get_db)):
 
 @router.get("/email/{email}", response_model=AccountModel)
 async def get_account_by_email(email, session: Session = Depends(get_db)):
-    print('router_email', session)
     model = AccountService.get_by_email(email, session)
     if model is None:
         raise HTTPException(404)

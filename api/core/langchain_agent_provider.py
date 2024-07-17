@@ -6,7 +6,7 @@ from langchain.schema.messages import BaseMessage, BaseMessageChunk, SystemMessa
 from langchain.agents import create_tool_calling_agent
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.callbacks.manager import get_openai_callback
-from langchain_openai import ChatOpenAI
+from langchain_community.chat_models.openai import ChatOpenAI
 
 from models.chat import MessageModel, MessageSenderType
 

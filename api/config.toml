@@ -1,0 +1,21 @@
+# config.toml
+[BASE_INFO]
+# The app name will be applied to all processes including agent service integration.
+appname = 'magent_app'
+
+[CORE_PACKAGE]
+# Perform a full component scan and registration for all the paths under this list.
+default = ['core']
+# Further information is omitted here.
+
+[SUB_CONFIG_PATH]
+# Log config file path, an absolute path or a relative path based on the dir where the current config file is located.
+log_config_path = './log_config.toml'
+
+# Further information is omitted here.
+# Example file of custom_key.toml. Rename to custom_key.toml while using.
+[KEY_LIST]
+# Perform a full component scan and registration for all the paths under this list.
+
+[DB]
+system_db_uri = 'sqlite:////workspaces/magent/api/db/agent_universe.db'

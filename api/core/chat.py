@@ -7,8 +7,10 @@ from .agent_manager import agent_manager
 from .base import ConfigMeta
 
 from .langchain_agent_provider import langchain_agent_provider
+from .au_agent_provider import au_agent_provider
 
 agent_manager.registe_provider(langchain_agent_provider)
+agent_manager.registe_provider(au_agent_provider)
 
 
 def get_config_meta(agent_config: AgentConfigModel) -> ConfigMeta:

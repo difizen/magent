@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from typing import List, AsyncIterable, Optional
 from sse_starlette import ServerSentEvent
 from sse_starlette.sse import EventSourceResponse
+from core.base import ChatStreamChunk, SSEType
 from services.agent import AgentConfigService
 from services.chat import ChatService
 
@@ -94,15 +95,9 @@ async def send_message_in_chat(chat_id: int,
     return reply_msg
 
 
-class ChatSteamChunk(BaseModel):
+class SSEChunk(BaseModel):
     message_id: int
     chunk: Optional[str] = None
-
-
-class SSEType(enum.Enum):
-    MESSAGE = "message"
-    BLANK_MESSAGE = "blank_message"
-    CHUNK = "chunk"
 
 
 async def send_message(session: Session, message: MessageModel) -> AsyncIterable[ServerSentEvent]:
@@ -122,26 +117,50 @@ async def send_message(session: Session, message: MessageModel) -> AsyncIterable
         raise HTTPException(500)
     content = ''
     async for msg_chunk in msg_iterator:
-        if answer_msg is None:
-            chunk_content = message_content_to_str(msg_chunk.content)
-            content = content+chunk_content
-            new_msg = MessageModelCreate(sender_id=0,
-                                         sender_type=MessageSenderType.AI,
-                                         chat_turn_id=chat_turn_id,
-                                         chat_id=chat_id,
-                                         content=chunk_content)
-            answer_msg = ChatService.insert_message(new_msg, session)
-            # ai send new message
-            answer_msg.complete = False
-            yield ServerSentEvent(event=SSEType.MESSAGE.value, id=str(answer_msg.chat_turn_id), data=answer_msg.model_dump_json())
+        if isinstance(msg_chunk, ChatStreamChunk):
+            if answer_msg is None:
+                if msg_chunk.type == SSEType.CHUNK and msg_chunk.chunk is not None:
+                    chunk_content = msg_chunk.chunk
+                    content = content+chunk_content
+                    new_msg = MessageModelCreate(sender_id=0,
+                                                 sender_type=MessageSenderType.AI,
+                                                 chat_turn_id=chat_turn_id,
+                                                 chat_id=chat_id,
+                                                 content=chunk_content)
+                    answer_msg = ChatService.insert_message(new_msg, session)
+                    # ai send new message
+                    answer_msg.complete = False
+                    yield ServerSentEvent(event=SSEType.MESSAGE.value, id=str(answer_msg.chat_turn_id), data=answer_msg.model_dump_json())
+            else:
+                if msg_chunk.type == SSEType.CHUNK and msg_chunk.chunk is not None:
+                    chunk_content = msg_chunk.chunk
+                    content = content+chunk_content
+                    new_chunk = SSEChunk(
+                        message_id=answer_msg.id,
+                        chunk=message_content_to_str(chunk_content)
+                    )
+                    yield ServerSentEvent(event=SSEType.CHUNK.value, id=str(answer_msg.chat_turn_id), data=new_chunk.model_dump_json())
         else:
-            chunk_content = message_content_to_str(msg_chunk.content)
-            content = content+chunk_content
-            new_chunk = ChatSteamChunk(
-                message_id=answer_msg.id,
-                chunk=message_content_to_str(msg_chunk.content)
-            )
-            yield ServerSentEvent(event=SSEType.CHUNK.value, id=str(answer_msg.chat_turn_id), data=new_chunk.model_dump_json())
+            if answer_msg is None:
+                chunk_content = message_content_to_str(msg_chunk.content)
+                content = content+chunk_content
+                new_msg = MessageModelCreate(sender_id=0,
+                                             sender_type=MessageSenderType.AI,
+                                             chat_turn_id=chat_turn_id,
+                                             chat_id=chat_id,
+                                             content=chunk_content)
+                answer_msg = ChatService.insert_message(new_msg, session)
+                # ai send new message
+                answer_msg.complete = False
+                yield ServerSentEvent(event=SSEType.MESSAGE.value, id=str(answer_msg.chat_turn_id), data=answer_msg.model_dump_json())
+            else:
+                chunk_content = message_content_to_str(msg_chunk.content)
+                content = content+chunk_content
+                new_chunk = SSEChunk(
+                    message_id=answer_msg.id,
+                    chunk=message_content_to_str(msg_chunk.content)
+                )
+                yield ServerSentEvent(event=SSEType.CHUNK.value, id=str(answer_msg.chat_turn_id), data=new_chunk.model_dump_json())
     if answer_msg is not None:
         ChatService.update_message_content(answer_msg, content, session)
 

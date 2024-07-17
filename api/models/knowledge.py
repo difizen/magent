@@ -107,7 +107,6 @@ class KnowledgeModel(KnowledgeCreate):
         '''
         value config type and set config model
         '''
-        print(values)
         if isinstance(values, DocumentConfigModel):
             return values
         elif isinstance(values, SheetConfigModel):
