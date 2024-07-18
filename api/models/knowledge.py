@@ -99,7 +99,7 @@ class KnowledgeModel(KnowledgeCreate):
     updated_by: int
     updated_at: datetime
     config: Optional[KnowledgeConfigModel]
-    files: List[KnowledgeFileModel] = []
+    # files: List[KnowledgeFileModel] = []
 
     @field_validator('config')
     @classmethod
@@ -107,16 +107,16 @@ class KnowledgeModel(KnowledgeCreate):
         '''
         value config type and set config model
         '''
-        if isinstance(values, DocumentConfigModel):
-            return values
-        elif isinstance(values, SheetConfigModel):
-            return values
-        elif isinstance(values, ImageConfigModel):
+        print('values', values)
+        if isinstance(values, type(None)) or isinstance(values, DocumentConfigModel) or isinstance(values, ImageConfigModel):
             return values
         raise ValidationError(
             'config must be an instance of DocumentConfigModel or SheetConfigModel or ImageConfigModel')
 
-    @field_validator('files')
-    @classmethod
-    def append_file(cls, file):
-        cls.files.append(file)
+    # @field_validator('files')
+    # @classmethod
+    # def append_file(cls, file):
+    #     cls.files.append(file)
+
+    class Config:
+        from_attributes = True
