@@ -9,6 +9,7 @@ from .agent.router import agent_router
 from .account.router import account_router
 from .chat.router import chat_router
 from .plugin.router import plugin_router
+from .knowledge.router import knowledge_router
 
 api_router = APIRouter()
 
@@ -16,6 +17,8 @@ api_router.include_router(agent_router, prefix="/agent", tags=["agent"])
 api_router.include_router(account_router, prefix="/accounts", tags=["account"])
 api_router.include_router(chat_router, prefix="/chats", tags=["chat"])
 api_router.include_router(plugin_router, prefix="/plugins", tags=["plugin"])
+api_router.include_router(
+    knowledge_router, prefix="/knowledge", tags=["knowledge"])
 
 COUNTER = 0
 
