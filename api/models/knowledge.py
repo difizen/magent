@@ -22,9 +22,9 @@ from models.knowledge_config import KnowledgeConfigModel, DocumentConfigModel, S
 
 
 class KnowledgeType(enum.Enum):
-    DOCUMENT = "Document"
-    SHEET = "Sheet"
-    IMAGE = "Image"
+    DOCUMENT = "document"
+    SHEET = "sheet"
+    IMAGE = "image"
 
 
 class KnowledgeORM(Base):
@@ -108,7 +108,7 @@ class KnowledgeModel(KnowledgeCreate):
         value config type and set config model
         '''
         print('values', values)
-        if isinstance(values, type(None)) or isinstance(values, DocumentConfigModel) or isinstance(values, ImageConfigModel):
+        if isinstance(values, type(None)) or isinstance(values, DocumentConfigModel) or isinstance(values, ImageConfigModel) or isinstance(values, SheetConfigModel):
             return values
         raise ValidationError(
             'config must be an instance of DocumentConfigModel or SheetConfigModel or ImageConfigModel')

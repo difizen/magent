@@ -1,9 +1,10 @@
 import logging
 from typing import List
+from models.knowledge_config import DocumentConfigModel, ImageConfigModel, SheetConfigModel
 from sqlalchemy.orm import Session
 
-from dao.knowledge import KnowledgeHelper
-from models.knowledge import KnowledgeCreate, KnowledgeModel
+from dao.knowledge import KnowledgeConfigHelper, KnowledgeHelper
+from models.knowledge import KnowledgeCreate, KnowledgeModel, KnowledgeType
 
 
 class KnowledgeService:
@@ -46,3 +47,20 @@ class KnowledgeService:
             session=session, operator=operator, knowledge_id=knowledge_id)
         session.commit()
         return is_delete
+
+
+class KnowledgeConfigService:
+    @staticmethod
+    def create(operator: int, config_type: KnowledgeType, knowledge_config, session: Session):
+        knowledge_config_orm = KnowledgeConfigHelper.create(
+            operator=operator, knowledge_config_model=knowledge_config, session=session)
+        print('config_type', config_type)
+
+        if config_type == KnowledgeType.DOCUMENT:
+            return DocumentConfigModel.model_validate(knowledge_config_orm)
+        elif config_type == KnowledgeType.SHEET:
+            return SheetConfigModel.model_validate(knowledge_config_orm)
+        elif config_type == KnowledgeType.IMAGE:
+            return ImageConfigModel.model_validate(knowledge_config_orm)
+        else:
+            raise ValueError("Unsupported knowledge type")
