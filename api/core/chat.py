@@ -29,9 +29,9 @@ def to_message(msg: MessageModel) -> BaseMessage:
 
 def chat(agent_config: AgentConfigModel, chat_id: int, history: List[MessageModel], message: MessageModel):
     config = get_config_meta(agent_config)
-    system_msg = SystemMessage(content=config.persona)
-    msgs = [to_message(m) for m in history]
-    msgs.insert(0, system_msg)
+    # system_msg = SystemMessage(content=config.persona)
+    # msgs = [to_message(m) for m in history]
+    # msgs.insert(0, system_msg)
     provider = agent_manager.get_provider(config)
     agent = provider.provide(config, chat_id)
     answer = agent.invoke(config, chat_id, history, message)

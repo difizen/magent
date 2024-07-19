@@ -32,7 +32,19 @@ class ToolCallingAgent(Agent):
         message: MessageModel,
         **kwargs,
     ) -> BaseMessage | None:
-        raise Exception('not implement')
+        """Chat with agent"""
+        llm = ChatOpenAI(model=config.model.key)
+        system_msg = SystemMessage(content=config.persona)
+        msgs = [to_message(m) for m in history]
+        msgs.insert(0, system_msg)
+        try:
+            with get_openai_callback() as cb:
+                result = llm.invoke(msgs)
+                print('invoke result', result)
+                return result
+        except Exception as e:
+            print('exception', e)
+            return None
 
     def invoke_astream(self,
                        config: ConfigMeta,
@@ -44,6 +56,9 @@ class ToolCallingAgent(Agent):
         *history_models, question_model = history
         msgs = [to_message(m) for m in history_models]
         llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
+        for plugin in config.plugins:
+            print('plugin_agent', plugin)
+        # b = [{'id': x['key']} for plugin in config.plugins]
         tools = []
         prompt = ChatPromptTemplate.from_messages([
             system_msg,
@@ -151,7 +166,7 @@ class LangchainAgentProvider(AgentProvider):
 
     def provide(self, config: ConfigMeta, chat_id: int) -> Agent:
         """get suitable agent"""
-        if len(config.tools) > 0:
+        if len(config.plugins) > 0:
             return ToolCallingAgent(meta=config)
         return LLMChat(meta=config)
 

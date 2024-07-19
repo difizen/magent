@@ -1,5 +1,5 @@
-from typing import Optional
-from pydantic import BaseModel
+from typing import List, Optional
+from pydantic import BaseModel, Json
 from datetime import datetime
 
 from sqlalchemy import (
@@ -56,9 +56,14 @@ class PluginApiCreate(BaseModel):
     plugin api create
     '''
     plugin_config_id: int
-    openapi_desc: str
+    openapi_desc: dict
     name: Optional[str]
     description: Optional[str]
+    server_url: str
+    method: str
+    summary: Optional[str]
+    parameters: List[dict]
+    operation_id: str
     disabled: Optional[bool]
     created_by: int
     created_at: datetime
@@ -74,6 +79,11 @@ class PluginApiUpdate(BaseModel):
     description: Optional[str]
     name: Optional[str]
     openapi_desc: Optional[str]
+    server_url: Optional[str]
+    method: Optional[str]
+    summary: Optional[str]
+    parameters: Optional[Json]
+    operation_id: Optional[str]
     disabled: Optional[bool]
 
 

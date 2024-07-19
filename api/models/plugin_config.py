@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
+from models.plugin_api import PluginApiModel
 from sqlalchemy import (
     Boolean,
     Column,
@@ -61,6 +62,7 @@ class PluginConfigModel(PluginConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
+    apis: Optional[List[PluginApiModel]] = None
 
     class Config:
         from_attributes = True
