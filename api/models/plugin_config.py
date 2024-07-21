@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from models.plugin_api import PluginApiModel
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     Integer,
@@ -24,6 +25,7 @@ class PluginConfigORM(Base):
     plugin_id = Column(Integer, ForeignKey("plugin.id"), nullable=True)
     is_draft = Column(Boolean, nullable=False)  # 是否为草稿
     plugin_openapi_desc = Column(Text)  # openapi 先调研
+    apis = Column(JSON)
     # openapi_desc = Column(Text) # openapi 先调研
     # plugin_desc = Column(Text)
     created_by = Column(Integer)
@@ -50,6 +52,7 @@ class PluginConfigUpdate(BaseModel):
     '''
     id: int
     plugin_openapi_desc: Optional[str]
+    apis: Optional[List[str]]
     is_draft: Optional[bool]
 
 
@@ -62,7 +65,7 @@ class PluginConfigModel(PluginConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    apis: Optional[List[PluginApiModel]] = None
+    apis: Optional[List[str]] = None
 
     class Config:
         from_attributes = True
