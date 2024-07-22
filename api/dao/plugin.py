@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import Any, List
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import desc, func
 from models.plugin_config import PluginConfigCreate, PluginConfigORM, PluginConfigUpdate
 from models.plugin import PluginCreate, PluginORM, PluginUpdate
 from models.plugin_api import PluginApiCreate, PluginApiORM, PluginApiUpdate
+from constants.constant import defaultPluginOpenapiDesc
 
 
 class PluginHelper:
@@ -20,19 +21,10 @@ class PluginHelper:
     @staticmethod
     def get_user_plugin(session: Session, user_id: int) -> List[PluginORM]:
         return session.query(PluginORM).filter(PluginORM.created_by == user_id).order_by(PluginORM.updated_at.desc()).all()
-        # return paginate(
-        #     session.query(PluginORM)
-        #     .filter(PluginORM.created_by == user_id)
-        #     .order_by(PluginORM.updated_at.desc())
-        # )
 
     @staticmethod
     def get_all_plugin(session: Session) -> List[PluginORM]:
         return session.query(PluginORM).order_by(PluginORM.updated_at.desc()).all()
-        # return paginate(
-        #     session.query(PluginORM)
-        #     .order_by(PluginORM.updated_at.desc())
-        # )
 
     @staticmethod
     def update(session: Session, operator: int, plugin_model: PluginUpdate) -> int:
@@ -77,10 +69,17 @@ class PluginConfigHelper:
         ).one_or_none()
 
     @staticmethod
+    def get_latest_publish_config(session: Session, plugin_id: int) -> PluginConfigORM | None:
+        return session.query(PluginConfigORM).filter(
+            PluginConfigORM.plugin_id == plugin_id,
+            PluginConfigORM.is_draft == False
+        ).order_by(desc(PluginConfigORM.updated_at)).first()
+
+    @staticmethod
     def get_or_create_plugin_draft(session: Session, operator: int, plugin_id: int,) -> PluginConfigORM:
         exist = PluginConfigHelper.get_plugin_draft(session, plugin_id)
         if exist is None:
-            return PluginConfigHelper.create(session, operator, PluginConfigCreate(plugin_id=plugin_id, plugin_openapi_desc='', is_draft=True))
+            return PluginConfigHelper.create(session, operator, PluginConfigCreate(plugin_id=plugin_id, plugin_openapi_desc=defaultPluginOpenapiDesc, is_draft=True))
         else:
             return exist
 
@@ -128,13 +127,12 @@ class PluginAPIHelper:
         return session.query(PluginApiORM).filter(PluginApiORM.id == plugin_api_id).one_or_none()
 
     @staticmethod
+    def get_by_config_id(session: Session, plugin_config_id: int) -> List[PluginApiORM]:
+        return session.query(PluginApiORM).filter(PluginApiORM.plugin_config_id == plugin_config_id).all()
+
+    @staticmethod
     def get_user_all(session: Session, user_id: int) -> List[PluginApiORM]:
         return session.query(PluginApiORM).filter(PluginApiORM.created_by == user_id).order_by(PluginApiORM.updated_at.desc()).all()
-    # paginate(
-    #         session.query(PluginApiORM)
-    #         .filter(PluginApiORM.created_by == user_id)
-    #         .order_by(PluginApiORM.updated_at.desc())
-    #     )
 
     @staticmethod
     def get_all(session: Session) -> List[PluginApiORM]:

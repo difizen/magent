@@ -17,6 +17,7 @@ export interface PluginConfigOption {
   plugin_id: number;
   plugin_openapi_desc: string;
   is_draft?: boolean;
+  apis?: number[];
 }
 
 export type PluginConfigFactory = (options: PluginConfigOption) => PluginConfig;

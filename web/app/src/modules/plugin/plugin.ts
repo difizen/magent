@@ -1,10 +1,12 @@
 import { Deferred, inject, prop, transient } from '@difizen/mana-app';
+
 import { AsyncModel } from '../../common/async-model.js';
+import { AxiosClient } from '../axios-client/index.js';
+
+import { PluginConfigManager } from './plugin-config-manager.js';
+import type { PluginConfig } from './plugin-config.js';
 import { PluginOption, PluginType } from './protocol.js';
 import type { PluginConfigOption } from './protocol.js';
-import { AxiosClient } from '../axios-client/index.js';
-import type { PluginConfig } from './plugin-config.js';
-import { PluginConfigManager } from './plugin-config-manager.js';
 
 @transient()
 export class Plugin extends AsyncModel<Plugin, PluginOption> {

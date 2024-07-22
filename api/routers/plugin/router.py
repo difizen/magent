@@ -26,7 +26,7 @@ def get_plugins(user_id: int, session: Session = Depends(get_db)):
     return data
 
 
-@router.get("/", response_model=Page[PluginModel])
+@router.get("/all/", response_model=Page[PluginModel])
 def get_all_plugins(session: Session = Depends(get_db)):
     data = paginate(PluginService.get_all(session))
     return data

@@ -171,6 +171,8 @@ class AUAgentProvider(AgentProvider):
             return 20
         if config.model.key == 'gpt-4o':
             return 20
+        if config.model.key == 'gpt-3.5-turbo':
+            return 20
         return -1
 
     def provide(self, config: ConfigMeta, chat_id: int) -> Agent:

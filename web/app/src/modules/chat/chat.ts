@@ -149,7 +149,7 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   };
 
   protected doSendMessage = async (msg: ChatMessageCreate) => {
-    const url = `api/v1/chats/${this.id!}/messages`;
+    const url = `api/v1/chats/${this.id!}/messages/compress`;
     const res = await this.axios.post<ChatReply>(url, msg);
     if (res.status === 200) {
       const model = res.data;
@@ -174,7 +174,8 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   };
 
   protected doSendMessageStream = async (msg: ChatMessageCreate) => {
-    const url = `api/v1/chats/${this.id!}/messages`;
+    // const url = `api/v1/chats/${this.id!}/messages`;
+    const url = `api/v1/chats/${this.id!}/messages/compress`;
     const res = await this.axios.post<ReadableStream<Uint8Array>>(url, msg, {
       headers: {
         Accept: 'text/event-stream',

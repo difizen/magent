@@ -13,7 +13,7 @@ class ConfigMeta(BaseModel):
     '''agent meta model'''
     persona: str
     model: ModelMeta
-    tools: List[Any] = []
+    plugins: List[Any] = []
 
 
 class SSEType(Enum):

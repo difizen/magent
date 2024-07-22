@@ -14,6 +14,8 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
 
   pluginId: number;
 
+  apis?: number[] = [];
+
   isDraft = true;
 
   protected onChanagedEmitter = new Emitter<PluginConfig>();
@@ -58,6 +60,7 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
     this.id = option.id;
     this.pluginId = option.plugin_id;
     this.isDraft = option.is_draft || true;
+    this.apis = option.apis;
     this._pluginOpenapiDesc = option.plugin_openapi_desc;
     super.fromMeta(option);
   }
@@ -79,6 +82,7 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
       plugin_id: this.pluginId,
       is_draft: this.isDraft,
       plugin_openapi_desc: this.pluginOpenapiDesc,
+      apis: this.apis,
     };
   }
 

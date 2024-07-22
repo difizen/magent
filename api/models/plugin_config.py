@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     Integer,
@@ -23,6 +24,7 @@ class PluginConfigORM(Base):
     plugin_id = Column(Integer, ForeignKey("plugin.id"), nullable=True)
     is_draft = Column(Boolean, nullable=False)  # 是否为草稿
     plugin_openapi_desc = Column(Text)  # openapi 先调研
+    apis = Column(JSON)
     # openapi_desc = Column(Text) # openapi 先调研
     # plugin_desc = Column(Text)
     created_by = Column(Integer)
@@ -48,7 +50,9 @@ class PluginConfigUpdate(BaseModel):
     plugin config update
     '''
     id: int
+    plugin_id: Optional[int]
     plugin_openapi_desc: Optional[str]
+    apis: Optional[List[int]]
     is_draft: Optional[bool]
 
 
@@ -61,6 +65,7 @@ class PluginConfigModel(PluginConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
+    apis: Optional[List[int]] = None
 
     class Config:
         from_attributes = True
