@@ -3,10 +3,12 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from typing import List
+from typing import List, Any
 
-from models.knowledge import KnowledgeCreate, KnowledgeORM
+from models.knowledge import KnowledgeCreate, KnowledgeORM, KnowledgeUpdate
 import logging
+
+from models.knowledge_config import DocumentConfigCreate, ImageConfigCreate, KnowledgeConfigORM, SheetConfigCreate
 
 
 class KnowledgeHelper:
@@ -67,6 +69,27 @@ class KnowledgeHelper:
             raise  # Re-raise the exception after logging and rolling back
 
     @staticmethod
+    def update(operator: int, knowledge_model: KnowledgeUpdate, session: Session) -> int:
+        try:
+            print('knowledge_model', knowledge_model)
+            knowledge_id = knowledge_model.id
+            now = datetime.now()
+            update_model: Any = {
+                **knowledge_model.model_dump(exclude_unset=True, exclude={"id"}),
+                "updated_by": operator,
+                "updated_at": now,
+            }
+            print('update_model', update_model)
+            result = session.query(KnowledgeORM).filter_by(
+                id=knowledge_id).update(update_model)
+            session.commit()
+            return result
+        except SQLAlchemyError as e:
+            logging.error(f"Failed to update knowledge: {e}")
+            session.rollback()
+            raise  # Re-raise the exception after logging and rolling back
+
+    @staticmethod
     def delete(operator: int, knowledge_id: int, session: Session) -> bool:
         try:
             # 使用 get 方法来查找知识项
@@ -82,3 +105,32 @@ class KnowledgeHelper:
             logging.error(f"Failed to delete knowledge: {e}")
             session.rollback()
             return False
+
+
+class KnowledgeConfigHelper:
+    @staticmethod
+    def create(operator: int, knowledge_config_model: DocumentConfigCreate | SheetConfigCreate | ImageConfigCreate, session: Session):
+        try:
+            now = datetime.now()
+            # 将模型实例转换为字典
+            knowledge_config_data = knowledge_config_model.model_dump()
+            # 删除不需要的字段
+            knowledge_id = knowledge_config_data.pop("knowledge_id")
+            config = knowledge_config_data.pop("config")
+
+            document_config = KnowledgeConfigORM(**{
+                "created_by": operator,
+                "created_at": now,
+                "updated_by": operator,
+                "updated_at": now,
+                "knowledge_id": knowledge_id,
+                "config": config
+            })
+            session.add(document_config)
+            session.commit()
+            session.refresh(document_config)
+            return document_config
+        except SQLAlchemyError as e:
+            logging.error(f"Failed to create knowledge config: {e}")
+            session.rollback()
+            raise  # Re-raise the exception after logging and rolling back

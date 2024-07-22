@@ -1,12 +1,13 @@
-from typing import Annotated
+from typing import Annotated, Union
 from fastapi import APIRouter, HTTPException, Body, Depends
 from fastapi.responses import JSONResponse
 from fastapi_pagination import Page, paginate
-from models.knowledge import KnowledgeModel, KnowledgeCreate
+from models.knowledge import KnowledgeModel, KnowledgeCreate, KnowledgeType, KnowledgeUpdate
 from sqlalchemy.orm import Session
 
 from db import get_db
-from services.knowledge import KnowledgeService
+from models.knowledge_config import KnowledgeConfigCreate, KnowledgeConfigModel, DocumentConfigCreate, SheetConfigCreate, ImageConfigCreate
+from services.knowledge import KnowledgeConfigService, KnowledgeService
 
 
 router = APIRouter()
@@ -56,6 +57,16 @@ def create_knowledge(user_id: Annotated[int, Body()], knowledge: KnowledgeCreate
         raise HTTPException(status_code=500, detail=str(e)) from e
 
 
+@router.put("/{knowledge_id}")
+async def update_knowledge(user_id: Annotated[int, Body()], knowledge: KnowledgeUpdate, session: Session = Depends(get_db)):
+    try:
+        success = KnowledgeService.update(
+            operator=user_id, knowledge_model=knowledge, session=session)
+        return success
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+
 @router.delete("/{knowledge_id}", response_model=bool)
 def delete_knowledge(knowledge_id: int, user_id: int, session: Session = Depends(get_db)):
     try:
@@ -64,5 +75,21 @@ def delete_knowledge(knowledge_id: int, user_id: int, session: Session = Depends
             raise HTTPException(
                 status_code=404, detail="Knowledge item not found")
         return JSONResponse(content={"success": is_deleted}, status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+@router.post("/config", response_model=KnowledgeConfigModel)
+def create_knowledge_config(user_id: Annotated[int, Body()], config_type: Annotated[KnowledgeType, Body()], knowledge_config: Union[DocumentConfigCreate, SheetConfigCreate, ImageConfigCreate], session: Session = Depends(get_db)):
+    print('knowledge_config', knowledge_config)
+    try:
+        knowledge_model = KnowledgeConfigService.create(
+            operator=user_id, config_type=config_type,
+            knowledge_config=knowledge_config, session=session)
+        print('knowledge_model', knowledge_model)
+        if knowledge_model is None:
+            raise HTTPException(
+                status_code=404, detail="Config create failed")
+        return knowledge_model
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
