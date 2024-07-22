@@ -2,7 +2,7 @@ from typing import Annotated, Union
 from fastapi import APIRouter, HTTPException, Body, Depends
 from fastapi.responses import JSONResponse
 from fastapi_pagination import Page, paginate
-from models.knowledge import KnowledgeModel, KnowledgeCreate, KnowledgeType
+from models.knowledge import KnowledgeModel, KnowledgeCreate, KnowledgeType, KnowledgeUpdate
 from sqlalchemy.orm import Session
 
 from db import get_db
@@ -53,6 +53,16 @@ def create_knowledge(user_id: Annotated[int, Body()], knowledge: KnowledgeCreate
         knowledge_model = KnowledgeService.create(
             operator=user_id, knowledge_model=knowledge, session=session)
         return knowledge_model
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+@router.put("/{knowledge_id}")
+async def update_knowledge(user_id: Annotated[int, Body()], knowledge: KnowledgeUpdate, session: Session = Depends(get_db)):
+    try:
+        success = KnowledgeService.update(
+            operator=user_id, knowledge_model=knowledge, session=session)
+        return success
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
 

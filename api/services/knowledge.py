@@ -4,7 +4,7 @@ from models.knowledge_config import DocumentConfigModel, ImageConfigModel, Sheet
 from sqlalchemy.orm import Session
 
 from dao.knowledge import KnowledgeConfigHelper, KnowledgeHelper
-from models.knowledge import KnowledgeCreate, KnowledgeModel, KnowledgeType
+from models.knowledge import KnowledgeCreate, KnowledgeModel, KnowledgeType, KnowledgeUpdate
 
 
 class KnowledgeService:
@@ -34,6 +34,12 @@ class KnowledgeService:
         knowledge_orm = KnowledgeHelper.create(
             session=session, operator=operator, knowledge_model=knowledge_model)
         return KnowledgeModel.model_validate(knowledge_orm)
+
+    @staticmethod
+    def update(operator: int, knowledge_model: KnowledgeUpdate, session: Session) -> int:
+        res = KnowledgeHelper.update(
+            operator=operator, knowledge_model=knowledge_model, session=session)
+        return res
 
     @staticmethod
     def delete(operator: int, knowledge_id: int, session: Session) -> bool:

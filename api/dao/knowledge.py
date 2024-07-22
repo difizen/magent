@@ -3,9 +3,9 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from typing import List
+from typing import List, Any
 
-from models.knowledge import KnowledgeCreate, KnowledgeORM, KnowledgeType
+from models.knowledge import KnowledgeCreate, KnowledgeORM, KnowledgeUpdate
 import logging
 
 from models.knowledge_config import DocumentConfigCreate, ImageConfigCreate, KnowledgeConfigORM, SheetConfigCreate
@@ -65,6 +65,27 @@ class KnowledgeHelper:
             return model
         except SQLAlchemyError as e:
             logging.error(f"Failed to create knowledge: {e}")
+            session.rollback()
+            raise  # Re-raise the exception after logging and rolling back
+
+    @staticmethod
+    def update(operator: int, knowledge_model: KnowledgeUpdate, session: Session) -> int:
+        try:
+            print('knowledge_model', knowledge_model)
+            knowledge_id = knowledge_model.id
+            now = datetime.now()
+            update_model: Any = {
+                **knowledge_model.model_dump(exclude_unset=True, exclude={"id"}),
+                "updated_by": operator,
+                "updated_at": now,
+            }
+            print('update_model', update_model)
+            result = session.query(KnowledgeORM).filter_by(
+                id=knowledge_id).update(update_model)
+            session.commit()
+            return result
+        except SQLAlchemyError as e:
+            logging.error(f"Failed to update knowledge: {e}")
             session.rollback()
             raise  # Re-raise the exception after logging and rolling back
 

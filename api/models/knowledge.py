@@ -67,7 +67,7 @@ class KnowledgeCreate(BaseModel):
     '''
     type: KnowledgeType = KnowledgeType.DOCUMENT
     name: str
-    description: Optional[str]
+    description: Optional[str] = None
     avatar: Optional[str] = None
 
 
@@ -76,10 +76,11 @@ class KnowledgeUpdate(BaseModel):
     knowledge update
     '''
     id: int
-    type: Optional[KnowledgeType]
-    name: Optional[str]
-    description: Optional[str]
-    avatar: Optional[str]
+    type: Optional[KnowledgeType] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    avatar: Optional[str] = None
+    config: Optional[KnowledgeConfigModel] = None
 
 
 class KnowledgeFileModel(BaseModel):
@@ -98,7 +99,7 @@ class KnowledgeModel(KnowledgeCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    config: Optional[KnowledgeConfigModel]
+    config: Optional[KnowledgeConfigModel] = None
     # files: List[KnowledgeFileModel] = []
 
     @field_validator('config')
@@ -120,3 +121,4 @@ class KnowledgeModel(KnowledgeCreate):
 
     class Config:
         from_attributes = True
+        discriminator = 'type'
