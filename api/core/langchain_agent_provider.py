@@ -8,7 +8,10 @@ from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.callbacks.manager import get_openai_callback
 from langchain_community.chat_models.openai import ChatOpenAI
 
+from core.api_tool import ApiTool
+from db import get_session
 from models.chat import MessageModel, MessageSenderType
+from services.plugin import PluginAPIService
 
 from .agent_provider import AgentProvider
 from .agent import Agent
@@ -34,16 +37,21 @@ class ToolCallingAgent(Agent):
     ) -> BaseMessage | None:
         """Chat with agent"""
         llm = ChatOpenAI(model=config.model.key)
+        api_id = config.plugins[0]['api']
+        with get_session() as session:
+            plugin_api_model = PluginAPIService.get_by_id(api_id, session)
+            api_tool = ApiTool(plugin_api_model=plugin_api_model)
+            print('api_tool_invoke', api_tool._invoke(
+                {"search_query": "deep learning"}))
+        tools = []
         system_msg = SystemMessage(content=config.persona)
         msgs = [to_message(m) for m in history]
         msgs.insert(0, system_msg)
         try:
             with get_openai_callback() as cb:
                 result = llm.invoke(msgs)
-                print('invoke result', result)
                 return result
         except Exception as e:
-            print('exception', e)
             return None
 
     def invoke_astream(self,
@@ -159,9 +167,11 @@ class LangchainAgentProvider(AgentProvider):
     def can_handle(self, config: ConfigMeta) -> int:
         '''Priority of provider for handling agent config'''
         if config.model.key == 'gpt-4':
-            return 10
+            return 30
         if config.model.key == 'gpt-4o':
-            return 10
+            return 30
+        if config.model.key == 'gpt-3.5-turbo':
+            return 30
         return -1
 
     def provide(self, config: ConfigMeta, chat_id: int) -> Agent:

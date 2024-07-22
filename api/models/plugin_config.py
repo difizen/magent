@@ -1,7 +1,6 @@
 from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
-from models.plugin_api import PluginApiModel
 from sqlalchemy import (
     JSON,
     Boolean,
@@ -51,8 +50,9 @@ class PluginConfigUpdate(BaseModel):
     plugin config update
     '''
     id: int
+    plugin_id: Optional[int]
     plugin_openapi_desc: Optional[str]
-    apis: Optional[List[str]]
+    apis: Optional[List[int]]
     is_draft: Optional[bool]
 
 
@@ -65,7 +65,7 @@ class PluginConfigModel(PluginConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    apis: Optional[List[str]] = None
+    apis: Optional[List[int]] = None
 
     class Config:
         from_attributes = True

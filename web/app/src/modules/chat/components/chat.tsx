@@ -46,7 +46,8 @@ export function Chat(props: ChatProps) {
               icon={<ClearOutlined />}
               onClick={() => chat.clear()}
             ></Button>
-            <Input onSubmit={(v) => chat.sendMessageStream(v)} />
+            {/* <Input onSubmit={(v) => chat.sendMessageStream(v)} /> */}
+            <Input onSubmit={(v) => chat.sendMessage(v)} />
           </div>
         </div>
         <div className="chat-footer">内容由AI生成，无法确保真实准确，仅供参考。</div>

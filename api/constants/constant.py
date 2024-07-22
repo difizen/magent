@@ -5,7 +5,7 @@ info:
     version: v1
 openapi: 3.0.1
 paths:
-    /arxiv:
+    /search:
         get:
             operationId: search
             parameters:
@@ -111,5 +111,5 @@ paths:
                     description: ""
             summary: search
 servers:
-    - url: http://exp-tech.plugin.knowledgepie.cn
+    - url: http://env-00jxgx8y5a87.dev-hz.cloudbasefunction.cn
 """

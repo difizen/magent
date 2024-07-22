@@ -203,7 +203,10 @@ langchain-core==0.1.52
     # via langchain
     # via langchain-anthropic
     # via langchain-community
+    # via langchain-openai
     # via langchain-text-splitters
+langchain-openai==0.1.5
+    # via magent-api
 langchain-text-splitters==0.0.2
     # via langchain
 langsmith==0.1.81
@@ -261,6 +264,7 @@ onnxruntime==1.18.1
     # via chromadb
 openai==1.13.3
     # via agentuniverse
+    # via langchain-openai
 opentelemetry-api==1.25.0
     # via chromadb
     # via opentelemetry-exporter-otlp-proto-grpc
@@ -467,6 +471,7 @@ tenacity==8.4.1
     # via qianfan
 tiktoken==0.5.2
     # via agentuniverse
+    # via langchain-openai
 tokenizers==0.19.1
     # via anthropic
     # via chromadb

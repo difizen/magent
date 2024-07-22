@@ -91,13 +91,11 @@ class PluginConfigService:
     @staticmethod
     def update(operator: int, config_model: PluginConfigUpdate, session: Session) -> int:
         if config_model.plugin_openapi_desc is not None:
-            print('config_model.plugin_openapi_desc',
-                  config_model.plugin_openapi_desc)
             plugin_api_bundles = PluginAPIService.parse_openapi_yaml_to_plugin_api_bundle(
                 config_model.id, config_model.plugin_openapi_desc, operator)
-            for plugin_api in plugin_api_bundles:
-                PluginAPIService.create(operator, plugin_api, session)
-            print('tool_bundles', plugin_api_bundles)
+            apis = [PluginAPIService.create(
+                operator, plugin_api, session).id for plugin_api in plugin_api_bundles]
+            config_model.apis = apis
         res = PluginConfigHelper.update(
             session, operator, config_model)
         return res
@@ -260,7 +258,7 @@ class PluginAPIService:
                 created_by=operator,
                 updated_at=now,
                 updated_by=operator,
-                server_url=server_url + '',
+                server_url=server_url + interface['path'],
                 method=interface['method'],
                 summary=interface['operation']['description'] if 'description' in interface['operation'] else interface['operation'].get(
                     'summary', None),
