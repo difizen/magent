@@ -21,7 +21,7 @@ from sqlalchemy.orm import relationship
 from models.knowledge_config import KnowledgeConfigModel, DocumentConfigModel, SheetConfigModel, ImageConfigModel
 
 
-class KnowledgeType(enum.Enum):
+class KnowledgeType(str, enum.Enum):
     DOCUMENT = "document"
     SHEET = "sheet"
     IMAGE = "image"
@@ -80,7 +80,7 @@ class KnowledgeUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     avatar: Optional[str] = None
-    config: Optional[KnowledgeConfigModel] = None
+    # config: Optional[KnowledgeConfigModel] = None
 
 
 class KnowledgeFileModel(BaseModel):
@@ -101,23 +101,6 @@ class KnowledgeModel(KnowledgeCreate):
     updated_at: datetime
     config: Optional[KnowledgeConfigModel] = None
     # files: List[KnowledgeFileModel] = []
-
-    @field_validator('config')
-    @classmethod
-    def set_config_model(cls, values):
-        '''
-        value config type and set config model
-        '''
-        print('values', values)
-        if isinstance(values, type(None)) or isinstance(values, DocumentConfigModel) or isinstance(values, ImageConfigModel) or isinstance(values, SheetConfigModel):
-            return values
-        raise ValidationError(
-            'config must be an instance of DocumentConfigModel or SheetConfigModel or ImageConfigModel')
-
-    # @field_validator('files')
-    # @classmethod
-    # def append_file(cls, file):
-    #     cls.files.append(file)
 
     class Config:
         from_attributes = True

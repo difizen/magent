@@ -68,6 +68,8 @@ class DocumentConfigCreate(BaseModel):
     '''
     knowledge_id: int
     config: DocumentConfigBase
+    config_type: Literal[KnowledgeConfigType.DOCUMENT] = Field(
+        default=KnowledgeConfigType.DOCUMENT)
 
 
 class DocumentConfigModel(DocumentConfigCreate):
@@ -78,8 +80,6 @@ class DocumentConfigModel(DocumentConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    config_type: Literal[KnowledgeConfigType.DOCUMENT] = Field(
-        default=KnowledgeConfigType.DOCUMENT)
 
     class Config:
         from_attributes = True
@@ -90,6 +90,8 @@ class SheetConfigCreate(BaseModel):
     need to update
     '''
     knowledge_id: int
+    config_type: Literal[KnowledgeConfigType.SHEET] = Field(
+        default=KnowledgeConfigType.SHEET)
     pass
 
 
@@ -101,8 +103,6 @@ class SheetConfigModel(SheetConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    config_type: Literal[KnowledgeConfigType.SHEET] = Field(
-        default=KnowledgeConfigType.SHEET)
 
     class Config:
         from_attributes = True
@@ -113,6 +113,8 @@ class ImageConfigCreate(BaseModel):
     need to update
     '''
     knowledge_id: int
+    config_type: Literal[KnowledgeConfigType.IMAGE] = Field(
+        default=KnowledgeConfigType.IMAGE)
     pass
 
 
@@ -124,8 +126,6 @@ class ImageConfigModel(ImageConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
-    config_type: Literal[KnowledgeConfigType.IMAGE] = Field(
-        default=KnowledgeConfigType.IMAGE)
 
     class Config:
         from_attributes = True
@@ -137,6 +137,7 @@ KnowledgeConfigModel = Annotated[
 ]
 
 
-class KnowledgeConfigCreate(BaseModel):
-    knowledge_id: int
-    config: Dict
+KnowledgeConfigCreate = Annotated[
+    Union[DocumentConfigCreate, SheetConfigCreate, ImageConfigCreate],
+    Field(discriminator='config_type')
+]
