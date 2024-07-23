@@ -1,5 +1,5 @@
 import enum
-from typing import Optional, Union, Dict, Any
+from typing import Optional, Union, Dict, Any, Annotated, Literal
 from pydantic import BaseModel, field_validator, Field, ConfigDict
 from datetime import datetime
 from db import Base
@@ -15,7 +15,12 @@ from sqlalchemy import (
     JSON
 )
 from sqlalchemy.orm import relationship
-# from models.knowledge import KnowledgeModel
+
+
+class KnowledgeConfigType(str, enum.Enum):
+    DOCUMENT = "document"
+    SHEET = "sheet"
+    IMAGE = "image"
 
 
 class SplitType(str, enum.Enum):
@@ -32,6 +37,10 @@ class KnowledgeConfigORM(Base):
     '''
     __tablename__ = 'knowledge_config'
     id = Column(Integer, primary_key=True)
+    config_type = Column(
+        Enum(KnowledgeConfigType),
+        nullable=False,
+    )
     created_by = Column(Integer)
     created_at = Column(DateTime(), nullable=False, default=datetime.now)
     updated_by = Column(Integer)
@@ -40,37 +49,6 @@ class KnowledgeConfigORM(Base):
     knowledge = relationship("KnowledgeORM", back_populates="config")
     config = Column(JSON)
 
-
-# class DocumentConfigORM(KnowledgeConfigORM):
-#     '''
-#     dcoument knowledge config orm
-#     '''
-#     __tablename__ = 'knowledge_document_config'
-#     id = Column(Integer, ForeignKey('knowledge_config.id'), primary_key=True)
-#     mode = Column(Enum(SplitType), nullable=True)  # "auto" 或 "custom"
-#     chunk_size = Column(String(255), nullable=True)  # 仅在 custom 模式下有效
-#     identifier = Column(String(255), nullable=True)  # 分段标识符
-#     text_preprocessing_rules = Column(JSON)  # 文本预处理规则 可能有多个，使用 JSON 存储
-
-
-# class SheetConfigORM(KnowledgeConfigORM):
-#     '''
-#     need to update
-#     '''
-#     __tablename__ = 'knowledge_sheet_config'
-#     id = Column(Integer, ForeignKey('knowledge_config.id'), primary_key=True)
-#     headers = Column(Text)  # 表头描述
-#     structure = Column(Text)  # 表结构描述
-
-
-# class ImageConfigORM(KnowledgeConfigORM):
-#     '''
-#     need to update
-#     '''
-#     __tablename__ = 'knowledge_image_config'
-#     id = Column(Integer, ForeignKey('knowledge_config.id'), primary_key=True)
-#     mode = Column(String)  # "auto" 或 "custom"
-#     description = Column(Text)  # 描述，仅在 custom 模式下有效
 
 class DocumentConfigBase(BaseModel):
     '''
@@ -100,6 +78,8 @@ class DocumentConfigModel(DocumentConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
+    config_type: Literal[KnowledgeConfigType.DOCUMENT] = Field(
+        default=KnowledgeConfigType.DOCUMENT)
 
     class Config:
         from_attributes = True
@@ -121,6 +101,8 @@ class SheetConfigModel(SheetConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
+    config_type: Literal[KnowledgeConfigType.SHEET] = Field(
+        default=KnowledgeConfigType.SHEET)
 
     class Config:
         from_attributes = True
@@ -142,25 +124,19 @@ class ImageConfigModel(ImageConfigCreate):
     created_at: datetime
     updated_by: int
     updated_at: datetime
+    config_type: Literal[KnowledgeConfigType.IMAGE] = Field(
+        default=KnowledgeConfigType.IMAGE)
 
     class Config:
         from_attributes = True
 
 
-KnowledgeConfigModel = Union[DocumentConfigModel,
-                             SheetConfigModel, ImageConfigModel]
+KnowledgeConfigModel = Annotated[
+    Union[DocumentConfigModel, SheetConfigModel, ImageConfigModel],
+    Field(discriminator='config_type')
+]
 
 
 class KnowledgeConfigCreate(BaseModel):
     knowledge_id: int
     config: Dict
-
-
-# class KnowledgeConfigModel(KnowledgeConfigCreate):
-#     created_by: int
-#     created_at: datetime
-#     updated_by: int
-#     updated_at: datetime
-
-#     class Config:
-#         from_attributes = True
