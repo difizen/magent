@@ -33,7 +33,8 @@ def upgrade() -> None:
     op.alter_column('plugin_api', 'openapi_desc',
                     existing_type=sa.TEXT(),
                     type_=sa.JSON(),
-                    existing_nullable=True)
+                    existing_nullable=True,
+                    postgresql_using="openapi_desc::json")
     # ### end Alembic commands ###
 
 
@@ -42,7 +43,8 @@ def downgrade() -> None:
     op.alter_column('plugin_api', 'openapi_desc',
                     existing_type=sa.JSON(),
                     type_=sa.TEXT(),
-                    existing_nullable=True)
+                    existing_nullable=True,
+                    postgresql_using="openapi_desc::text")
     op.drop_column('plugin_api', 'operation_id')
     op.drop_column('plugin_api', 'parameters')
     op.drop_column('plugin_api', 'summary')
