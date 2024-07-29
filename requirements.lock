@@ -9,6 +9,7 @@
 #   generate-hashes: false
 
 -e file:api
+-e file:packages/agent_ui
 agentuniverse==0.0.11
     # via magent-api
 aiohttp==3.9.5
@@ -22,7 +23,7 @@ aiosignal==1.3.1
     # via aiohttp
 alabaster==0.7.16
     # via sphinx
-alembic==1.13.1
+alembic==1.13.2
     # via magent-api
 annotated-types==0.7.0
     # via pydantic
@@ -49,7 +50,7 @@ backoff==2.2.1
     # via posthog
 bce-python-sdk==0.9.17
     # via qianfan
-bcrypt==4.1.3
+bcrypt==4.2.0
     # via chromadb
 beautifulsoup4==4.12.3
     # via wikipedia
@@ -59,7 +60,7 @@ build==1.2.1
     # via chromadb
 cachetools==5.4.0
     # via google-auth
-certifi==2024.6.2
+certifi==2024.7.4
     # via httpcore
     # via httpx
     # via kubernetes
@@ -80,7 +81,7 @@ click==8.1.7
     # via uvicorn
 coloredlogs==15.0.1
     # via onnxruntime
-dashscope==1.20.1
+dashscope==1.20.3
     # via agentuniverse
 dataclasses-json==0.6.7
     # via langchain
@@ -90,6 +91,7 @@ defusedxml==0.7.1
 deprecated==1.2.14
     # via opentelemetry-api
     # via opentelemetry-exporter-otlp-proto-grpc
+    # via opentelemetry-semantic-conventions
 dill==0.3.8
     # via multiprocess
 diskcache==5.6.3
@@ -103,18 +105,18 @@ docutils==0.20.1
     # via myst-parser
     # via sphinx
     # via sphinx-rtd-theme
-duckduckgo-search==6.2.0
+duckduckgo-search==6.2.4
     # via agentuniverse
-email-validator==2.1.1
+email-validator==2.2.0
     # via fastapi
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via anyio
-fastapi==0.111.0
+fastapi==0.111.1
     # via chromadb
     # via magent-api
 fastapi-cli==0.0.4
     # via fastapi
-fastapi-pagination==0.12.25
+fastapi-pagination==0.12.26
     # via magent-api
 filelock==3.15.4
     # via huggingface-hub
@@ -157,7 +159,7 @@ httpx==0.27.0
     # via fastapi
     # via ollama
     # via openai
-huggingface-hub==0.23.4
+huggingface-hub==0.24.2
     # via tokenizers
 humanfriendly==10.0
     # via coloredlogs
@@ -169,7 +171,7 @@ idna==3.7
     # via yarl
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==7.1.0
+importlib-metadata==8.0.0
     # via opentelemetry-api
 importlib-resources==6.4.0
     # via chromadb
@@ -209,7 +211,7 @@ langchain-openai==0.1.5
     # via magent-api
 langchain-text-splitters==0.0.2
     # via langchain
-langsmith==0.1.81
+langsmith==0.1.93
     # via langchain
     # via langchain-community
     # via langchain-core
@@ -265,7 +267,7 @@ onnxruntime==1.18.1
 openai==1.13.3
     # via agentuniverse
     # via langchain-openai
-opentelemetry-api==1.25.0
+opentelemetry-api==1.26.0
     # via chromadb
     # via opentelemetry-exporter-otlp-proto-grpc
     # via opentelemetry-instrumentation
@@ -273,34 +275,33 @@ opentelemetry-api==1.25.0
     # via opentelemetry-instrumentation-fastapi
     # via opentelemetry-sdk
     # via opentelemetry-semantic-conventions
-opentelemetry-exporter-otlp-proto-common==1.25.0
+opentelemetry-exporter-otlp-proto-common==1.26.0
     # via opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-exporter-otlp-proto-grpc==1.25.0
+opentelemetry-exporter-otlp-proto-grpc==1.26.0
     # via agentuniverse
     # via chromadb
-opentelemetry-instrumentation==0.46b0
+opentelemetry-instrumentation==0.47b0
     # via opentelemetry-instrumentation-asgi
     # via opentelemetry-instrumentation-fastapi
-opentelemetry-instrumentation-asgi==0.46b0
+opentelemetry-instrumentation-asgi==0.47b0
     # via opentelemetry-instrumentation-fastapi
-opentelemetry-instrumentation-fastapi==0.46b0
+opentelemetry-instrumentation-fastapi==0.47b0
     # via chromadb
-opentelemetry-proto==1.25.0
+opentelemetry-proto==1.26.0
     # via opentelemetry-exporter-otlp-proto-common
     # via opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-sdk==1.25.0
+opentelemetry-sdk==1.26.0
     # via chromadb
     # via opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-semantic-conventions==0.46b0
+opentelemetry-semantic-conventions==0.47b0
     # via opentelemetry-instrumentation-asgi
     # via opentelemetry-instrumentation-fastapi
     # via opentelemetry-sdk
-opentelemetry-util-http==0.46b0
+opentelemetry-util-http==0.47b0
     # via opentelemetry-instrumentation-asgi
     # via opentelemetry-instrumentation-fastapi
-orjson==3.10.3
+orjson==3.10.6
     # via chromadb
-    # via fastapi
     # via langsmith
 overrides==7.7.0
     # via chromadb
@@ -316,9 +317,11 @@ pandas==2.2.2
     # via agentuniverse
 posthog==3.5.0
     # via chromadb
+primp==0.5.4
+    # via duckduckgo-search
 prompt-toolkit==3.0.47
     # via qianfan
-protobuf==4.25.3
+protobuf==4.25.4
     # via googleapis-common-protos
     # via onnxruntime
     # via opentelemetry-proto
@@ -337,7 +340,7 @@ pycparser==2.22
     # via cffi
 pycryptodome==3.20.0
     # via bce-python-sdk
-pydantic==2.7.3
+pydantic==2.8.2
     # via agentuniverse
     # via anthropic
     # via chromadb
@@ -350,9 +353,9 @@ pydantic==2.7.3
     # via openai
     # via pydantic-settings
     # via qianfan
-pydantic-core==2.18.4
+pydantic-core==2.20.1
     # via pydantic
-pydantic-settings==2.3.2
+pydantic-settings==2.3.4
     # via magent-api
 pygments==2.18.0
     # via rich
@@ -361,8 +364,6 @@ pypika==0.48.9
     # via chromadb
 pyproject-hooks==1.1.0
     # via build
-pyreqwest-impersonate==0.5.0
-    # via duckduckgo-search
 python-dateutil==2.9.0.post0
     # via kubernetes
     # via pandas
@@ -387,7 +388,7 @@ pyyaml==6.0.1
     # via uvicorn
 qianfan==0.3.18
     # via agentuniverse
-regex==2024.5.15
+regex==2024.7.24
     # via tiktoken
 requests==2.32.3
     # via agentuniverse
@@ -411,7 +412,7 @@ rich==13.7.1
     # via typer
 rsa==4.9
     # via google-auth
-setuptools==70.3.0
+setuptools==72.0.0
     # via opentelemetry-instrumentation
 shellingham==1.5.4
     # via typer
@@ -429,26 +430,26 @@ snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.5
     # via beautifulsoup4
-sphinx==7.4.4
+sphinx==7.4.7
     # via agentuniverse
     # via myst-parser
     # via sphinx-rtd-theme
     # via sphinxcontrib-jquery
 sphinx-rtd-theme==2.0.0
     # via agentuniverse
-sphinxcontrib-applehelp==1.0.8
+sphinxcontrib-applehelp==2.0.0
     # via sphinx
-sphinxcontrib-devhelp==1.0.6
+sphinxcontrib-devhelp==2.0.0
     # via sphinx
-sphinxcontrib-htmlhelp==2.0.5
+sphinxcontrib-htmlhelp==2.1.0
     # via sphinx
 sphinxcontrib-jquery==4.1
     # via sphinx-rtd-theme
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
-sphinxcontrib-qthelp==1.0.7
+sphinxcontrib-qthelp==2.0.0
     # via sphinx
-sphinxcontrib-serializinghtml==1.1.10
+sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 sqlalchemy==2.0.25
     # via agentuniverse
@@ -461,9 +462,9 @@ sse-starlette==2.1.2
 starlette==0.37.2
     # via fastapi
     # via sse-starlette
-sympy==1.13.0
+sympy==1.13.1
     # via onnxruntime
-tenacity==8.4.1
+tenacity==8.5.0
     # via chromadb
     # via langchain
     # via langchain-community
@@ -487,7 +488,7 @@ typer==0.12.3
     # via chromadb
     # via fastapi-cli
     # via qianfan
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via alembic
     # via anthropic
     # via anyio
@@ -508,12 +509,10 @@ typing-inspect==0.9.0
     # via dataclasses-json
 tzdata==2024.1
     # via pandas
-ujson==5.10.0
-    # via fastapi
 urllib3==2.2.2
     # via kubernetes
     # via requests
-uvicorn==0.30.1
+uvicorn==0.30.3
     # via chromadb
     # via fastapi
     # via sse-starlette
