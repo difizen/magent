@@ -6,7 +6,6 @@
 #   features: []
 #   all-features: false
 #   with-sources: false
-#   generate-hashes: false
 
 -e file:api
 -e file:packages/agent_ui
@@ -139,8 +138,6 @@ google-auth==2.32.0
 googleapis-common-protos==1.63.2
     # via agentuniverse
     # via opentelemetry-exporter-otlp-proto-grpc
-greenlet==3.0.3
-    # via sqlalchemy
 grpcio==1.63.0
     # via agentuniverse
     # via chromadb

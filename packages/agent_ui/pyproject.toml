@@ -1,13 +1,10 @@
 [project]
 name = "agent_ui"
 version = "0.1.0"
-description = "Add your description here"
+description = ""
 authors = [
-    { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" }
-]
-
-packages = [
-    { include = "agent_ui" }
+  { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" },
+  { name = "brokun", email = "brokun0128@gmail.com" },
 ]
 
 dependencies = []
