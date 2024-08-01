@@ -1,0 +1,25 @@
+.magent-base-layout {
+  height: 100vh;
+  box-sizing: border-box;
+
+  .mana-header {
+    background: var(--mana-color-bg-layout);
+    height: 60px;
+
+    .mana-header-left {
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .mana-header-middle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &-container {
+    height: calc(100% - 61px);
+  }
+}
