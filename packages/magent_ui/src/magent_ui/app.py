@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import webbrowser
 import uvicorn
-from agent_ui.routers.main import api_router
+from magent_ui.routers.main import api_router
 import os
 
 PORT = 9000
@@ -31,5 +31,5 @@ def launch():
     else:
         print('[magent] can not find dist files')
 
-    uvicorn.run("agent_ui.start:app",
+    uvicorn.run("magent_ui.start:app",
                 host="localhost", port=PORT, reload=True)

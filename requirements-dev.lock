@@ -8,7 +8,7 @@
 #   with-sources: false
 
 -e file:api
--e file:packages/agent_ui
+-e file:packages/magent_ui
 agentuniverse==0.0.11
     # via magent-api
 aiohttp==3.9.5

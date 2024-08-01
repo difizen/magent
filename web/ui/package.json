@@ -14,7 +14,7 @@
   "author": "brokun <brokun0128@gmail.com>",
   "scripts": {
     "build": "umi build",
-    "start": "PORT=3000 UMI_DEV_SERVER_COMPRESS=none umi dev ",
+    "start": "PORT=3100 UMI_DEV_SERVER_COMPRESS=none umi dev ",
     "postinstall": "umi setup",
     "setup": "umi setup",
     "clean": "git clean -fX .",

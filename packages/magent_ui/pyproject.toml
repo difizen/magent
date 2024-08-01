@@ -1,5 +1,5 @@
 [project]
-name = "agent_ui"
+name = "magent_ui"
 version = "0.1.0"
 description = ""
 authors = [
@@ -24,4 +24,4 @@ dev-dependencies = []
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/agent_ui"]
+packages = ["src/magent_ui"]
