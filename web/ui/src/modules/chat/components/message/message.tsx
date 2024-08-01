@@ -25,9 +25,9 @@ export const Message = (props: MessageProps) => {
     avatarSrc = chat.bot?.avatar;
     nickName = chat.bot?.name;
   }
-  if (message.senderType === MessageSenderType.HUMAN && message.sender?.avatar) {
-    avatarSrc = message.sender?.avatar;
-    nickName = message.sender.name;
+  if (message.senderType === MessageSenderType.HUMAN) {
+    avatarSrc = '';
+    nickName = '';
   }
 
   let content: ReactNode = message.content;

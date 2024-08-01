@@ -8,7 +8,6 @@ import {
 } from '@difizen/mana-app';
 
 import { AgentBotApp } from './app.js';
-import { UserAvatarView } from './avatar-view.js';
 import { MagentBaseLayoutView, MagentBaseLayoutSlots } from './base-layout/layout.js';
 import { AgentBotConfigSlots, BotConfigView } from './bot-config/index.js';
 import { BotLayoutView, BotLayoutSlots } from './bot-layout/layout.js';
@@ -27,7 +26,6 @@ export const BotModule = ManaModule.create().register(
   BotConfigView,
   BotPreviewerView,
   BotProvider,
-  UserAvatarView,
   ModelSelectorView,
   BotPersonaView,
   BotSettingView,
@@ -46,11 +44,6 @@ export const BotModule = ManaModule.create().register(
   createViewPreference({
     slot: HeaderArea.left,
     view: MagentBrandView,
-    autoCreate: true,
-  }),
-  createViewPreference({
-    slot: HeaderArea.right,
-    view: UserAvatarView,
     autoCreate: true,
   }),
   createViewPreference({

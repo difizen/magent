@@ -3,8 +3,6 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 
 import { AxiosClient } from '../axios-client/index.js';
-import { UserManager } from '../user/user-manager.js';
-import type { User } from '../user/user.js';
 
 import type { ChatEventChunk } from './protocol.js';
 import { ChatMessageOption, MessageSenderType, MessageType } from './protocol.js';
@@ -12,7 +10,6 @@ import { ChatMessageOption, MessageSenderType, MessageType } from './protocol.js
 @transient()
 export class ChatMessage {
   protected axios: AxiosClient;
-  protected userManager: UserManager;
   option: ChatMessageOption;
   senderId: number;
   senderType?: MessageSenderType;
@@ -25,17 +22,12 @@ export class ChatMessage {
   @prop()
   complete?: boolean = true;
 
-  @prop()
-  sender?: User;
-
   constructor(
     @inject(ChatMessageOption) option: ChatMessageOption,
     @inject(AxiosClient) axios: AxiosClient,
-    @inject(UserManager) userManager: UserManager,
   ) {
     this.option = option;
     this.axios = axios;
-    this.userManager = userManager;
     const {
       senderId,
       senderType = MessageSenderType.HUMAN,
@@ -54,13 +46,6 @@ export class ChatMessage {
     this.createdAt = dayjs(createdAt);
     if (option.complete !== undefined) {
       this.complete = !!option.complete;
-    }
-    this.getSender();
-  }
-
-  protected getSender() {
-    if (this.senderType === MessageSenderType.HUMAN && this.senderId) {
-      this.sender = this.userManager.getOrCreate({ id: this.senderId.toString() });
     }
   }
 

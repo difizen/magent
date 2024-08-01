@@ -7,7 +7,6 @@ import { AsyncModel } from '../../common/async-model.js';
 import { AgentBotManager } from '../agent-bot/agent-bot-manager.js';
 import type { AgentBot } from '../agent-bot/protocol.js';
 import { AxiosClient } from '../axios-client/index.js';
-import { UserManager } from '../user/user-manager.js';
 
 import type { ChatMessage } from './chat-message.js';
 import { ChatMessageManager } from './message-manager.js';
@@ -48,7 +47,6 @@ const msgModelToOption = (msg: ChatMessageModel): ChatMessageOption => {
 
 @transient()
 export class Chat extends AsyncModel<Chat, ChatOption> {
-  @inject(UserManager) userManager: UserManager;
   botManager: AgentBotManager;
   id?: number;
   messageManager: ChatMessageManager;
@@ -139,9 +137,8 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
     if (!this.id) {
       return;
     }
-    const user = await this.userManager.currentReady;
     const msg: ChatMessageCreate = {
-      sender_id: parseInt(user.id, 10),
+      sender_id: 1,
       chat_id: this.id,
       content: msgContent,
     };
@@ -164,9 +161,8 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
     if (!this.id) {
       return;
     }
-    const user = await this.userManager.currentReady;
     const msg: ChatMessageCreate = {
-      sender_id: parseInt(user.id, 10),
+      sender_id: 1,
       chat_id: this.id,
       content: msgContent,
     };

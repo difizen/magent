@@ -12,5 +12,3 @@ export const defaultPluginMeta = {
     'https://mdn.alipayobjects.com/huamei_zabatk/afts/img/A*IR_ISbcKmdcAAAAAAAAAAAAADvyTAQ/original',
   description: '查找论文',
 };
-
-export const defaultSuperUserEmal = 'default@magent.com';
