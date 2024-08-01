@@ -6,7 +6,7 @@ export default defineConfig({
   runtimePublicPath: {},
   proxy: {
     '/api': {
-      target: 'http://localhost:8000/',
+      target: 'http://localhost:9000/',
       changeOrigin: true,
       secure: false,
       pathRewrite: {},

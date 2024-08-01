@@ -1,3 +1,4 @@
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
@@ -18,18 +19,19 @@ async def lifespan(app: FastAPI):
     print('[magent] finished')
 
 
-def launch():
-    app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan)
+app.include_router(api_router, prefix='/api/v1')
 
-    app.include_router(api_router, prefix='/api/v1')
+
+def launch():
 
     # 挂载 static 目录，使其可以访问静态文件
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     static_dir = os.path.join(BASE_DIR, 'static')
     if os.path.exists(static_dir):
-        app.mount("/", StaticFiles(directory=static_dir,  html=True), name="dist")
+        app.mount("/static", StaticFiles(directory=static_dir,
+                  html=True), name="static")
     else:
         print('[magent] can not find dist files')
-
-    uvicorn.run("magent_ui.start:app",
+    uvicorn.run(f"magent_ui.app:app",
                 host="localhost", port=PORT, reload=True)
