@@ -7,7 +7,9 @@ authors = [
   { name = "brokun", email = "brokun0128@gmail.com" },
 ]
 
-dependencies = []
+dependencies = [
+    "jinja2>=3.1.4",
+]
 readme = "README.md"
 requires-python = ">= 3.10"
 

@@ -18,7 +18,7 @@
     "postinstall": "umi setup",
     "setup": "umi setup",
     "clean": "git clean -fX .",
-    "deploy": "copyfiles -u 1 dist/* ../../packages/magent-ui/src/magent-ui/static/ && copyfiles -u 1 dist/**/* ../../packages/magent-ui/src/magent-ui/static/"
+    "deploy": "copyfiles -u 1 dist/* ../../packages/magent_ui/src/magent_ui/static/ && copyfiles -u 1 dist/**/* ../../packages/magent_ui/src/magent_ui/static/"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",

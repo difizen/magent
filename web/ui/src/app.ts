@@ -9,7 +9,7 @@ function initPublicPath() {
     window.__webpack_require__.p = cdn;
   }
 
-  const el = document.getElementById('jupyter-config-data');
+  const el = document.getElementById('mana-config-data');
   if (el) {
     const pageConfig = JSON.parse(el.textContent || '') as Record<string, string>;
     const baseUrl = pageConfig['baseUrl'];
