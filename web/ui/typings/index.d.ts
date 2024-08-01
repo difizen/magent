@@ -12,3 +12,5 @@ interface Pagination<T = any> {
   size: number;
   pages: number;
 }
+
+declare module '*.jpg';

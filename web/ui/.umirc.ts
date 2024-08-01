@@ -1,4 +1,5 @@
 import { defineConfig } from 'umi';
+import path from 'path';
 import routes from './routes';
 export default defineConfig({
   publicPath: '/',
@@ -21,8 +22,11 @@ export default defineConfig({
     ['@babel/plugin-transform-class-properties', { loose: true }],
     'babel-plugin-parameter-decorator',
   ],
-  plugins: ['./dumi-plugin-nodenext', './umi-plugin-router'],
+  plugins: ['./dumi-plugin-nodenext', './umi-plugin-router', './umi-plugin-mana'],
   mfsu: false,
   jsMinifier: 'none',
+  alias: {
+    '@/modules': path.join(__dirname, './src/modules'),
+  },
   favicons: ['/favicon.ico'],
 });

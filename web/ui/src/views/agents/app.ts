@@ -13,7 +13,6 @@ export class AgentBotApp implements ApplicationContribution {
   @inject(ConfigurationService) configurationService: ConfigurationService;
 
   async onStart() {
-    document.title = `magent bot`;
-    this.modelManager.updateModels();
+    document.title = `magent-ui`;
   }
 }

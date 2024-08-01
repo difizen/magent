@@ -9,7 +9,7 @@ const MagentBrandComponent = forwardRef<HTMLDivElement>(
     return (
       <div ref={ref} className="magent-brand">
         <MagentLOGO />
-        <label className="magent-brand-title">Bot</label>
+        {/* <label className="magent-brand-title">Bot</label> */}
       </div>
     );
   },

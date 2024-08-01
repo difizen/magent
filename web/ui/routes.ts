@@ -1,12 +1,22 @@
 export default [
   {
     path: '/',
-    component: 'bot',
-    routes: [],
+    redirect: '/portal',
   },
   {
-    path: '/bot/:botId',
-    component: 'bot',
-    routes: [],
+    path: '/',
+    slot: 'magent-base-layout-slot',
+    routes: [
+      {
+        path: '/portal',
+        slot: 'magent-portal-slot',
+        redirect: '/portal/agents',
+        keepQuery: true,
+      },
+      {
+        path: '/portal/:portal',
+        slot: 'magent-portal-slot',
+      },
+    ],
   },
 ];
