@@ -6,7 +6,7 @@ function initPublicPath() {
   window.__webpack_public_path__ = cdn;
   window.publicPath = cdn;
   if (window.__webpack_require__) {
-    window.__webpack_require__.p = cdn;
+    window.__webpack_require__.p = window.publicPath || '/';
   }
 
   const el = document.getElementById('mana-config-data');
