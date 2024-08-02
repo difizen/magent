@@ -6,10 +6,9 @@
 #   features: []
 #   all-features: false
 #   with-sources: false
-#   generate-hashes: false
 
 -e file:api
--e file:packages/agent_ui
+-e file:packages/magent_ui
 agentuniverse==0.0.11
     # via magent-api
 aiohttp==3.9.5
@@ -139,8 +138,6 @@ google-auth==2.32.0
 googleapis-common-protos==1.63.2
     # via agentuniverse
     # via opentelemetry-exporter-otlp-proto-grpc
-greenlet==3.0.3
-    # via sqlalchemy
 grpcio==1.63.0
     # via agentuniverse
     # via chromadb
@@ -181,6 +178,7 @@ jinja2==3.1.4
     # via agentuniverse
     # via fastapi
     # via flask
+    # via magent-ui
     # via myst-parser
     # via sphinx
 jiter==0.5.0

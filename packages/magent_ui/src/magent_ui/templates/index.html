@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="default">
+  <head>
+    <meta charset="utf-8" />
+    <base href="{{static_url}}/" />
+    <link
+      id="favicon"
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="https://github.com/alipay/agentUniverse/raw/master/docs/guidebook/_picture/logo_bar.jpg"
+    />
+    <link type="text/css" rel="stylesheet" href="{{static_url}}/umi.css" />
+    <script id="mana-config-data" type="application/json">
+      {{ page_config | tojson }}
+    </script>
+    <script type="text/javascript">
+      /* Remove token from URL. */
+      (function () {
+        var parsedUrl = new URL(window.location.href);
+        if (parsedUrl.searchParams.get('token')) {
+          parsedUrl.searchParams.delete('token');
+          window.history.replaceState({}, '', parsedUrl.href);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <h1>Magent</h1>
+    </div>
+
+    <script src="{{static_url}}/umi.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>
