@@ -1,13 +1,15 @@
-import { defineConfig } from 'umi';
 import path from 'path';
+
+import { defineConfig } from 'umi';
+
 import routes from './routes';
 
 class ExposeWebpackRequirePlugin {
-  apply(compiler) {
-    compiler.hooks.compilation.tap('ExposeWebpackRequirePlugin', (compilation) => {
+  apply(compiler: any) {
+    compiler.hooks.compilation.tap('ExposeWebpackRequirePlugin', (compilation: any) => {
       compilation.mainTemplate.hooks.require.tap(
         'ExposeWebpackRequirePlugin',
-        (source) => {
+        (source: any) => {
           return `
             window.__webpack_require__ = __webpack_require__;
             ${source}
@@ -39,14 +41,18 @@ export default defineConfig({
     ['@babel/plugin-transform-class-properties', { loose: true }],
     'babel-plugin-parameter-decorator',
   ],
-  chainWebpack: (memo, args) => {
+  chainWebpack: (memo: any) => {
     memo.plugin('expose-webpack-require').use(ExposeWebpackRequirePlugin);
   },
-  plugins: ['./dumi-plugin-nodenext', './umi-plugin-router', './umi-plugin-mana'],
+  plugins: [
+    './config/dumi-plugin-nodenext',
+    './config/umi-plugin-router',
+    './config/umi-plugin-mana',
+  ],
   mfsu: false,
   jsMinifier: 'none',
   alias: {
-    '@/modules': path.join(__dirname, './src/modules'),
+    '@/modules': path.join(__dirname, '../src/modules'),
   },
   favicons: ['/favicon.ico'],
 });
