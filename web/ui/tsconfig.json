@@ -38,5 +38,5 @@
     /* dev */
     "preserveWatchOutput": true
   },
-  "exclude": []
+  "exclude": ["config"]
 }
