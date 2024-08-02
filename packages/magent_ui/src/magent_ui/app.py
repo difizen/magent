@@ -41,7 +41,7 @@ templates = Jinja2Templates(directory=templates_dir)
 
 @app.get("/", response_class=HTMLResponse)
 async def to_index_page(request: Request):
-    return RedirectResponse(url="/app")
+    return RedirectResponse(url="/app/")
 
 
 @app.get("/app/{path:path}", response_class=HTMLResponse)
@@ -53,5 +53,5 @@ async def to_app_page(request: Request):
 
 def launch():
 
-    uvicorn.run(f"magent_ui.app:app",
-                host="localhost", port=PORT, reload=True)
+    uvicorn.run(app,
+                host="0.0.0.0", port=PORT)
