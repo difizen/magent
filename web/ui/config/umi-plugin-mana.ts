@@ -43,7 +43,6 @@ const { Slot } = await import('@difizen/mana-app');
 const { Outlet } = await import('umi');
 
 const Page = ({ children, ...props }) => {
-  console.log(children, props)
   return (
   <Slot name="${slot}" viewProps={props}>
     <Outlet />

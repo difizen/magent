@@ -1,21 +1,24 @@
 import { ManaModule } from '@difizen/mana-app';
 
-import { AgentBotManager } from './agent-bot-manager.js';
-import { AgentBot } from './agent-bot.js';
 import { AgentConfigManager } from './agent-config-manager.js';
 import { AgentConfig } from './agent-config.js';
+import { AgentManager } from './agent-manager.js';
+import { AgentMarket } from './agent-market.js';
+import { AgentModel } from './agent-model.js';
 import {
-  AgentBotFactory,
-  AgentBotOption,
+  AgentModelFactory,
+  AgentModelOption,
   AgentConfigFactory,
   AgentConfigOption,
 } from './protocol.js';
 
 export const AgentBotModule = ManaModule.create().register(
-  AgentBotManager,
-  AgentBot,
+  AgentManager,
+  AgentModel,
   AgentConfig,
   AgentConfigManager,
+  AgentMarket,
+
   {
     token: AgentConfigFactory,
     useFactory: (ctx) => {
@@ -26,15 +29,15 @@ export const AgentBotModule = ManaModule.create().register(
       };
     },
   },
-  AgentBot,
-  AgentBotManager,
+  AgentModel,
+  AgentManager,
   {
-    token: AgentBotFactory,
+    token: AgentModelFactory,
     useFactory: (ctx) => {
       return (option: any) => {
         const child = ctx.container.createChild();
-        child.register({ token: AgentBotOption, useValue: option });
-        return child.get(AgentBot);
+        child.register({ token: AgentModelOption, useValue: option });
+        return child.get(AgentModel);
       };
     },
   },
