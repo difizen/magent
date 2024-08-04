@@ -25,6 +25,8 @@ const PortalLayoutComponent = forwardRef<HTMLDivElement>(
     const portal = match.params?.portal;
     const navigate = useNavigate();
 
+    document.title = `magent-ui ${portal}`;
+
     const segemntPortals = portals.map((item) => ({
       label: item.label,
       value: item.path,
@@ -38,6 +40,7 @@ const PortalLayoutComponent = forwardRef<HTMLDivElement>(
             options={segemntPortals}
             value={portal}
             onChange={(value) => {
+              history.push();
               navigate(`/portal/${value}`, { replace: true });
             }}
           />

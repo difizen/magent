@@ -1,10 +1,20 @@
-import { CodeOutlined, MessageOutlined } from '@ant-design/icons';
-import type { ViewSize } from '@difizen/mana-app';
-import { BaseView, ViewInstance, singleton, useInject, view } from '@difizen/mana-app';
+import { MessageOutlined, ToolOutlined } from '@ant-design/icons';
+import {
+  BaseView,
+  ViewInstance,
+  inject,
+  singleton,
+  useInject,
+  view,
+  prop,
+} from '@difizen/mana-app';
 import { Avatar, Card } from 'antd';
 import { forwardRef } from 'react';
+import { history } from 'umi';
 
 import './index.less';
+import { AgentMarket } from '../../modules/agent/agent-market.js';
+import { MagentLOGO } from '../../modules/base-layout/brand/logo.js';
 
 const viewId = 'magent-agents';
 export const slot = `${viewId}-slot`;
@@ -14,21 +24,20 @@ const { Meta } = Card;
 const AgentsViewComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {
     const instance = useInject<AgentsView>(ViewInstance);
-    const list = [];
-    for (let i = 0; i < 32; i++) {
-      list.push({ key: i });
-    }
+    const market = instance.market;
 
     return (
       <div ref={ref} className={viewId}>
-        <div className="agent-cards w-full grid justify-content-center responsive-list-container sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4">
-          {list.map((item) => (
+        <div className="agent-cards sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4">
+          {market.list.map((item) => (
             <Card
               className="agent-card"
-              key={item.key}
+              key={item.id}
               hoverable
-              // style={{ width: 360 }}
-              actions={[<CodeOutlined key="dev" />, <MessageOutlined key="chat" />]}
+              actions={[<ToolOutlined key="dev" />, <MessageOutlined key="chat" />]}
+              onClick={() => {
+                instance.toChatPage(item.id);
+              }}
             >
               <Meta
                 avatar={
@@ -36,17 +45,12 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
                     <Avatar
                       shape="square"
                       size={64}
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Dall-e_3_%28jan_%2724%29_artificial_intelligence_icon.png/200px-Dall-e_3_%28jan_%2724%29_artificial_intelligence_icon.png"
+                      src={item.avatar || <MagentLOGO />}
                     />
                   </span>
                 }
-                title="MKT报告机器人"
-                description={
-                  <span>
-                    MKT Report
-                    Bot是您掌握营销报告的教程指南。它提供分步说明、技巧和最佳实践，帮助您创建有效的营销报告并分析关键指标
-                  </span>
-                }
+                title={item.name}
+                description={<span>{item.name}</span>}
               />
             </Card>
           ))}
@@ -59,15 +63,22 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
 @singleton()
 @view(viewId)
 export class AgentsView extends BaseView {
-  cardWidth = 360;
-  cardGutter = 16;
-  override view = AgentsViewComponent;
+  @prop()
+  loadig = false;
 
-  override onViewResize(size: ViewSize): void {
-    const { width, height } = size;
-    if (!width) {
-      return;
-    }
-    const maxCol = (width + this.cardGutter) / this.cardWidth;
+  override view = AgentsViewComponent;
+  @inject(AgentMarket) market: AgentMarket;
+  override async onViewMount(): Promise<void> {
+    this.loadig = true;
+    await this.market.update();
+    this.loadig = false;
   }
+
+  toChatPage = (agentId: string) => {
+    history.push(`/agent/${agentId}/chat`);
+  };
+
+  toDevPage = (agentId: string) => {
+    history.push(`/agent/${agentId}/dev`);
+  };
 }
