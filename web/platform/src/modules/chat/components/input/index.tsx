@@ -1,10 +1,11 @@
-import { SendOutlined } from '@ant-design/icons';
-import { Button, Input as AntdInput } from 'antd';
+import { Input as AntdInput, Tooltip } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classnames from 'classnames';
 import type { ChangeEvent, ReactNode, KeyboardEvent, FC } from 'react';
 import { forwardRef, useCallback, useMemo, useState } from 'react';
+
 import './index.less';
+import { AudioIcon, FolderIcon, ImgIcon, SendIcon, VideoIcon } from './icon.js';
 
 function insertAtCaret(e: ChangeEvent<HTMLTextAreaElement>, valueToInsert?: string) {
   const target = e.target;
@@ -126,31 +127,52 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
 
   return (
     <div className={classnames(prefixCls, wrapperClassName)}>
-      <div className={`${prefixCls}-content`}>
-        <div
-          className={`${prefixCls}-textarea`}
-          style={{ display: 'flex', alignItems: 'center', minHeight: '46px' }}
-        >
-          <AntdInput.TextArea
-            placeholder="写消息..."
-            ref={ref}
-            value={value}
-            onChange={onInputChange}
-            onKeyDown={onInputKeyDown}
-            bordered={false}
-            autoSize={{ minRows: 1, maxRows: 8 }}
-          />
+      <div className={`${prefixCls}-searchInput`}>
+        <div className={`${prefixCls}-textArea`}>
+          <div className={`${prefixCls}-upload`}>
+            <Tooltip placement="top" title={'不支持上传图片'}>
+              <div>
+                <ImgIcon />
+              </div>
+            </Tooltip>
+
+            <Tooltip placement="top" title={'不支持上传音频'}>
+              <div>
+                <AudioIcon />
+              </div>
+            </Tooltip>
+
+            <Tooltip placement="top" title={'不支持上传视频'}>
+              <div>
+                <VideoIcon />
+              </div>
+            </Tooltip>
+            <Tooltip placement="top" title={'不支持上传文件'}>
+              <div>
+                <FolderIcon />
+              </div>
+            </Tooltip>
+          </div>
+          <div className={`${prefixCls}-input`}>
+            <AntdInput.TextArea
+              ref={ref}
+              value={value}
+              placeholder={'输入聊天内容'}
+              bordered={false}
+              autoSize={{ minRows: 1 }}
+              style={{ resize: 'none', padding: '0px 16px', maxHeight: 80 }}
+              onChange={onInputChange}
+              onKeyDown={onInputKeyDown}
+              className={`${prefixCls}-textArea`}
+            />
+          </div>
         </div>
-        <div className={`${prefixCls}-operation`}>
-          <div className={`${prefixCls}-operation-send`}>
-            <Button
-              className={`${prefixCls}-textarea-btn`}
-              type="primary"
-              icon={<SendOutlined />}
-              onClick={() => {
-                onSubmit(value || v);
-              }}
-            ></Button>
+        <div className={`${prefixCls}-iconBottom`}>
+          <div
+            className={`${prefixCls}-sendButton`}
+            onClick={() => onSubmit(value || v)}
+          >
+            <SendIcon />
           </div>
         </div>
       </div>

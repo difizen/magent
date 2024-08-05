@@ -17,7 +17,12 @@ import type {
   ChatMessageModel,
   ChatMessageOption,
 } from './protocol.js';
-import { ChatMessageType, ChatOption } from './protocol.js';
+import {
+  ChatMessageType,
+  ChatOption,
+  MessageSenderType,
+  MessageType,
+} from './protocol.js';
 
 export interface ChatReply {
   reply: ChatMessageModel[];
@@ -149,9 +154,20 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
   };
 
   protected doSendMessage = async (msg: ChatMessageCreate) => {
+    const send = this.getOrCreateMessage({
+      id: -1,
+      sender_type: MessageSenderType.HUMAN,
+      message_type: MessageType.TEXT,
+      created_at: Date.now().toString(),
+      ...msg,
+    });
+
+    this.messages = [...this.messages, send];
+
     const url = `api/v1/chats/${this.id!}/messages/compress`;
     const res = await this.axios.post<ChatReply>(url, msg);
     if (res.status === 200) {
+      this.messages.pop();
       const model = res.data;
       const send = this.getOrCreateMessage(model.send);
       const replys = model.reply.map(this.getOrCreateMessage);

@@ -1,9 +1,16 @@
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  CopyOutlined,
+  DislikeOutlined,
+  LikeOutlined,
+  LoadingOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import { useInject, useObserve } from '@difizen/mana-app';
 import { Avatar } from 'antd';
 import classNames from 'classnames';
+import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 import type { Chat, ChatMessage } from '../../protocol.js';
 import { ChatInstance, MessageSenderType } from '../../protocol.js';
@@ -11,23 +18,30 @@ import Typing from '../typing/index.js';
 
 import './index.less';
 
+import { MarkdownMessage } from './markdown-message/index.js';
+import { TextMessage } from './Text/index.js';
+
 interface MessageProps {
   message: ChatMessage;
 }
+
+// const defaultgptIcon =
+//   'https://mdn.alipayobjects.com/huamei_yfyi3l/afts/img/A*cbWWRrggkugAAAAAAAAAAAAADheqAQ/original';
+
 export const Message = (props: MessageProps) => {
   const message = useObserve(props.message);
   const chat = useInject<Chat>(ChatInstance);
 
-  const [contentHover, setContentHover] = useState<boolean>(false);
+  // const [contentHover, setContentHover] = useState<boolean>(false);
   let avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';
-  let nickName = 'user';
+  // let nickName = 'user';
   if (message.senderType === MessageSenderType.AI && chat.bot?.avatar) {
     avatarSrc = chat.bot?.avatar;
-    nickName = chat.bot?.name;
+    // nickName = chat.bot?.name;
   }
   if (message.senderType === MessageSenderType.HUMAN && message.sender?.avatar) {
     avatarSrc = message.sender?.avatar;
-    nickName = message.sender.name;
+    // nickName = message.sender.name;
   }
 
   let content: ReactNode = message.content;
@@ -43,39 +57,62 @@ export const Message = (props: MessageProps) => {
     content = <LoadingOutlined />;
   }
 
+  const actions = [
+    <span key={'actionsTag3'} className={`chat-message-actionsTag`}>
+      <LikeOutlined />
+    </span>,
+    <span key={'actionsTag2'} className={`chat-message-actionsTag`}>
+      <DislikeOutlined />
+    </span>,
+    <span
+      key={'actionsTag1'}
+      className={`chat-message-actionsTag`}
+      onClick={() => {
+        copy(message.content);
+      }}
+    >
+      <CopyOutlined />
+    </span>,
+  ];
+
   return (
-    <div className="chat-message">
-      <div className="chat-message-box">
-        <div className="chat-message-avatar">
-          <Avatar src={avatarSrc} />
-        </div>
-        <div className="chat-message-container">
-          <div className="chat-message-container-header">
-            <div className="chat-message-container-header-nickname">{nickName}</div>
-            {contentHover && message.createdAt && (
-              <span className="chat-message-container-header-created-time">
-                {message.createdAt?.format('MM-DD HH:mm:ss')}
-              </span>
-            )}
-          </div>
-          <div
-            className="chat-message-content"
-            onMouseEnter={() => setContentHover(true)}
-            onMouseLeave={() => setContentHover(false)}
-          >
+    <div
+      className={classNames(
+        'chat-message-main',
+        message.senderType === MessageSenderType.AI ? 'chat-message-modalMain' : '',
+      )}
+    >
+      <Avatar src={avatarSrc} />
+      {message.senderType === MessageSenderType.AI ? (
+        <div className={`chat-message-msgContainer`}>
+          <MarkdownMessage
+            content={content}
+            // content={
+            //   messageSnap.state === AnswerState.Sending
+            //     ? intlMessage({ id: 'please_wait' })
+            //     : messageSnap.content
+            // }
+          />
+          <div style={{ paddingTop: 8, display: 'flex' }}>
             <div
-              className={classNames('chat-message-content-inner', {
-                'chat-message-content-bot': message.senderType === MessageSenderType.AI,
-                'chat-message-content-user':
-                  message.senderType === MessageSenderType.HUMAN,
-              })}
+              className={'chat-message-retry'}
+              onClick={() => {
+                // TODO:
+              }}
             >
-              {content}
+              <ReloadOutlined style={{ marginRight: '5px' }} />
+              重新生成
+            </div>
+            <div className={'chat-message-actions'}>
+              {message.senderType === MessageSenderType.AI
+                ? actions.filter(Boolean)
+                : ''}
             </div>
           </div>
-          <div className="chat-message-footer"></div>
         </div>
-      </div>
+      ) : (
+        <TextMessage content={content} />
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { AxiosClient } from '../axios-client/index.js';
 import { UserManager } from '../user/user-manager.js';
 import type { User } from '../user/user.js';
 
-import type { ChatEventChunk } from './protocol.js';
+import type { AnswerState, ChatEventChunk, QuestionState } from './protocol.js';
 import { ChatMessageOption, MessageSenderType, MessageType } from './protocol.js';
 
 @transient()
@@ -24,6 +24,9 @@ export class ChatMessage {
   createdAt?: Dayjs;
   @prop()
   complete?: boolean = true;
+
+  @prop()
+  state: QuestionState | AnswerState;
 
   @prop()
   sender?: User;
