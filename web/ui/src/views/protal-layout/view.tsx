@@ -40,7 +40,6 @@ const PortalLayoutComponent = forwardRef<HTMLDivElement>(
             options={segemntPortals}
             value={portal}
             onChange={(value) => {
-              history.push();
               navigate(`/portal/${value}`, { replace: true });
             }}
           />
