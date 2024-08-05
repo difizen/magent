@@ -1,13 +1,12 @@
 import { Syringe } from '@difizen/mana-app';
 
 import type { ToolConfig } from './tool-config.js';
-import type { Tool } from './tool.js';
+import type { ToolModel } from './tool-model.js';
 
 // export interface ToolConfigInfo {
 //   pluginOpenapiDesc: string;
 //   [key: string]: any;
 // }
-
 export const ToolConfigOption = Syringe.defineToken('ToolConfigOption', {
   multiple: false,
 });
@@ -38,7 +37,7 @@ export const ToolConfigType = {
   },
 };
 
-export type { Tool } from './tool.js';
+export type { ToolModel } from './tool-model.js';
 
 export interface ToolMeta {
   name: string;
@@ -47,26 +46,29 @@ export interface ToolMeta {
   description?: string;
 }
 
-export interface ToolOption extends Partial<ToolMeta> {
-  id: number;
-  draft?: ToolConfigOption | null;
+export interface ToolModelOption {
+  id: string;
+  nickname: string;
+  avatar: string;
+  description: string;
+  parameters: string[];
 }
 
-export const ToolOption = Syringe.defineToken('ToolOption', {
+export const ToolModelOption = Syringe.defineToken('ToolModelOption', {
   multiple: false,
 });
 
-export type ToolFactory = (options: ToolOption) => Tool;
+export type ToolFactory = (options: ToolModelOption) => ToolModel;
 export const ToolFactory = Syringe.defineToken('ToolFactory', {
   multiple: false,
 });
 
-export const ToolType = {
-  isOption(data?: Record<string, any>): data is ToolOption {
+export const ToolModelType = {
+  isOption(data?: Record<string, any>): data is ToolModelOption {
     return !!(data && 'id' in data);
   },
   isFullOption(data?: Record<string, any>): boolean {
-    return ToolType.isOption(data) && 'name' in data;
+    return ToolModelType.isOption(data) && 'name' in data;
   },
 };
 
