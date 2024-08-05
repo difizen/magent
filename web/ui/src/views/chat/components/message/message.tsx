@@ -44,18 +44,18 @@ export const Message = (props: MessageProps) => {
   }
 
   let content: ReactNode = message.content;
-  if (!exchange.sending) {
-    content = (
-      <>
-        {message.content}
-        <Typing />
-      </>
-    );
+  if (exchange.sending) {
+    if (!content) {
+      content = <LoadingOutlined />;
+    } else {
+      content = (
+        <>
+          {message.content}
+          <Typing />
+        </>
+      );
+    }
   }
-  if (!content) {
-    content = <LoadingOutlined />;
-  }
-
   return (
     <div className="chat-message">
       <div className="chat-message-box">

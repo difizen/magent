@@ -15,7 +15,7 @@ import { useMatch } from 'react-router-dom';
 
 import { AgentManager } from '../../modules/agent/agent-manager.js';
 import type { AgentModel } from '../../modules/agent/protocol.js';
-import type { SessionOption } from '../../modules/session/protocol.js';
+import type { SessionModel } from '../../modules/session/protocol.js';
 import { ChatView } from '../chat/view.js';
 import { SessionsView } from '../sessions/view.js';
 
@@ -74,7 +74,9 @@ export class AgentView extends BaseView {
       const agent = this.agentManager.getOrCreateAgent({ id: this.agentId });
       agent.fetchInfo();
       this.agent = agent;
+      return agent;
     }
+    return undefined;
   };
 
   protected initSessionView = async () => {
@@ -87,12 +89,30 @@ export class AgentView extends BaseView {
     this.sessions = sessions;
   };
 
+  protected getAgentTitleName = async (agent: AgentModel) => {
+    if (agent.name) {
+      return agent.name;
+    } else {
+      await agent.ready;
+      return agent.name;
+    }
+  };
+  protected updateTitle = async (agent: AgentModel) => {
+    const title = await this.getAgentTitleName(agent);
+    if (title) {
+      document.title = title;
+    }
+  };
+
   override onViewMount(): void {
-    this.initAgent();
+    const agent = this.initAgent();
+    if (agent) {
+      this.updateTitle(agent);
+    }
     this.initSessionView();
   }
 
-  openChat = async (session: SessionOption) => {
+  openChat = async (session: SessionModel) => {
     const chatView = await this.viewManager.getOrCreateView(ChatView, {
       agentId: session.agentId,
       sessionId: session.id,

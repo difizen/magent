@@ -30,7 +30,9 @@ export class SessionManager {
   };
 
   createSession = async (option: SessionCreate): Promise<SessionOption> => {
-    const res = await this.axios.post<APISession>(`/api/v1/session`, option);
+    const res = await this.axios.post<APISession>(`/api/v1/sessions`, {
+      agent_id: option.agentId,
+    });
     if (!res.data.id) {
       throw new Error('Create session failed');
     }

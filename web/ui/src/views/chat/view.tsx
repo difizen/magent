@@ -1,6 +1,4 @@
 import { ClearOutlined, VerticalAlignBottomOutlined } from '@ant-design/icons';
-import type { Syringe } from '@difizen/mana-app';
-import { ObservableContext } from '@difizen/mana-app';
 import {
   BaseView,
   Deferred,
@@ -153,7 +151,7 @@ export class ChatView extends BaseView {
     }
     const msg: MessageCreate = {
       agentId: this.agentId,
-      sessionId: this.id,
+      sessionId: this.sessionId,
       input: msgContent,
     };
     this.session?.chat(msg);

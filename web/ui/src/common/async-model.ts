@@ -15,6 +15,10 @@ export abstract class AsyncModel<T = any, O = any> {
   ready: Promise<T>;
   protected readyDeferred: Deferred<T> = new Deferred<T>();
 
+  constructor() {
+    this.ready = this.readyDeferred.promise;
+  }
+
   initialize(option: O) {
     if (this.shouldInitFromMeta(option)) {
       this.fromMeta(option);

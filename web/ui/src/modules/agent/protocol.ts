@@ -94,7 +94,7 @@ export const AgentModelType = {
     return !!(data && 'id' in data);
   },
   isFullOption(data?: Record<string, any>): boolean {
-    return AgentModelType.isOption(data) && 'name' in data && 'avatar' in data;
+    return AgentModelType.isOption(data) && 'nickname' in data;
   },
 };
 

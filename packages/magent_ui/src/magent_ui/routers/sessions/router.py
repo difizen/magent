@@ -1,7 +1,8 @@
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from agentuniverse_product.service.session_service.session_service import SessionService
 from agentuniverse_product.service.model.session_dto import SessionDTO
+from pydantic import BaseModel
 
 router = APIRouter()
 sessions_router = router
@@ -17,9 +18,14 @@ async def get_session_detail(session_id):
     return SessionService.get_session_detail(session_id)
 
 
+class SessionCreate(BaseModel):
+    agent_id: str
+
+
 @router.post("/sessions", response_model=SessionDTO)
-async def create_session(agent_id):
-    return SessionService.create_session(agent_id)
+async def create_session(model: SessionCreate):
+    session_id = SessionService.create_session(model.agent_id)
+    return SessionService.get_session_detail(session_id)
 
 
 @router.delete("/sessions/{session_id}", response_model=str)

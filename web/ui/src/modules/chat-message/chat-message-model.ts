@@ -16,7 +16,7 @@ export class ChatMessageModel {
   agentId: string;
   sessionId: string;
   @prop()
-  messages: MessageItem[];
+  messages: MessageItem[] = [];
   @prop()
   created?: Dayjs;
 
@@ -53,7 +53,11 @@ export class ChatMessageModel {
     this.sending = true;
     const res = await this.axios.post<MessageOption>(
       `/api/v1/agents/${option.agentId}/chat`,
-      option,
+      {
+        agent_id: option.agentId,
+        session_id: option.sessionId,
+        input: option.input,
+      },
     );
     if (res.data.id) {
       this.updateMeta(res.data);
