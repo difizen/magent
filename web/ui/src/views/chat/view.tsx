@@ -156,7 +156,7 @@ export class ChatView extends BaseView {
       sessionId: this.id,
       input: msgContent,
     };
-    const message = this.messageManager.createMessage(msg);
+    this.session?.chat(msg);
     setImmediate(this.scrollToBottom);
   };
 
