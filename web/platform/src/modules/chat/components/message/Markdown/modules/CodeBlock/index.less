@@ -1,0 +1,42 @@
+.chat-msg-md-code-pre {
+  :global {
+    .md-code-pre {
+      margin: 0 !important;
+      padding: 1.5em !important;
+    }
+  }
+}
+
+.chat-msg-md-code-wrap {
+  border-radius: 4px;
+  position: relative;
+  margin: 0;
+}
+
+.chat-msg-md-code-lang {
+  position: absolute;
+  top: 9px;
+  right: 28px;
+  color: #fff;
+  opacity: 0.8;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.chat-msg-md-code-copy {
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: 9px;
+  right: 4px;
+  color: #fff;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.chat-msg-md-code-code {
+  display: block;
+}

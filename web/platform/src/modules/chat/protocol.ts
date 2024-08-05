@@ -3,6 +3,21 @@ import { Syringe } from '@difizen/mana-app';
 import type { ChatMessage } from './chat-message.js';
 import type { Chat } from './chat.js';
 
+export enum QuestionState {
+  SENDING = 'sending', // 发送中
+  VALIDATING = 'validating', // 验证中
+  FAIL = 'fail', // 发送失败
+  SUCCESS = 'success', // 发送完成
+}
+
+// 接收消息状态
+export enum AnswerState {
+  WAITING = 'waiting', // 等待
+  RECEIVING = 'receiving', // 接收中
+  FAIL = 'fail', // 发送失败
+  SUCCESS = 'success', // 发送完成
+}
+
 export enum MessageSenderType {
   AI = 'ai',
   HUMAN = 'human',
