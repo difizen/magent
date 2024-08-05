@@ -1,9 +1,18 @@
 /* eslint-disable react/prop-types */
-import { BaseView, singleton, view } from '@difizen/mana-app';
-import { Avatar, Button, Checkbox, Col, List, Row, Tag, Tooltip } from 'antd';
+import {
+  BaseView,
+  ViewInstance,
+  inject,
+  prop,
+  singleton,
+  useInject,
+  view,
+} from '@difizen/mana-app';
+import { Avatar, Button, Col, List, Row, Tag, Tooltip } from 'antd';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import './index.less';
+import { ToolSpace } from '../../modules/tool/tool-space.js';
 
 export interface ToolItem {
   nickname: string;
@@ -15,121 +24,6 @@ export interface ToolItem {
 
 const viewId = 'magent-tools';
 export const slot = `${viewId}-slot`;
-
-const mockData: ToolItem[] = [
-  {
-    nickname: 'Ant Design Title 1',
-    id: '1',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=1',
-    description: '测试1',
-    parameters: ['test1', 'test2', 'testhidden1', 'testhidden2', 'testhidden3'],
-  },
-  {
-    nickname: 'Ant Design Title 2',
-    id: '2',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=2',
-    description: '测试2',
-    parameters: ['test3', 'test4'],
-  },
-  {
-    nickname: 'Ant Design Title 3',
-    id: '3',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=3',
-    description: '测试3',
-    parameters: ['test5', 'test6'],
-  },
-  {
-    nickname: 'Ant Design Title 4',
-    id: '4',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=4',
-    description: '测试4',
-    parameters: ['test7', 'test8'],
-  },
-  {
-    nickname: 'Ant Design Title 1',
-    id: '1',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=1',
-    description: '测试1',
-    parameters: ['test1', 'test2', 'testhidden1', 'testhidden2', 'testhidden3'],
-  },
-  {
-    nickname: 'Ant Design Title 2',
-    id: '2',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=2',
-    description: '测试2',
-    parameters: ['test3', 'test4'],
-  },
-  {
-    nickname: 'Ant Design Title 3',
-    id: '3',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=3',
-    description: '测试3',
-    parameters: ['test5', 'test6'],
-  },
-  {
-    nickname: 'Ant Design Title 4',
-    id: '4',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=4',
-    description: '测试4',
-    parameters: ['test7', 'test8'],
-  },
-  {
-    nickname: 'Ant Design Title 1',
-    id: '1',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=1',
-    description: '测试1',
-    parameters: ['test1', 'test2', 'testhidden1', 'testhidden2', 'testhidden3'],
-  },
-  {
-    nickname: 'Ant Design Title 2',
-    id: '2',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=2',
-    description: '测试2',
-    parameters: ['test3', 'test4'],
-  },
-  {
-    nickname: 'Ant Design Title 3',
-    id: '3',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=3',
-    description: '测试3',
-    parameters: ['test5', 'test6'],
-  },
-  {
-    nickname: 'Ant Design Title 4',
-    id: '4',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=4',
-    description: '测试4',
-    parameters: ['test7', 'test8'],
-  },
-  {
-    nickname: 'Ant Design Title 1',
-    id: '1',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=1',
-    description: '测试1',
-    parameters: ['test1', 'test2', 'testhidden1', 'testhidden2', 'testhidden3'],
-  },
-  {
-    nickname: 'Ant Design Title 2',
-    id: '2',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=2',
-    description: '测试2',
-    parameters: ['test3', 'test4'],
-  },
-  {
-    nickname: 'Ant Design Title 3',
-    id: '3',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=3',
-    description: '测试3',
-    parameters: ['test5', 'test6'],
-  },
-  {
-    nickname: 'Ant Design Title 4',
-    id: '4',
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=4',
-    description: '测试4',
-    parameters: ['test7', 'test8'],
-  },
-];
 
 const TagList: React.FC<{
   tags: string[];
@@ -200,6 +94,8 @@ const TagList: React.FC<{
 
 const ToolsViewComponent = forwardRef<HTMLDivElement>(
   function ToolsViewComponent(props, ref) {
+    const instance = useInject<ToolsView>(ViewInstance);
+    const space = instance.toolSpace;
     const [selectedItems, setSelectedItems] = useState<ToolItem[]>([]);
 
     const handSelect = (item: ToolItem) => {
@@ -226,7 +122,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
         </Row>
         <List
           itemLayout="horizontal"
-          dataSource={mockData}
+          dataSource={space.list}
           renderItem={(item) => (
             <Row>
               <Col span={8}>
@@ -268,4 +164,14 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
 @view(viewId)
 export class ToolsView extends BaseView {
   override view = ToolsViewComponent;
+  @prop()
+  loadig = false;
+
+  @inject(ToolSpace) toolSpace: ToolSpace;
+
+  override async onViewMount(): Promise<void> {
+    this.loadig = true;
+    await this.toolSpace.update();
+    this.loadig = false;
+  }
 }

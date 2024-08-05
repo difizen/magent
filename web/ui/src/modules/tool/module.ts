@@ -4,16 +4,16 @@ import {
   ToolConfigFactory,
   ToolConfigOption,
   ToolFactory,
-  ToolOption,
+  ToolModelOption,
 } from './protocol.js';
 import { ToolConfigManager } from './tool-config-manager.js';
 import { ToolConfig } from './tool-config.js';
 import { ToolManager } from './tool-manager.js';
-import { Tool } from './tool.js';
+import { ToolModel } from './tool-model.js';
 
 export const ToolModule = ManaModule.create().register(
   ToolManager,
-  Tool,
+  ToolModel,
   ToolConfig,
   ToolConfigManager,
   {
@@ -31,8 +31,8 @@ export const ToolModule = ManaModule.create().register(
     useFactory: (ctx) => {
       return (option: any) => {
         const child = ctx.container.createChild();
-        child.register({ token: ToolOption, useValue: option });
-        return child.get(Tool);
+        child.register({ token: ToolModelOption, useValue: option });
+        return child.get(ToolModel);
       };
     },
   },
