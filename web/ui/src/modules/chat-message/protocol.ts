@@ -78,7 +78,7 @@ export const toMessageOption = (msg: APIMessage, agentId: string): MessageOption
     id: msg.id,
     sessionId: msg.session_id,
     agentId,
-    messages: items,
+    messages: items.map(toMessageItem),
     created: msg.gmt_created,
     modified: msg.gmt_modified,
   };

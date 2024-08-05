@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
+import { MagentLOGO } from '../../../../modules/base-layout/brand/logo.js';
 import type {
   ChatMessageModel,
   MessageItem,
@@ -31,14 +32,14 @@ export const Message = (props: MessageProps) => {
     return null;
   }
 
-  let avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';
+  let avatarSrc: ReactNode = <MagentLOGO />;
   let nickName = 'user';
-  if (message.senderType === 'AI' && agent?.avatar) {
-    avatarSrc = agent?.avatar;
+  if (message.senderType === 'AI') {
+    avatarSrc = agent?.avatar || avatarSrc;
     nickName = agent?.name || '';
   }
   if (message.senderType === 'HUMAN') {
-    avatarSrc = '';
+    avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';
     nickName = '';
   }
 
