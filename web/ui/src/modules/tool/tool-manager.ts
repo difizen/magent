@@ -4,19 +4,19 @@ import qs from 'query-string';
 import { AxiosClient } from '../axios-client/index.js';
 
 import {
-  PluginFactory,
-  type Plugin,
-  type PluginOption,
-  type PluginMeta,
+  ToolFactory,
+  type Tool,
+  type ToolOption,
+  type ToolMeta,
 } from './protocol.js';
 
 @singleton()
-export class PluginManager {
-  protected cache: Map<number, Plugin> = new Map<number, Plugin>();
-  @inject(PluginFactory) pluginFactory: PluginFactory;
+export class ToolManager {
+  protected cache: Map<number, Tool> = new Map<number, Tool>();
+  @inject(ToolFactory) pluginFactory: ToolFactory;
   @inject(AxiosClient) axios: AxiosClient;
 
-  getMyPlugins = async (): Promise<Pagination<PluginOption>> => {
+  getMyTools = async (): Promise<Pagination<ToolOption>> => {
     const defaultValue = { items: [], total: 0, page: 0, size: 0, pages: 0 };
     const query = qs.stringify({
       page: 1,
@@ -29,7 +29,7 @@ export class PluginManager {
     return defaultValue;
   };
 
-  getPlugins = async (): Promise<Pagination<PluginOption>> => {
+  getTools = async (): Promise<Pagination<ToolOption>> => {
     const defaultValue = { items: [], total: 0, page: 0, size: 0, pages: 0 };
     const query = qs.stringify({
       page: 1,
@@ -42,15 +42,15 @@ export class PluginManager {
     return defaultValue;
   };
 
-  createPlugin = async (meta: PluginMeta): Promise<Plugin> => {
-    const res = await this.axios.post<PluginOption>(`api/v1/plugins`, meta);
+  createTool = async (meta: ToolMeta): Promise<Tool> => {
+    const res = await this.axios.post<ToolOption>(`api/v1/plugins`, meta);
     if (res.status !== 200) {
       throw new Error('failed to create agent bot');
     }
     return this.pluginFactory(res.data);
   };
 
-  getPlugin = (option: PluginOption): Plugin => {
+  getTool = (option: ToolOption): Tool => {
     const exist = this.cache.get(option.id);
     if (exist) {
       return exist;

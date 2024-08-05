@@ -3,15 +3,15 @@ import { Deferred, inject, prop, transient } from '@difizen/mana-app';
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 
-import { PluginConfigManager } from './plugin-config-manager.js';
-import type { PluginConfig } from './plugin-config.js';
-import { PluginOption, PluginType } from './protocol.js';
-import type { PluginConfigOption } from './protocol.js';
+import { ToolOption, ToolType } from './protocol.js';
+import type { ToolConfigOption } from './protocol.js';
+import { ToolConfigManager } from './tool-config-manager.js';
+import type { ToolConfig } from './tool-config.js';
 
 @transient()
-export class Plugin extends AsyncModel<Plugin, PluginOption> {
+export class Tool extends AsyncModel<Tool, ToolOption> {
   axios: AxiosClient;
-  configManager: PluginConfigManager;
+  configManager: ToolConfigManager;
 
   id: number;
 
@@ -25,19 +25,19 @@ export class Plugin extends AsyncModel<Plugin, PluginOption> {
   description?: string;
 
   @prop()
-  draft?: PluginConfig;
+  draft?: ToolConfig;
 
-  protected draftDeferred = new Deferred<PluginConfig>();
+  protected draftDeferred = new Deferred<ToolConfig>();
 
   get draftReady() {
     return this.draftDeferred.promise;
   }
 
-  option: PluginOption;
+  option: ToolOption;
 
   constructor(
-    @inject(PluginOption) option: PluginOption,
-    @inject(PluginConfigManager) configManager: PluginConfigManager,
+    @inject(ToolOption) option: ToolOption,
+    @inject(ToolConfigManager) configManager: ToolConfigManager,
     @inject(AxiosClient) axios: AxiosClient,
   ) {
     super();
@@ -50,13 +50,13 @@ export class Plugin extends AsyncModel<Plugin, PluginOption> {
     this.ensureDraft(option);
   }
 
-  shouldInitFromMeta(option: PluginOption = this.option): boolean {
-    return PluginType.isFullOption(option);
+  shouldInitFromMeta(option: ToolOption = this.option): boolean {
+    return ToolType.isFullOption(option);
   }
 
   async ensureDraft(
-    option: PluginOption = this.option,
-  ): Promise<PluginConfig | undefined> {
+    option: ToolOption = this.option,
+  ): Promise<ToolConfig | undefined> {
     await this.ready;
     if (this.draft) {
       return this.draft;
@@ -72,7 +72,7 @@ export class Plugin extends AsyncModel<Plugin, PluginOption> {
     return this.draft;
   }
 
-  protected override fromMeta(option: PluginOption = this.option) {
+  protected override fromMeta(option: ToolOption = this.option) {
     this.id = option.id;
     this.pluginType = option.plugin_type!;
     this.name = option.name!;
@@ -81,8 +81,8 @@ export class Plugin extends AsyncModel<Plugin, PluginOption> {
     super.fromMeta(option);
   }
 
-  async fetchInfo(option: PluginOption = this.option) {
-    const res = await this.axios.get<PluginOption>(`api/v1/plugins/${option.id}`);
+  async fetchInfo(option: ToolOption = this.option) {
+    const res = await this.axios.get<ToolOption>(`api/v1/plugins/${option.id}`);
     if (res.status === 200) {
       if (this.shouldInitFromMeta(res.data)) {
         this.fromMeta(res.data);
@@ -90,8 +90,8 @@ export class Plugin extends AsyncModel<Plugin, PluginOption> {
     }
   }
 
-  async fetchDraftInfo(option: PluginOption = this.option) {
-    const res = await this.axios.get<PluginConfigOption>(
+  async fetchDraftInfo(option: ToolOption = this.option) {
+    const res = await this.axios.get<ToolConfigOption>(
       `api/v1/plugins/${option.id}/draft`,
     );
     if (res.status === 200) {
@@ -100,7 +100,7 @@ export class Plugin extends AsyncModel<Plugin, PluginOption> {
     return undefined;
   }
 
-  toMeta(): PluginOption {
+  toMeta(): ToolOption {
     return {
       id: this.id,
       plugin_type: this.pluginType,

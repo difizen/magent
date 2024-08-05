@@ -4,11 +4,10 @@ import debounce from 'lodash.debounce';
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 
-import { PluginConfigOption, PluginConfigType } from './protocol.js';
-import {} from './protocol.js';
+import { ToolConfigOption, ToolConfigType } from './protocol.js';
 
 @transient()
-export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
+export class ToolConfig extends AsyncModel<ToolConfig, ToolConfigOption> {
   protected axios: AxiosClient;
   id: number;
 
@@ -18,7 +17,7 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
 
   isDraft = true;
 
-  protected onChanagedEmitter = new Emitter<PluginConfig>();
+  protected onChanagedEmitter = new Emitter<ToolConfig>();
 
   get onChanged() {
     return this.onChanagedEmitter.event;
@@ -36,12 +35,12 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
   }
 
   // @prop()
-  // config?: PluginConfigInfo;
+  // config?: ToolConfigInfo;
 
-  option?: PluginConfigOption;
+  option?: ToolConfigOption;
 
   constructor(
-    @inject(PluginConfigOption) option: PluginConfigOption,
+    @inject(ToolConfigOption) option: ToolConfigOption,
     @inject(AxiosClient) axios: AxiosClient,
   ) {
     super();
@@ -52,11 +51,11 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
     this.initialize(option);
   }
 
-  override shouldInitFromMeta(option: PluginConfigOption): boolean {
-    return PluginConfigType.isFullOption(option);
+  override shouldInitFromMeta(option: ToolConfigOption): boolean {
+    return ToolConfigType.isFullOption(option);
   }
 
-  protected override fromMeta(option: PluginConfigOption): void {
+  protected override fromMeta(option: ToolConfigOption): void {
     this.id = option.id;
     this.pluginId = option.plugin_id;
     this.isDraft = option.is_draft || true;
@@ -65,8 +64,8 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
     super.fromMeta(option);
   }
 
-  override async fetchInfo(option: PluginConfigOption): Promise<void> {
-    const res = await this.axios.get<PluginConfigOption>(
+  override async fetchInfo(option: ToolConfigOption): Promise<void> {
+    const res = await this.axios.get<ToolConfigOption>(
       `api/v1/plugins/configs/${option.id}`,
     );
     if (res.status === 200) {
@@ -76,7 +75,7 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
     }
   }
 
-  toMeta(): PluginConfigOption {
+  toMeta(): ToolConfigOption {
     return {
       id: this.id,
       plugin_id: this.pluginId,
@@ -86,7 +85,7 @@ export class PluginConfig extends AsyncModel<PluginConfig, PluginConfigOption> {
     };
   }
 
-  protected deferSave: (meta?: PluginConfigOption) => Promise<boolean> | undefined =
+  protected deferSave: (meta?: ToolConfigOption) => Promise<boolean> | undefined =
     debounce(this.save.bind(this), 500);
 
   protected changed = () => {
