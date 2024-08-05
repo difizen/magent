@@ -1,6 +1,6 @@
 import enum
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from agentuniverse_product.service.agent_service.agent_service import AgentService
 from agentuniverse_product.service.model.agent_dto import AgentDTO
 from pydantic import BaseModel
@@ -37,17 +37,17 @@ class MessageCreate(BaseModel):
 
 
 class MessageOutput(BaseModel):
-    message_id: str
+    message_id: int
     session_id: str
-    message: str
-    response_time: str
-    output: dict
+    response_time: float
+    output: str
     start_time: str
     end_time: str
 
 
-@router.put("/agents/{agent_id}/chat", response_model=MessageOutput)
+@router.post("/agents/{agent_id}/chat", response_model=MessageOutput)
 async def chat(agent_id, model: MessageCreate):
     output_dict = AgentService.chat(
         model.agent_id, model.session_id, model.input)
+    print(output_dict)
     return MessageOutput.model_validate(output_dict)

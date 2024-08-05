@@ -22,7 +22,7 @@ const PortalLayoutComponent = forwardRef<HTMLDivElement>(
   function PortalLayoutComponent(props, ref) {
     const instance = useInject<PortalLayoutView>(ViewInstance);
     const match = useMatch('/portal/:portal');
-    const portal = match.params?.portal;
+    const portal = match?.params?.portal;
     const navigate = useNavigate();
 
     document.title = `magent-ui ${portal}`;
@@ -40,7 +40,6 @@ const PortalLayoutComponent = forwardRef<HTMLDivElement>(
             options={segemntPortals}
             value={portal}
             onChange={(value) => {
-              history.push();
               navigate(`/portal/${value}`, { replace: true });
             }}
           />

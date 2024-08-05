@@ -8,6 +8,7 @@ import {
   transient,
   ViewOption,
 } from '@difizen/mana-app';
+import { Button } from 'antd';
 import { forwardRef } from 'react';
 
 import type { SessionModel } from '../../modules/session/index.js';
@@ -27,6 +28,7 @@ const SessionsViewComponent = forwardRef<HTMLDivElement>(
             {session.id}
           </div>
         ))}
+        <Button onClick={instance.createSession}>开启新会话</Button>
       </div>
     );
   },
@@ -71,6 +73,13 @@ export class SessionsView extends BaseView {
   }
 
   selectSession = (session: SessionModel) => {
+    this.active = session;
+  };
+
+  createSession = async () => {
+    const opt = await this.sessionManager.createSession({ agentId: this.agentId });
+    const session = this.sessionManager.getOrCreateSession(opt);
+    this.sessions.unshift(session);
     this.active = session;
   };
 }
