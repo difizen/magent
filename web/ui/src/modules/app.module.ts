@@ -5,6 +5,7 @@ import { AgentsPageModule } from '../views/agents/index.js';
 import { ChatViewModule } from '../views/chat/module.js';
 import { PortalsModule } from '../views/protal-layout/index.js';
 import { SessionsViewModule } from '../views/sessions/module.js';
+import { ToolPageModule } from '../views/tool/module.js';
 
 import { AgentModule } from './agent-module.js';
 import { BaseLayoutModule } from './base-layout/module.js';
@@ -22,6 +23,7 @@ export const AppBaseModule = new ManaModule().dependOn(
   AgentChatModule,
   SessionsViewModule,
   ChatViewModule,
+  ToolPageModule,
 );
 
 export default AppBaseModule;
