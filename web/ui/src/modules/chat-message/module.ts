@@ -1,8 +1,14 @@
 import { ManaModule } from '@difizen/mana-app';
 
+import {
+  AIChatMessageItem,
+  ChatMessageItem,
+  HumanChatMessageItem,
+} from './chat-message-item.js';
 import { ChatMessageManager } from './chat-message-manager.js';
 import { ChatMessageModel } from './chat-message-model.js';
-import { ChatMessageOption } from './protocol.js';
+import { ChatMessageItemOption } from './protocol.js';
+import { ChatMessageItemFactory, ChatMessageOption } from './protocol.js';
 import { ChatMessageFactory } from './protocol.js';
 
 export const ChatMessageModule = ManaModule.create().register(
@@ -15,6 +21,22 @@ export const ChatMessageModule = ManaModule.create().register(
         const child = ctx.container.createChild();
         child.register({ token: ChatMessageOption, useValue: option });
         return child.get(ChatMessageModel);
+      };
+    },
+  },
+  ChatMessageItem,
+  HumanChatMessageItem,
+  AIChatMessageItem,
+  {
+    token: ChatMessageItemFactory,
+    useFactory: (ctx) => {
+      return (option: ChatMessageItemOption) => {
+        const child = ctx.container.createChild();
+        child.register({ token: ChatMessageItemOption, useValue: option });
+        if (option.senderType === 'AI') {
+          return child.get(AIChatMessageItem);
+        }
+        return child.get(HumanChatMessageItem);
       };
     },
   },

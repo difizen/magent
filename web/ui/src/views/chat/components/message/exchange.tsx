@@ -11,8 +11,8 @@ export const MessageExchange = (props: MessageGroupProps) => {
 
   return (
     <div className="chat-message-exchange">
-      {humanMsg && <Message exchange={exchange} message={humanMsg} type="HUMAN" />}
-      {aiMsg && <Message exchange={exchange} message={aiMsg} type="AI" />}
+      {humanMsg && <Message exchange={exchange} message={humanMsg} />}
+      {aiMsg && <Message exchange={exchange} message={aiMsg} />}
     </div>
   );
 };

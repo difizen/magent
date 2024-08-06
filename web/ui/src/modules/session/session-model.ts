@@ -1,9 +1,12 @@
 import type { Disposable, Event } from '@difizen/mana-app';
+import { DisposableCollection } from '@difizen/mana-app';
+import { equals } from '@difizen/mana-app';
 import { Emitter } from '@difizen/mana-app';
 import { inject, prop, transient } from '@difizen/mana-app';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
+import type { ChatMessageItem } from '../chat-message/chat-message-item.js';
 import { ChatMessageManager } from '../chat-message/chat-message-manager.js';
 import type { ChatMessageModel, MessageCreate } from '../chat-message/protocol.js';
 
@@ -23,9 +26,13 @@ export class SessionModel
   protected modified?: string;
   option: SessionOption;
 
+  protected toDispose = new DisposableCollection();
   disposed = false;
   onDispose: Event<void>;
   protected onDisposeEmitter = new Emitter<void>();
+
+  onMessage: Event<ChatMessageItem>;
+  protected onMessageEmitter = new Emitter<ChatMessageItem>();
 
   @prop()
   messages: ChatMessageModel[] = [];
@@ -37,6 +44,7 @@ export class SessionModel
   ) {
     super();
     this.onDispose = this.onDisposeEmitter.event;
+    this.onMessage = this.onMessageEmitter.event;
     this.option = option;
     this.axios = axios;
     this.chatMessage = chatMessage;
@@ -46,6 +54,7 @@ export class SessionModel
   dispose = (): void => {
     this.disposed = true;
     this.onDisposeEmitter.fire();
+    this.toDispose.dispose();
   };
 
   shouldInitFromMeta(option: SessionOption): boolean {
@@ -70,8 +79,19 @@ export class SessionModel
     super.fromMeta(option);
   }
 
+  protected disposeMessage = (msg: ChatMessageModel) => {
+    this.messages = this.messages.filter((item) => !equals(item, msg));
+  };
   chat(msg: MessageCreate) {
     const message = this.chatMessage.createMessage(msg);
+    const toDispose = message.onMessageItem((e) => {
+      this.onMessageEmitter.fire(e);
+    });
+    this.toDispose.push(toDispose);
+    message.onDispose(() => {
+      toDispose.dispose();
+      this.disposeMessage(message);
+    });
     this.messages.push(message);
   }
 }

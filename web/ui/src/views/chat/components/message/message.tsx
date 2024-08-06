@@ -1,95 +1,129 @@
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  CopyOutlined,
+  DislikeOutlined,
+  LikeOutlined,
+  LoadingOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
-import { Avatar } from 'antd';
+import { Avatar, Space } from 'antd';
 import classNames from 'classnames';
+import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 
 import { MagentLOGO } from '../../../../modules/base-layout/brand/logo.js';
-import type {
-  ChatMessageModel,
-  MessageItem,
-  MessageSender,
-} from '../../../../modules/chat-message/protocol.js';
+import type { ChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
+import { AIChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
+import { HumanChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
+import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
 import type { ChatView } from '../../view.js';
-import Typing from '../typing/index.js';
 
+import { MarkdownMessage } from './markdown-message/index.js';
+import { TextMessage } from './text/index.js';
 import './index.less';
 
 interface MessageProps {
+  message: ChatMessageItem;
   exchange: ChatMessageModel;
-  message: MessageItem;
-  type: MessageSender;
 }
-export const Message = (props: MessageProps) => {
+
+export const HumanMessage = (props: MessageProps) => {
   const exchange = useObserve(props.exchange);
   const message = useObserve(props.message);
   const instance = useInject<ChatView>(ViewInstance);
   const session = instance.session;
-  const agent = instance.agent;
-  const [contentHover, setContentHover] = useState<boolean>(false);
   if (!session) {
     return null;
   }
 
-  let avatarSrc: ReactNode = <MagentLOGO />;
-  let nickName = 'user';
-  if (message.senderType === 'AI') {
-    avatarSrc = agent?.avatar || avatarSrc;
-    nickName = agent?.name || '';
-  }
-  if (message.senderType === 'HUMAN') {
-    avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';
-    nickName = '';
+  const avatarSrc = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1';
+  const nickName = '';
+
+  const content: ReactNode = (
+    <>
+      {exchange.sending && <LoadingOutlined className="chat-message-human-sending" />}
+      <Space />
+      {message.content}
+    </>
+  );
+
+  return (
+    <div className={classNames('chat-message-main')}>
+      <Avatar src={avatarSrc} />
+      <TextMessage content={content} />
+    </div>
+  );
+};
+export const AIMessage = (props: MessageProps) => {
+  const message = useObserve(props.message);
+  const instance = useInject<ChatView>(ViewInstance);
+  const session = instance.session;
+  const agent = instance.agent;
+  if (!session) {
+    return null;
   }
 
+  // const [contentHover, setContentHover] = useState<boolean>(false);
+  const avatarSrc: ReactNode = agent?.avatar || <MagentLOGO />;
+  const nickName = agent?.name || '';
+
   let content: ReactNode = message.content;
-  if (exchange.sending) {
-    if (!content) {
-      content = <LoadingOutlined />;
-    } else {
-      content = (
-        <>
-          {message.content}
-          <Typing />
-        </>
-      );
-    }
+  if (!content) {
+    content = <LoadingOutlined />;
+  } else {
+    content = (
+      <>
+        <MarkdownMessage message={message} />
+      </>
+    );
   }
+
+  const actions = [
+    <span key="action-tag-3" className={`chat-message-action-tag`}>
+      <LikeOutlined />
+    </span>,
+    <span key="action-tag-2" className={`chat-message-action-tag`}>
+      <DislikeOutlined />
+    </span>,
+    <span
+      key="action-tag-1"
+      className={`chat-message-action-tag`}
+      onClick={() => {
+        copy(message.content);
+      }}
+    >
+      <CopyOutlined />
+    </span>,
+  ];
+
   return (
-    <div className="chat-message">
-      <div className="chat-message-box">
-        <div className="chat-message-avatar">
-          <Avatar src={avatarSrc} />
-        </div>
-        <div className="chat-message-container">
-          <div className="chat-message-container-header">
-            <div className="chat-message-container-header-nickname">
-              {nickName || '我'}
-            </div>
-            {contentHover && exchange.created && (
-              <span className="chat-message-container-header-created-time">
-                {exchange.created?.toString()}
-              </span>
-            )}
-          </div>
+    <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
+      <Avatar src={avatarSrc} />
+      <div className={`chat-message-container`}>
+        {content}
+        <div style={{ paddingTop: 8, display: 'flex' }}>
           <div
-            className="chat-message-content"
-            onMouseEnter={() => setContentHover(true)}
-            onMouseLeave={() => setContentHover(false)}
+            className={'chat-message-retry'}
+            onClick={() => {
+              // TODO:
+            }}
           >
-            <div
-              className={classNames('chat-message-content-inner', {
-                'chat-message-content-bot': message.senderType === 'AI',
-                'chat-message-content-user': message.senderType === 'HUMAN',
-              })}
-            >
-              {content}
-            </div>
+            <ReloadOutlined style={{ marginRight: '5px' }} />
+            重新生成
           </div>
-          <div className="chat-message-footer"></div>
+          <div className={'chat-message-actions'}>{actions.filter(Boolean)}</div>
         </div>
       </div>
     </div>
   );
+};
+export const Message = (props: MessageProps) => {
+  const message = useObserve(props.message);
+  if (message instanceof HumanChatMessageItem) {
+    return <HumanMessage {...props} />;
+  }
+  if (message instanceof AIChatMessageItem) {
+    return <AIMessage {...props} />;
+  }
+  return null;
 };

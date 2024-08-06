@@ -19,7 +19,7 @@ import Typing from '../typing/index.js';
 import './index.less';
 
 import { MarkdownMessage } from './markdown-message/index.js';
-import { TextMessage } from './Text/index.js';
+import { TextMessage } from './text/index.js';
 
 interface MessageProps {
   message: ChatMessage;
