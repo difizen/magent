@@ -1,9 +1,12 @@
+import asyncio
 import enum
-from typing import List
+import json
+from typing import AsyncIterable, List
 from fastapi import APIRouter
 from agentuniverse_product.service.agent_service.agent_service import AgentService
 from agentuniverse_product.service.model.agent_dto import AgentDTO
 from pydantic import BaseModel
+from sse_starlette import EventSourceResponse, ServerSentEvent
 
 router = APIRouter()
 agents_router = router
@@ -51,3 +54,71 @@ async def chat(agent_id, model: MessageCreate):
         model.agent_id, model.session_id, model.input)
     print(output_dict)
     return MessageOutput.model_validate(output_dict)
+
+
+class SSEType(enum.Enum):
+    MESSAGE = "message"
+    STEPS = "steps"
+    BLANK_MESSAGE = "blank_message"
+    CHUNK = "chunk"
+    ERROR = "error"
+    EOF = "EOF"
+    RESULT = "result"
+
+
+# class AgentStep(BaseModel):
+#     input: str
+#     output: str
+
+
+# class AgentIntermediateSteps(BaseModel):
+#     type: str
+#     output: List[str | AgentStep] = []
+#     agent_id: str
+
+
+# class TokenUsage(BaseModel):
+#     completion_tokens: int
+#     prompt_tokens: int
+#     total_tokens: int
+
+
+# class InvocationSource(BaseModel):
+#     source: str
+#     type: str
+
+
+# class AgentOutput(BaseModel):
+#     message_id: int
+#     session_id: str
+#     response_time: float
+#     output: str
+#     start_time: str
+#     end_time: str
+#     type: str
+#     agent_id: str
+#     invocation_chain: List[InvocationSource] = []
+#     token_usage: TokenUsage
+
+async def iterator_to_async_iterable(sync_iter) -> AsyncIterable:
+    for item in sync_iter:
+        await asyncio.sleep(0)  # 允许其他异步任务运行
+        yield item
+
+
+async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
+    msg_iterator = iterator_to_async_iterable(AgentService.stream_chat(
+        model.agent_id, model.session_id, model.input))
+    async for msg_chunk in msg_iterator:
+        type = msg_chunk.get("type", None)
+        if type == "token":
+            yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.session_id, data=json.dumps(msg_chunk, ensure_ascii=False))
+        if type == "intermediate_steps":
+            yield ServerSentEvent(event=SSEType.STEPS.value, id=model.session_id, data=json.dumps(msg_chunk, ensure_ascii=False))
+        if type == "final_result":
+            yield ServerSentEvent(event=SSEType.RESULT.value, id=model.session_id, data=json.dumps(msg_chunk, ensure_ascii=False))
+
+
+@router.post("/agents/{agent_id}/stream-chat")
+async def stream_chat(agent_id, model: MessageCreate):
+    return EventSourceResponse(send_message(model), media_type="text/event-stream")
