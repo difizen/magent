@@ -1,5 +1,6 @@
 import { ManaModule } from '@difizen/mana-app';
 
+import { AgentConfigPageModule } from '../views/agent-config/index.js';
 import { AgentChatModule } from '../views/agent-dev/index.js';
 import { AgentsPageModule } from '../views/agents/index.js';
 import { ChatViewModule } from '../views/chat/module.js';
@@ -17,13 +18,15 @@ export const AppBaseModule = new ManaModule().dependOn(
   AgentModule,
   SessionModule,
   ChatMessageModule,
-
   PortalsModule,
   AgentsPageModule,
   AgentChatModule,
   SessionsViewModule,
   ChatViewModule,
   ToolPageModule,
+  AgentConfigPageModule,
+  PortalsModule,
+  AgentsPageModule,
 );
 
 export default AppBaseModule;

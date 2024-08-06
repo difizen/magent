@@ -1,0 +1,47 @@
+.skill-item {
+  height: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+
+  &-title {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  &-icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+  }
+
+  &-description {
+    color: #999696;
+    font-size: 12px;
+    text-overflow: ellipsis;
+  }
+
+  &-show-act {
+    background-color: #cccccc5c;
+  }
+
+  &-act {
+    max-width: 120px;
+  }
+
+  &-icon-box {
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.focus {
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 0 8px #ccc;
+      cursor: pointer;
+    }
+  }
+}
