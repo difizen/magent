@@ -20,12 +20,12 @@ export interface MessageItem {
 }
 
 export interface MessageOption {
-  id: number;
+  id?: number;
   sessionId: string;
   agentId: string;
   messages: MessageItem[];
-  created: string;
-  modified: string;
+  created?: string;
+  modified?: string;
 }
 
 export const ChatMessageType = {
@@ -56,6 +56,8 @@ export interface APIContentItem {
   content: string;
 }
 export interface APIMessage {
+  message_id: number;
+  output?: string;
   content: string;
   gmt_created: string;
   gmt_modified: string;
@@ -75,7 +77,7 @@ export const toMessageOption = (msg: APIMessage, agentId: string): MessageOption
     items = JSON.parse(msg.content);
   }
   return {
-    id: msg.id,
+    id: msg.message_id,
     sessionId: msg.session_id,
     agentId,
     messages: items.map(toMessageItem),

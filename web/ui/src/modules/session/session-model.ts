@@ -1,3 +1,5 @@
+import type { Disposable, Event } from '@difizen/mana-app';
+import { Emitter } from '@difizen/mana-app';
 import { inject, prop, transient } from '@difizen/mana-app';
 
 import { AsyncModel } from '../../common/async-model.js';
@@ -9,7 +11,10 @@ import type { APISession } from './protocol.js';
 import { SessionOption, SessionOptionType, toSessionOption } from './protocol.js';
 
 @transient()
-export class SessionModel extends AsyncModel<SessionModel, SessionOption> {
+export class SessionModel
+  extends AsyncModel<SessionModel, SessionOption>
+  implements Disposable
+{
   chatMessage: ChatMessageManager;
   axios: AxiosClient;
   id?: string;
@@ -17,6 +22,10 @@ export class SessionModel extends AsyncModel<SessionModel, SessionOption> {
   protected created?: string;
   protected modified?: string;
   option: SessionOption;
+
+  disposed = false;
+  onDispose: Event<void>;
+  protected onDisposeEmitter = new Emitter<void>();
 
   @prop()
   messages: ChatMessageModel[] = [];
@@ -27,11 +36,17 @@ export class SessionModel extends AsyncModel<SessionModel, SessionOption> {
     @inject(ChatMessageManager) chatMessage: ChatMessageManager,
   ) {
     super();
+    this.onDispose = this.onDisposeEmitter.event;
     this.option = option;
     this.axios = axios;
     this.chatMessage = chatMessage;
     this.initialize(option);
   }
+
+  dispose = (): void => {
+    this.disposed = true;
+    this.onDisposeEmitter.fire();
+  };
 
   shouldInitFromMeta(option: SessionOption): boolean {
     return SessionOptionType.isFullOption(option);

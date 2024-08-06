@@ -33,10 +33,19 @@ export class SessionManager {
     const res = await this.axios.post<APISession>(`/api/v1/sessions`, {
       agent_id: option.agentId,
     });
-    if (!res.data.id) {
+    if (res.status !== 200) {
       throw new Error('Create session failed');
     }
     return toSessionOption(res.data);
+  };
+
+  deleteSession = async (session: SessionModel): Promise<boolean> => {
+    const res = await this.axios.delete<APISession>(`/api/v1/sessions/${session.id}`);
+    if (res.status !== 200) {
+      return false;
+    }
+    session.dispose();
+    return true;
   };
 
   getOrCreateSession = (option: SessionOption): SessionModel => {
@@ -49,6 +58,9 @@ export class SessionManager {
       return exist;
     }
     const session = this.factory(currentOption);
+    session.onDispose(() => {
+      this.cache.delete(currentOption.id);
+    });
     this.cache.set(currentOption.id, session);
     return session;
   };
