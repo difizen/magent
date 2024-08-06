@@ -58,11 +58,11 @@ export function ChatComponent(props: ChatProps) {
         <div className="chat-content-input">
           <div className="chat-content-input-mask"></div>
           <div className="chat-content-input-main">
-            <Button
+            {/* <Button
               className="chat-content-input-main-clear"
               icon={<ClearOutlined />}
               onClick={() => instance.clear()}
-            ></Button>
+            ></Button> */}
             {/* <Input onSubmit={(v) => chat.sendMessageStream(v)} /> */}
             <Input onSubmit={(v) => instance.sendMessage(v)} />
           </div>
@@ -142,6 +142,8 @@ export class ChatView extends BaseView {
       id,
       agentId: this.agentId,
     });
+    const toDispose = this.session.onMessage(() => setImmediate(this.scrollToBottom));
+    this.toDispose.push(toDispose);
     this.sessionDeferred.resolve(this.session);
   };
 

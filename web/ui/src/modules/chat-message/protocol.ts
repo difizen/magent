@@ -1,5 +1,6 @@
 import { Syringe } from '@difizen/mana-app';
 
+import type { ChatMessageItem } from './chat-message-item.js';
 import type { ChatMessageModel } from './chat-message-model.js';
 
 export type { ChatMessageModel } from './chat-message-model.js';
@@ -47,8 +48,9 @@ export const ChatMessageFactory = Syringe.defineToken('ChatMessageFactory', {
 });
 
 export interface ChatEventChunk {
-  message_id: number;
-  chunk: string;
+  agent_id: string;
+  output: string;
+  type: 'token';
 }
 
 export interface APIContentItem {
@@ -85,3 +87,30 @@ export const toMessageOption = (msg: APIMessage, agentId: string): MessageOption
     modified: msg.gmt_modified,
   };
 };
+
+export enum QuestionState {
+  SENDING = 'sending', // 发送中
+  VALIDATING = 'validating', // 验证中
+  FAIL = 'fail', // 发送失败
+  SUCCESS = 'success', // 发送完成
+}
+
+// 接收消息状态
+export enum AnswerState {
+  WAITING = 'waiting', // 等待
+  RECEIVING = 'receiving', // 接收中
+  FAIL = 'fail', // 发送失败
+  SUCCESS = 'success', // 发送完成
+}
+
+export interface ChatMessageItemOption extends MessageItem {
+  created?: string;
+}
+export const ChatMessageItemOption = Syringe.defineToken('ChatMessageItemOption', {
+  multiple: false,
+});
+
+export type ChatMessageItemFactory = (option: ChatMessageItemOption) => ChatMessageItem;
+export const ChatMessageItemFactory = Syringe.defineToken('ChatMessageItemFactory', {
+  multiple: false,
+});

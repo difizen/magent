@@ -6,6 +6,8 @@ import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
+import type { AIChatMessageItem } from '../../../../../modules/chat-message/chat-message-item.js';
+
 import { CodeBlock } from './modules/CodeBlock/index.js';
 import './index.less';
 
@@ -18,6 +20,7 @@ interface MarkdownProps {
   children: any;
   className?: string;
   type?: 'message' | 'content';
+  message: AIChatMessageItem;
 }
 
 function ImageModal({ src, alt }: any) {
@@ -100,7 +103,7 @@ function ImageModal({ src, alt }: any) {
 }
 
 export const Markdown = (props: MarkdownProps) => {
-  const { type = 'message', className } = props;
+  const { type = 'message', className, message } = props;
 
   useEffect(() => {
     const links = document.querySelectorAll('a');
