@@ -16,4 +16,8 @@ export const portals: Portal[] = [
     path: 'knowledge',
     label: 'Knowledge',
   },
+  {
+    path: 'debug',
+    label: 'Debug',
+  },
 ];
