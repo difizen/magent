@@ -64,7 +64,9 @@ export const Message = (props: MessageProps) => {
         </div>
         <div className="chat-message-container">
           <div className="chat-message-container-header">
-            <div className="chat-message-container-header-nickname">{nickName}</div>
+            <div className="chat-message-container-header-nickname">
+              {nickName || '我'}
+            </div>
             {contentHover && exchange.created && (
               <span className="chat-message-container-header-created-time">
                 {exchange.created?.toString()}

@@ -1,3 +1,4 @@
+import { CloseOutlined } from '@ant-design/icons';
 import {
   BaseView,
   ViewInstance,
@@ -26,6 +27,7 @@ const SessionsViewComponent = forwardRef<HTMLDivElement>(
         {instance.sessions.map((session) => (
           <div onClick={() => instance.selectSession(session)} key={session.id}>
             {session.id}
+            <CloseOutlined onClick={() => instance.deleteSession(session)} />
           </div>
         ))}
         <Button onClick={instance.createSession}>开启新会话</Button>
@@ -49,7 +51,7 @@ export class SessionsView extends BaseView {
   sessions: SessionModel[] = [];
 
   @prop()
-  active: SessionModel;
+  active?: SessionModel;
 
   override view = SessionsViewComponent;
 
@@ -65,7 +67,11 @@ export class SessionsView extends BaseView {
   override async onViewMount(): Promise<void> {
     this.loadig = true;
     const sessions = await this.sessionManager.getSessions(this.agentId);
-    this.sessions = sessions.map(this.sessionManager.getOrCreateSession);
+    this.sessions = sessions.map((opt) => {
+      const session = this.sessionManager.getOrCreateSession(opt);
+      session.onDispose(() => this.disposeSession(session));
+      return session;
+    });
     if (!this.active) {
       this.active = this.sessions[0];
     }
@@ -79,7 +85,24 @@ export class SessionsView extends BaseView {
   createSession = async () => {
     const opt = await this.sessionManager.createSession({ agentId: this.agentId });
     const session = this.sessionManager.getOrCreateSession(opt);
+    session.onDispose(() => this.disposeSession(session));
     this.sessions.unshift(session);
     this.active = session;
+  };
+
+  protected disposeSession = (session: SessionModel) => {
+    const sessions = this.sessions.filter((i) => i.id !== session.id);
+    if (this.active.id === session.id) {
+      if (sessions.length > 0) {
+        this.active = sessions[0];
+      } else {
+        this.active = undefined;
+      }
+    }
+    this.sessions = sessions;
+  };
+
+  deleteSession = async (session: SessionModel) => {
+    await this.sessionManager.deleteSession(session);
   };
 }
