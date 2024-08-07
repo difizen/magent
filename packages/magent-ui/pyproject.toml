@@ -1,5 +1,5 @@
 [project]
-name = "magent_ui"
+name = "magent-ui"
 version = "0.1.0"
 description = ""
 authors = [
@@ -7,9 +7,7 @@ authors = [
   { name = "brokun", email = "brokun0128@gmail.com" },
 ]
 
-dependencies = [
-    "jinja2>=3.1.4",
-]
+dependencies = ["jinja2>=3.1.4"]
 readme = "README.md"
 requires-python = ">= 3.10"
 
