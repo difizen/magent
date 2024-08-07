@@ -8,7 +8,6 @@ import {
   ViewOption,
   transient,
 } from '@difizen/mana-app';
-import { Row, Col } from 'antd';
 import { Flex } from 'antd';
 import { forwardRef } from 'react';
 

@@ -1,6 +1,5 @@
 import { Deferred, ViewRender } from '@difizen/mana-app';
 import {
-  BaseView,
   ViewInstance,
   inject,
   singleton,
@@ -12,9 +11,11 @@ import {
 import { BoxPanel } from '@difizen/mana-react';
 import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
+import { history } from 'umi';
 
 import { AgentManager } from '../../modules/agent/agent-manager.js';
 import type { AgentModel } from '../../modules/agent/protocol.js';
+import { PageView } from '../../modules/base-layout/page-view.js';
 import type { SessionModel } from '../../modules/session/protocol.js';
 import { ChatView } from '../chat/view.js';
 import { SessionsView } from '../sessions/view.js';
@@ -52,7 +53,7 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
 
 @singleton()
 @view(viewId)
-export class AgentView extends BaseView {
+export class AgentView extends PageView {
   protected _agentId?: string;
 
   get agentId(): string | undefined {
@@ -86,6 +87,20 @@ export class AgentView extends BaseView {
     super();
     this.ready = this.readyDeferred.promise;
   }
+
+  override onViewUnmount(): void {
+    this.mainView.active = undefined;
+  }
+
+  override goBack = () => {
+    history.push('/portal/agents');
+  };
+
+  override pageTitle = () => {
+    return this.agent?.name;
+  };
+
+  disposed?: boolean | undefined;
 
   protected reset = () => {
     this.initializing = undefined;
@@ -146,6 +161,7 @@ export class AgentView extends BaseView {
   };
 
   override onViewMount(): void {
+    super.onViewMount();
     this.ensureInitialized();
   }
 
