@@ -71,7 +71,7 @@ export class ChatMessageModel implements Disposable {
   };
 
   updateMeta = (option: MessageOption) => {
-    this.id = option.id;
+    this.id = option.id || dayjs().unix();
     this.agentId = option.agentId;
     this.sessionId = option.sessionId;
     if (option.messages && option.messages.length > 0) {

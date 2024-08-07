@@ -1,4 +1,4 @@
-import { ClearOutlined, VerticalAlignBottomOutlined } from '@ant-design/icons';
+import { VerticalAlignBottomOutlined } from '@ant-design/icons';
 import {
   BaseView,
   Deferred,
@@ -11,7 +11,7 @@ import {
   ViewOption,
 } from '@difizen/mana-app';
 import { useInject } from '@difizen/mana-app';
-import { Button, FloatButton } from 'antd';
+import { FloatButton } from 'antd';
 import classnames from 'classnames';
 import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
