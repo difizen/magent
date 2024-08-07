@@ -32,9 +32,7 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
     instance.agentId = agentId;
 
     useEffect(() => {
-      if (instance.sessions?.active) {
-        instance.openChat(instance.sessions?.active);
-      }
+      instance.openChat(instance.sessions?.active);
     }, [instance, instance.sessions?.active]);
 
     return (
@@ -112,7 +110,11 @@ export class AgentView extends BaseView {
     this.initSessionView();
   }
 
-  openChat = async (session: SessionModel) => {
+  openChat = async (session?: SessionModel) => {
+    if (!session) {
+      this.chat = undefined;
+      return;
+    }
     const chatView = await this.viewManager.getOrCreateView(ChatView, {
       agentId: session.agentId,
       sessionId: session.id,

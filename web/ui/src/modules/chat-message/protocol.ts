@@ -79,7 +79,7 @@ export const toMessageOption = (msg: APIMessage, agentId: string): MessageOption
     items = JSON.parse(msg.content);
   }
   return {
-    id: msg.message_id,
+    id: msg.message_id || msg.id,
     sessionId: msg.session_id,
     agentId,
     messages: items.map(toMessageItem),

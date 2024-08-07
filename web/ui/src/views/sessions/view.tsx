@@ -58,6 +58,7 @@ export class SessionsView extends BaseView {
   agentId: string;
 
   option: SessionsViewOption;
+
   constructor(@inject(ViewOption) option: SessionsViewOption) {
     super();
     this.option = option;
@@ -92,7 +93,7 @@ export class SessionsView extends BaseView {
 
   protected disposeSession = (session: SessionModel) => {
     const sessions = this.sessions.filter((i) => i.id !== session.id);
-    if (this.active.id === session.id) {
+    if (this.active?.id === session.id) {
       if (sessions.length > 0) {
         this.active = sessions[0];
       } else {
