@@ -107,3 +107,33 @@
     color: rgba(0, 0, 0, 88%);
   }
 }
+
+.chat-message-human {
+  background-color: #e6f4ff;
+  border-radius: 8px;
+}
+
+.chat-message-ai {
+  background-color: #f8f8fb;
+  border-radius: 8px;
+}
+
+.chat-message-ai-receiving {
+  color: var(--mana-text-quaternary);
+  padding: 8px 16px;
+}
+
+.chat-message-addon {
+  padding: 8px 16px;
+  color: var(--mana-text-quaternary);
+  display: flex;
+  justify-content: space-between;
+
+  span + span {
+    margin-left: 16px;
+  }
+
+  &-item {
+    display: flex;
+  }
+}

@@ -10,7 +10,15 @@ import { AxiosClient } from '../axios-client/index.js';
 
 import type { ChatMessageItem } from './chat-message-item.js';
 import { AIChatMessageItem } from './chat-message-item.js';
-import type { APIMessage, MessageCreate, MessageOption } from './protocol.js';
+import type {
+  APIMessage,
+  ChainItem,
+  ChatEventChunk,
+  ChatEventResult,
+  ChatTokenUsage,
+  MessageCreate,
+  MessageOption,
+} from './protocol.js';
 import { AnswerState } from './protocol.js';
 import { ChatMessageItemFactory } from './protocol.js';
 import { ChatMessageType } from './protocol.js';
@@ -35,10 +43,22 @@ export class ChatMessageModel implements Disposable {
   modified?: Dayjs;
 
   @prop()
-  complete?: boolean = true;
+  sending?: boolean = false;
 
   @prop()
-  sending?: boolean = false;
+  responseTime?: number;
+
+  @prop()
+  tokenUsage?: ChatTokenUsage;
+
+  @prop()
+  invocationChain?: ChainItem[];
+
+  @prop()
+  startTime?: Dayjs;
+
+  @prop()
+  endTime?: Dayjs;
 
   disposed = false;
   onDispose: Event<void>;
@@ -132,8 +152,23 @@ export class ChatMessageModel implements Disposable {
       // }
 
       if (e.event === 'chunk') {
-        const chunk = JSON.parse(e.data);
+        const chunk: ChatEventChunk = JSON.parse(e.data);
         ai.appendChunk(chunk);
+        this.onMessageItemEmitter.fire(ai);
+      }
+
+      if (e.event === 'result') {
+        const result: ChatEventResult = JSON.parse(e.data);
+        this.invocationChain = result.invocation_chain;
+        this.tokenUsage = result.token_usage;
+        this.responseTime = result.response_time;
+        this.startTime = dayjs(result.start_time);
+        this.endTime = dayjs(result.end_time);
+        this.onMessageItemEmitter.fire(ai);
+      }
+
+      if (e.event === 'steps') {
+        const chunk: ChatEventChunk = JSON.parse(e.data);
         this.onMessageItemEmitter.fire(ai);
       }
     } catch (e) {
@@ -203,7 +238,7 @@ export class ChatMessageModel implements Disposable {
     };
 
     this.updateMeta(opt);
-
+    this.startTime = dayjs();
     if (!stream) {
       await this.doChat(option);
     } else {

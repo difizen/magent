@@ -47,12 +47,6 @@ export const ChatMessageFactory = Syringe.defineToken('ChatMessageFactory', {
   multiple: false,
 });
 
-export interface ChatEventChunk {
-  agent_id: string;
-  output: string;
-  type: 'token';
-}
-
 export interface APIContentItem {
   type: 'human' | 'ai';
   content: string;
@@ -114,3 +108,31 @@ export type ChatMessageItemFactory = (option: ChatMessageItemOption) => ChatMess
 export const ChatMessageItemFactory = Syringe.defineToken('ChatMessageItemFactory', {
   multiple: false,
 });
+
+export interface ChatEventChunk {
+  agent_id: string;
+  output: string;
+  type: 'token';
+}
+
+export interface ChainItem {
+  source: string;
+  type: string;
+}
+
+export interface ChatTokenUsage {
+  completion_tokens: number;
+  prompt_tokens: number;
+  total_tokens: number;
+}
+export interface ChatEventResult {
+  response_time: number;
+  message_id: number;
+  session_id: string;
+  output: string;
+  start_time: string;
+  end_time: string;
+  invocation_chain: ChainItem[];
+  token_usage: ChatTokenUsage;
+  type: 'final_result';
+}
