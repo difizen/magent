@@ -9,20 +9,20 @@ import './index.less';
 const MagentGoBackComponent = forwardRef<HTMLDivElement>(
   function MagentGoBackComponent(props, ref) {
     const mainView = useInject(MainView);
-    if (!mainView.active) {
-      return null;
+    if (mainView.active && mainView.active.goBack) {
+      return (
+        <div
+          onClick={() => {
+            mainView.active?.goBack?.();
+          }}
+          ref={ref}
+          className={viewId}
+        >
+          <LeftOutlined />
+        </div>
+      );
     }
-    return (
-      <div
-        onClick={() => {
-          mainView.active?.goBack?.();
-        }}
-        ref={ref}
-        className="magent-go-back"
-      >
-        <LeftOutlined />
-      </div>
-    );
+    return null;
   },
 );
 
