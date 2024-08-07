@@ -8,11 +8,13 @@ import {
   useInject,
   view,
 } from '@difizen/mana-app';
-import { Avatar, Button, Col, List, Row, Tag, Tooltip } from 'antd';
+import { Avatar, Col, List, Row, Tag, Tooltip } from 'antd';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import './index.less';
 import { ToolSpace } from '../../modules/tool/tool-space.js';
+
+import { ToolIcon } from './tool-icon.js';
 
 export interface ToolItem {
   nickname: string;
@@ -109,36 +111,43 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
     };
     return (
       <div ref={ref} className={viewId}>
-        <Row>
-          <Col span={8}>
-            <div className="tool-lists-label-item">工具</div>
+        <Row className={`${viewId}-list-header`}>
+          <Col className={`${viewId}-list-header-label`} span={8}>
+            工具
           </Col>
-          <Col span={8}>
-            <div className="tool-lists-label-item">入参</div>
+          <Col className={`${viewId}-list-header-label`} span={8}>
+            入参
           </Col>
-          <Col span={8}>
-            <div className="tool-lists-label-item">操作</div>
+          <Col className={`${viewId}-list-header-label`} span={8}>
+            操作
           </Col>
         </Row>
         <List
+          className={`${viewId}-list`}
           itemLayout="horizontal"
           dataSource={space.list}
           renderItem={(item) => (
             <Row>
-              <Col span={8}>
+              <Col className={`${viewId}-list-item`} span={8}>
                 <List.Item>
                   <List.Item.Meta
-                    avatar={<Avatar src={item.avatar} />}
+                    avatar={
+                      <Avatar
+                        shape="circle"
+                        size={32}
+                        src={item.avatar || <ToolIcon />}
+                      />
+                    }
                     title={item.nickname}
                     description={item.description}
                   />
                 </List.Item>
               </Col>
-              <Col span={8}>
+              <Col className={`${viewId}-list-item`} span={8}>
                 <TagList tags={item.parameters} maxWidth={180}></TagList>
               </Col>
-              <Col span={8}>
-                <div className="button-container">
+              <Col className={`${viewId}-list-item`} span={8}>
+                {/* <div className="button-container">
                   <Button
                     type="text"
                     onClick={() => handSelect(item)}
@@ -150,7 +159,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
                       ? '移除'
                       : '添加'}
                   </Button>
-                </div>
+                </div> */}
               </Col>
             </Row>
           )}

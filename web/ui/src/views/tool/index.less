@@ -1,12 +1,35 @@
 .magent-tools {
-  padding: 0 12px;
   height: 100%;
+  background-color: var(--mana-color-bg-container);
+  border-radius: 8px;
 
-  .ant-list {
-    height: calc(100% - 32px);
+  &-list-header {
+    padding: 0 0 0 24px;
+    height: 48px;
+    border-bottom: 1px solid var(--mana-color-border-secondary);
 
-    .ant-list-item {
-      padding-right: 16px;
+    &-label {
+      display: flex;
+      align-items: center;
+      color: black;
+      font-size: 16px;
+    }
+
+    &-label + &-label {
+      padding-left: 24px;
+    }
+  }
+
+  &-list {
+    height: calc(100% - 48px);
+    padding: 0 0 0 24px;
+
+    &-item {
+      display: block;
+    }
+
+    &-item + &-item {
+      padding-left: 24px;
     }
   }
 
@@ -17,6 +40,7 @@
   }
 
   .ant-list-items {
+    padding-bottom: 24px;
     overflow-y: auto;
   }
 

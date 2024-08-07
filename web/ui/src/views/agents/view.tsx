@@ -1,4 +1,4 @@
-import { MessageOutlined, ToolOutlined } from '@ant-design/icons';
+import { EditOutlined, MessageOutlined } from '@ant-design/icons';
 import {
   BaseView,
   ViewInstance,
@@ -35,7 +35,7 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
               key={item.id}
               hoverable
               actions={[
-                <ToolOutlined
+                <EditOutlined
                   onClick={(e) => {
                     e.stopPropagation();
                     instance.toDevPage(item.id);
