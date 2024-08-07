@@ -2,7 +2,7 @@ import { View } from '@difizen/mana-app';
 import type { ReactNode } from 'react';
 
 export interface NavigatablePage extends View {
-  goBack: () => void;
+  goBack?: () => void;
   pageTitle: () => ReactNode;
 }
 

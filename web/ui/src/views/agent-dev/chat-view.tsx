@@ -1,4 +1,4 @@
-import { Deferred, ViewRender } from '@difizen/mana-app';
+import { Deferred, ViewContext, ViewRender } from '@difizen/mana-app';
 import {
   ViewInstance,
   inject,
@@ -51,6 +51,11 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
   },
 );
 
+const Title = () => {
+  const instance = useInject<AgentView>(ViewInstance);
+  return <>{instance.agent?.name}</>;
+};
+
 @singleton()
 @view(viewId)
 export class AgentView extends PageView {
@@ -97,7 +102,11 @@ export class AgentView extends PageView {
   };
 
   override pageTitle = () => {
-    return this.agent?.name;
+    return (
+      <ViewContext view={this}>
+        <Title />
+      </ViewContext>
+    );
   };
 
   disposed?: boolean | undefined;

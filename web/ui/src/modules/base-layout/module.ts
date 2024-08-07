@@ -12,11 +12,13 @@ import { MagentBrandView } from './brand/view.js';
 import { GithubLinkView } from './github/view.js';
 import { MagentBaseLayoutSlots, MagentBaseLayoutView, slot } from './layout.js';
 import { MainView } from './main-view.js';
+import { MagentMainTitleView } from './title/view.js';
 
 export const BaseLayoutModule = ManaModule.create().register(
   MainView,
 
   MagentGoBackView,
+  MagentMainTitleView,
   MagentBaseLayoutView,
   MagentBrandView,
   GithubLinkView,
@@ -50,6 +52,11 @@ export const BaseLayoutModule = ManaModule.create().register(
     openOptions: {
       order: 'b-brand',
     },
+  }),
+  createViewPreference({
+    slot: HeaderArea.middle,
+    view: MagentMainTitleView,
+    autoCreate: true,
   }),
   createViewPreference({
     slot: HeaderArea.right,
