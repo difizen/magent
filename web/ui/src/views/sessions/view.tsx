@@ -50,7 +50,7 @@ const getDisplayMessageList = (sessions: SessionModel[], nowDate: string) => {
       return null;
     }
 
-    const date = session.gmtCreate!.split(' ')[0];
+    const date = session.gmtCreate ? session.gmtCreate.format('YYYY-MM-DD') : '';
 
     if (date === currentDate) {
       sameDay = true;
@@ -60,10 +60,9 @@ const getDisplayMessageList = (sessions: SessionModel[], nowDate: string) => {
     }
 
     return (
-      <>
+      <div key={`${session.id}`}>
         {(idx === 0 || !sameDay) && (
           <span
-            key={session.gmtCreate}
             className={classNames(
               'chat-histroy-date',
               idx === 0 ? 'chat-histroy-firstConv' : '',
@@ -72,8 +71,8 @@ const getDisplayMessageList = (sessions: SessionModel[], nowDate: string) => {
             {date === nowDate ? '今日' : isYesterday(date) ? '昨日' : date}
           </span>
         )}
-        <ConversationItem key={session.id} session={session} />
-      </>
+        <ConversationItem session={session} />
+      </div>
     );
   });
 };

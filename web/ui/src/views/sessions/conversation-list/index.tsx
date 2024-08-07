@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import { Input, Popconfirm } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
@@ -46,7 +46,7 @@ export const ConversationItem = ({ session }: ConversationItemProps) => {
       className={classNames(
         'chat-history-item',
         isActive && 'chat-history-item-active',
-        deleteConfirmOpen && 'chat-history-item-showAction',
+        deleteConfirmOpen && 'chat-history-item-show-action',
       )}
       onMouseEnter={() => {
         setIsMouseOver(true);
@@ -78,21 +78,22 @@ export const ConversationItem = ({ session }: ConversationItemProps) => {
       ) : (
         <>
           <div className={'chat-history-item-title'} title={session.id}>
-            {isActive && session.id && '[当前会话]'}
-            {session.id || '[新会话]'}
+            {isActive && session.id && <CaretRightOutlined />}
+            {session.previewTitle}
           </div>
 
           {isMouseOver ? (
-            <EditOutlined
-              className={'chat-history-item-i'}
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditing(true);
-              }}
-            />
+            // <EditOutlined
+            //   className={'chat-history-item-i'}
+            //   onClick={(e) => {
+            //     e.stopPropagation();
+            //     setEditing(true);
+            //   }}
+            // />
+            <></>
           ) : (
             <div className={'chat-history-item-time'}>
-              {session.gmtCreate?.split(' ')[1]}
+              {session.gmtCreate.format('HH:mm:ss')}
             </div>
           )}
 

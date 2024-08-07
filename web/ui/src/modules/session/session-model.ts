@@ -3,6 +3,7 @@ import { DisposableCollection } from '@difizen/mana-app';
 import { equals } from '@difizen/mana-app';
 import { Emitter } from '@difizen/mana-app';
 import { inject, prop, transient } from '@difizen/mana-app';
+import dayjs from 'dayjs';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
@@ -38,11 +39,11 @@ export class SessionModel
   messages: ChatMessageModel[] = [];
 
   get gmtCreate() {
-    return this.created;
+    return dayjs(this.created);
   }
 
   get gmtModified() {
-    return this.modified;
+    return dayjs(this.modified);
   }
 
   constructor(
@@ -90,6 +91,16 @@ export class SessionModel
   protected disposeMessage = (msg: ChatMessageModel) => {
     this.messages = this.messages.filter((item) => !equals(item, msg));
   };
+
+  get previewTitle(): string {
+    if (this.messages && this.messages.length > 0) {
+      const items = this.messages[0].messages;
+      if (items.length > 0) {
+        return items[0].content;
+      }
+    }
+    return '[新会话]';
+  }
 
   chat(msg: MessageCreate) {
     const message = this.chatMessage.createMessage(msg);
