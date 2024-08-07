@@ -36,7 +36,9 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   @prop()
   prompt: PromptMeta;
   memory: string;
-  planner: PlannerMeta;
+
+  @prop()
+  planner?: PlannerMeta;
 
   @prop()
   openingSpeech?: string;
@@ -51,6 +53,8 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   // }
 
   option: AgentModelOption;
+
+  fetching?: Promise<void>;
 
   constructor(
     @inject(AgentModelOption) option: AgentModelOption,
@@ -104,11 +108,18 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     }
   }
 
-  async fetchInfo(option: AgentModelOption = this.option) {
+  protected async doFetchInfo(option: AgentModelOption = this.option) {
     const res = await this.axios.get<AgentModelOption>(`/api/v1/agents/${option.id}`);
     if (res.status === 200) {
       this.fromMeta(res.data);
     }
+  }
+
+  async fetchInfo(option: AgentModelOption = this.option, force = false) {
+    if (!this.fetching || force) {
+      this.fetching = this.doFetchInfo(option);
+    }
+    return this.fetching;
   }
 
   toMeta(): AgentModelOption {

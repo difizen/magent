@@ -15,7 +15,14 @@ export class ChatMessageItem {
   senderType?: MessageSender;
 
   @prop()
-  content: string;
+  protected _content: string;
+  get content(): string {
+    return this._content;
+  }
+  set content(v) {
+    this._content = v;
+  }
+
   id: number;
 
   created?: Dayjs;
@@ -63,5 +70,8 @@ export class AIChatMessageItem extends ChatMessageItem {
 
   appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;
+  }
+  handleSteps(e: any) {
+    //
   }
 }

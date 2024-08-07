@@ -130,10 +130,12 @@ export class ChatView extends BaseView {
     this.sessionId = option.sessionId;
     this.getAgent(this.agentId);
     this.getSession(this.sessionId);
+    this.agentReady = this.agentDeferred.promise;
   }
 
   protected getAgent = async (id: string) => {
     this.agent = await this.agentManager.getOrCreateAgent({ id });
+    this.agent.fetchInfo();
     this.agentDeferred.resolve(this.agent);
   };
 

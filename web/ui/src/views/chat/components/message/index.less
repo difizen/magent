@@ -33,14 +33,6 @@
 
 .chat-message-container {
   flex: 1;
-
-  & > :first-child {
-    width: 100%;
-
-    & > :first-child {
-      width: calc(100% - 32px);
-    }
-  }
 }
 
 .chat-message-avatar {
@@ -116,6 +108,17 @@
 .chat-message-ai {
   background-color: #f8f8fb;
   border-radius: 8px;
+  width: 100%;
+
+  & > :first-child {
+    width: calc(100% - 32px);
+  }
+}
+
+.chat-message-ai-empty {
+  background-color: #f8f8fb;
+  border-radius: 8px;
+  width: 100%;
 }
 
 .chat-message-ai-receiving {
