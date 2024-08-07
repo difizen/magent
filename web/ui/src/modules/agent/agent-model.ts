@@ -5,12 +5,13 @@ import { AxiosClient } from '../axios-client/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
 import type { AgentConfig } from './agent-config.js';
+import type { LLMMeta, PromptMeta, PlannerMeta, ToolMeta } from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
 @transient()
 export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   axios: AxiosClient;
-  configManager: AgentConfigManager;
+  // configManager: AgentConfigManager;
 
   id: string;
 
@@ -29,11 +30,25 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   @prop()
   config?: AgentConfig;
 
-  protected draftDeferred = new Deferred<AgentConfig>();
+  @prop()
+  llm: LLMMeta;
 
-  get draftReady() {
-    return this.draftDeferred.promise;
-  }
+  @prop()
+  prompt: PromptMeta;
+  memory: string;
+  planner: PlannerMeta;
+
+  @prop()
+  openingSpeech?: string;
+
+  @prop()
+  tool: ToolMeta[];
+
+  // protected draftDeferred = new Deferred<AgentConfig>();
+
+  // get draftReady() {
+  //   return this.draftDeferred.promise;
+  // }
 
   option: AgentModelOption;
 
@@ -44,7 +59,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   ) {
     super();
     this.option = option;
-    this.configManager = configManager;
+    // this.configManager = configManager;
     this.axios = axios;
 
     this.id = option.id;
@@ -65,6 +80,25 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.avatar = option.avatar;
     this.description = option.description;
 
+    this.prompt = option.prompt ?? {
+      instruction: '',
+      introduction: '',
+      target: '',
+    };
+    this.llm = option.llm ?? {
+      id: '',
+      nickname: '',
+      temperature: 0,
+      model_name: ['gptx'],
+    };
+    this.memory = option.memory ?? '';
+    this.planner = option.planner ?? {
+      id: '',
+      nickname: 'string',
+    };
+    this.tool = option.tool ?? [];
+    this.openingSpeech = option.opening_speech;
+
     if (AgentModelType.isFullOption(option)) {
       super.fromMeta(option);
     }
@@ -79,9 +113,17 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   toMeta(): AgentModelOption {
     return {
+      ...this.option,
       id: this.id,
       nickname: this.name,
       avatar: this.avatar,
+      description: this.description,
+      prompt: this.prompt,
+      llm: this.llm,
+      planner: this.planner,
+      tool: this.tool,
+      memory: this.memory,
+      opening_speech: this.openingSpeech,
     };
   }
 

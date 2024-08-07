@@ -3,24 +3,24 @@ import {
   ViewInstance,
   inject,
   prop,
-  singleton,
   useInject,
   view,
+  ViewOption,
+  transient,
 } from '@difizen/mana-app';
 import { Row, Col } from 'antd';
 import { Flex } from 'antd';
 import { forwardRef } from 'react';
 
-import './index.less';
-import { AgentConfigManager } from '../../modules/agent/index.js';
-import type { AgentConfig } from '../../modules/agent/index.js';
+import { AgentManager } from '../../modules/agent/index.js';
+import type { AgentModel } from '../../modules/agent/index.js';
 
 import { CharacterSetting } from './components/CharacterSetting/index.js';
 import { ConfigList } from './components/ConfigList/index.js';
 import { LLMSetting } from './components/LLMSetting/index.js';
+import './index.less';
 
-const viewId = 'magent-debug';
-export const slot = `${viewId}-slot`;
+const viewId = 'magent-dev-config';
 
 const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
   function AgentConfigViewComponent(props, ref) {
@@ -28,56 +28,62 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
 
     return (
       <div ref={ref} className={viewId}>
-        <Flex className="header" align="center" justify={'space-between'}>
+        <Flex className={`${viewId}-header`} align="center" justify={'space-between'}>
           <h3>应用配置</h3>
           <LLMSetting
             modelOptions={instance.modelOptions}
             value={{
-              model: instance.agentConfig.llm.model_name[0],
-              temperature: instance.agentConfig.llm.temperature,
+              model: instance.agent.llm.model_name[0],
+              temperature: instance.agent.llm.temperature,
             }}
             onChange={(values) => {
               instance.updateLLM(values);
             }}
           />
         </Flex>
-        <Row>
-          <Col span={12}>
+        <div className={`${viewId}-content`}>
+          <div className={`${viewId}-content-left`}>
             <CharacterSetting
-              values={instance.agentConfig.prompt}
+              values={instance.agent.prompt}
               onChange={(values) => {
                 instance.updatePrompt(values);
               }}
             ></CharacterSetting>
-          </Col>
-
-          <Col span={12}>
+          </div>
+          <div className={`${viewId}-content-right`}>
             <ConfigList></ConfigList>
-          </Col>
-        </Row>
+          </div>
+        </div>
       </div>
     );
   },
 );
 
-@singleton()
+export interface AgentConfigViewOption {
+  agentId: string;
+}
+@transient()
 @view(viewId)
 export class AgentConfigView extends BaseView {
+  agentId: string;
   override view = AgentConfigViewComponent;
 
-  @prop() agentConfig: AgentConfig;
-  protected agentConfigManager: AgentConfigManager;
-  constructor(@inject(AgentConfigManager) agentConfigManager: AgentConfigManager) {
+  @prop() agent: AgentModel;
+  protected agentManager: AgentManager;
+  constructor(
+    @inject(ViewOption) option: AgentConfigViewOption,
+    @inject(AgentManager) agentManager: AgentManager,
+  ) {
     super();
-    this.agentConfigManager = agentConfigManager;
-    // TODO fix id
-    this.getAgentConfig('1');
+    this.agentId = option.agentId;
+    this.agentManager = agentManager;
+    this.initAgent(option.agentId);
   }
 
   get modelOptions() {
     // TODO 大模型optios列表和对应存取值要怎么取？
     return (
-      this.agentConfig?.llm?.model_name?.map((item) => {
+      this.agent?.llm?.model_name?.map((item) => {
         return {
           label: item,
           value: item,
@@ -85,12 +91,15 @@ export class AgentConfigView extends BaseView {
       }) || []
     );
   }
-  /**
-   * 初始化配置
-   * @param id
-   */
-  getAgentConfig = async (id: string) => {
-    this.agentConfig = this.agentConfigManager.create({ id });
+
+  protected initAgent = (agentId = this.agentId) => {
+    if (agentId) {
+      const agent = this.agentManager.getOrCreateAgent({ id: agentId });
+      agent.fetchInfo();
+      this.agent = agent;
+      return agent;
+    }
+    return undefined;
   };
 
   /**
@@ -116,20 +125,20 @@ export class AgentConfigView extends BaseView {
     target?: string;
   }) {
     if (values.instruction) {
-      this.agentConfig.prompt.instruction = values.instruction;
+      this.agent.prompt.instruction = values.instruction;
     }
     if (values.introduction) {
-      this.agentConfig.prompt.introduction = values.introduction;
+      this.agent.prompt.introduction = values.introduction;
     }
     if (values.target) {
-      this.agentConfig.prompt.target = values.target;
+      this.agent.prompt.target = values.target;
     }
     this.save();
   }
   updateLLM({ model, temperature }: { model: string; temperature: number }) {
     // TODO 待确认
-    this.agentConfig.llm.model_name[0] = model;
-    this.agentConfig.llm.temperature = temperature;
+    this.agent.llm.model_name[0] = model;
+    this.agent.llm.temperature = temperature;
     this.save();
   }
   /**
@@ -137,6 +146,6 @@ export class AgentConfigView extends BaseView {
    */
   save() {
     // TODO
-    console.warn('save data', this.agentConfig);
+    console.warn('save data', this.agent);
   }
 }

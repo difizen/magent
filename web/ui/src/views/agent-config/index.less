@@ -1,50 +1,34 @@
-.magent-debug {
+.magent-dev-config {
   height: 100%;
   overflow-y: auto;
   display: flex;
   justify-items: center;
   flex-direction: column;
-  background-color: rgb(249, 249, 250);
-  padding: 0 24px;
+  background-color: var(--mana-color-bg-container);
+  box-sizing: border-box;
+  border-radius: 8px;
 
-  .header {
+  &-header {
     border-bottom: 1px solid #eee;
+    padding: 0 24px;
   }
 
-  @media (min-width: 640px) {
-    :is(.sm\:grid-cols-1) {
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 768px) {
-    :is(.md\:grid-cols-2) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1200px) {
-    :is(.lg\:grid-cols-3) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1360px) {
-    :is(.xl\:grid-cols-4) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-
-  :is(.gap-x-4) {
-    column-gap: 1rem;
-  }
-
-  :is(.w-full) {
-    width: 100%;
-  }
-
-  :is(.grid) {
+  &-content {
     display: grid;
+    grid-template-columns: 13fr 13fr;
+    height: calc(100% - 56px);
+    overflow: hidden;
+
+    &-left {
+      overflow: auto;
+      padding: 12px 24px;
+      border-right: 1px solid var(--mana-menubar-border);
+    }
+
+    &-right {
+      overflow: auto;
+      padding: 12px;
+    }
   }
 
   .ant-card-meta-title {

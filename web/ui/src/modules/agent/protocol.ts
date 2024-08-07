@@ -78,6 +78,13 @@ export interface AgentModelOption {
   avatar?: string;
   nickname?: string;
   id: string;
+  opening_speech?: string;
+  llm?: LLMMeta;
+  prompt?: PromptMeta;
+  memory?: string;
+  planner?: PlannerMeta;
+  tool?: ToolMeta[];
+  knowledge?: any[];
 }
 
 export const AgentModelOption = Syringe.defineToken('AgentBotOption', {

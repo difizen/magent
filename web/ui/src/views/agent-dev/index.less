@@ -1,13 +1,33 @@
 .magent-agent-chat-layout {
   height: 100%;
+
+  &-container {
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 12px 24px;
+  }
+
+  &-history {
+    width: 260px;
+  }
 }
 
-.magent-agent-chat-layout-container {
-  gap: 16px;
-  box-sizing: border-box;
-  padding: 12px 24px;
-}
+.magent-agent-dev-layout {
+  height: 100%;
 
-.magent-agent-chat-layout-history {
-  width: 260px;
+  &-container {
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 12px 24px;
+  }
+
+  &-config {
+    width: 260px;
+  }
+
+  &-chat-dev {
+    height: 100%;
+    min-width: 520px;
+    width: 520px;
+  }
 }

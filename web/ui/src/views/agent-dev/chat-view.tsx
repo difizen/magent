@@ -1,4 +1,4 @@
-import { ViewRender } from '@difizen/mana-app';
+import { Deferred, ViewRender } from '@difizen/mana-app';
 import {
   BaseView,
   ViewInstance,
@@ -67,6 +67,16 @@ export class AgentView extends BaseView {
   @prop()
   chat?: ChatView;
 
+  initializing?: Promise<void>;
+  defaultSessionCreating?: Promise<void>;
+  ready: Promise<void>;
+  protected readyDeferred: Deferred<void> = new Deferred();
+
+  constructor() {
+    super();
+    this.ready = this.readyDeferred.promise;
+  }
+
   protected initAgent = () => {
     if (this.agentId) {
       const agent = this.agentManager.getOrCreateAgent({ id: this.agentId });
@@ -85,6 +95,7 @@ export class AgentView extends BaseView {
       agentId: this.agentId,
     });
     this.sessions = sessions;
+    await sessions.ensureActive();
   };
 
   protected getAgentTitleName = async (agent: AgentModel) => {
@@ -102,12 +113,24 @@ export class AgentView extends BaseView {
     }
   };
 
-  override onViewMount(): void {
+  protected initialize() {
     const agent = this.initAgent();
     if (agent) {
       this.updateTitle(agent);
     }
     this.initSessionView();
+  }
+
+  ensureInitialized = async () => {
+    if (!this.initializing) {
+      this.initializing = this.ready;
+      this.initialize();
+    }
+    return this.initializing;
+  };
+
+  override onViewMount(): void {
+    this.ensureInitialized();
   }
 
   openChat = async (session?: SessionModel) => {

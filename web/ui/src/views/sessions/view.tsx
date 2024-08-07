@@ -8,6 +8,7 @@ import {
   prop,
   transient,
   ViewOption,
+  Deferred,
 } from '@difizen/mana-app';
 import { Button } from 'antd';
 import classNames from 'classnames';
@@ -137,13 +138,24 @@ export class SessionsView extends BaseView {
 
   option: SessionsViewOption;
 
+  initializing?: Promise<void>;
+  defaultSessionCreating?: Promise<void>;
+  ready: Promise<void>;
+  protected readyDeferred: Deferred<void> = new Deferred();
+
   constructor(@inject(ViewOption) option: SessionsViewOption) {
     super();
     this.option = option;
     this.agentId = option.agentId;
+    this.ready = this.readyDeferred.promise;
   }
 
-  override async onViewMount(): Promise<void> {
+  protected initSessions = async () => {
+    await this.updateSessions();
+    this.readyDeferred.resolve();
+  };
+
+  protected updateSessions = async () => {
     this.loadig = true;
     const sessions = await this.sessionManager.getSessions(this.agentId);
     this.sessions = sessions.map((opt) => {
@@ -155,6 +167,10 @@ export class SessionsView extends BaseView {
       this.active = this.sessions[0];
     }
     this.loadig = false;
+  };
+
+  override async onViewMount(): Promise<void> {
+    this.ensureActive();
   }
 
   selectSession = (session: SessionModel) => {
@@ -167,6 +183,25 @@ export class SessionsView extends BaseView {
     session.onDispose(() => this.disposeSession(session));
     this.sessions.unshift(session);
     this.active = session;
+  };
+
+  ensureInitialized = async () => {
+    if (!this.initializing) {
+      this.initializing = this.ready;
+      this.initSessions();
+    }
+    return this.initializing;
+  };
+
+  ensureActive = async () => {
+    await this.ensureInitialized();
+    await this.ready;
+    if (!this.active) {
+      if (!this.defaultSessionCreating) {
+        this.defaultSessionCreating = this.createSession();
+      }
+      return await this.defaultSessionCreating;
+    }
   };
 
   protected disposeSession = (session: SessionModel) => {
