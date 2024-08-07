@@ -103,6 +103,7 @@ export class ChatMessageModel implements Disposable {
     );
 
     if (res.status === 200) {
+      this.sending = false;
       const data = res.data;
       this.id = data.message_id;
       this.created = dayjs(data.gmt_created);
@@ -158,6 +159,7 @@ export class ChatMessageModel implements Disposable {
       adapter: 'fetch',
     });
     if (res.status === 200) {
+      this.sending = false;
       const stream = res.data;
       const reader = stream
         .pipeThrough(new TextDecoderStream())

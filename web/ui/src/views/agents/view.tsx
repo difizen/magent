@@ -34,7 +34,16 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
               className="agent-card"
               key={item.id}
               hoverable
-              actions={[<ToolOutlined key="dev" />, <MessageOutlined key="chat" />]}
+              actions={[
+                <ToolOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    instance.toDevPage(item.id);
+                  }}
+                  key="dev"
+                />,
+                <MessageOutlined key="chat" />,
+              ]}
               onClick={() => {
                 instance.toChatPage(item.id);
               }}

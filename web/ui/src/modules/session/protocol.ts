@@ -44,6 +44,7 @@ export interface APISession {
   id: string;
   messages: APIMessage[];
 }
+
 export const toSessionOption = (item: APISession): SessionOption => {
   return {
     id: item.id,

@@ -1,25 +1,15 @@
-import type { Syringe } from '@difizen/mana-app';
-import {
-  BaseView,
-  ViewInstance,
-  inject,
-  singleton,
-  useInject,
-  view,
-  prop,
-  Slot,
-  ViewManager,
-} from '@difizen/mana-app';
+import { ViewRender } from '@difizen/mana-app';
+import { ViewInstance, singleton, useInject, view } from '@difizen/mana-app';
 import { BoxPanel } from '@difizen/mana-react';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 
-import { AgentManager } from '../../modules/agent/agent-manager.js';
-import type { AgentModel } from '../../modules/agent/protocol.js';
-import { AgentInstance } from '../../modules/agent/protocol.js';
+import type { AgentConfigManager } from '../../modules/agent/agent-config-manager.js';
+import { AgentConfigView } from '../agent-config/view.js';
+
+import { AgentView } from './chat-view.js';
 
 import './index.less';
-import { AgentLayoutSlots } from './protocol.js';
 
 const viewId = 'magent-agent-dev';
 export const slot = `${viewId}-slot`;
@@ -31,14 +21,18 @@ const AgentDevComponent = forwardRef<HTMLDivElement>(
     const agentId = match?.params?.agentId;
     instance.agentId = agentId;
 
+    useEffect(() => {
+      instance.openChat(instance.sessions?.active);
+    }, [instance, instance.sessions?.active]);
+
     return (
-      <div ref={ref} className={viewId}>
-        <BoxPanel direction="left-to-right">
-          <BoxPanel.Pane className="bot-layout-config" flex={1}>
-            <Slot name={AgentLayoutSlots.config} />
+      <div ref={ref} className={`${viewId}-layout`}>
+        <BoxPanel className={`${viewId}-layout-container`} direction="left-to-right">
+          <BoxPanel.Pane className={`${viewId}-layout-config`} flex={1}>
+            {instance.agentConfig && <ViewRender view={instance.agentConfig} />}
           </BoxPanel.Pane>
-          <BoxPanel.Pane className="bot-layout-preview">
-            <Slot name={AgentLayoutSlots.chat} />
+          <BoxPanel.Pane className={`${viewId}-layout-chat-dev`}>
+            {instance.chat && <ViewRender view={instance.chat} />}
           </BoxPanel.Pane>
         </BoxPanel>
       </div>
@@ -48,36 +42,25 @@ const AgentDevComponent = forwardRef<HTMLDivElement>(
 
 @singleton()
 @view(viewId)
-export class AgentDevView extends BaseView {
-  agentId?: string;
-  @inject(AgentManager) agentManager: AgentManager;
-  @inject(ViewManager) viewManager: ViewManager;
+export class AgentDevView extends AgentView {
+  protected agentConfigManager: AgentConfigManager;
+
+  agentConfig?: AgentConfigView;
+
   override view = AgentDevComponent;
 
-  @prop()
-  agent?: AgentModel;
-
-  agentContext: Syringe.Context;
-
-  protected initAgent = () => {
-    if (this.agentId) {
-      const agent = this.agentManager.getOrCreateAgent({ id: this.agentId });
-      agent.fetchInfo();
-      this.agent = agent;
-    }
-  };
-
-  protected initContext = () => {
-    if (this.agent) {
-      const context = this.viewManager.getViewContext(this);
-      const child = context.container.createChild();
-      child.register({ token: AgentInstance, useValue: this.agent });
-      this.agentContext = { container: child };
-    }
-  };
-
-  override onViewMount(): void {
-    this.initAgent();
-    this.initContext();
+  protected override initialize() {
+    super.initialize();
+    this.initAgentConfigView();
   }
+
+  protected initAgentConfigView = async () => {
+    if (!this.agentId) {
+      return;
+    }
+    const agentConfig = await this.viewManager.getOrCreateView(AgentConfigView, {
+      agentId: this.agentId,
+    });
+    this.agentConfig = agentConfig;
+  };
 }

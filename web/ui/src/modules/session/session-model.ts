@@ -90,6 +90,7 @@ export class SessionModel
   protected disposeMessage = (msg: ChatMessageModel) => {
     this.messages = this.messages.filter((item) => !equals(item, msg));
   };
+
   chat(msg: MessageCreate) {
     const message = this.chatMessage.createMessage(msg);
     const toDispose = message.onMessageItem((e) => {
