@@ -49,7 +49,7 @@ export const HumanMessage = (props: MessageProps) => {
 
   return (
     <div className={classNames('chat-message-main')}>
-      <Avatar src={avatarSrc} />
+      <Avatar className="chat-message-avatar" src={avatarSrc} />
       <TextMessage content={content} />
     </div>
   );
@@ -98,7 +98,7 @@ export const AIMessage = (props: MessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <Avatar src={avatarSrc} />
+      <Avatar className="chat-message-avatar" src={avatarSrc} />
       <div className={`chat-message-container`}>
         {content}
         <div style={{ paddingTop: 8, display: 'flex' }}>
