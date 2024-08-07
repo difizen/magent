@@ -37,6 +37,14 @@ export class SessionModel
   @prop()
   messages: ChatMessageModel[] = [];
 
+  get gmtCreate() {
+    return this.created;
+  }
+
+  get gmtModified() {
+    return this.modified;
+  }
+
   constructor(
     @inject(SessionOption) option: SessionOption,
     @inject(AxiosClient) axios: AxiosClient,

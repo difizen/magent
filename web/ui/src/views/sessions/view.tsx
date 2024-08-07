@@ -1,4 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   BaseView,
   ViewInstance,
@@ -10,27 +10,105 @@ import {
   ViewOption,
 } from '@difizen/mana-app';
 import { Button } from 'antd';
-import { forwardRef } from 'react';
+import classNames from 'classnames';
+import { forwardRef, useMemo } from 'react';
 
 import type { SessionModel } from '../../modules/session/index.js';
 import { SessionManager } from '../../modules/session/index.js';
+
 import './index.less';
+import { ConversationItem } from './conversation-list/index.js';
 
 const viewId = 'magent-sessions';
+
+function isYesterday(inputDateStr: string) {
+  // 创建一个新的Date对象表示当前日期
+  const today = new Date();
+
+  // 设置时间为昨天（减去一天）
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  // 创建一个Date对象表示输入的日期
+  const inputDate = new Date(inputDateStr);
+
+  // 比较年、月、日是否相同
+  return (
+    inputDate.getFullYear() === yesterday.getFullYear() &&
+    inputDate.getMonth() === yesterday.getMonth() &&
+    inputDate.getDate() === yesterday.getDate()
+  );
+}
+
+const getDisplayMessageList = (sessions: SessionModel[], nowDate: string) => {
+  let sameDay = false;
+  let currentDate = nowDate;
+
+  return sessions.map((session, idx) => {
+    if (!session) {
+      return null;
+    }
+
+    const date = session.gmtCreate!.split(' ')[0];
+
+    if (date === currentDate) {
+      sameDay = true;
+    } else {
+      sameDay = false;
+      currentDate = date;
+    }
+
+    return (
+      <>
+        {(idx === 0 || !sameDay) && (
+          <span
+            key={session.gmtCreate}
+            className={classNames(
+              'chat-histroy-date',
+              idx === 0 ? 'chat-histroy-firstConv' : '',
+            )}
+          >
+            {date === nowDate ? '今日' : isYesterday(date) ? '昨日' : date}
+          </span>
+        )}
+        <ConversationItem key={session.id} session={session} />
+      </>
+    );
+  });
+};
 
 const SessionsViewComponent = forwardRef<HTMLDivElement>(
   function SessionsViewComponent(props, ref) {
     const instance = useInject<SessionsView>(ViewInstance);
 
+    const nowDate = useMemo(() => {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      const day = currentDate.getDate();
+
+      const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${
+        day < 10 ? '0' + day : day
+      }`;
+
+      return formattedDate;
+    }, []);
+
     return (
-      <div ref={ref} className={viewId}>
-        {instance.sessions.map((session) => (
-          <div onClick={() => instance.selectSession(session)} key={session.id}>
-            {session.id}
-            <CloseOutlined onClick={() => instance.deleteSession(session)} />
-          </div>
-        ))}
-        <Button onClick={instance.createSession}>开启新会话</Button>
+      <div
+        style={{ minHeight: 42 * Math.min(instance.sessions.length, 6) + 60 }}
+        className={'chat-histroy-list'}
+      >
+        <Button
+          icon={<PlusOutlined className={'chat-histroy-icon'} />}
+          // loading={sessionSnap.convCreating}
+          onClick={instance.createSession}
+        >
+          开启新会话
+        </Button>
+        <div className={'chat-histroy-scroll'}>
+          {getDisplayMessageList(instance.sessions, nowDate)}
+        </div>
       </div>
     );
   },

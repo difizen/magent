@@ -37,12 +37,12 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
 
     return (
       <div ref={ref} className={`${viewId}-layout`}>
-        <BoxPanel direction="left-to-right">
-          <BoxPanel.Pane className="magent-agent-chat-layout-history">
-            {instance.sessions && <ViewRender view={instance.sessions} />}
-          </BoxPanel.Pane>
+        <BoxPanel className={`${viewId}-layout-container`} direction="left-to-right">
           <BoxPanel.Pane className="magent-agent-chat-layout-chat" flex={1}>
             {instance.chat && <ViewRender view={instance.chat} />}
+          </BoxPanel.Pane>
+          <BoxPanel.Pane className="magent-agent-chat-layout-history">
+            {instance.sessions && <ViewRender view={instance.sessions} />}
           </BoxPanel.Pane>
         </BoxPanel>
       </div>
