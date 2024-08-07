@@ -53,7 +53,17 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
 @singleton()
 @view(viewId)
 export class AgentView extends BaseView {
-  agentId?: string;
+  protected _agentId?: string;
+
+  get agentId(): string | undefined {
+    return this._agentId;
+  }
+  set agentId(v) {
+    if (v !== this._agentId) {
+      this.reset();
+    }
+    this._agentId = v;
+  }
   @inject(AgentManager) agentManager: AgentManager;
   @inject(ViewManager) viewManager: ViewManager;
   override view = AgentChatComponent;
@@ -77,6 +87,12 @@ export class AgentView extends BaseView {
     this.ready = this.readyDeferred.promise;
   }
 
+  protected reset = () => {
+    this.initializing = undefined;
+    this.defaultSessionCreating = undefined;
+    this.readyDeferred = new Deferred();
+    this.ready = this.readyDeferred.promise;
+  };
   protected initAgent = () => {
     if (this.agentId) {
       const agent = this.agentManager.getOrCreateAgent({ id: this.agentId });
