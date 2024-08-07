@@ -7,6 +7,7 @@ import {
 } from './chat-message-item.js';
 import { ChatMessageManager } from './chat-message-manager.js';
 import { ChatMessageModel } from './chat-message-model.js';
+import { PeerChatMessageItem } from './peer-message-item-model.js';
 import { ChatMessageItemOption } from './protocol.js';
 import { ChatMessageItemFactory, ChatMessageOption } from './protocol.js';
 import { ChatMessageFactory } from './protocol.js';
@@ -27,6 +28,7 @@ export const ChatMessageModule = ManaModule.create().register(
   ChatMessageItem,
   HumanChatMessageItem,
   AIChatMessageItem,
+  PeerChatMessageItem,
   {
     token: ChatMessageItemFactory,
     useFactory: (ctx) => {
@@ -34,6 +36,9 @@ export const ChatMessageModule = ManaModule.create().register(
         const child = ctx.container.createChild();
         child.register({ token: ChatMessageItemOption, useValue: option });
         if (option.senderType === 'AI') {
+          if (option.planner === 'peer_planner') {
+            return child.get(PeerChatMessageItem);
+          }
           return child.get(AIChatMessageItem);
         }
         return child.get(HumanChatMessageItem);

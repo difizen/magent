@@ -99,6 +99,8 @@ export enum AnswerState {
 
 export interface ChatMessageItemOption extends MessageItem {
   created?: string;
+  planner?: string;
+  agentId: string;
 }
 export const ChatMessageItemOption = Syringe.defineToken('ChatMessageItemOption', {
   multiple: false,
@@ -135,4 +137,14 @@ export interface ChatEventResult {
   invocation_chain: ChainItem[];
   token_usage: ChatTokenUsage;
   type: 'final_result';
+}
+export interface ChatEventStep {
+  agent_id: string;
+  output: (string | EAnswer)[];
+  type: 'intermediate_steps';
+}
+
+interface EAnswer {
+  input: string;
+  output: string;
 }

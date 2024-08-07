@@ -5,7 +5,10 @@ import type { ChangeEvent, ReactNode, KeyboardEvent, FC } from 'react';
 import { forwardRef, useCallback, useMemo, useState } from 'react';
 
 import './index.less';
+import type { ChatView } from '../../view.js';
+
 import { AudioIcon, FolderIcon, ImgIcon, SendIcon, VideoIcon } from './icon.js';
+import { useInject, ViewInstance } from '@difizen/mana-app';
 
 function insertAtCaret(e: ChangeEvent<HTMLTextAreaElement>, valueToInsert?: string) {
   const target = e.target;
@@ -65,6 +68,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
   props: InputProps,
   ref,
 ) {
+  const instance = useInject<ChatView>(ViewInstance);
   const [v, setV] = useState<string>('');
   const {
     prefixCls = 'chat-input',
@@ -169,8 +173,14 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
         </div>
         <div className={`${prefixCls}-iconBottom`}>
           <div
-            className={`${prefixCls}-sendButton`}
-            onClick={() => onSubmit(value || v)}
+            className={classnames(`${prefixCls}-sendButton`, {
+              [`${prefixCls}-send-button-disabled`]: !instance.agent?.planner,
+            })}
+            onClick={() => {
+              if (instance.agent?.planner) {
+                onSubmit(value || v);
+              }
+            }}
           >
             <SendIcon />
           </div>

@@ -1,11 +1,13 @@
 import type { Disposable, Event } from '@difizen/mana-app';
-import { Emitter } from '@difizen/mana-app';
+import { Emitter, Deferred } from '@difizen/mana-app';
 import { inject, prop, transient } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { EventSourceParserStream } from 'eventsource-parser/stream';
 import type { ParsedEvent } from 'eventsource-parser/stream';
 
+import { AgentManager } from '../agent/agent-manager.js';
+import type { AgentModel } from '../agent/agent-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 
 import type { ChatMessageItem } from './chat-message-item.js';
@@ -15,6 +17,7 @@ import type {
   ChainItem,
   ChatEventChunk,
   ChatEventResult,
+  ChatEventStep,
   ChatTokenUsage,
   MessageCreate,
   MessageOption,
@@ -28,11 +31,15 @@ import { ChatMessageOption } from './protocol.js';
 export class ChatMessageModel implements Disposable {
   protected chatMessageItemFactory: ChatMessageItemFactory;
   protected axios: AxiosClient;
+  protected agentManager: AgentManager;
   option: ChatMessageOption;
 
   id?: number;
   agentId: string;
   sessionId: string;
+
+  @prop()
+  agent?: AgentModel;
 
   @prop()
   messages: ChatMessageItem[] = [];
@@ -67,16 +74,22 @@ export class ChatMessageModel implements Disposable {
   onMessageItem: Event<ChatMessageItem>;
   protected onMessageItemEmitter = new Emitter<ChatMessageItem>();
 
+  agentReady: Promise<AgentModel>;
+  protected agentDeferred: Deferred<AgentModel> = new Deferred<AgentModel>();
+
   constructor(
     @inject(ChatMessageOption) option: ChatMessageOption,
     @inject(AxiosClient) axios: AxiosClient,
     @inject(ChatMessageItemFactory) chatMessageItemFactory: ChatMessageItemFactory,
+    @inject(AgentManager) agentManager: AgentManager,
   ) {
     this.option = option;
+    this.agentReady = this.agentDeferred.promise;
     this.axios = axios;
     this.onDispose = this.onDisposeEmitter.event;
     this.onMessageItem = this.onMessageItemEmitter.event;
     this.chatMessageItemFactory = chatMessageItemFactory;
+    this.agentManager = agentManager;
     if (ChatMessageType.isCreate(option)) {
       this.send(option);
     }
@@ -85,31 +98,50 @@ export class ChatMessageModel implements Disposable {
     }
   }
 
+  protected getAgent = async (id: string) => {
+    const agent = await this.agentManager.getOrCreateAgent({ id });
+    this.agent = agent;
+    this.agent.fetchInfo();
+    this.agentDeferred.resolve(agent);
+  };
+
   dispose = (): void => {
     this.disposed = true;
     this.onDisposeEmitter.fire();
   };
 
-  updateMeta = (option: MessageOption) => {
-    this.id = option.id || dayjs().unix();
-    this.agentId = option.agentId;
-    this.sessionId = option.sessionId;
+  protected doUpdateMessages = async (option: MessageOption) => {
+    let agent = this.agent;
+    if (!agent) {
+      agent = await this.agentReady;
+    }
+    await agent.ready;
     if (option.messages && option.messages.length > 0) {
       const messages = option.messages.map((item) =>
         this.chatMessageItemFactory({
-          ...item,
+          content: item.content,
+          senderType: item.senderType,
           created: item.senderType === 'AI' ? option.modified : option.created,
+          planner: agent!.planner?.id,
+          agentId: this.agentId,
         }),
       );
       this.messages = messages;
       this.onMessageItemEmitter.fire(messages[messages.length - 1]);
     }
+  };
+  updateMeta = (option: MessageOption) => {
+    this.id = option.id || dayjs().unix();
+    this.agentId = option.agentId;
+    this.getAgent(this.agentId);
+    this.sessionId = option.sessionId;
     if (option.created) {
       this.created = dayjs(option.created);
     }
     if (option.modified) {
       this.modified = dayjs(option.modified);
     }
+    this.doUpdateMessages(option);
   };
   doChat = async (option: MessageCreate) => {
     const { agentId, sessionId, input } = option;
@@ -132,6 +164,8 @@ export class ChatMessageModel implements Disposable {
         const ai = this.chatMessageItemFactory({
           senderType: 'AI',
           content: res.data.output,
+          planner: this.agent?.planner?.id,
+          agentId: this.agentId,
         });
         this.messages.push(ai);
         this.onMessageItemEmitter.fire(ai);
@@ -168,7 +202,8 @@ export class ChatMessageModel implements Disposable {
       }
 
       if (e.event === 'steps') {
-        const chunk: ChatEventChunk = JSON.parse(e.data);
+        const chunk: ChatEventStep = JSON.parse(e.data);
+        ai.handleSteps(chunk);
         this.onMessageItemEmitter.fire(ai);
       }
     } catch (e) {
@@ -205,6 +240,8 @@ export class ChatMessageModel implements Disposable {
       const ai = this.chatMessageItemFactory({
         senderType: 'AI',
         content: '',
+        planner: this.agent?.planner?.id,
+        agentId: this.agentId,
       });
       ai.state = AnswerState.RECEIVING;
       this.messages.push(ai);
@@ -231,6 +268,8 @@ export class ChatMessageModel implements Disposable {
     const human = this.chatMessageItemFactory({
       senderType: 'HUMAN',
       content: input,
+      planner: this.agent?.planner?.id,
+      agentId: this.agentId,
     });
     const opt: MessageOption = {
       ...option,
