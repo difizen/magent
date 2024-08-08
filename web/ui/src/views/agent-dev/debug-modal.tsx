@@ -9,6 +9,7 @@ import { useState } from 'react';
 
 import { DefaultToolIcon } from '../../modules/tool/tool-icon.js';
 import { DefaultLogo } from '../agent-config/components/model-selector/logos.js';
+import { HumanIcon } from '../chat/components/message/human-message.js';
 import type { ChatView } from '../chat/view.js';
 
 import { copy2clipboard } from './utils.js';
@@ -40,9 +41,7 @@ export function DebugModalComponent({
     {
       title: '用户输入',
       key: 'user-input',
-      icon: (
-        <Avatar size="small" src={'https://api.dicebear.com/7.x/miniavs/svg?seed=1'} />
-      ),
+      icon: <Avatar size="small" src={<HumanIcon />} />,
       children: invocationChain.map((item) => {
         let iconSrc = undefined;
         if (item.type === 'llm') {

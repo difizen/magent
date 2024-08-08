@@ -63,7 +63,6 @@ export const AIMessageContent = (props: AIMessageProps) => {
           <span className={`markdown-message-md-pop`}>
             <Markdown
               className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
-              message={message}
               type="message"
             >
               {message.content}
