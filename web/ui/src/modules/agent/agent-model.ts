@@ -1,4 +1,5 @@
-import { Deferred, inject, prop, transient } from '@difizen/mana-app';
+import { inject, prop, transient } from '@difizen/mana-app';
+import { message } from 'antd';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
@@ -7,7 +8,13 @@ import { ToolManager } from '../tool/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
 import type { AgentConfig } from './agent-config.js';
-import type { LLMMeta, PromptMeta, PlannerMeta, ToolMeta } from './protocol.js';
+import type {
+  LLMMeta,
+  PromptMeta,
+  PlannerMeta,
+  ToolMeta,
+  KnowledgeMeta,
+} from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
 class Prompt implements PromptMeta {
@@ -36,6 +43,8 @@ class Prompt implements PromptMeta {
 
 @transient()
 export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
+  @inject(ToolManager) toolManager: ToolManager;
+
   axios: AxiosClient;
   // configManager: AgentConfigManager;
 
@@ -70,36 +79,71 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   @prop()
   openingSpeech?: string;
 
-  @prop()
-  tool: ToolMeta[];
-
-  @inject(ToolManager) toolManager: ToolManager;
-
-  @prop()
-  toolList: ToolModel[] = [];
+  /**
+   * ------
+   * Tools
+   * ------
+   */
 
   @prop()
-  toolListLoading = false;
+  allTools: ToolMeta[] = [];
 
   @prop()
-  selectedKnowledgeList: ToolModel[] = [];
+  tool: ToolMeta[] = [];
+
+  @prop()
+  allToolsLoading = false;
+
+  /**
+   * ------
+   * Knowledge
+   * ------
+   */
+  @prop()
+  selectedKnowledge: KnowledgeMeta[] = [];
+
+  @prop()
+  knowledges: KnowledgeMeta[] = [];
+
+  @prop()
+  knowledgesLoading = false;
 
   async updateToolList() {
     try {
-      this.toolListLoading = true;
+      this.allToolsLoading = true;
       const options = await this.toolManager.getTools();
-      this.toolList = options.map(this.toolManager.getOrCreateTool);
+      this.allTools = options;
     } finally {
-      this.toolListLoading = false;
+      this.allToolsLoading = false;
     }
   }
 
   updateSelectedToolList(ids: React.Key[]) {
-    this.tool = this.toolList.filter((item) => ids.includes(item.id));
+    this.tool = this.allTools.filter((item) => ids.includes(item.id));
   }
 
   removeSelectedToolList(ids: React.Key[]) {
     this.tool = this.tool.filter((item) => !ids.includes(item.id));
+  }
+
+  async updateKnowledgeList() {
+    try {
+      this.knowledgesLoading = true;
+      const options = await this.fetchKnowdledgeList();
+      this.knowledges = options;
+    } finally {
+      this.knowledgesLoading = false;
+    }
+  }
+
+  updateSelectedKnowledgeList(ids: React.Key[]) {
+    this.selectedKnowledge = this.knowledges.filter((item) => ids.includes(item.id));
+  }
+
+  removeSelectedKnowledgeList(ids: React.Key[]) {
+    this.selectedKnowledge = this.selectedKnowledge.filter(
+      (item) => !ids.includes(item.id),
+    );
   }
 
   // protected draftDeferred = new Deferred<AgentConfig>();
@@ -187,6 +231,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       tool: this.tool,
       memory: this.memory,
       opening_speech: this.openingSpeech,
+      knowledge: this.selectedKnowledge,
     };
   }
 
@@ -203,5 +248,23 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       return res.data === 1;
     }
     return false;
+  }
+
+  async fetchKnowdledgeList() {
+    try {
+      const res = await this.axios.put<KnowledgeMeta[]>(`/api/v1/knowledge`);
+      if (res.status === 200 && res.data?.length) {
+        return res.data;
+      }
+    } catch (e) {
+      console.error('获取知识库失败');
+    }
+    return [
+      {
+        id: 'string',
+        nickname: '测试知识库',
+        description: '测试知识库',
+      },
+    ];
   }
 }
