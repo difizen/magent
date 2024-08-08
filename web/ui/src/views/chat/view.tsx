@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
+import { AgentIcon } from '../../modules/agent/agent-icon.js';
 import { AgentManager } from '../../modules/agent/agent-manager.js';
 import type { AgentModel } from '../../modules/agent/protocol.js';
 import { AxiosClient } from '../../modules/axios-client/index.js';
@@ -62,10 +63,8 @@ export function ChatComponent(props: ChatProps) {
         ) : (
           <div className="chat-content-list">
             <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-              <Avatar
-                className="chat-message-avatar"
-                src={instance.agent?.avatar || <MagentLOGO />}
-              />
+              <AgentIcon className="chat-message-avatar" agent={instance.agent} />
+
               <div className={`chat-message-container`}>
                 <div className={`chat-message-ai`}>
                   <div className={`markdown-message-md`}>

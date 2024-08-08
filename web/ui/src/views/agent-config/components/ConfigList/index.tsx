@@ -6,6 +6,7 @@ import { Avatar, Collapse, Space } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { KnowledgeMeta, ToolMeta } from '../../../../modules/agent/protocol.js';
+import { ToolIcon } from '../../../../modules/tool/tool-icon.js';
 import type { AgentConfigView } from '../../view.js';
 import { SkillItem } from '../ItemCard/index.js';
 
@@ -87,7 +88,7 @@ const SkillConfigCard = ({
                     onDelete('tool', item.id);
                   }}
                   key={item.id}
-                  icon={<Avatar shape="circle" size={32} src={item.avatar} />}
+                  icon={<ToolIcon shape="circle" size={32} tool={item} />}
                   title={item.nickname || '-'}
                   description={item.description || '-'}
                 ></SkillItem>

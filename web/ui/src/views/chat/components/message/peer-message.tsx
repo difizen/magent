@@ -5,12 +5,12 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
-import { Avatar, Steps } from 'antd';
+import { Steps } from 'antd';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
-import { MagentLOGO } from '../../../../modules/base-layout/brand/logo.js';
+import { AgentIcon } from '../../../../modules/agent/agent-icon.js';
 import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
 import type {
   PeerChatMessageItem,
@@ -178,7 +178,6 @@ export const PeerMessage = (props: AIMessageProps) => {
   }
 
   // const [contentHover, setContentHover] = useState<boolean>(false);
-  const avatarSrc: ReactNode = agent?.avatar || <MagentLOGO />;
   const nickName = agent?.name || '';
 
   const actions = [
@@ -201,7 +200,7 @@ export const PeerMessage = (props: AIMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <Avatar className="chat-message-avatar" src={avatarSrc} />
+      <AgentIcon className="chat-message-avatar" agent={agent} />
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
         <div style={{ paddingTop: 8, display: 'flex' }}>

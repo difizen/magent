@@ -7,10 +7,9 @@ import { Avatar } from 'antd';
 import { Col, Drawer, Row, Select, Tree } from 'antd';
 import { useState } from 'react';
 
-import { MagentLOGO } from '../../modules/base-layout/brand/logo.js';
+import { DefaultToolIcon } from '../../modules/tool/tool-icon.js';
 import { DefaultLogo } from '../agent-config/components/model-selector/logos.js';
 import type { ChatView } from '../chat/view.js';
-import { ToolIcon } from '../tool/tool-icon.js';
 
 import { copy2clipboard } from './utils.js';
 
@@ -53,7 +52,7 @@ export function DebugModalComponent({
           iconSrc = <DefaultLogo />;
         }
         if (item.type === 'tool') {
-          iconSrc = <ToolIcon />;
+          iconSrc = <DefaultToolIcon />;
         }
         return {
           title: item.source,
