@@ -11,14 +11,16 @@ import {
   ViewOption,
 } from '@difizen/mana-app';
 import { useInject } from '@difizen/mana-app';
-import { FloatButton } from 'antd';
+import { Avatar, FloatButton } from 'antd';
 import classnames from 'classnames';
+import classNames from 'classnames';
 import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
 import { AgentManager } from '../../modules/agent/agent-manager.js';
 import type { AgentModel } from '../../modules/agent/protocol.js';
 import { AxiosClient } from '../../modules/axios-client/index.js';
+import { MagentLOGO } from '../../modules/base-layout/brand/logo.js';
 import { ChatMessageManager } from '../../modules/chat-message/chat-message-manager.js';
 import type { MessageCreate } from '../../modules/chat-message/protocol.js';
 import { SessionManager } from '../../modules/session/session-manager.js';
@@ -31,6 +33,7 @@ import './index.less';
 export interface ChatProps {
   className?: string;
 }
+
 export function ChatComponent(props: ChatProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const { className } = props;
@@ -43,18 +46,41 @@ export function ChatComponent(props: ChatProps) {
   return (
     <div className={classnames('chat', className)}>
       <div className="chat-content">
-        <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
-          {instance.session?.messages.map((msg) => (
-            <MessageExchange key={msg.id} exchange={msg} />
-          ))}
-          {instance.showToBottomBtn && (
-            <FloatButton
-              onClick={() => instance.scrollToBottom()}
-              className="chat-content-list-to-bottom"
-              icon={<VerticalAlignBottomOutlined />}
-            />
-          )}
-        </div>
+        {instance.session && instance.session.messages.length ? (
+          <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
+            {instance.session?.messages.map((msg) => (
+              <MessageExchange key={msg.id} exchange={msg} />
+            ))}
+            {instance.showToBottomBtn && (
+              <FloatButton
+                onClick={() => instance.scrollToBottom()}
+                className="chat-content-list-to-bottom"
+                icon={<VerticalAlignBottomOutlined />}
+              />
+            )}
+          </div>
+        ) : (
+          <div className="chat-content-list">
+            <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
+              <Avatar
+                className="chat-message-avatar"
+                src={instance.agent?.avatar || <MagentLOGO />}
+              />
+              <div className={`chat-message-container`}>
+                <div className={`chat-message-ai`}>
+                  <div className={`markdown-message-md`}>
+                    <span className={`markdown-message-md-pop`}>
+                      <div className="chat-msg-md chat-msg-md-message tp-md">
+                        <p>{instance.agent?.openingSpeech}</p>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="chat-content-input">
           <div className="chat-content-input-mask"></div>
           <div className="chat-content-input-main">
@@ -157,6 +183,7 @@ export class ChatView extends BaseView {
       agentId: this.agentId,
       sessionId: this.sessionId,
       input: msgContent,
+      stream: true,
     };
     this.session?.chat(msg);
     setImmediate(this.scrollToBottom);
