@@ -1,4 +1,4 @@
-import { ViewRender } from '@difizen/mana-app';
+import { ModalService, ViewRender } from '@difizen/mana-app';
 import { ViewInstance, singleton, useInject, view } from '@difizen/mana-app';
 import { BoxPanel } from '@difizen/mana-react';
 import { forwardRef, useEffect } from 'react';
@@ -10,6 +10,7 @@ import { AgentConfigView } from '../agent-config/view.js';
 import { AgentView } from './chat-view.js';
 
 import './index.less';
+import { DebugModal } from './debug-modal.js';
 
 const viewId = 'magent-agent-dev';
 export const slot = `${viewId}-slot`;
@@ -17,6 +18,7 @@ export const slot = `${viewId}-slot`;
 const AgentDevComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {
     const instance = useInject<AgentDevView>(ViewInstance);
+    const modalService = useInject<ModalService>(ModalService);
     const match = useMatch('/agent/:agentId/dev');
     const agentId = match?.params?.agentId;
     instance.agentId = agentId;
@@ -34,6 +36,13 @@ const AgentDevComponent = forwardRef<HTMLDivElement>(
           <BoxPanel.Pane className={`${viewId}-layout-chat-dev`} flex={1}>
             <div className={`${viewId}-layout-chat-dev-header`}>
               <h3>预览</h3>
+              <button
+                onClick={() => {
+                  modalService.openModal(DebugModal);
+                }}
+              >
+                调试
+              </button>
             </div>
             <div className={`${viewId}-layout-chat-dev-content`}>
               {instance.chat && <ViewRender view={instance.chat} />}
