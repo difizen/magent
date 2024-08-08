@@ -44,4 +44,20 @@
       cursor: pointer;
     }
   }
+
+  .ellipsisW100 {
+    width: 270px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ellipsis2Line {
+    /* stylelint-disable-next-line */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

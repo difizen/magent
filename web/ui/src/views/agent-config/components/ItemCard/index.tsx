@@ -1,7 +1,7 @@
+import { DeleteOutlined } from '@ant-design/icons';
 import { Flex, Space } from 'antd';
 import React, { useState } from 'react';
 import './index.less';
-import { DeleteOutlined, DeleteTwoTone } from '@ant-design/icons';
 
 const clsPrefix = 'skill-item';
 
@@ -26,10 +26,12 @@ export const SkillItem = ({
   icon,
   title,
   description,
+  onDelete,
 }: {
   icon: React.ReactNode;
   title: string;
   description: string;
+  onDelete?: () => void;
 }) => {
   const [showAct, setShowAct] = useState(false);
 
@@ -43,15 +45,21 @@ export const SkillItem = ({
     >
       <div className={`${clsPrefix}-icon`}>{icon}</div>
       <Flex vertical flex={1}>
-        <div className={`${clsPrefix}-title`}>{title}</div>
-        <div className={`${clsPrefix}-description`}>{description}</div>
+        <div className={`ellipsisW100 ${clsPrefix}-title`}>{title}</div>
+        <div className={`ellipsis2Line ${clsPrefix}-description`}>{description}</div>
       </Flex>
 
       {showAct && (
         <Space className={`${clsPrefix}-act`}>
-          <IconBox icon={<DeleteOutlined />}></IconBox>
-          <IconBox icon={<DeleteOutlined />}></IconBox>
-          <IconBox icon={<DeleteOutlined />}></IconBox>
+          <IconBox
+            icon={
+              <DeleteOutlined
+                onClick={() => {
+                  onDelete?.();
+                }}
+              />
+            }
+          ></IconBox>
         </Space>
       )}
     </Flex>

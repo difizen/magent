@@ -2,6 +2,8 @@ import { Deferred, inject, prop, transient } from '@difizen/mana-app';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
+import type { ToolModel } from '../tool/index.js';
+import { ToolManager } from '../tool/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
 import type { AgentConfig } from './agent-config.js';
@@ -70,6 +72,35 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   @prop()
   tool: ToolMeta[];
+
+  @inject(ToolManager) toolManager: ToolManager;
+
+  @prop()
+  toolList: ToolModel[] = [];
+
+  @prop()
+  toolListLoading = false;
+
+  @prop()
+  selectedKnowledgeList: ToolModel[] = [];
+
+  async updateToolList() {
+    try {
+      this.toolListLoading = true;
+      const options = await this.toolManager.getTools();
+      this.toolList = options.map(this.toolManager.getOrCreateTool);
+    } finally {
+      this.toolListLoading = false;
+    }
+  }
+
+  updateSelectedToolList(ids: React.Key[]) {
+    this.tool = this.toolList.filter((item) => ids.includes(item.id));
+  }
+
+  removeSelectedToolList(ids: React.Key[]) {
+    this.tool = this.tool.filter((item) => !ids.includes(item.id));
+  }
 
   // protected draftDeferred = new Deferred<AgentConfig>();
 

@@ -1,89 +1,71 @@
+import { useInject, useMount, ViewInstance } from '@difizen/mana-app';
 import type { TableColumnsType } from 'antd';
-import { Modal, Table } from 'antd';
-import { useState } from 'react';
+import { Avatar, Modal, Table } from 'antd';
+import type { TableRowSelection } from 'antd/es/table/interface.js';
+import { useMemo, useState } from 'react';
+
+import { AgentConfig } from '../../../../../modules/agent/agent-config.js';
+import { ToolIcon } from '../../../../tool/tool-icon.js';
+import type { AgentConfigView } from '../../../view.js';
 
 interface DataType {
-  key: React.Key;
   id: string;
   nickname: string;
-  avatar: number;
+  avatar: string;
   description: string;
-  address: string;
-  added: boolean;
+  parameters: string[];
 }
 
 export const ToolModal = ({
+  dataSource,
   open,
   onCancel,
+  onOk,
+  loading,
+  selectedRowKeys = [],
+  setSelectedRowKeys,
 }: {
   open: boolean;
+  dataSource: DataType[];
   onCancel: () => void;
+  onOk: (selectedRowKeys: React.Key[]) => void;
+  loading: boolean;
+  selectedRowKeys: React.Key[];
+  setSelectedRowKeys: (selectedRowKeys: React.Key[]) => void;
 }) => {
-  function useToolTable() {
-    const dataSource = [
-      {
-        id: '1',
-        nickname: '胡彦斌',
-        avatar: 32,
-        description: '西湖区湖底公园1号',
-        address: '西湖区湖底公园1号',
-        added: true,
-      },
-      {
-        id: '2',
-        nickname: '胡彦斌',
-        avatar: 32,
-        description: '西湖区湖底公园1号',
-        address: '西湖区湖底公园1号',
-        added: true,
-      },
-    ] as DataType[];
-
-    const columns: TableColumnsType<DataType> = [
-      {
-        title: 'nickname',
-        dataIndex: 'nickname',
-        key: 'nickname',
-      },
+  const columns = useMemo(() => {
+    const c: TableColumnsType<DataType> = [
       {
         title: 'id',
         dataIndex: 'id',
         key: 'id',
       },
+
       {
         title: 'avatar',
         dataIndex: 'avatar',
         key: 'avatar',
-      },
-      {
-        title: 'description',
-        dataIndex: 'description',
-        key: 'description',
-      },
-      {
-        title: 'description',
-        dataIndex: 'description',
-        key: 'description',
-      },
-      {
-        title: 'added',
-        dataIndex: 'added',
-        key: 'added',
-        render: (text: boolean) => {
-          return text ? '是' : '否';
+        render(value) {
+          return <Avatar shape="circle" size={32} src={value || <ToolIcon />} />;
         },
       },
+      {
+        title: 'nickname',
+        dataIndex: 'nickname',
+        key: 'nickname',
+      },
+
+      {
+        title: 'description',
+        dataIndex: 'description',
+        key: 'description',
+      },
     ];
-    return {
-      dataSource,
-      columns,
-    };
-  }
+    return c;
+  }, []);
 
-  const { dataSource, columns } = useToolTable();
-
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [selectedRowKeys, setSelectedRowKeys] =
+  //   useState<React.Key[]>(defaultSelectedRowKeys);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -94,13 +76,20 @@ export const ToolModal = ({
     onChange: onSelectChange,
   };
 
-  const hasSelected = selectedRowKeys.length > 0;
-
   return (
-    <Modal width={760} title="选择知识库" open={open} onCancel={() => onCancel()}>
+    <Modal
+      width={1080}
+      title="选择Tools"
+      open={open}
+      onOk={() => {
+        onOk(selectedRowKeys);
+      }}
+      onCancel={() => onCancel()}
+      loading={loading}
+    >
       <Table<DataType>
         rowSelection={rowSelection}
-        dataSource={dataSource}
+        dataSource={dataSource || []}
         columns={columns}
         rowKey={'id'}
       ></Table>
