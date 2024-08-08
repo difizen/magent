@@ -1,19 +1,20 @@
 import { ManaModule } from '@difizen/mana-app';
 
-import { ModelManager } from './model-manager.js';
-import { Model } from './model.js';
+import { LLMManager } from './llm-manager.js';
+import { LLMModel } from './llm-model.js';
 import type { ModelMeta } from './protocol.js';
-import { ModelFactory, ModelOption } from './protocol.js';
+import { LLMModelOption } from './protocol.js';
+import { LLMModelFactory } from './protocol.js';
 
 export const ModelModule = ManaModule.create()
-  .register(Model, ModelManager)
+  .register(LLMModel, LLMManager)
   .register({
-    token: ModelFactory,
+    token: LLMModelFactory,
     useFactory: (ctx) => {
       return (meta: ModelMeta) => {
         const child = ctx.container.createChild();
-        child.register({ token: ModelOption, useValue: meta });
-        return child.get(Model);
+        child.register({ token: LLMModelOption, useValue: meta });
+        return child.get(LLMModel);
       };
     },
   });

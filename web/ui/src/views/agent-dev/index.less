@@ -22,12 +22,30 @@
   }
 
   &-config {
-    width: 260px;
+    width: 55%;
   }
 
   &-chat-dev {
     height: 100%;
     min-width: 520px;
     width: 520px;
+    background-color: var(--mana-color-bg-container);
+    border-radius: 8px;
+
+    &-header {
+      padding: 0 24px;
+      height: 64px;
+      border-bottom: 1px solid var(--mana-color-border);
+      display: flex;
+      align-items: center;
+
+      h3 {
+        margin: 0;
+      }
+    }
+
+    &-content {
+      height: calc(100% - 64px);
+    }
   }
 }

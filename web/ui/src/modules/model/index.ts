@@ -1,4 +1,4 @@
 export * from './module.js';
-export * from './model-manager.js';
-export * from './model.js';
+export * from './llm-manager.js';
+export * from './llm-model.js';
 export * from './protocol.js';
