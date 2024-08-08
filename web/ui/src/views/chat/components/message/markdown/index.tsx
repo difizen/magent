@@ -6,7 +6,7 @@ import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
-import type { AIChatMessageItem } from '../../../../../modules/chat-message/chat-message-item.js';
+import type { AIChatMessageItem } from '../../../../../modules/chat-message/ai-message-item.js';
 
 import { CodeBlock } from './modules/CodeBlock/index.js';
 import './index.less';

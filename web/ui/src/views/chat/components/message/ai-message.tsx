@@ -11,7 +11,7 @@ import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
 import { MagentLOGO } from '../../../../modules/base-layout/brand/logo.js';
-import type { AIChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
+import type { AIChatMessageItem } from '../../../../modules/chat-message/ai-message-item.js';
 import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
 import { AnswerState } from '../../../../modules/chat-message/protocol.js';
 import type { ChatView } from '../../view.js';

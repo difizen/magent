@@ -10,8 +10,8 @@ import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 
+import { AIChatMessageItem } from './ai-message-item.js';
 import type { ChatMessageItem } from './chat-message-item.js';
-import { AIChatMessageItem } from './chat-message-item.js';
 import type {
   APIMessage,
   ChainItem,
@@ -199,6 +199,7 @@ export class ChatMessageModel implements Disposable {
         this.startTime = dayjs(result.start_time);
         this.endTime = dayjs(result.end_time);
         this.onMessageItemEmitter.fire(ai);
+        ai.handleResult(e);
       }
 
       if (e.event === 'steps') {
