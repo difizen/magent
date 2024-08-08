@@ -50,7 +50,14 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   }
 
   override initialize = async () => {
-    await super.initialize();
+    await this.getAgent();
+    if (!this.agent) {
+      throw new Error('Cannot access agent');
+    }
+    await this.agent.ready;
+    if (!this.agent.planner?.members) {
+      throw new Error('Missing PEER member');
+    }
     const members = this.agent?.planner?.members;
     if (!members) {
       return;
