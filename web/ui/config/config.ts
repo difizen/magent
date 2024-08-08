@@ -32,6 +32,13 @@ export default defineConfig({
       pathRewrite: {},
       ws: true,
     },
+    '/resources': {
+      target: 'http://localhost:9000/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
   },
   extraBabelPlugins: [
     ['@babel/plugin-proposal-decorators', { legacy: true }],

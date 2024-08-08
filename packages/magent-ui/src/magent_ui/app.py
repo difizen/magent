@@ -1,4 +1,3 @@
-from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,6 +7,7 @@ import webbrowser
 import uvicorn
 from magent_ui.routers.main import api_router
 import os
+from agentuniverse.base.util.system_util import get_project_root_path
 
 PORT = 9000
 
@@ -52,6 +52,10 @@ async def to_app_page(request: Request):
 
 
 def launch():
-
+    project_root_path = get_project_root_path()
+    resource_path = project_root_path / 'app' / 'resources'
+    if resource_path.exists():
+        app.mount("/resources", StaticFiles(directory=resource_path,
+                                            html=True), name="resources")
     uvicorn.run(app,
                 host="0.0.0.0", port=PORT)
