@@ -49,6 +49,21 @@ export function ChatComponent(props: ChatProps) {
       <div className="chat-content">
         {instance.session && instance.session.messages.length ? (
           <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
+            <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
+              <AgentIcon className="chat-message-avatar" agent={instance.agent} />
+
+              <div className={`chat-message-container`}>
+                <div className={`chat-message-ai`}>
+                  <div className={`markdown-message-md`}>
+                    <span className={`markdown-message-md-pop`}>
+                      <div className="chat-msg-md chat-msg-md-message tp-md">
+                        <p>{instance.agent?.openingSpeech}</p>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
             {instance.session?.messages.map((msg) => (
               <MessageExchange key={msg.id} exchange={msg} />
             ))}
