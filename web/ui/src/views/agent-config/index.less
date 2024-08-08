@@ -9,8 +9,14 @@
   border-radius: 8px;
 
   &-header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--mana-color-border);
     padding: 0 24px;
+    height: 64px;
+
+    &-save {
+      cursor: pointer;
+      padding: 4px;
+    }
   }
 
   &-content {
@@ -21,13 +27,27 @@
 
     &-left {
       overflow: auto;
-      padding: 12px 24px;
+      padding: 12px;
       border-right: 1px solid var(--mana-menubar-border);
+      padding-bottom: 36px;
     }
 
     &-right {
       overflow: auto;
       padding: 12px;
+      padding-bottom: 36px;
+    }
+
+    &-model {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+
+      &-title {
+        font-size: 14px;
+        color: #00000073;
+        margin-right: 16px;
+      }
     }
   }
 

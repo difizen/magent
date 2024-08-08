@@ -28,11 +28,16 @@ const AgentDevComponent = forwardRef<HTMLDivElement>(
     return (
       <div ref={ref} className={`${viewId}-layout`}>
         <BoxPanel className={`${viewId}-layout-container`} direction="left-to-right">
-          <BoxPanel.Pane className={`${viewId}-layout-config`} flex={1}>
+          <BoxPanel.Pane className={`${viewId}-layout-config`}>
             {instance.agentConfig && <ViewRender view={instance.agentConfig} />}
           </BoxPanel.Pane>
-          <BoxPanel.Pane className={`${viewId}-layout-chat-dev`}>
-            {instance.chat && <ViewRender view={instance.chat} />}
+          <BoxPanel.Pane className={`${viewId}-layout-chat-dev`} flex={1}>
+            <div className={`${viewId}-layout-chat-dev-header`}>
+              <h3>预览</h3>
+            </div>
+            <div className={`${viewId}-layout-chat-dev-content`}>
+              {instance.chat && <ViewRender view={instance.chat} />}
+            </div>
           </BoxPanel.Pane>
         </BoxPanel>
       </div>

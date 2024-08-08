@@ -1,18 +1,17 @@
 import { Syringe } from '@difizen/mana-app';
 
-import type { Model } from './model.js';
+import type { LLMModel } from './llm-model.js';
 
 export interface ModelMeta {
-  key: string;
-  name: string;
-  icon: string;
+  id: string;
+  nickname: string;
+  temperature: number;
+  model_name: string[];
 }
 
-export interface ModelConfigMeta {
-  [key: string]: any;
-}
+export type LLMModelFactory = (option: ModelMeta) => LLMModel;
+export const LLMModelFactory = Syringe.defineToken('LLMModelFactory');
 
-export type ModelFactory = (option: ModelMeta) => Model;
-export const ModelFactory = Syringe.defineToken('ModelFactory');
-
-export const ModelOption = Syringe.defineToken('ModelOption', { multiple: false });
+export const LLMModelOption = Syringe.defineToken('LLMModelOption', {
+  multiple: false,
+});

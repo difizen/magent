@@ -9,7 +9,6 @@ import type { AgentConfigView } from '../../view.js';
 import { SkillItem } from '../ItemCard/index.js';
 
 import { KnowledgeModal } from './KnowledgeModal/index.js';
-import { OpeningSpeechInput } from './OpeningSpeechInput/index.js';
 
 const clsPrefix = 'config-list';
 
@@ -100,33 +99,6 @@ const SkillConfigCard = ({ onAdd }: { onAdd: (key: AddKey) => void }) => {
   );
 };
 
-const OpeningSpeechConfigCard = ({ onAdd }: { onAdd: (key: AddKey) => void }) => {
-  const items: CollapseProps['items'] = useMemo(() => {
-    return [
-      {
-        key: 'openingSpeech' as OpeningSpeechAddKey,
-        label: '开场白',
-        children: <OpeningSpeechInput></OpeningSpeechInput>,
-        style: {
-          padding: 0,
-        },
-      },
-    ];
-  }, []);
-
-  return (
-    <div className={`${clsPrefix}-card`}>
-      <div className={`${clsPrefix}-card-title`}>对话</div>
-      <Collapse
-        style={{ padding: 0 }}
-        defaultActiveKey={['openingSpeech']}
-        ghost
-        items={items}
-      />
-    </div>
-  );
-};
-
 export const ConfigList = () => {
   const instance = useInject<AgentConfigView>(ViewInstance);
 
@@ -144,7 +116,6 @@ export const ConfigList = () => {
     <div className={`${clsPrefix}-container`}>
       <Space direction="vertical" size={'large'} style={{ display: 'flex' }}>
         <SkillConfigCard onAdd={onAdd}></SkillConfigCard>
-        <OpeningSpeechConfigCard onAdd={onAdd}></OpeningSpeechConfigCard>
       </Space>
 
       <KnowledgeModal

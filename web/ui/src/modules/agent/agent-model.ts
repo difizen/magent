@@ -8,6 +8,30 @@ import type { AgentConfig } from './agent-config.js';
 import type { LLMMeta, PromptMeta, PlannerMeta, ToolMeta } from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
+class Prompt implements PromptMeta {
+  @prop()
+  introduction = '';
+  @prop()
+  target = '';
+  @prop()
+  instruction = '';
+
+  constructor(option?: PromptMeta) {
+    if (option) {
+      this.introduction = option.introduction;
+      this.target = option.target;
+      this.instruction = option.instruction;
+    }
+  }
+  toMeta = () => {
+    return {
+      introduction: this.introduction,
+      instruction: this.instruction,
+      target: this.target,
+    };
+  };
+}
+
 @transient()
 export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   axios: AxiosClient;
@@ -34,7 +58,8 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   llm: LLMMeta;
 
   @prop()
-  prompt: PromptMeta;
+  prompt: Prompt;
+
   memory: string;
 
   @prop()
@@ -84,11 +109,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.avatar = option.avatar;
     this.description = option.description;
 
-    this.prompt = option.prompt ?? {
-      instruction: '',
-      introduction: '',
-      target: '',
-    };
+    this.prompt = new Prompt(option.prompt);
     this.llm = option.llm ?? {
       id: '',
       nickname: '',
@@ -129,7 +150,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       nickname: this.name,
       avatar: this.avatar,
       description: this.description,
-      prompt: this.prompt,
+      prompt: this.prompt.toMeta(),
       llm: this.llm,
       planner: this.planner,
       tool: this.tool,
@@ -144,7 +165,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   async save(): Promise<boolean> {
     const res = await this.axios.put<number>(
-      `api/v1/agent/bots/${this.id}`,
+      `/api/v1/agents/${this.id}`,
       this.toMeta(),
     );
     if (res.status === 200) {
