@@ -8,6 +8,7 @@ import {
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import type { CollapseProps } from 'antd';
 import { Collapse } from 'antd';
+import { useEffect, useState } from 'react';
 
 import type { AgentConfigView } from '../../view.js';
 
@@ -102,27 +103,33 @@ export const CharacterSetting = () => {
       ),
     },
   ];
-  const defaultActiveKey = [];
-  if (prompt.introduction) {
-    defaultActiveKey.push('introduction');
-  }
-  if (prompt.target) {
-    defaultActiveKey.push('target');
-  }
-  if (prompt.instruction) {
-    defaultActiveKey.push('instruction');
-  }
-  if (agent.openingSpeech) {
-    defaultActiveKey.push('openingSpeech');
-  }
 
+  const [activeKey, setActiveKey] = useState<string[]>([]);
+
+  useEffect(() => {
+    const keys = [];
+    if (prompt.introduction) {
+      // keys.push('introduction');
+    }
+    if (prompt.target) {
+      keys.push('target');
+    }
+    if (prompt.instruction) {
+      keys.push('instruction');
+    }
+    if (agent.openingSpeech) {
+      keys.push('openingSpeech');
+    }
+    setActiveKey(keys);
+  }, [prompt.introduction, prompt.target, prompt.instruction, agent.openingSpeech]);
   return (
     <div className={`${clsPrefix}-container`}>
       <Collapse
         className={`${clsPrefix}-container-collapse`}
-        defaultActiveKey={['introduction', 'target', 'instruction', 'openingSpeech']}
+        activeKey={activeKey} // 使用 activeKey 而不是 defaultActiveKey
         ghost
         items={items}
+        onChange={(key) => setActiveKey(key)} // 更新 activeKey
       />
     </div>
   );
