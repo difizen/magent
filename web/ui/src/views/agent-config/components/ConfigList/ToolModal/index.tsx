@@ -1,20 +1,10 @@
-import { useInject, useMount, ViewInstance } from '@difizen/mana-app';
 import type { TableColumnsType } from 'antd';
 import { Avatar, Modal, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface.js';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { AgentConfig } from '../../../../../modules/agent/agent-config.js';
+import type { ToolMeta } from '../../../../../modules/agent/index.js';
 import { ToolIcon } from '../../../../tool/tool-icon.js';
-import type { AgentConfigView } from '../../../view.js';
-
-interface DataType {
-  id: string;
-  nickname: string;
-  avatar: string;
-  description: string;
-  parameters: string[];
-}
 
 export const ToolModal = ({
   dataSource,
@@ -26,7 +16,7 @@ export const ToolModal = ({
   setSelectedRowKeys,
 }: {
   open: boolean;
-  dataSource: DataType[];
+  dataSource: ToolMeta[];
   onCancel: () => void;
   onOk: (selectedRowKeys: React.Key[]) => void;
   loading: boolean;
@@ -34,7 +24,7 @@ export const ToolModal = ({
   setSelectedRowKeys: (selectedRowKeys: React.Key[]) => void;
 }) => {
   const columns = useMemo(() => {
-    const c: TableColumnsType<DataType> = [
+    const c: TableColumnsType<ToolMeta> = [
       {
         title: 'id',
         dataIndex: 'id',
@@ -71,7 +61,7 @@ export const ToolModal = ({
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
-  const rowSelection: TableRowSelection<DataType> = {
+  const rowSelection: TableRowSelection<ToolMeta> = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
@@ -87,7 +77,7 @@ export const ToolModal = ({
       onCancel={() => onCancel()}
       loading={loading}
     >
-      <Table<DataType>
+      <Table<ToolMeta>
         rowSelection={rowSelection}
         dataSource={dataSource || []}
         columns={columns}

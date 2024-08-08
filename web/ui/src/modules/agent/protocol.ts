@@ -12,6 +12,12 @@ export interface ToolMeta {
   description?: string;
   parameters: any[];
 }
+
+export interface KnowledgeMeta {
+  id: string;
+  nickname: string;
+  description: string;
+}
 export interface PlannerMeta {
   id: string;
   nickname: string;

@@ -1,11 +1,11 @@
 import './index.less';
-import { PlusOutlined } from '@ant-design/icons';
+import { FileTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useInject, useMount, ViewInstance } from '@difizen/mana-app';
 import type { CollapseProps } from 'antd';
 import { Avatar, Collapse, Space } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 
-import type { ToolMeta } from '../../../../modules/agent/protocol.js';
+import type { KnowledgeMeta, ToolMeta } from '../../../../modules/agent/protocol.js';
 import type { AgentConfigView } from '../../view.js';
 import { SkillItem } from '../ItemCard/index.js';
 
@@ -27,7 +27,7 @@ const SkillConfigCard = ({
   onAdd: (serviceType: ServiceType) => void;
   onDelete: (serviceType: ServiceType, itemKey: string) => void;
   tools: ToolMeta[];
-  knowledge: any[];
+  knowledge: KnowledgeMeta[];
 }) => {
   const items: CollapseProps['items'] = useMemo(() => {
     return [
@@ -49,10 +49,13 @@ const SkillConfigCard = ({
             {knowledge.map((item) => {
               return (
                 <SkillItem
+                  onDelete={() => {
+                    onDelete('knowledge', item.id);
+                  }}
                   key={item.id}
-                  icon={<Avatar shape="circle" size={32} src={item.avatar} />}
-                  title="title"
-                  description="descriptiondescriptiondescription"
+                  icon={<FileTwoTone size={32} style={{ fontSize: 32 }} />}
+                  title={item.nickname || '-'}
+                  description={item.description || '-'}
                 ></SkillItem>
               );
             })}
@@ -121,6 +124,7 @@ export const ConfigList = () => {
 
   useMount(() => {
     instance.agent.updateToolList();
+    instance.agent.updateKnowledgeList();
   });
 
   const onAdd = useCallback((addKey: ServiceType) => {
@@ -132,11 +136,14 @@ export const ConfigList = () => {
       <Space direction="vertical" size={'large'} style={{ display: 'flex' }}>
         <SkillConfigCard
           tools={instance.agent.tool || []}
-          knowledge={instance.agent.selectedKnowledgeList || []}
+          knowledge={instance.agent.selectedKnowledge || []}
           onAdd={onAdd}
           onDelete={(serviceType, itemKey) => {
             if (serviceType === 'tool') {
               instance.agent.removeSelectedToolList([itemKey]);
+            }
+            if (serviceType === 'knowledge') {
+              instance.agent.removeSelectedKnowledgeList([itemKey]);
             }
           }}
         ></SkillConfigCard>
@@ -147,6 +154,15 @@ export const ConfigList = () => {
         onCancel={() => {
           setCurServiceType(undefined);
         }}
+        dataSource={instance.agent.knowledges}
+        onOk={() => {
+          setCurServiceType(undefined);
+        }}
+        loading={instance.agent.allToolsLoading}
+        selectedRowKeys={instance.agent.selectedKnowledge.map((item) => item.id)}
+        setSelectedRowKeys={(keys) => {
+          instance.agent.updateSelectedKnowledgeList(keys);
+        }}
       ></KnowledgeModal>
 
       <ToolModal
@@ -154,11 +170,11 @@ export const ConfigList = () => {
         onCancel={() => {
           setCurServiceType(undefined);
         }}
-        dataSource={instance.agent.toolList}
+        dataSource={instance.agent.allTools}
         onOk={() => {
           setCurServiceType(undefined);
         }}
-        loading={instance.agent.toolListLoading}
+        loading={instance.agent.allToolsLoading}
         selectedRowKeys={instance.agent.tool.map((item) => item.id)}
         setSelectedRowKeys={(keys) => {
           instance.agent.updateSelectedToolList(keys);
