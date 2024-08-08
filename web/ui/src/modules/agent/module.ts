@@ -1,5 +1,7 @@
 import { ManaModule } from '@difizen/mana-app';
 
+import { ToolManager, ToolModel } from '../tool/index.js';
+
 import { AgentConfigManager } from './agent-config-manager.js';
 import { AgentConfig } from './agent-config.js';
 import { AgentManager } from './agent-manager.js';
@@ -18,7 +20,6 @@ export const AgentBotModule = ManaModule.create().register(
   AgentConfig,
   AgentConfigManager,
   AgentMarket,
-
   {
     token: AgentConfigFactory,
     useFactory: (ctx) => {
