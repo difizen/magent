@@ -15,10 +15,10 @@ export class AgentConfig {
   isDraft = true;
 
   @prop()
-  llm: LLMMeta;
+  llm?: LLMMeta;
 
   @prop()
-  prompt: PromptMeta;
+  prompt?: PromptMeta;
   memory: string;
   planner: PlannerMeta;
 
@@ -38,17 +38,8 @@ export class AgentConfig {
   }
 
   protected fromMeta(option: AgentConfigOption = this.option) {
-    this.prompt = option.prompt ?? {
-      instruction: '',
-      introduction: '',
-      target: '',
-    };
-    this.llm = option.llm ?? {
-      id: '',
-      nickname: '',
-      temperature: 0,
-      model_name: ['gptx'],
-    };
+    this.prompt = option.prompt;
+    this.llm = option.llm;
     this.memory = option.memory ?? '';
     this.planner = option.planner ?? {
       id: '',

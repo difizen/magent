@@ -1,20 +1,13 @@
 import { inject, prop, transient } from '@difizen/mana-app';
-import { message } from 'antd';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
-import type { ToolModel } from '../tool/index.js';
+import type { ToolMeta } from '../tool/index.js';
 import { ToolManager } from '../tool/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
 import type { AgentConfig } from './agent-config.js';
-import type {
-  LLMMeta,
-  PromptMeta,
-  PlannerMeta,
-  ToolMeta,
-  KnowledgeMeta,
-} from './protocol.js';
+import type { LLMMeta, PromptMeta, PlannerMeta, KnowledgeMeta } from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
 class Prompt implements PromptMeta {
@@ -66,10 +59,10 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   config?: AgentConfig;
 
   @prop()
-  llm: LLMMeta;
+  llm?: LLMMeta;
 
   @prop()
-  prompt: Prompt;
+  prompt?: Prompt;
 
   memory: string;
 
@@ -184,13 +177,8 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.avatar = option.avatar;
     this.description = option.description;
 
-    this.prompt = new Prompt(option.prompt);
-    this.llm = option.llm ?? {
-      id: '',
-      nickname: '',
-      temperature: 0,
-      model_name: ['gptx'],
-    };
+    this.prompt = option.prompt ? new Prompt(option.prompt) : undefined;
+    this.llm = option.llm;
     this.memory = option.memory ?? '';
     this.planner = option.planner ?? {
       id: '',
@@ -225,7 +213,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       nickname: this.name,
       avatar: this.avatar,
       description: this.description,
-      prompt: this.prompt.toMeta(),
+      prompt: this.prompt?.toMeta(),
       llm: this.llm,
       planner: this.planner,
       tool: this.tool,
@@ -252,7 +240,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   async fetchKnowdledgeList() {
     try {
-      const res = await this.axios.put<KnowledgeMeta[]>(`/api/v1/knowledge`);
+      const res = await this.axios.get<KnowledgeMeta[]>(`/api/v1/knowledge`);
       if (res.status === 200 && res.data?.length) {
         return res.data;
       }

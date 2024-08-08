@@ -23,7 +23,7 @@ async def get_agent_detail(agent_id):
 
 
 @router.put("/agents/{agent_id}", response_model=AgentDTO | None)
-async def update_agent(agent_id, agent):
+async def update_agent(agent_id, agent: AgentDTO):
     return AgentService.update_agent(agent)
 
 

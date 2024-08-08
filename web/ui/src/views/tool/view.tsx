@@ -8,13 +8,12 @@ import {
   useInject,
   view,
 } from '@difizen/mana-app';
-import { Avatar, Col, List, Row, Tag, Tooltip } from 'antd';
+import { Col, List, Row, Tag, Tooltip } from 'antd';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import './index.less';
+import { ToolIcon } from '../../modules/tool/tool-icon.js';
 import { ToolSpace } from '../../modules/tool/tool-space.js';
-
-import { ToolIcon } from './tool-icon.js';
 
 export interface ToolItem {
   nickname: string;
@@ -131,13 +130,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
               <Col className={`${viewId}-list-item`} span={8}>
                 <List.Item>
                   <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        shape="circle"
-                        size={32}
-                        src={item.avatar || <ToolIcon />}
-                      />
-                    }
+                    avatar={<ToolIcon shape="circle" size={32} tool={item} />}
                     title={item.nickname}
                     description={item.description}
                   />

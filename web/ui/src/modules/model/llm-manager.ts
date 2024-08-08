@@ -14,7 +14,7 @@ export class LLMManager {
   @prop()
   models: LLMModel[] = [];
 
-  defaultModel?: ModelMeta;
+  // defaultModel?: ModelMeta;
 
   protected getModelsMeta = async () => {
     const defaultValue: ModelMeta[] = [];

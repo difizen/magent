@@ -1,17 +1,13 @@
 import { Syringe } from '@difizen/mana-app';
 
+import type { ToolMeta } from '../tool/protocol.js';
+
+export type { ToolMeta } from '../tool/protocol.js';
+
 import type { AgentConfig } from './agent-config.js';
 import type { AgentModel } from './agent-model.js';
 
 export type { AgentConfig } from './agent-config.js';
-
-export interface ToolMeta {
-  id: string;
-  nickname: string;
-  avatar?: string;
-  description?: string;
-  parameters: any[];
-}
 
 export interface KnowledgeMeta {
   id: string;

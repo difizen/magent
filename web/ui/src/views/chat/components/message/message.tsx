@@ -1,7 +1,7 @@
 import { useObserve } from '@difizen/mana-app';
 
+import { AIChatMessageItem } from '../../../../modules/chat-message/ai-message-item.js';
 import type { ChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
-import { AIChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
 import { HumanChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
 import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
 import { PeerChatMessageItem } from '../../../../modules/chat-message/peer-message-item-model.js';

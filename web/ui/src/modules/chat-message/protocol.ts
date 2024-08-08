@@ -140,11 +140,11 @@ export interface ChatEventResult {
 }
 export interface ChatEventStep {
   agent_id: string;
-  output: (string | EAnswer)[];
+  output: (string | ChatEventStepQA)[] | string;
   type: 'intermediate_steps';
 }
 
-interface EAnswer {
+export interface ChatEventStepQA {
   input: string;
   output: string;
 }

@@ -39,12 +39,7 @@ export const ToolConfigType = {
 
 export type { ToolModel } from './tool-model.js';
 
-export interface ToolMeta {
-  name: string;
-  plugin_type: number;
-  avatar?: string;
-  description?: string;
-}
+export type ToolMeta = ToolModelOption;
 
 export interface ToolModelOption {
   id: string;

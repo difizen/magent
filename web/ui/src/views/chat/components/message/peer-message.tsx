@@ -5,17 +5,15 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
-import { Avatar, Steps } from 'antd';
+import { Collapse, Steps } from 'antd';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
-import { MagentLOGO } from '../../../../modules/base-layout/brand/logo.js';
+import { AgentIcon } from '../../../../modules/agent/agent-icon.js';
 import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
-import type {
-  PeerChatMessageItem,
-  PeerSteps,
-} from '../../../../modules/chat-message/peer-message-item-model.js';
+import type { PeerChatMessageItem } from '../../../../modules/chat-message/peer-message-item-model.js';
+import type { ChatEventStepQA } from '../../../../modules/chat-message/protocol.js';
 import { AnswerState } from '../../../../modules/chat-message/protocol.js';
 import type { ChatView } from '../../view.js';
 
@@ -53,60 +51,45 @@ export const AIMessageAddon = (props: AIMessageProps) => {
   );
 };
 
-export const PeerStep = (props: { step: PeerSteps }) => {
-  const { step } = props;
-  if (!step || !step.output) {
-    return null;
-  }
-  if (typeof step.output === 'string') {
-    return (
-      <div className="chat-message-peer-steps-step">
-        <div className="chat-message-peer-steps-step-item">{step.output}</div>
-      </div>
-    );
-  }
+export const RenderExecuting = (props: { qas: ChatEventStepQA[] }) => {
+  const { qas } = props;
+
   return (
-    <div className="chat-message-peer-steps-step">
-      {step.output.map((i) => (
-        <div key={i.toString() + i}>
-          {typeof i === 'string' ? (
-            <div className="chat-message-peer-steps-step-item">{i}</div>
-          ) : (
-            <div className="chat-message-peer-steps-step-item">
-              <div className="chat-message-peer-steps-step-item-in">{i.input}</div>
-              <div className="chat-message-peer-steps-step-item-out">{i.output}</div>
+    <Collapse
+      ghost
+      defaultActiveKey={qas.map((i) => i.input)}
+      items={qas.map((item) => ({
+        key: item.input,
+        label: item.input,
+        children: (
+          <div key={item.input} className="chat-message-peer-steps-step">
+            <div className={`markdown-message-md`}>
+              <span className={`markdown-message-md-pop`}>
+                <Markdown type="message">{item.output}</Markdown>
+              </span>
             </div>
-          )}
-        </div>
-      ))}
-    </div>
+          </div>
+        ),
+      }))}
+    />
   );
 };
 
-export const RenderPeerPlanner = (props: { message: PeerChatMessageItem }) => {
-  const { message } = props;
-  if (message.currentStep === 0) {
-    return <PeerStep step={message.steps[0]} />;
-  }
-
-  let content = message.planningContent;
-  try {
-    const data = JSON.parse(content);
-    content = data.thought;
-  } catch (e) {
-    content = '';
-  }
+export const MarkdownThought = (props: { content: string }) => {
   return (
-    <div className="chat-message-peer-steps-step">
-      <div className="chat-message-peer-steps-step-item">{content}</div>
+    <div className={`markdown-message-md`}>
+      <span className={`markdown-message-md-pop`}>
+        <Markdown type="message">{props.content}</Markdown>
+      </span>
     </div>
   );
 };
 
 export const AIMessageContent = (props: AIMessageProps) => {
   const message = useObserve(props.message);
+  const exchange = useObserve(props.exchange);
   const content: ReactNode = message.content;
-  if (!content && !message.planningContent) {
+  if (!content && !message.received) {
     return (
       <div className={`chat-message-ai-empty`}>
         <LoadingOutlined className="chat-message-ai-receiving" />
@@ -115,43 +98,66 @@ export const AIMessageContent = (props: AIMessageProps) => {
   } else {
     return (
       <div className={`chat-message-ai chat-message-peer`}>
-        {message.planningPlanner &&
-          (message.planningContent || message.steps.length > 0) && (
-            <Steps
-              direction="vertical"
-              size="small"
-              current={message.currentStep}
-              className={`chat-message-peer-steps`}
-              items={[
-                {
-                  title: 'Planning',
-                  description: <RenderPeerPlanner message={message} />,
-                  icon: message.currentStep === 0 ? <LoadingOutlined /> : undefined,
-                },
-                {
-                  title: 'Executing',
-                  description: <PeerStep step={message.steps[1]} />,
-                  icon: message.currentStep === 1 ? <LoadingOutlined /> : undefined,
-                },
-                {
-                  title: 'Reviewing',
-                  description: <PeerStep step={message.steps[2]} />,
-                  icon: message.currentStep === 3 ? <LoadingOutlined /> : undefined,
-                },
-                {
-                  title: 'Expressing',
-                  description: <PeerStep step={message.steps[3]} />,
-                  icon: message.currentStep === 2 ? <LoadingOutlined /> : undefined,
-                },
-              ]}
-            />
-          )}
+        {message.planningPlanner && message.received && (
+          <Collapse
+            className={`chat-message-peer-container`}
+            bordered={false}
+            defaultActiveKey={['peer']}
+            items={[
+              {
+                key: 'peer',
+                label: `${message.agent?.name} ${exchange.tokenUsage ? '思考过程' : '思考中...'}`,
+                children: (
+                  <Steps
+                    direction="vertical"
+                    size="small"
+                    current={message.currentStep}
+                    className={`chat-message-peer-steps`}
+                    items={[
+                      {
+                        title: 'Planning',
+                        description: (
+                          <MarkdownThought content={message.planningContent} />
+                        ),
+                        icon:
+                          message.currentStep === 0 ? <LoadingOutlined /> : undefined,
+                      },
+                      {
+                        title: 'Executing',
+                        description: <RenderExecuting qas={message.executingContent} />,
+                        icon:
+                          message.currentStep === 1 ? <LoadingOutlined /> : undefined,
+                      },
+                      {
+                        title: 'Expressing',
+                        description: message.expressingContent
+                          ? message.currentStep === 2
+                            ? '正文输出中...'
+                            : '见回复正文'
+                          : '',
+                        icon:
+                          message.currentStep === 2 ? <LoadingOutlined /> : undefined,
+                      },
+                      {
+                        title: 'Reviewing',
+                        description: (
+                          <MarkdownThought content={message.reviewingContent} />
+                        ),
+                        icon:
+                          message.currentStep === 3 ? <LoadingOutlined /> : undefined,
+                      },
+                    ]}
+                  />
+                ),
+              },
+            ]}
+          />
+        )}
 
         <div className={`markdown-message-md`}>
           <span className={`markdown-message-md-pop`}>
             <Markdown
               className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
-              message={message}
               type="message"
             >
               {message.content}
@@ -178,7 +184,6 @@ export const PeerMessage = (props: AIMessageProps) => {
   }
 
   // const [contentHover, setContentHover] = useState<boolean>(false);
-  const avatarSrc: ReactNode = agent?.avatar || <MagentLOGO />;
   const nickName = agent?.name || '';
 
   const actions = [
@@ -201,7 +206,7 @@ export const PeerMessage = (props: AIMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <Avatar className="chat-message-avatar" src={avatarSrc} />
+      <AgentIcon className="chat-message-avatar" agent={agent} />
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
         <div style={{ paddingTop: 8, display: 'flex' }}>

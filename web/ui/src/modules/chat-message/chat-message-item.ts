@@ -4,8 +4,8 @@ import dayjs from 'dayjs';
 
 import { AxiosClient } from '../axios-client/index.js';
 
-import { ChatMessageItemOption, AnswerState } from './protocol.js';
-import type { ChatEventChunk, QuestionState, MessageSender } from './protocol.js';
+import { ChatMessageItemOption } from './protocol.js';
+import type { QuestionState, MessageSender, AnswerState } from './protocol.js';
 
 @transient()
 export class ChatMessageItem {
@@ -49,29 +49,4 @@ export class ChatMessageItem {
 export class HumanChatMessageItem extends ChatMessageItem {
   @prop()
   declare state: QuestionState;
-}
-
-@transient()
-export class AIChatMessageItem extends ChatMessageItem {
-  @prop()
-  declare state: AnswerState;
-
-  constructor(
-    @inject(ChatMessageItemOption) option: ChatMessageItemOption,
-    @inject(AxiosClient) axios: AxiosClient,
-  ) {
-    super(option, axios);
-    if (option.content) {
-      this.state = AnswerState.SUCCESS;
-    } else {
-      this.state = AnswerState.WAITING;
-    }
-  }
-
-  appendChunk(e: ChatEventChunk) {
-    this.content = `${this.content}${e.output}`;
-  }
-  handleSteps(e: any) {
-    //
-  }
 }

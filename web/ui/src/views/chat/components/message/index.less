@@ -33,6 +33,7 @@
 
 .chat-message-container {
   flex: 1;
+  max-width: calc(100% - 48px);
 }
 
 .chat-message-avatar {
@@ -111,7 +112,7 @@
   width: 100%;
 
   & > :first-child {
-    width: calc(100% - 32px);
+    width: 100%;
   }
 }
 
@@ -131,6 +132,7 @@
   color: var(--mana-text-quaternary);
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   span + span {
     margin-left: 16px;

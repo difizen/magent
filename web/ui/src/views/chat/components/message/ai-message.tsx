@@ -5,13 +5,12 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
-import { Avatar } from 'antd';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
-import { MagentLOGO } from '../../../../modules/base-layout/brand/logo.js';
-import type { AIChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
+import { AgentIcon } from '../../../../modules/agent/agent-icon.js';
+import type { AIChatMessageItem } from '../../../../modules/chat-message/ai-message-item.js';
 import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
 import { AnswerState } from '../../../../modules/chat-message/protocol.js';
 import type { ChatView } from '../../view.js';
@@ -64,7 +63,6 @@ export const AIMessageContent = (props: AIMessageProps) => {
           <span className={`markdown-message-md-pop`}>
             <Markdown
               className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
-              message={message}
               type="message"
             >
               {message.content}
@@ -90,7 +88,6 @@ export const AIMessage = (props: AIMessageProps) => {
   }
 
   // const [contentHover, setContentHover] = useState<boolean>(false);
-  const avatarSrc: ReactNode = agent?.avatar || <MagentLOGO />;
   const nickName = agent?.name || '';
 
   const actions = [
@@ -113,7 +110,7 @@ export const AIMessage = (props: AIMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <Avatar className="chat-message-avatar" src={avatarSrc} />
+      <AgentIcon className="chat-message-avatar" agent={agent} />
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
 

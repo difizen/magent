@@ -8,13 +8,13 @@ import {
   view,
   prop,
 } from '@difizen/mana-app';
-import { Avatar, Card } from 'antd';
+import { Card } from 'antd';
 import { forwardRef } from 'react';
 import { history } from 'umi';
 
 import './index.less';
+import { AgentIcon } from '../../modules/agent/agent-icon.js';
 import { AgentMarket } from '../../modules/agent/agent-market.js';
-import { MagentLOGO } from '../../modules/base-layout/brand/logo.js';
 
 const viewId = 'magent-agents';
 export const slot = `${viewId}-slot`;
@@ -51,11 +51,7 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
               <Meta
                 avatar={
                   <span className="magent-agent-avartar">
-                    <Avatar
-                      shape="square"
-                      size={64}
-                      src={item.avatar || <MagentLOGO />}
-                    />
+                    <AgentIcon shape="square" size={64} agent={item} />
                   </span>
                 }
                 title={item.name}
