@@ -1,4 +1,5 @@
 import { Deferred, inject, prop, transient } from '@difizen/mana-app';
+import type { ParsedEvent } from 'eventsource-parser';
 
 import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
@@ -53,6 +54,20 @@ export class AIChatMessageItem extends ChatMessageItem {
     this.agent.fetchInfo();
     this.agentDeferred.resolve(agent);
   };
+
+  handleEventData(e: ParsedEvent, data: any) {
+    if (e.event === 'chunk') {
+      this.appendChunk(data as ChatEventChunk);
+    }
+
+    if (e.event === 'result') {
+      this.handleResult(data as ChatEventResult);
+    }
+
+    if (e.event === 'steps') {
+      this.handleSteps(data as ChatEventStep);
+    }
+  }
 
   appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;

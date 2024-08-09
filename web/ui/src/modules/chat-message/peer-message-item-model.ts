@@ -1,4 +1,5 @@
 import { inject, prop, transient } from '@difizen/mana-app';
+import type { ParsedEvent } from 'eventsource-parser';
 
 import { AgentManager } from '../agent/agent-manager.js';
 import { AxiosClient } from '../axios-client/protocol.js';
@@ -153,21 +154,42 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     }
     return '';
   };
+
+  override handleEventData(e: ParsedEvent, data: any) {
+    if (e.event === 'chunk') {
+      this.appendChunk(data as ChatEventChunk);
+    }
+
+    if (data.agent_id === this.planningPlanner) {
+      if (this.lastChunkAgent === this.planningPlanner && !this.planningContent) {
+        try {
+          const data = JSON.parse(this.planningChunkInfo);
+          this.planningContent = data.thought;
+          this.planningContent += '\n\n';
+          this.planningContent += this.toContentStr(
+            data.framework as string | string[],
+          );
+        } catch (e) {
+          // console.error(e);
+        }
+      }
+      // this.planningContent += this.toContentStr(data.output as string | string[]);
+    }
+
+    if (e.event === 'result') {
+      this.handleResult(data as ChatEventResult);
+    }
+
+    if (e.event === 'steps') {
+      this.handleSteps(data as ChatEventStep);
+    }
+  }
+
   override handleSteps(e: ChatEventStep): void {
     this.received = true;
     let eventStep = 0;
     if (e.agent_id === this.planningPlanner) {
       eventStep = 0;
-      if (this.lastChunkAgent === this.planningPlanner) {
-        try {
-          const data = JSON.parse(this.planningChunkInfo);
-          this.planningContent = data.thought;
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      this.planningContent += '\n\n';
-      this.planningContent += this.toContentStr(e.output as string | string[]);
     }
     if (e.agent_id === this.executingPlanner) {
       eventStep = 1;

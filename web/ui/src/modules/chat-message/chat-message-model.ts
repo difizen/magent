@@ -178,6 +178,7 @@ export class ChatMessageModel implements Disposable {
       return;
     }
     try {
+      const data = JSON.parse(e.data);
       // if (e.event === 'message') {
       //   const newMessageModel: ChatMessageModel = JSON.parse(e.data);
       //   const message = this.getOrCreateMessage(newMessageModel);
@@ -185,28 +186,18 @@ export class ChatMessageModel implements Disposable {
       //   setImmediate(() => this.scrollToBottom(true, false));
       // }
 
-      if (e.event === 'chunk') {
-        const chunk: ChatEventChunk = JSON.parse(e.data);
-        ai.appendChunk(chunk);
-        this.onMessageItemEmitter.fire(ai);
-      }
-
       if (e.event === 'result') {
-        const result: ChatEventResult = JSON.parse(e.data);
+        const result: ChatEventResult = data;
         this.invocationChain = result.invocation_chain;
         this.tokenUsage = result.token_usage;
         this.responseTime = result.response_time;
         this.startTime = dayjs(result.start_time);
         this.endTime = dayjs(result.end_time);
         this.onMessageItemEmitter.fire(ai);
-        ai.handleResult(e);
       }
 
-      if (e.event === 'steps') {
-        const chunk: ChatEventStep = JSON.parse(e.data);
-        ai.handleSteps(chunk);
-        this.onMessageItemEmitter.fire(ai);
-      }
+      ai.handleEventData(e, data);
+      this.onMessageItemEmitter.fire(ai);
     } catch (e) {
       console.warn('[chat] recerved server send event', event);
       console.error(e);
