@@ -137,7 +137,7 @@ export const ConfigList = () => {
       <Space direction="vertical" size={'large'} style={{ display: 'flex' }}>
         <SkillConfigCard
           tools={instance.agent.tool || []}
-          knowledge={instance.agent.selectedKnowledge || []}
+          knowledge={instance.agent.knowledges || []}
           onAdd={onAdd}
           onDelete={(serviceType, itemKey) => {
             if (serviceType === 'tool') {
@@ -160,7 +160,7 @@ export const ConfigList = () => {
           setCurServiceType(undefined);
         }}
         loading={instance.agent.allToolsLoading}
-        selectedRowKeys={instance.agent.selectedKnowledge.map((item) => item.id)}
+        selectedRowKeys={instance.agent.knowledges.map((item) => item.id)}
         setSelectedRowKeys={(keys) => {
           instance.agent.updateSelectedKnowledgeList(keys);
         }}

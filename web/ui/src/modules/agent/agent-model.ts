@@ -92,8 +92,9 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
    * Knowledge
    * ------
    */
-  @prop()
-  selectedKnowledge: KnowledgeMeta[] = [];
+
+  // @prop()
+  // selectedKnowledge: KnowledgeMeta[] = [];
 
   @prop()
   knowledges: KnowledgeMeta[] = [];
@@ -130,13 +131,11 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   }
 
   updateSelectedKnowledgeList(ids: React.Key[]) {
-    this.selectedKnowledge = this.knowledges.filter((item) => ids.includes(item.id));
+    this.knowledges = this.knowledges.filter((item) => ids.includes(item.id));
   }
 
   removeSelectedKnowledgeList(ids: React.Key[]) {
-    this.selectedKnowledge = this.selectedKnowledge.filter(
-      (item) => !ids.includes(item.id),
-    );
+    this.knowledges = this.knowledges.filter((item) => !ids.includes(item.id));
   }
 
   // protected draftDeferred = new Deferred<AgentConfig>();
@@ -219,7 +218,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       tool: this.tool,
       memory: this.memory,
       opening_speech: this.openingSpeech,
-      knowledge: this.selectedKnowledge,
+      knowledge: this.knowledges,
     };
   }
 
