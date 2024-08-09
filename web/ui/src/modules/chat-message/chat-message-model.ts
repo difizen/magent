@@ -194,7 +194,6 @@ export class ChatMessageModel implements Disposable {
         this.startTime = dayjs(result.start_time);
         this.endTime = dayjs(result.end_time);
         this.onMessageItemEmitter.fire(ai);
-        ai.handleResult(e);
       }
 
       ai.handleEventData(e, data);
