@@ -1,6 +1,6 @@
 [project]
 name = "magent-ui"
-version = "0.1.7"
+version = "0.1.9"
 description = ""
 authors = [
   { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" },
