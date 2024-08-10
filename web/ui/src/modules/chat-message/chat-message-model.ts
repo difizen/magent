@@ -10,8 +10,8 @@ import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 
+import { AIChatMessageItem } from './ai-message-item.js';
 import type { ChatMessageItem } from './chat-message-item.js';
-import { AIChatMessageItem } from './chat-message-item.js';
 import type {
   APIMessage,
   ChainItem,
@@ -178,6 +178,7 @@ export class ChatMessageModel implements Disposable {
       return;
     }
     try {
+      const data = JSON.parse(e.data);
       // if (e.event === 'message') {
       //   const newMessageModel: ChatMessageModel = JSON.parse(e.data);
       //   const message = this.getOrCreateMessage(newMessageModel);
@@ -185,14 +186,8 @@ export class ChatMessageModel implements Disposable {
       //   setImmediate(() => this.scrollToBottom(true, false));
       // }
 
-      if (e.event === 'chunk') {
-        const chunk: ChatEventChunk = JSON.parse(e.data);
-        ai.appendChunk(chunk);
-        this.onMessageItemEmitter.fire(ai);
-      }
-
       if (e.event === 'result') {
-        const result: ChatEventResult = JSON.parse(e.data);
+        const result: ChatEventResult = data;
         this.invocationChain = result.invocation_chain;
         this.tokenUsage = result.token_usage;
         this.responseTime = result.response_time;
@@ -201,11 +196,8 @@ export class ChatMessageModel implements Disposable {
         this.onMessageItemEmitter.fire(ai);
       }
 
-      if (e.event === 'steps') {
-        const chunk: ChatEventStep = JSON.parse(e.data);
-        ai.handleSteps(chunk);
-        this.onMessageItemEmitter.fire(ai);
-      }
+      ai.handleEventData(e, data);
+      this.onMessageItemEmitter.fire(ai);
     } catch (e) {
       console.warn('[chat] recerved server send event', event);
       console.error(e);

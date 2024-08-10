@@ -1,10 +1,10 @@
 import type { TableColumnsType } from 'antd';
-import { Avatar, Modal, Table } from 'antd';
+import { Modal, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
-import type { ToolMeta } from '../../../../../modules/agent/index.js';
-import { ToolIcon } from '../../../../tool/tool-icon.js';
+import type { ToolMeta } from '../../../../../modules/tool/protocol.js';
+import { ToolIcon } from '../../../../../modules/tool/tool-icon.js';
 
 export const ToolModal = ({
   dataSource,
@@ -35,8 +35,8 @@ export const ToolModal = ({
         title: 'avatar',
         dataIndex: 'avatar',
         key: 'avatar',
-        render(value) {
-          return <Avatar shape="circle" size={32} src={value || <ToolIcon />} />;
+        render(value, obj) {
+          return <ToolIcon shape="circle" size={32} tool={obj} />;
         },
       },
       {

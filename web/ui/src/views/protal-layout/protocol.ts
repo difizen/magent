@@ -12,10 +12,10 @@ export const portals: Portal[] = [
     path: 'tools',
     label: 'Tools',
   },
-  // {
-  //   path: 'knowledge',
-  //   label: 'Knowledge',
-  // },
+  {
+    path: 'knowledge',
+    label: 'Knowledge',
+  },
   // {
   //   path: 'debug',
   //   label: 'Debug',

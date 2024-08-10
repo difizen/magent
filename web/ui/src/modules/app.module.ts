@@ -4,9 +4,10 @@ import { AgentConfigViewModule } from '../views/agent-config/index.js';
 import { AgentChatModule } from '../views/agent-dev/index.js';
 import { AgentsPageModule } from '../views/agents/index.js';
 import { ChatViewModule } from '../views/chat/module.js';
+import { KnowledgePageModule } from '../views/knowledge/module.js';
 import { PortalsModule } from '../views/protal-layout/index.js';
 import { SessionsViewModule } from '../views/sessions/module.js';
-import { ToolPageModule } from '../views/tool/module.js';
+import { ToolPageModule } from '../views/tools/module.js';
 
 import { AgentBotModule } from './agent/module.js';
 import { AxiosClientModule } from './axios-client/module.js';
@@ -35,6 +36,7 @@ export const AppBaseModule = new ManaModule()
     SessionsViewModule,
     ChatViewModule,
     ToolPageModule,
+    KnowledgePageModule,
     AgentConfigViewModule,
     PortalsModule,
   );

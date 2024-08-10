@@ -1,4 +1,17 @@
-export const ToolIcon = () => {
+import type { AvatarProps } from 'antd';
+import { Avatar } from 'antd';
+
+interface IProps extends AvatarProps {
+  tool: { avatar?: string; id?: string };
+}
+export const ToolIcon = (props: IProps) => {
+  if (props.tool.avatar) {
+    return <Avatar {...props} src={props.tool.avatar} />;
+  }
+  return <Avatar {...props} src={<DefaultToolIcon />} />;
+};
+
+export const DefaultToolIcon = () => {
   return (
     <svg
       className="icon"

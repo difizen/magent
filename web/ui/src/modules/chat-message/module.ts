@@ -1,10 +1,7 @@
 import { ManaModule } from '@difizen/mana-app';
 
-import {
-  AIChatMessageItem,
-  ChatMessageItem,
-  HumanChatMessageItem,
-} from './chat-message-item.js';
+import { AIChatMessageItem } from './ai-message-item.js';
+import { ChatMessageItem, HumanChatMessageItem } from './chat-message-item.js';
 import { ChatMessageManager } from './chat-message-manager.js';
 import { ChatMessageModel } from './chat-message-model.js';
 import { PeerChatMessageItem } from './peer-message-item-model.js';

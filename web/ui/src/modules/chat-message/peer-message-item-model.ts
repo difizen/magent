@@ -1,22 +1,20 @@
-import { Deferred, inject, prop, transient } from '@difizen/mana-app';
+import { inject, prop, transient } from '@difizen/mana-app';
+import type { ParsedEvent } from 'eventsource-parser';
 
 import { AgentManager } from '../agent/agent-manager.js';
-import type { AgentModel } from '../agent/agent-model.js';
 import { AxiosClient } from '../axios-client/protocol.js';
 
-import { AIChatMessageItem } from './chat-message-item.js';
-import type { ChatEventChunk } from './protocol.js';
+import { AIChatMessageItem } from './ai-message-item.js';
+import type {
+  ChatEventChunk,
+  ChatEventResult,
+  ChatEventStep,
+  ChatEventStepQA,
+} from './protocol.js';
 import { ChatMessageItemOption } from './protocol.js';
 
 @transient()
 export class PeerChatMessageItem extends AIChatMessageItem {
-  protected agentManager: AgentManager;
-  agentReady: Promise<AgentModel>;
-  protected agentDeferred: Deferred<AgentModel> = new Deferred<AgentModel>();
-
-  @prop()
-  agent?: AgentModel;
-
   @prop()
   contentMap: Record<string, string> = {};
 
@@ -33,13 +31,18 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   currentStep = 0;
 
   @prop()
-  steps: PeerSteps[] = [];
+  steps: ChatEventStep[] = [];
+
+  lastChunkAgent?: string;
+
+  received = false;
+  planningChunkInfo = '';
 
   @prop()
   planningContent = '';
 
   @prop()
-  executingContent = '';
+  executingContent: ChatEventStepQA[] = [];
 
   @prop()
   expressingContent = '';
@@ -52,13 +55,12 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     @inject(AxiosClient) axios: AxiosClient,
     @inject(AgentManager) agentManager: AgentManager,
   ) {
-    super(option, axios);
-    this.agentManager = agentManager;
+    super(option, axios, agentManager);
     this.agentReady = this.agentDeferred.promise;
     this.initialize();
   }
 
-  initialize = async () => {
+  override initialize = async () => {
     await this.getAgent();
     if (!this.agent) {
       throw new Error('Cannot access agent');
@@ -67,7 +69,10 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     if (!this.agent.planner?.members) {
       throw new Error('Missing PEER member');
     }
-    const members = this.agent.planner.members;
+    const members = this.agent?.planner?.members;
+    if (!members) {
+      return;
+    }
     members.forEach((m) => {
       switch (m.planner?.id) {
         case 'planning_planner':
@@ -76,7 +81,6 @@ export class PeerChatMessageItem extends AIChatMessageItem {
           break;
         case 'executing_planner':
           this.executingPlanner = m.id;
-          this.executingContent = this.contentMap[this.executingPlanner];
           break;
         case 'reviewing_planner':
           this.reviewingContent = this.contentMap[this.reviewingPlanner];
@@ -112,25 +116,15 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     }
   }
 
-  protected getAgent = async () => {
-    const agent = await this.agentManager.getOrCreateAgent({ id: this.option.agentId });
-    this.agent = agent;
-    this.agent.fetchInfo();
-    this.agentDeferred.resolve(agent);
-  };
-
   override appendChunk(e: ChatEventChunk) {
+    this.received = true;
     if (this.planningPlanner) {
       switch (e.agent_id) {
         case this.planningPlanner:
-          this.planningContent = `${this.planningContent || ''}${e.output || ''}`;
-          break;
-        case this.executingPlanner:
-          this.executingContent = `${this.executingContent || ''}${e.output || ''}`;
+          this.planningChunkInfo = `${this.planningChunkInfo || ''}${e.output || ''}`;
           break;
         case this.expressingPlanner:
           this.expressingContent = `${this.expressingContent || ''}${e.output || ''}`;
-          this.contentMap[this.expressingPlanner] = this._content;
           break;
         case this.reviewingPlanner:
           this.reviewingContent = `${this.reviewingContent || ''}${e.output || ''}`;
@@ -142,19 +136,80 @@ export class PeerChatMessageItem extends AIChatMessageItem {
       this.contentMap[e.agent_id] =
         `${this.contentMap[e.agent_id] || ''}${e.output || ''}`;
     }
+    if (this.lastChunkAgent !== e.agent_id) {
+      this.lastChunkAgent = e.agent_id;
+    }
   }
-  override handleSteps(e: PeerSteps): void {
-    this.currentStep += 1;
-    this.steps[this.currentStep] = e;
-  }
-}
-export interface PeerSteps {
-  agent_id: string;
-  output: (string | EAnswer)[];
-  type: 'intermediate_steps';
-}
 
-interface EAnswer {
-  input: string;
-  output: string;
+  protected toContentStr = (out: string | string[]) => {
+    if (typeof out === 'string') {
+      return out;
+    }
+    if (out instanceof Array) {
+      return out
+        .map((i) => {
+          return `* ${i}`;
+        })
+        .join('\n');
+    }
+    return '';
+  };
+
+  override handleEventData(e: ParsedEvent, data: any) {
+    if (e.event === 'chunk') {
+      this.appendChunk(data as ChatEventChunk);
+    }
+
+    if (data.agent_id === this.planningPlanner) {
+      if (this.lastChunkAgent === this.planningPlanner && !this.planningContent) {
+        try {
+          const data = JSON.parse(this.planningChunkInfo);
+          this.planningContent = data.thought;
+          this.planningContent += '\n\n';
+          this.planningContent += this.toContentStr(
+            data.framework as string | string[],
+          );
+        } catch (e) {
+          // console.error(e);
+        }
+      }
+      // this.planningContent += this.toContentStr(data.output as string | string[]);
+    }
+
+    if (e.event === 'result') {
+      this.handleResult(data as ChatEventResult);
+    }
+
+    if (e.event === 'steps') {
+      this.handleSteps(data as ChatEventStep);
+    }
+  }
+
+  override handleSteps(e: ChatEventStep): void {
+    this.received = true;
+    let eventStep = 0;
+    if (e.agent_id === this.planningPlanner) {
+      eventStep = 0;
+    }
+    if (e.agent_id === this.executingPlanner) {
+      eventStep = 1;
+      this.executingContent = e.output as ChatEventStepQA[];
+    }
+    if (e.agent_id === this.expressingPlanner) {
+      eventStep = 2;
+    }
+    if (e.agent_id === this.reviewingPlanner) {
+      eventStep = 3;
+      this.reviewingContent = this.toContentStr(e.output as string | string[]);
+    }
+    if (eventStep > this.currentStep) {
+      this.currentStep = eventStep;
+    }
+    this.steps[eventStep] = e;
+  }
+
+  override handleResult(e: ChatEventResult): void {
+    this.received = true;
+    this.currentStep = 4;
+  }
 }

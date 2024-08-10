@@ -6,6 +6,7 @@ import { Avatar, Collapse, Space } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { KnowledgeMeta, ToolMeta } from '../../../../modules/agent/protocol.js';
+import { ToolIcon } from '../../../../modules/tool/tool-icon.js';
 import type { AgentConfigView } from '../../view.js';
 import { SkillItem } from '../ItemCard/index.js';
 
@@ -87,7 +88,7 @@ const SkillConfigCard = ({
                     onDelete('tool', item.id);
                   }}
                   key={item.id}
-                  icon={<Avatar shape="circle" size={32} src={item.avatar} />}
+                  icon={<ToolIcon shape="circle" size={32} tool={item} />}
                   title={item.nickname || '-'}
                   description={item.description || '-'}
                 ></SkillItem>
@@ -136,7 +137,7 @@ export const ConfigList = () => {
       <Space direction="vertical" size={'large'} style={{ display: 'flex' }}>
         <SkillConfigCard
           tools={instance.agent.tool || []}
-          knowledge={instance.agent.selectedKnowledge || []}
+          knowledge={instance.agent.knowledges || []}
           onAdd={onAdd}
           onDelete={(serviceType, itemKey) => {
             if (serviceType === 'tool') {
@@ -159,7 +160,7 @@ export const ConfigList = () => {
           setCurServiceType(undefined);
         }}
         loading={instance.agent.allToolsLoading}
-        selectedRowKeys={instance.agent.selectedKnowledge.map((item) => item.id)}
+        selectedRowKeys={instance.agent.knowledges.map((item) => item.id)}
         setSelectedRowKeys={(keys) => {
           instance.agent.updateSelectedKnowledgeList(keys);
         }}

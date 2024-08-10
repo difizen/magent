@@ -8,23 +8,19 @@ import {
   useInject,
   view,
 } from '@difizen/mana-app';
-import { Avatar, Col, List, Row, Tag, Tooltip } from 'antd';
+import { Col, List, Row, Tag, Tooltip } from 'antd';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
+import { KnowledgeIcon } from '../../modules/knowledge/knowledge-icon.js';
+import { KnowledgeManager } from '../../modules/knowledge/knowledge-manager.js';
+import type {
+  KnowledgeModel,
+  KnowledgeModelOption,
+} from '../../modules/knowledge/protocol.js';
+
 import './index.less';
-import { ToolSpace } from '../../modules/tool/tool-space.js';
 
-import { ToolIcon } from './tool-icon.js';
-
-export interface ToolItem {
-  nickname: string;
-  id: string;
-  avatar: string;
-  description: string;
-  parameters: string[];
-}
-
-const viewId = 'magent-tools';
+const viewId = 'magent-knowledge';
 export const slot = `${viewId}-slot`;
 
 const TagList: React.FC<{
@@ -94,13 +90,12 @@ const TagList: React.FC<{
   );
 };
 
-const ToolsViewComponent = forwardRef<HTMLDivElement>(
+const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
   function ToolsViewComponent(props, ref) {
-    const instance = useInject<ToolsView>(ViewInstance);
-    const space = instance.toolSpace;
-    const [selectedItems, setSelectedItems] = useState<ToolItem[]>([]);
+    const instance = useInject<KnowledgeView>(ViewInstance);
+    const [selectedItems, setSelectedItems] = useState<KnowledgeModelOption[]>([]);
 
-    const handSelect = (item: ToolItem) => {
+    const handSelect = (item: KnowledgeModelOption) => {
       if (selectedItems.findIndex((selectedItem) => selectedItem.id === item.id) > -1) {
         setSelectedItems(
           selectedItems.filter((selectedItem) => selectedItem.id !== item.id),
@@ -116,7 +111,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
             工具
           </Col>
           <Col className={`${viewId}-list-header-label`} span={8}>
-            入参
+            简介
           </Col>
           <Col className={`${viewId}-list-header-label`} span={8}>
             操作
@@ -125,43 +120,24 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
         <List
           className={`${viewId}-list`}
           itemLayout="horizontal"
-          dataSource={space.list}
+          dataSource={instance.list}
           renderItem={(item) => (
-            <Row>
-              <Col className={`${viewId}-list-item`} span={8}>
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        shape="circle"
-                        size={32}
-                        src={item.avatar || <ToolIcon />}
-                      />
-                    }
-                    title={item.nickname}
-                    description={item.description}
-                  />
-                </List.Item>
-              </Col>
-              <Col className={`${viewId}-list-item`} span={8}>
-                <TagList tags={item.parameters} maxWidth={180}></TagList>
-              </Col>
-              <Col className={`${viewId}-list-item`} span={8}>
-                {/* <div className="button-container">
-                  <Button
-                    type="text"
-                    onClick={() => handSelect(item)}
-                    style={{ background: 'white', color: '#1677ff' }}
-                  >
-                    {selectedItems.findIndex(
-                      (selectedItem) => selectedItem.id === item.id,
-                    ) > -1
-                      ? '移除'
-                      : '添加'}
-                  </Button>
-                </div> */}
-              </Col>
-            </Row>
+            <List.Item>
+              <Row className={`${viewId}-list-item`}>
+                <Col className={`${viewId}-list-item-col`} span={8}>
+                  <KnowledgeIcon shape="circle" size={32} data={item} />
+                  {item.nickname}
+                </Col>
+                <Col
+                  style={{ paddingLeft: 24 }}
+                  className={`${viewId}-list-item-col`}
+                  span={8}
+                >
+                  {item.description}
+                </Col>
+                <Col className={`${viewId}-list-item-col`} span={8}></Col>
+              </Row>
+            </List.Item>
           )}
         />
       </div>
@@ -171,16 +147,24 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
 
 @singleton()
 @view(viewId)
-export class ToolsView extends BaseView {
-  override view = ToolsViewComponent;
+export class KnowledgeView extends BaseView {
+  @inject(KnowledgeManager) manager: KnowledgeManager;
+
+  @prop()
+  list: KnowledgeModel[] = [];
+
+  override view = KnowledgeViewComponent;
   @prop()
   loadig = false;
 
-  @inject(ToolSpace) toolSpace: ToolSpace;
+  async update() {
+    const options = await this.manager.getTools();
+    this.list = options.map(this.manager.getOrCreateKnowledge);
+  }
 
   override async onViewMount(): Promise<void> {
     this.loadig = true;
-    await this.toolSpace.update();
+    this.update();
     this.loadig = false;
   }
 }

@@ -50,7 +50,7 @@ const ModelSelectorOption = (props: { model: ModelMeta; flat?: boolean }) => {
   );
 };
 
-const toKey = (model: ModelMeta) => {
+const toKey = (model?: ModelMeta) => {
   if (!model) {
     return undefined;
   }
@@ -61,7 +61,7 @@ export const ModelSelector = forwardRef<HTMLDivElement>(
   function ModelSelectorComponent(props, ref) {
     const instance = useInject<AgentConfigView>(ViewInstance);
     const modelManager = useInject(LLMManager);
-    const defaultModel = modelManager.defaultModel;
+    // const defaultModel = modelManager.defaultModel;
 
     const modelMeta = instance.agent?.llm;
 
@@ -76,20 +76,22 @@ export const ModelSelector = forwardRef<HTMLDivElement>(
       modelManager.updateModels();
     }, [modelManager]);
 
-    useEffect(() => {
-      if (!modelMeta && defaultModel) {
-        instance.agent.ready
-          .then(async () => {
-            if (!instance.agent.llm) {
-              instance.agent.llm = defaultModel;
-            }
-            return;
-          })
-          .catch(console.error);
-      }
-    }, [modelMeta, defaultModel, instance.agent, instance]);
+    // useEffect(() => {
+    //   if (!modelMeta && defaultModel) {
+    //     instance.agent.ready
+    //       .then(async () => {
+    //         if (!instance.agent.llm) {
+    //           instance.agent.llm = defaultModel;
+    //         }
+    //         return;
+    //       })
+    //       .catch(console.error);
+    //   }
+    // }, [modelMeta, defaultModel, instance.agent, instance]);
 
-    const currentModel = metaModels.find((item) => toKey(item) === toKey(modelMeta));
+    const currentModel = metaModels.find(
+      (item) => modelMeta && toKey(item) === toKey(modelMeta),
+    );
 
     return (
       <div ref={ref} className={clsPrefix}>
@@ -119,7 +121,7 @@ export const ModelSelector = forwardRef<HTMLDivElement>(
                           .filter((i) => !!i)
                           .map((item) => (
                             <Select.Option key={toKey(item)} value={toKey(item)}>
-                              <ModelSelectorOption model={item} />
+                              <ModelSelectorOption model={item!} />
                             </Select.Option>
                           ))}
                       </Select.OptGroup>
