@@ -36,7 +36,6 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   lastChunkAgent?: string;
 
   received = false;
-  planningChunkInfo = '';
 
   @prop()
   planningContent = '';
@@ -121,7 +120,17 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     if (this.planningPlanner) {
       switch (e.agent_id) {
         case this.planningPlanner:
-          this.planningChunkInfo = `${this.planningChunkInfo || ''}${e.output || ''}`;
+          this.planningContent = `${this.planningContent || ''}${e.output || ''}`;
+          try {
+            const data = JSON.parse(this.planningContent);
+            this.planningContent = data.thought;
+            this.planningContent += '\n\n';
+            this.planningContent += this.toContentStr(
+              data.framework as string | string[],
+            );
+          } catch (e) {
+            // console.error(e);
+          }
           break;
         case this.expressingPlanner:
           this.expressingContent = `${this.expressingContent || ''}${e.output || ''}`;
@@ -160,21 +169,21 @@ export class PeerChatMessageItem extends AIChatMessageItem {
       this.appendChunk(data as ChatEventChunk);
     }
 
-    if (data.agent_id === this.planningPlanner) {
-      if (this.lastChunkAgent === this.planningPlanner && !this.planningContent) {
-        try {
-          const data = JSON.parse(this.planningChunkInfo);
-          this.planningContent = data.thought;
-          this.planningContent += '\n\n';
-          this.planningContent += this.toContentStr(
-            data.framework as string | string[],
-          );
-        } catch (e) {
-          // console.error(e);
-        }
-      }
-      // this.planningContent += this.toContentStr(data.output as string | string[]);
-    }
+    // if (data.agent_id === this.planningPlanner) {
+    //   if (this.lastChunkAgent === this.planningPlanner && !this.planningContent) {
+    //     try {
+    //       const data = JSON.parse(this.planningContent);
+    //       this.planningContent = data.thought;
+    //       this.planningContent += '\n\n';
+    //       this.planningContent += this.toContentStr(
+    //         data.framework as string | string[],
+    //       );
+    //     } catch (e) {
+    //       // console.error(e);
+    //     }
+    //   }
+    //   // this.planningContent += this.toContentStr(data.output as string | string[]);
+    // }
 
     if (e.event === 'result') {
       this.handleResult(data as ChatEventResult);
