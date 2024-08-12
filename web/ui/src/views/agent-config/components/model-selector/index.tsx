@@ -1,6 +1,6 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { ViewInstance, useInject } from '@difizen/mana-app';
-import { Button, Form, Select, Popover, Avatar } from 'antd';
+import { Button, Form, Select, Popover, Avatar, Slider } from 'antd';
 import { forwardRef, useEffect } from 'react';
 
 import { LLMManager } from '../../../../modules/model/llm-manager.js';
@@ -12,24 +12,20 @@ import { DefaultLogo, OpenAILogo, QwenLogo } from './logos.js';
 
 const clsPrefix = 'agent-config-model-selector';
 
-const RenderLogo = (props: { meta: ModelMeta }) => {
-  const { meta } = props;
-  if (meta.id.toLowerCase().includes('qwen')) {
+const LLMIcon = (props: { data: ModelMeta }) => {
+  const { data } = props;
+  if (
+    data.id.toLowerCase().includes('qwen') ||
+    data.nickname.toLowerCase().includes('qwen') ||
+    data.model_name[0].toLowerCase().includes('qwen')
+  ) {
     return <QwenLogo />;
   }
-  if (meta.id.toLowerCase().includes('openai')) {
-    return <OpenAILogo />;
-  }
-  if (meta.nickname.toLowerCase().includes('qwen')) {
-    return <QwenLogo />;
-  }
-  if (meta.nickname.toLowerCase().includes('openai')) {
-    return <OpenAILogo />;
-  }
-  if (meta.model_name[0].toLowerCase().includes('qwen')) {
-    return <QwenLogo />;
-  }
-  if (meta.model_name[0].toLowerCase().includes('openai')) {
+  if (
+    data.id.toLowerCase().includes('openai') ||
+    data.nickname.toLowerCase().includes('openai') ||
+    data.model_name[0].toLowerCase().includes('openai')
+  ) {
     return <OpenAILogo />;
   }
   return <DefaultLogo />;
@@ -42,7 +38,7 @@ const ModelSelectorOption = (props: { model: ModelMeta; flat?: boolean }) => {
       <Avatar
         size="small"
         className={`${clsPrefix}-option-icon`}
-        src={<RenderLogo meta={model} />}
+        src={<LLMIcon data={model} />}
       />
       {flat && <span className={`${clsPrefix}-option-series`}>{model.nickname}</span>}
       <span className={`${clsPrefix}-option-label`}>{model.model_name[0]}</span>
@@ -76,22 +72,11 @@ export const ModelSelector = forwardRef<HTMLDivElement>(
       modelManager.updateModels();
     }, [modelManager]);
 
-    // useEffect(() => {
-    //   if (!modelMeta && defaultModel) {
-    //     instance.agent.ready
-    //       .then(async () => {
-    //         if (!instance.agent.llm) {
-    //           instance.agent.llm = defaultModel;
-    //         }
-    //         return;
-    //       })
-    //       .catch(console.error);
-    //   }
-    // }, [modelMeta, defaultModel, instance.agent, instance]);
-
     const currentModel = metaModels.find(
       (item) => modelMeta && toKey(item) === toKey(modelMeta),
     );
+
+    const temperature = instance.agent.llm?.temperature;
 
     return (
       <div ref={ref} className={clsPrefix}>
@@ -127,6 +112,19 @@ export const ModelSelector = forwardRef<HTMLDivElement>(
                       </Select.OptGroup>
                     ))}
                   </Select>
+                </Form.Item>
+                <Form.Item label="temperature">
+                  <Slider
+                    step={0.01}
+                    min={0}
+                    max={1}
+                    onChange={(v) => {
+                      if (instance.agent.llm) {
+                        instance.agent.llm.temperature = v;
+                      }
+                    }}
+                    value={temperature === undefined ? 1 : temperature}
+                  />
                 </Form.Item>
               </Form>
             </div>
