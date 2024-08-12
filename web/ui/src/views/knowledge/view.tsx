@@ -158,7 +158,7 @@ export class KnowledgeView extends BaseView {
   loadig = false;
 
   async update() {
-    const options = await this.manager.getTools();
+    const options = await this.manager.getKnowledge();
     this.list = options.map(this.manager.getOrCreateKnowledge);
   }
 

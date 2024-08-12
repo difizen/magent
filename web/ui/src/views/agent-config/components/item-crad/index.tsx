@@ -3,7 +3,7 @@ import { Flex, Space } from 'antd';
 import React, { useState } from 'react';
 import './index.less';
 
-const clsPrefix = 'skill-item';
+const clsPrefix = 'card-item';
 
 const IconBox = ({ icon }: { icon: React.ReactNode }) => {
   const [focus, setFocus] = useState(false);
@@ -22,7 +22,7 @@ const IconBox = ({ icon }: { icon: React.ReactNode }) => {
   );
 };
 
-export const SkillItem = ({
+export const SelectedItem = ({
   icon,
   title,
   description,
@@ -37,20 +37,20 @@ export const SkillItem = ({
 
   return (
     <Flex
-      className={`${clsPrefix} ${showAct ? `${clsPrefix}-show-act` : ''}`}
+      className={`${clsPrefix} ${showAct ? `${clsPrefix}-show-action` : ''}`}
       align="center"
       justify="start"
       onMouseEnter={() => setShowAct(true)}
       onMouseLeave={() => setShowAct(false)}
     >
       <div className={`${clsPrefix}-icon`}>{icon}</div>
-      <Flex vertical flex={1}>
-        <div className={`ellipsisW100 ${clsPrefix}-title`}>{title}</div>
+      <Flex className={`${clsPrefix}-content`} vertical flex={1}>
+        <div className={`ellipsis ${clsPrefix}-title`}>{title}</div>
         <div className={`ellipsis2Line ${clsPrefix}-description`}>{description}</div>
       </Flex>
 
-      {showAct && (
-        <Space className={`${clsPrefix}-act`}>
+      <Space className={`${clsPrefix}-action`}>
+        {showAct && (
           <IconBox
             icon={
               <DeleteOutlined
@@ -60,8 +60,8 @@ export const SkillItem = ({
               />
             }
           ></IconBox>
-        </Space>
-      )}
+        )}
+      </Space>
     </Flex>
   );
 };

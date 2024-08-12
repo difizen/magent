@@ -2,11 +2,11 @@ import type { AvatarProps } from 'antd';
 import { Avatar } from 'antd';
 
 interface IProps extends AvatarProps {
-  tool: { avatar?: string; id?: string };
+  data: { avatar?: string; id?: string };
 }
 export const ToolIcon = (props: IProps) => {
-  if (props.tool.avatar) {
-    return <Avatar {...props} src={props.tool.avatar} />;
+  if (props.data.avatar) {
+    return <Avatar {...props} src={props.data.avatar} />;
   }
   return <Avatar {...props} src={<DefaultToolIcon />} />;
 };

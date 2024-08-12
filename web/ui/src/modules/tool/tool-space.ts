@@ -10,8 +10,13 @@ export class ToolSpace {
   @prop()
   list: ToolModel[] = [];
 
+  @prop()
+  loading = false;
+
   async update() {
+    this.loading = true;
     const options = await this.toolManager.getTools();
     this.list = options.map(this.toolManager.getOrCreateTool);
+    this.loading = false;
   }
 }

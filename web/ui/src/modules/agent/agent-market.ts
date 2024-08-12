@@ -10,8 +10,13 @@ export class AgentMarket {
   @prop()
   list: AgentModel[] = [];
 
+  @prop()
+  loading = false;
+
   async update() {
+    this.loading = true;
     const options = await this.agentManager.getAgents();
     this.list = options.map(this.agentManager.getOrCreateAgent);
+    this.loading = false;
   }
 }
