@@ -1,4 +1,4 @@
-import { inject, singleton } from '@difizen/mana-app';
+import { inject, prop, singleton } from '@difizen/mana-app';
 
 import { AxiosClient } from '../axios-client/index.js';
 
@@ -14,7 +14,10 @@ export class KnowledgeManager {
   @inject(KnowledgeModelFactory) factory: KnowledgeModelFactory;
   @inject(AxiosClient) axios: AxiosClient;
 
-  getTools = async (): Promise<KnowledgeModelOption[]> => {
+  @prop()
+  knowledgeOptions: KnowledgeModelOption[] = [];
+
+  getKnowledge = async (): Promise<KnowledgeModelOption[]> => {
     const defaultValue: KnowledgeModelOption[] = [];
     const res = await this.axios.get<KnowledgeModelOption[]>(`/api/v1/knowledge`);
     if (res.status === 200) {

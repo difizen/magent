@@ -2,12 +2,12 @@ import { inject, prop, transient } from '@difizen/mana-app';
 
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
-import type { ToolMeta } from '../tool/index.js';
+import type { KnowledgeModelOption } from '../knowledge/protocol.js';
+import type { ToolModelOption } from '../tool/index.js';
 import { ToolManager } from '../tool/index.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
-import type { AgentConfig } from './agent-config.js';
-import type { LLMMeta, PromptMeta, PlannerMeta, KnowledgeMeta } from './protocol.js';
+import type { LLMMeta, PromptMeta, PlannerMeta } from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
 class Prompt implements PromptMeta {
@@ -53,12 +53,6 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   description?: string;
 
   @prop()
-  draft?: AgentConfig;
-
-  @prop()
-  config?: AgentConfig;
-
-  @prop()
   llm?: LLMMeta;
 
   @prop()
@@ -72,77 +66,11 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   @prop()
   openingSpeech?: string;
 
-  /**
-   * ------
-   * Tools
-   * ------
-   */
+  @prop()
+  tool: ToolModelOption[] = [];
 
   @prop()
-  allTools: ToolMeta[] = [];
-
-  @prop()
-  tool: ToolMeta[] = [];
-
-  @prop()
-  allToolsLoading = false;
-
-  /**
-   * ------
-   * Knowledge
-   * ------
-   */
-
-  // @prop()
-  // selectedKnowledge: KnowledgeMeta[] = [];
-
-  @prop()
-  knowledges: KnowledgeMeta[] = [];
-
-  @prop()
-  knowledgesLoading = false;
-
-  async updateToolList() {
-    try {
-      this.allToolsLoading = true;
-      const options = await this.toolManager.getTools();
-      this.allTools = options;
-    } finally {
-      this.allToolsLoading = false;
-    }
-  }
-
-  updateSelectedToolList(ids: React.Key[]) {
-    this.tool = this.allTools.filter((item) => ids.includes(item.id));
-  }
-
-  removeSelectedToolList(ids: React.Key[]) {
-    this.tool = this.tool.filter((item) => !ids.includes(item.id));
-  }
-
-  async updateKnowledgeList() {
-    try {
-      this.knowledgesLoading = true;
-      const options = await this.fetchKnowdledgeList();
-      this.knowledges = options;
-    } finally {
-      this.knowledgesLoading = false;
-    }
-  }
-
-  updateSelectedKnowledgeList(ids: React.Key[]) {
-    this.knowledges = this.knowledges.filter((item) => ids.includes(item.id));
-  }
-
-  removeSelectedKnowledgeList(ids: React.Key[]) {
-    this.knowledges = this.knowledges.filter((item) => !ids.includes(item.id));
-  }
-
-  // protected draftDeferred = new Deferred<AgentConfig>();
-
-  // get draftReady() {
-  //   return this.draftDeferred.promise;
-  // }
+  knowledge?: KnowledgeModelOption[];
 
   option: AgentModelOption;
 
@@ -179,10 +107,8 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.prompt = option.prompt ? new Prompt(option.prompt) : undefined;
     this.llm = option.llm;
     this.memory = option.memory ?? '';
-    this.planner = option.planner ?? {
-      id: '',
-      nickname: 'string',
-    };
+    this.planner = option.planner;
+    this.knowledge = option.knowledge;
     this.tool = option.tool ?? [];
     this.openingSpeech = option.opening_speech;
 
@@ -218,7 +144,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       tool: this.tool,
       memory: this.memory,
       opening_speech: this.openingSpeech,
-      knowledge: this.knowledges,
+      knowledge: this.knowledge,
     };
   }
 
@@ -239,7 +165,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   async fetchKnowdledgeList() {
     try {
-      const res = await this.axios.get<KnowledgeMeta[]>(`/api/v1/knowledge`);
+      const res = await this.axios.get<KnowledgeModelOption[]>(`/api/v1/knowledge`);
       if (res.status === 200 && res.data?.length) {
         return res.data;
       }

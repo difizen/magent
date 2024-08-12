@@ -1,4 +1,3 @@
-import './index.less';
 import {
   ContactsTwoTone,
   HighlightTwoTone,
@@ -13,6 +12,7 @@ import { useEffect, useState } from 'react';
 import type { AgentConfigView } from '../../view.js';
 
 import { TextArea } from './textarea.js';
+import './index.less';
 
 const clsPrefix = 'character-settings';
 

@@ -130,7 +130,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
               <Col className={`${viewId}-list-item`} span={8}>
                 <List.Item>
                   <List.Item.Meta
-                    avatar={<ToolIcon shape="circle" size={32} tool={item} />}
+                    avatar={<ToolIcon shape="circle" size={32} data={item} />}
                     title={item.nickname}
                     description={item.description}
                   />
