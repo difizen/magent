@@ -18,7 +18,7 @@ interface Props {
 export const slot = 'magent-base-layout-slot';
 
 export const MagentBaseLayoutComponent = forwardRef<HTMLDivElement, Props>(
-  function LibroExecutionLayoutComponent(props, ref) {
+  function MagentBaseLayoutComponent(props, ref) {
     return (
       <div ref={ref} className="magent-base-layout">
         <BoxPanel direction="top-to-bottom">
