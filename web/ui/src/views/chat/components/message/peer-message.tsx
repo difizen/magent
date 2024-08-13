@@ -95,83 +95,78 @@ export const AIMessageContent = (props: AIMessageProps) => {
         <LoadingOutlined className="chat-message-ai-receiving" />
       </div>
     );
-  } else {
-    return (
-      <div className={`chat-message-ai chat-message-peer`}>
-        {message.planningPlanner && message.received && (
-          <Collapse
-            className={`chat-message-peer-container`}
-            bordered={false}
-            defaultActiveKey={['peer']}
-            items={[
-              {
-                key: 'peer',
-                label: `${message.agent?.name} ${exchange.tokenUsage ? '思考过程' : '思考中...'}`,
-                children: (
-                  <Steps
-                    direction="vertical"
-                    size="small"
-                    current={message.currentStep}
-                    className={`chat-message-peer-steps`}
-                    items={[
-                      {
-                        title: 'Planning',
-                        description: (
-                          <MarkdownThought content={message.planningContent} />
-                        ),
-                        icon:
-                          message.currentStep === 0 ? <LoadingOutlined /> : undefined,
-                      },
-                      {
-                        title: 'Executing',
-                        description: <RenderExecuting qas={message.executingContent} />,
-                        icon:
-                          message.currentStep === 1 ? <LoadingOutlined /> : undefined,
-                      },
-                      {
-                        title: 'Expressing',
-                        description: message.expressingContent
-                          ? message.currentStep === 2
-                            ? '正文输出中...'
-                            : '见回复正文'
-                          : '',
-                        icon:
-                          message.currentStep === 2 ? <LoadingOutlined /> : undefined,
-                      },
-                      {
-                        title: 'Reviewing',
-                        description: (
-                          <MarkdownThought content={message.reviewingContent} />
-                        ),
-                        icon:
-                          message.currentStep === 3 ? <LoadingOutlined /> : undefined,
-                      },
-                    ]}
-                  />
-                ),
-              },
-            ]}
-          />
-        )}
-
-        <div className={`markdown-message-md`}>
-          <span className={`markdown-message-md-pop`}>
-            <Markdown
-              className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
-              type="message"
-            >
-              {message.content}
-            </Markdown>
-          </span>
-        </div>
-
-        {message.state === AnswerState.RECEIVING && (
-          <LoadingOutlined className="chat-message-ai-receiving" />
-        )}
-        <AIMessageAddon {...props} />
-      </div>
-    );
   }
+  return (
+    <div className={`chat-message-ai chat-message-peer`}>
+      {message.planningPlanner && message.received && (
+        <Collapse
+          className={`chat-message-peer-container`}
+          bordered={false}
+          defaultActiveKey={['peer']}
+          items={[
+            {
+              key: 'peer',
+              label: `${message.agent?.name} ${exchange.tokenUsage ? '思考过程' : '思考中...'}`,
+              children: (
+                <Steps
+                  direction="vertical"
+                  size="small"
+                  current={message.currentStep}
+                  className={`chat-message-peer-steps`}
+                  items={[
+                    {
+                      title: 'Planning',
+                      description: (
+                        <MarkdownThought content={message.planningContent} />
+                      ),
+                      icon: message.currentStep === 0 ? <LoadingOutlined /> : undefined,
+                    },
+                    {
+                      title: 'Executing',
+                      description: <RenderExecuting qas={message.executingContent} />,
+                      icon: message.currentStep === 1 ? <LoadingOutlined /> : undefined,
+                    },
+                    {
+                      title: 'Expressing',
+                      description: message.expressingContent
+                        ? message.currentStep === 2
+                          ? '正文输出中...'
+                          : '见回复正文'
+                        : '',
+                      icon: message.currentStep === 2 ? <LoadingOutlined /> : undefined,
+                    },
+                    {
+                      title: 'Reviewing',
+                      description: (
+                        <MarkdownThought content={message.reviewingContent} />
+                      ),
+                      icon: message.currentStep === 3 ? <LoadingOutlined /> : undefined,
+                    },
+                  ]}
+                />
+              ),
+            },
+          ]}
+        />
+      )}
+
+      <div className={`markdown-message-md`}>
+        <span className={`markdown-message-md-pop`}>
+          <Markdown
+            className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
+            type="message"
+          >
+            {message.content}
+          </Markdown>
+        </span>
+      </div>
+
+      {message.state === AnswerState.RECEIVING && (
+        <LoadingOutlined className="chat-message-ai-receiving" />
+      )}
+      <AIMessageAddon {...props} />
+    </div>
+  );
 };
 
 export const PeerMessage = (props: AIMessageProps) => {
