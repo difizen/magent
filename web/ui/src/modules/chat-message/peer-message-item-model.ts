@@ -35,6 +35,7 @@ export class PeerChatMessageItem extends AIChatMessageItem {
 
   lastChunkAgent?: string;
 
+  @prop()
   received = false;
 
   @prop()
