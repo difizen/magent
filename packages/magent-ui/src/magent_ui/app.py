@@ -9,7 +9,7 @@ from magent_ui.routers.main import api_router
 import os
 from agentuniverse.base.util.system_util import get_project_root_path
 
-PORT = 9000
+PORT = int(os.getenv("MAGENT_UI_SERVER_PORT", "8888"))
 
 
 @asynccontextmanager
