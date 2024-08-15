@@ -128,11 +128,17 @@ export const AIMessageContent = (props: AIMessageProps) => {
                     },
                     {
                       title: 'Expressing',
-                      description: message.expressingContent
-                        ? message.currentStep === 2
-                          ? '正文输出中...'
-                          : '见回复正文'
-                        : '',
+                      description: (
+                        <MarkdownThought
+                          content={
+                            message.expressingContent
+                              ? message.currentStep === 2
+                                ? '正文输出中...'
+                                : '见回复正文'
+                              : ''
+                          }
+                        />
+                      ),
                       icon: message.currentStep === 2 ? <LoadingOutlined /> : undefined,
                     },
                     {

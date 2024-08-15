@@ -73,6 +73,20 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     if (!members) {
       return;
     }
+    const planning = members[0];
+    this.planningPlanner = planning.id;
+    const executing = members[1];
+    this.executingPlanner = executing.id;
+    const expressing = members[2];
+    this.expressingPlanner = expressing.id;
+    const reviewing = members[3];
+    this.reviewingContent = this.contentMap[this.reviewingPlanner];
+
+    this.planningContent = this.contentMap[this.planningPlanner];
+    this.expressingContent = this.contentMap[this.expressingPlanner];
+    this.contentMap[this.expressingPlanner] = this._content;
+    this.reviewingPlanner = reviewing.id;
+
     members.forEach((m) => {
       switch (m.planner?.id) {
         case 'planning_planner':
@@ -117,7 +131,6 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   }
 
   override appendChunk(e: ChatEventChunk) {
-    this.received = true;
     if (this.planningPlanner) {
       switch (e.agent_id) {
         case this.planningPlanner:
@@ -129,6 +142,7 @@ export class PeerChatMessageItem extends AIChatMessageItem {
             this.planningContent += this.toContentStr(
               data.framework as string | string[],
             );
+            this.currentStep = 1;
           } catch (e) {
             // console.error(e);
           }
@@ -166,25 +180,26 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   };
 
   override handleEventData(e: ParsedEvent, data: any) {
+    this.received = true;
     if (e.event === 'chunk') {
       this.appendChunk(data as ChatEventChunk);
     }
-
-    // if (data.agent_id === this.planningPlanner) {
-    //   if (this.lastChunkAgent === this.planningPlanner && !this.planningContent) {
-    //     try {
-    //       const data = JSON.parse(this.planningContent);
-    //       this.planningContent = data.thought;
-    //       this.planningContent += '\n\n';
-    //       this.planningContent += this.toContentStr(
-    //         data.framework as string | string[],
-    //       );
-    //     } catch (e) {
-    //       // console.error(e);
-    //     }
-    //   }
-    //   // this.planningContent += this.toContentStr(data.output as string | string[]);
-    // }
+    let eventStep = 0;
+    if (data.agent_id === this.planningPlanner) {
+      eventStep = 0;
+    }
+    if (data.agent_id === this.executingPlanner) {
+      eventStep = 1;
+    }
+    if (data.agent_id === this.expressingPlanner) {
+      eventStep = 2;
+    }
+    if (data.agent_id === this.reviewingPlanner) {
+      eventStep = 3;
+    }
+    if (eventStep > this.currentStep) {
+      this.currentStep = eventStep;
+    }
 
     if (e.event === 'result') {
       this.handleResult(data as ChatEventResult);
@@ -196,20 +211,19 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   }
 
   override handleSteps(e: ChatEventStep): void {
-    this.received = true;
     let eventStep = 0;
     if (e.agent_id === this.planningPlanner) {
-      eventStep = 0;
+      eventStep = 1;
     }
     if (e.agent_id === this.executingPlanner) {
-      eventStep = 1;
+      eventStep = 2;
       this.executingContent = e.output as ChatEventStepQA[];
     }
     if (e.agent_id === this.expressingPlanner) {
-      eventStep = 2;
+      eventStep = 3;
     }
     if (e.agent_id === this.reviewingPlanner) {
-      eventStep = 3;
+      eventStep = 4;
       this.reviewingContent = this.toContentStr(e.output as string | string[]);
     }
     if (eventStep > this.currentStep) {
@@ -219,7 +233,6 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   }
 
   override handleResult(e: ChatEventResult): void {
-    this.received = true;
     this.currentStep = 4;
   }
 }
