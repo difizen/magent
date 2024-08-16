@@ -86,27 +86,6 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     this.expressingContent = this.contentMap[this.expressingPlanner];
     this.contentMap[this.expressingPlanner] = this._content;
     this.reviewingPlanner = reviewing.id;
-
-    members.forEach((m) => {
-      switch (m.planner?.id) {
-        case 'planning_planner':
-          this.planningPlanner = m.id;
-          this.planningContent = this.contentMap[this.planningPlanner];
-          break;
-        case 'executing_planner':
-          this.executingPlanner = m.id;
-          break;
-        case 'reviewing_planner':
-          this.reviewingContent = this.contentMap[this.reviewingPlanner];
-          this.reviewingPlanner = m.id;
-          break;
-        case 'expressing_planner':
-          this.expressingPlanner = m.id;
-          this.expressingContent = this.contentMap[this.expressingPlanner];
-          this.contentMap[this.expressingPlanner] = this._content;
-          break;
-      }
-    });
   };
 
   override get content(): string {
