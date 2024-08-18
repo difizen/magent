@@ -1,5 +1,7 @@
 import * as path from 'path';
 
+import { getPageConfig } from './common/page-config.js';
+
 function initPublicPath() {
   const url = new URL((document.currentScript as HTMLScriptElement).src);
   const cdn = url.origin + path.join(url.pathname, '../');
@@ -9,13 +11,10 @@ function initPublicPath() {
     window.__webpack_require__.p = window.publicPath || '/';
   }
 
-  const el = document.getElementById('mana-config-data');
-  if (el) {
-    const pageConfig = JSON.parse(el.textContent || '') as Record<string, string>;
-    const baseUrl = pageConfig['baseUrl'];
-    if (baseUrl && baseUrl.startsWith('/')) {
-      window.routerBase = baseUrl;
-    }
+  const pageConfig = getPageConfig();
+  const baseUrl = pageConfig['baseUrl'];
+  if (baseUrl && baseUrl.startsWith('/')) {
+    window.routerBase = baseUrl;
   }
 }
 
