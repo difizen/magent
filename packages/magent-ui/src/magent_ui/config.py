@@ -6,7 +6,7 @@ import importlib.util
 default_config = {
     'host': '0.0.0.0',
     'port': 8888,
-    'root_path': '/root'
+    'root_path': '/'
 }
 
 
