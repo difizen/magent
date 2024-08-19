@@ -19,6 +19,11 @@ templates_dir = os.path.join(BASE_DIR, 'templates')
 
 templates = Jinja2Templates(directory=templates_dir)
 
+api_path = 'api'
+static_path = 'static'
+resource_path = 'resources'
+app_path = 'app'
+
 
 def launch(**kwargs):
     project_root_path = get_project_root_path()
@@ -26,20 +31,24 @@ def launch(**kwargs):
     port = config.get('port', 8888)
     base_root_path = '/'
     root_path = config.get('root_path', base_root_path)
+    base_url = config.get('base_url', None)
+    if base_url is None:
+        base_url = root_path
+
     if not root_path.startswith('/'):
         print('[magent] root_path should start with "/" ', root_path)
         root_path = f'/{root_path}'
         config['root_path'] = root_path
 
-    api_path = 'api/v1'
+    api_path = 'api'
     static_path = 'static'
     resource_path = 'resources'
-    web_path = 'app'
+    app_path = 'app'
 
     full_api_path = os.path.join(root_path, api_path)
     full_static_path = os.path.join(root_path, static_path)
     full_resource_path = os.path.join(root_path, resource_path)
-    full_web_path = os.path.join(root_path, web_path)
+    full_app_path = os.path.join(root_path, app_path)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -69,10 +78,15 @@ def launch(**kwargs):
     else:
         print('[magent] can not find resource directory. ', resource_dir_path)
 
+    api_url = os.path.join(base_url, api_path)
+    static_url = os.path.join(base_url, static_path)
+    resource_url = os.path.join(base_url, resource_path)
+    app_url = os.path.join(base_url, app_path)
+
     # index
     @app.get(root_path, response_class=HTMLResponse)
     async def to_index_page(request: Request):
-        return RedirectResponse(url=f"{full_web_path}/")
+        return RedirectResponse(url=f"{app_url}/")
 
     # index html
     html_root = root_path if root_path.endswith(
@@ -80,20 +94,24 @@ def launch(**kwargs):
 
     @app.get(html_root+"{path:path}", response_class=HTMLResponse)
     async def to_app_page(request: Request):
+
         page_config = {
-            "root_path": root_path,
-            "baseUrl": full_web_path,
-            "resource_path": full_resource_path,
-            "api_path": full_api_path,
-            "web_path": full_web_path,
-            "static_url": full_static_path,
+            "baseUrl": base_url,
+            "resourceUrl": resource_url,
+            "apiUrl": api_url,
+            "appUrl": app_url,
+            "staticUrl": static_url,
         }
         return templates.TemplateResponse(
             request=request, name="index.html", context={
-                "page_config": page_config, "static_url": full_static_path
+                "page_config": page_config, "static_url": static_url
             }
         )
 
-    # config['root_path'] = None
+    # remove unsupported config key
+    del config['base_url']
+
+    # root path has already taken effect
     del config['root_path']
+
     uvicorn.run(app, **config)

@@ -14,12 +14,14 @@ export function getPageConfig() {
 export function toResourceUrl(url: string) {
   const resourcePart = url.substring(url.indexOf('resources'), url.length);
   const pageConfig = getPageConfig();
-  if (pageConfig['resource_path']) {
-    let resourcePath = pageConfig['resource_path'];
-    if (resourcePath.endsWith('/')) {
-      resourcePath = resourcePath.substring(0, resourcePath.length - 1);
-    }
-    return resourcePart.replace('resources', resourcePath);
+  const baseUrl = pageConfig['baseUrl'] || '/';
+  let resourceUrl = pageConfig['resourceUrl'];
+  if (!resourceUrl) {
+    resourceUrl = `${baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`}resources`;
   }
-  return url;
+  let resourcePath = resourceUrl;
+  if (resourcePath.endsWith('/')) {
+    resourcePath = resourcePath.substring(0, resourcePath.length - 1);
+  }
+  return resourcePart.replace('resources', resourcePath);
 }

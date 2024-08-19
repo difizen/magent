@@ -7,8 +7,8 @@ from magent_ui.routers.tools.router import tools_router
 
 api_router = APIRouter()
 
-api_router.include_router(agents_router, prefix="", tags=["agent"])
-api_router.include_router(knowledge_router, prefix="", tags=["knowledge"])
-api_router.include_router(llms_router, prefix="", tags=["llm"])
-api_router.include_router(sessions_router, prefix="", tags=["session"])
-api_router.include_router(tools_router, prefix="", tags=["tool"])
+api_router.include_router(agents_router, prefix="/v1", tags=["agent"])
+api_router.include_router(knowledge_router, prefix="/v1", tags=["knowledge"])
+api_router.include_router(llms_router, prefix="/v1", tags=["llm"])
+api_router.include_router(sessions_router, prefix="/v1", tags=["session"])
+api_router.include_router(tools_router, prefix="/v1", tags=["tool"])
