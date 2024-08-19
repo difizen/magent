@@ -17,7 +17,10 @@ export const getContextClient = (ctx: Syringe.Context) => {
       const url = { ...parsed };
       const query = url.query;
       if (rootPath) {
-        url.url = url.url.replace('/api', `${rootPath}/api`);
+        url.url = url.url.replace(
+          '/api',
+          `${rootPath}${rootPath.endsWith('/') ? '' : '/'}api`,
+        );
       }
       config.url = qs.stringifyUrl(url);
       // if (!query['user_id']) {
