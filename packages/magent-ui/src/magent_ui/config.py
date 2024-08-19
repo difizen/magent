@@ -48,7 +48,6 @@ def merge_dicts(default, override):
 
 
 def load_config(config=default_config, project_root_path=None):
-    print('args', config)
     config = merge_dicts(default_config, config)
 
     # 用户目录配置文件路径
