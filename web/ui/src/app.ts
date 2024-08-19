@@ -12,9 +12,13 @@ function initPublicPath() {
   }
 
   const pageConfig = getPageConfig();
-  const baseUrl = pageConfig['baseUrl'];
-  if (baseUrl && baseUrl.startsWith('/')) {
-    window.routerBase = baseUrl;
+  let appUrl = pageConfig['appUrl'];
+  const baseUrl = pageConfig['baseUrl'] || '/';
+  if (!appUrl) {
+    appUrl = `${baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`}app`;
+  }
+  if (appUrl && appUrl.startsWith('/')) {
+    window.routerBase = appUrl;
   }
 }
 

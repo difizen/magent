@@ -14,11 +14,12 @@
   "author": "brokun <brokun0128@gmail.com>",
   "scripts": {
     "build": "umi build",
+    "analyze": "ANALYZE=1 umi build",
     "start": "PORT=3100 UMI_DEV_SERVER_COMPRESS=none umi dev ",
     "postinstall": "umi setup",
     "setup": "umi setup",
     "clean": "git clean -fX .",
-    "deploy": "copyfiles -u 1 dist/* ../../packages/magent-ui/src/magent_ui/static/ && copyfiles -u 1 dist/**/* ../../packages/magent-ui/src/magent_ui/static/"
+    "deploy": "rimraf ../../packages/magent-ui/src/magent_ui/static && copyfiles -u 1 dist/* ../../packages/magent-ui/src/magent_ui/static/ && copyfiles -u 1 dist/**/* ../../packages/magent-ui/src/magent_ui/static/"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
@@ -33,12 +34,12 @@
     "antd": "^5.18.0",
     "axios": "^1.7.2",
     "classnames": "^2.3.2",
+    "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.10",
     "eventsource-parser": "^1.1.2",
+    "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "query-string": "^9.0.0",
-    "copy-to-clipboard": "^3.3.3",
-    "lodash": "^4.17.21",
     "react-markdown": "^9.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "react-zoom-pan-pinch": "^3.6.1",
@@ -52,14 +53,15 @@
     "@babel/plugin-transform-flow-strip-types": "^7.23.3",
     "@babel/plugin-transform-private-methods": "^7.23.3",
     "@babel/plugin-transform-private-property-in-object": "^7.23.4",
-    "@types/react-syntax-highlighter": "^15.5.13",
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "babel-plugin-parameter-decorator": "^1.0.16",
     "copyfiles": "^2.4.1",
     "react-router-dom": "^6.26.0",
+    "rimraf": "^6.0.1",
     "typescript": "^4.9.5"
   }
 }

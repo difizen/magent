@@ -8,7 +8,7 @@ import { getPageConfig } from '../../common/page-config.js';
 
 export const getContextClient = (ctx: Syringe.Context) => {
   const pageConfig = getPageConfig();
-  const rootPath = pageConfig['root_path'];
+  const baseUrl = pageConfig['baseUrl'];
   // Add a request interceptor
   axios.interceptors.request.use(async function (config) {
     // TODO: change to jwt token
@@ -16,10 +16,10 @@ export const getContextClient = (ctx: Syringe.Context) => {
       const parsed = qs.parseUrl(config.url);
       const url = { ...parsed };
       const query = url.query;
-      if (rootPath) {
+      if (baseUrl) {
         url.url = url.url.replace(
           '/api',
-          `${rootPath}${rootPath.endsWith('/') ? '' : '/'}api`,
+          `${baseUrl}${baseUrl.endsWith('/') ? '' : '/'}api`,
         );
       }
       config.url = qs.stringifyUrl(url);
