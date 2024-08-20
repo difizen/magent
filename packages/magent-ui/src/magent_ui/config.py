@@ -1,14 +1,32 @@
 # config_loader.py
 
+import logging
 import os
 import importlib.util
+
+logger = logging.getLogger('magent')
 
 default_config = {
     'host': '0.0.0.0',
     'port': 8888,
     'base_url': None,
+    'open_browser': True,
+    'log_level': None,
     'root_path': '/'
 }
+
+
+def to_uvicorn_config(config: dict):
+    uvicorn_config = {**config}
+    # remove unsupported config key
+    del uvicorn_config['base_url']
+    del uvicorn_config['open_browser']
+    del uvicorn_config['log_level']
+
+    # root path has already taken effect
+    del uvicorn_config['root_path']
+
+    return uvicorn_config
 
 
 def load_config_from_file(file_path):
@@ -57,8 +75,8 @@ def load_config(config=default_config, project_root_path=None):
     # 加载用户目录配置文件
     if os.path.exists(user_config_path):
         user_config = load_config_from_file(user_config_path)
-        print(
-            f"[magent] Load user config from {user_config_path}.")
+        logger.info(
+            f"Load user config from {user_config_path}.")
         config = merge_dicts(config, user_config)
 
     # 工作目录配置文件路径
@@ -70,22 +88,22 @@ def load_config(config=default_config, project_root_path=None):
         project_root_path, 'config/magent_ui_config.py')
     if os.path.exists(project_config_path):
         project_config = load_config_from_file(project_config_path)
-        print(
-            f"[magent] Load project config from {project_config_path}.")
+        logger.info(
+            f"Load project config from {project_config_path}.")
         config = merge_dicts(config, project_config)
 
     project_root_config_path = os.path.join(
         project_root_path, '.magent_ui_config.py')
     if os.path.exists(project_root_config_path):
         project_config = load_config_from_file(project_root_config_path)
-        print(
-            f"[magent] Load project config from {project_config_path}.")
+        logger.info(
+            f"Load project config from {project_config_path}.")
         config = merge_dicts(config, project_config)
 
     # 加载环境变量配置
     env_config = load_config_from_env(default_config)
     if len(env_config.keys()):
-        print("[magent] Load env config.")
+        logger.info("Load env config.")
     config = merge_dicts(config, env_config)
 
     return config
