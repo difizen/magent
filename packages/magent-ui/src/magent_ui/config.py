@@ -4,7 +4,7 @@ import logging
 import os
 import importlib.util
 
-logger = logging.getLogger('magent')
+logger = logging.getLogger("uvicorn")
 
 default_config = {
     'host': '0.0.0.0',
