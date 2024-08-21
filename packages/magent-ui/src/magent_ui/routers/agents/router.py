@@ -111,6 +111,8 @@ async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
         model.agent_id, model.session_id, model.input))
     async for msg_chunk in msg_iterator:
         type = msg_chunk.get("type", None)
+        if type == "error":
+            yield ServerSentEvent(event=SSEType.ERROR.value, id=model.session_id, data=json.dumps(msg_chunk, ensure_ascii=False))
         if type == "token":
             yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.session_id, data=json.dumps(msg_chunk, ensure_ascii=False))
         if type == "intermediate_steps":

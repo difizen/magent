@@ -10,18 +10,13 @@ from magent_ui.routers.main import api_router
 from magent_ui.config import load_config, to_uvicorn_config
 import os
 from agentuniverse.base.util.system_util import get_project_root_path
+from uvicorn.config import LOGGING_CONFIG
 
-# Configure the logger
-logger = logging.getLogger('magent')
-logger.setLevel(logging.INFO)
+# Use uvicorn's default logging configuration
+logging.config.dictConfig(LOGGING_CONFIG)
 
-# Add a handler to the logger
-handler = logging.StreamHandler()
-formatter = logging.Formatter(
-    "%(levelname)s: [%(name)s] [%(asctime)s] - %(message)s"
-)
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+# Get the uvicorn logger
+logger = logging.getLogger("uvicorn")
 
 # 挂载 static 目录，使其可以访问静态文件
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
