@@ -43,9 +43,6 @@ export class AIChatMessageItem extends ChatMessageItem {
       throw new Error('Cannot access agent');
     }
     await this.agent.ready;
-    if (!this.agent.planner?.members) {
-      throw new Error('Missing PEER member');
-    }
   };
 
   protected getAgent = async () => {
