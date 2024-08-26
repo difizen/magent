@@ -7,7 +7,11 @@ authors = [
   { name = "brokun", email = "brokun0128@gmail.com" },
 ]
 
-dependencies = ["sse-starlette>=2.1.2", "jinja2>=3.1.4"]
+dependencies = [
+    "sse-starlette>=2.1.2",
+    "jinja2>=3.1.4",
+    "python-multipart>=0.0.9",
+]
 readme = "README.md"
 requires-python = ">= 3.10"
 
