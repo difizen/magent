@@ -39,19 +39,12 @@ pnpm run deploy
 agentuniverse 使用 poetry 做包管理，需要创建对应的虚拟环境
 
 ```shell
-poetry install
+poetry lock # 初始化 venv
+source .venv/bin/activate # 使用虚拟环境
+poetry install #安装主依赖（主目录安装会将本地包加入虚拟环境）
 ```
 
-安装完成后，which python 检查当前环境确认已经使用虚拟环境
-
-```shell
-cd sample_standard_app
-# 复用虚拟环境
-poetry env use python
-poetry install
-```
-
-启动服务
+在 sample 目录启动应用，如果缺少依赖，回到主目录安装，在 sample 安装依赖会破坏本地依赖
 
 ```shell
 cd sample_standard_app/app/bootstrap
