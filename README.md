@@ -16,6 +16,13 @@ PEER 多智能体对话
 ReAct 智能体开发
 ![ReAct 智能体开发](./docs/assets/au-react-dev.jpg)
 
+#### 后续计划
+
+- 9 月
+  - [ ] 支持 agent/tool/knowledge 产品化创建
+  - [ ] 支持 flow 方式研发 agent
+  - [ ] 支持 peer 多智能体的表单编排
+
 #### 配置
 
 支持 uvicorn 配置
@@ -30,6 +37,12 @@ launch(host='0.0.0.0', port=8888, root_path='/')
 - 用户级配置： ~/.magent/ui_config.py
 - 项目级配置： {project_root}/.magent_ui_config.py
 - 项目级配置： {project_root}/config/magent_ui_config.py
+
+```
+# ~/.magent/ui_config.py
+
+port=8080
+```
 
 ##### 环境变量
 
