@@ -8,7 +8,7 @@
 #   with-sources: false
 
 -e file:api
--e file:packages/magent_ui
+-e file:packages/magent-ui
 agentuniverse==0.0.11
     # via magent-api
 aiohttp==3.9.5
@@ -372,6 +372,7 @@ python-dotenv==1.0.1
     # via uvicorn
 python-multipart==0.0.9
     # via fastapi
+    # via magent-ui
 pytz==2024.1
     # via pandas
 pyyaml==6.0.1
@@ -457,6 +458,7 @@ sqlalchemy==2.0.25
     # via magent-api
 sse-starlette==2.1.2
     # via magent-api
+    # via magent-ui
 starlette==0.37.2
     # via fastapi
     # via sse-starlette

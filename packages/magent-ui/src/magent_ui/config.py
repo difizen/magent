@@ -3,6 +3,7 @@
 import logging
 import os
 import importlib.util
+from pathlib import Path
 
 logger = logging.getLogger("uvicorn")
 
@@ -25,6 +26,7 @@ def to_uvicorn_config(config: dict):
 
     # root path has already taken effect
     del uvicorn_config['root_path']
+
 
     return uvicorn_config
 
@@ -107,3 +109,61 @@ def load_config(config=default_config, project_root_path=None):
     config = merge_dicts(config, env_config)
 
     return config
+
+
+api_path = 'api'
+static_path = 'static'
+resource_path = 'resources'
+app_path = 'app'
+
+class AppConfig():
+  config: dict
+  project_root_path:Path
+  resource_dir_path: Path
+
+  port: int
+  root_path: str
+  base_url: str
+  open_browser: bool
+  log_level: str
+
+  full_api_path: str
+  full_static_path: str
+  full_resource_path: str
+
+  api_url: str
+  static_url: str
+  resource_url: str
+  app_url: str
+
+  def load_config(self, project_root_path:Path, **kwargs):
+      config = load_config(kwargs, project_root_path)
+      self.project_root_path = project_root_path
+      self.resource_dir_path = project_root_path / 'app' / 'resources'
+      self.config = config
+      self.port = config.get('port', 8888)
+      base_root_path = '/'
+      root_path = config.get('root_path', base_root_path)
+      self.root_path = root_path
+      self.base_url = config.get('base_url', None)
+      self.open_browser = config.get('open_browser', True)
+      self.log_level = config.get('log_level', None)
+      if self.base_url is None:
+          self.base_url = root_path
+
+      if not root_path.startswith('/'):
+        logger.info('[magent] root_path should start with "/" ', root_path)
+        root_path = f'/{root_path}'
+        config['root_path'] = root_path
+
+      self.full_api_path = os.path.join(root_path, api_path)
+      self.full_static_path = os.path.join(root_path, static_path)
+      self.full_resource_path = os.path.join(root_path, resource_path)
+
+      self.api_url = os.path.join(self.base_url, api_path)
+      self.static_url = os.path.join(self.base_url, static_path)
+      self.resource_url = os.path.join(self.base_url, resource_path)
+      self.app_url = os.path.join(self.base_url, app_path)
+
+
+app_config = AppConfig()
