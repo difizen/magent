@@ -97,17 +97,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
   function ToolsViewComponent(props, ref) {
     const instance = useInject<ToolsView>(ViewInstance);
     const space = instance.toolSpace;
-    const [selectedItems, setSelectedItems] = useState<ToolItem[]>([]);
 
-    const handSelect = (item: ToolItem) => {
-      if (selectedItems.findIndex((selectedItem) => selectedItem.id === item.id) > -1) {
-        setSelectedItems(
-          selectedItems.filter((selectedItem) => selectedItem.id !== item.id),
-        );
-      } else {
-        setSelectedItems([...selectedItems, item]);
-      }
-    };
     return (
       <div ref={ref} className={viewId}>
         <Row className={`${viewId}-list-header`}>
@@ -139,21 +129,7 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
               <Col className={`${viewId}-list-item`} span={8}>
                 <TagList tags={item.parameters} maxWidth={180}></TagList>
               </Col>
-              <Col className={`${viewId}-list-item`} span={8}>
-                {/* <div className="button-container">
-                  <Button
-                    type="text"
-                    onClick={() => handSelect(item)}
-                    style={{ background: 'white', color: '#1677ff' }}
-                  >
-                    {selectedItems.findIndex(
-                      (selectedItem) => selectedItem.id === item.id,
-                    ) > -1
-                      ? '移除'
-                      : '添加'}
-                  </Button>
-                </div> */}
-              </Col>
+              <Col className={`${viewId}-list-item`} span={8}></Col>
             </Row>
           )}
         />

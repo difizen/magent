@@ -7,14 +7,16 @@ import {
   useInject,
   view,
   prop,
+  ModalService,
 } from '@difizen/mana-app';
-import { Card } from 'antd';
+import { Button, Card } from 'antd';
 import { forwardRef } from 'react';
 import { history } from 'umi';
 
 import './index.less';
 import { AgentIcon } from '../../modules/agent/agent-icon.js';
 import { AgentMarket } from '../../modules/agent/agent-market.js';
+import { AgentCreateModal, agentCreateModalId } from './modal/create.js';
 
 const viewId = 'magent-agents';
 export const slot = `${viewId}-slot`;
@@ -24,6 +26,7 @@ const { Meta } = Card;
 const AgentsViewComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {
     const instance = useInject<AgentsView>(ViewInstance);
+    const modalService = useInject<ModalService>(ModalService);
     const market = instance.market;
 
     return (
@@ -59,6 +62,17 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
               />
             </Card>
           ))}
+        </div>
+
+        <div className="magent-agents-creation">
+          <Button
+            onClick={() => {
+              modalService.openModal(AgentCreateModal);
+            }}
+            type="default"
+          >
+            创建智能体
+          </Button>
         </div>
       </div>
     );

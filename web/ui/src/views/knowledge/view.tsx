@@ -8,8 +8,8 @@ import {
   useInject,
   view,
 } from '@difizen/mana-app';
-import { Col, List, Row, Tag, Tooltip } from 'antd';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { Col, List, Row } from 'antd';
+import { forwardRef, useState } from 'react';
 
 import { KnowledgeIcon } from '../../modules/knowledge/knowledge-icon.js';
 import { KnowledgeManager } from '../../modules/knowledge/knowledge-manager.js';
@@ -22,73 +22,6 @@ import './index.less';
 
 const viewId = 'magent-knowledge';
 export const slot = `${viewId}-slot`;
-
-const TagList: React.FC<{
-  tags: string[];
-  maxWidth: number;
-}> = ({ tags, maxWidth }) => {
-  const [visibleTags, setVisibleTags] = useState<string[]>([]);
-  const [hiddenTags, setHiddenTags] = useState<string[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const measurementRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const measureTagWidth = (tag: string) => {
-      if (measurementRef.current) {
-        measurementRef.current.innerText = tag;
-        return measurementRef.current.getBoundingClientRect().width;
-      }
-      return 0;
-    };
-    const width = maxWidth - 78;
-    let currentWidth = 0;
-    const visible = [];
-    const hidden = [];
-
-    for (const tag of tags) {
-      const tagWidth = measureTagWidth(tag) + 8; // 加上 Tag 组件的 padding 和 margin
-      if (currentWidth + tagWidth <= width) {
-        visible.push(tag);
-        currentWidth += tagWidth;
-      } else {
-        hidden.push(tag);
-      }
-    }
-    setVisibleTags(visible);
-    setHiddenTags(hidden);
-  }, [tags, maxWidth]);
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        maxWidth,
-      }}
-      className="tag-list-container"
-    >
-      <div
-        ref={measurementRef}
-        style={{ visibility: 'hidden', position: 'absolute', whiteSpace: 'nowrap' }}
-      />
-      {visibleTags.map((tag, index) => (
-        <Tag key={index}>{tag}</Tag>
-      ))}
-      {hiddenTags.length > 0 && (
-        <Tooltip
-          title={
-            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-              {hiddenTags.map((tag) => (
-                <div key={tag}>{tag}</div>
-              ))}
-            </div>
-          }
-        >
-          <Tag>+{hiddenTags.length} more</Tag>
-        </Tooltip>
-      )}
-    </div>
-  );
-};
 
 const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
   function ToolsViewComponent(props, ref) {
