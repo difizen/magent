@@ -9,7 +9,7 @@ interface IProps extends AvatarProps {
 }
 export const AgentIcon = (props: IProps) => {
   if (props.agent?.avatar) {
-    return <Avatar {...props} src={toResourceUrl(props.agent.avatar)} />;
+    return <Avatar shape="square" {...props} src={toResourceUrl(props.agent.avatar)} />;
   }
-  return <Avatar {...props} src={<MagentLOGO />} />;
+  return <Avatar shape="square" {...props} src={<MagentLOGO />} />;
 };
