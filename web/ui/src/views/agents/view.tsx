@@ -16,6 +16,7 @@ import { history } from 'umi';
 import './index.less';
 import { AgentIcon } from '../../modules/agent/agent-icon.js';
 import { AgentMarket } from '../../modules/agent/agent-market.js';
+
 import { AgentCreateModal, agentCreateModalId } from './modal/create.js';
 
 const viewId = 'magent-agents';
@@ -64,7 +65,7 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
           ))}
         </div>
 
-        <div className="magent-agents-creation">
+        {/* <div className="magent-agents-creation">
           <Button
             onClick={() => {
               modalService.openModal(AgentCreateModal);
@@ -73,7 +74,7 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
           >
             创建智能体
           </Button>
-        </div>
+        </div> */}
       </div>
     );
   },
