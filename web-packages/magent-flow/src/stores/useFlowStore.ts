@@ -56,6 +56,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
     targetNode: string,
   ): Node[] => {
     const adjList: AdjacencyList = {};
+    console.log('🚀 ~ nodes.forEach ~ nodes:', nodes);
     nodes.forEach((node) => {
       adjList[node.id] = [];
     });
@@ -80,11 +81,8 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
       }
     };
 
-    console.log('🚀 ~ useFlowStore ~ nodes:', nodes, edges, targetNode);
-    console.log('🚀 ~ adjList', adjList);
-
     dfs(targetNode);
-    console.log('🚀 ~ result', result);
+
     return get().nodes.filter((node) => Array.from(result).includes(node.id));
   };
 
@@ -194,7 +192,6 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
           oldEdges,
         );
 
-        console.log('🚀 ~ get ~ newEdges:', newEdges);
         return newEdges;
       });
     },

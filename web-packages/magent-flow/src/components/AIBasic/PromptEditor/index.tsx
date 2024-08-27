@@ -82,7 +82,7 @@ const PromptEditor: FC<PromptEditorProps> = ({
 
   return (
     <LexicalComposer initialConfig={{ ...initialConfig, editable }}>
-      <div className="relative h-full nodrag">
+      <div className="relative h-full nodrag nowheel">
         <RichTextPlugin
           contentEditable={
             <ContentEditable

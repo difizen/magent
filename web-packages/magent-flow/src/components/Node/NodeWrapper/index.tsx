@@ -14,7 +14,7 @@ type Props = {
 
 export const NodeWrapper = (props: {
   nodeProps: Props;
-  children: React.ReactElement;
+  children: React.ReactNode;
   leftHandler?: boolean;
   rightHandler?: boolean;
   rightHandlerConfig?: {
@@ -30,9 +30,6 @@ export const NodeWrapper = (props: {
     rightHandlerConfig,
   } = props;
   const { name, description, icon } = nodeProps.data;
-  console.log('🚀 ~ nodeProps.selected:', nodeProps.selected);
-  // const runRes = {};
-  // const validationStatus = true;
 
   return (
     <div

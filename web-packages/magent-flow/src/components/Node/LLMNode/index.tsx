@@ -7,7 +7,7 @@ import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVa
 import PromptEditor from '@/components/AIBasic/PromptEditor/index.js';
 import { SelectInNode } from '@/components/AIBasic/SelectInNode/index.js';
 import { ReferenceForm } from '@/components/ReferenceForm/index.js';
-import type { NodeDataType } from '@/interfaces/flow.js';
+import type { BasicSchema, NodeDataType } from '@/interfaces/flow.js';
 import { useFlowStore } from '@/stores/useFlowStore.js';
 import { useModelStore } from '@/stores/useModelStore.js';
 
@@ -22,15 +22,12 @@ type Props = {
 
 export const LLMNode = (props: Props) => {
   const { data } = props;
-  // console.log('🚀 ~ LLMNode ~ data:', data);
-  // const { config } = data;
 
-  const { findUpstreamNodes } = useFlowStore();
+  const { findUpstreamNodes, setNode } = useFlowStore();
   const upstreamNode = findUpstreamNodes(data.id.toString());
 
   const { models, modelConfig } = useModelStore();
 
-  const [value, setValue] = useState<string>('hello');
   return (
     <NodeWrapper nodeProps={props}>
       <div className="nodrag">
@@ -67,14 +64,25 @@ export const LLMNode = (props: Props) => {
           }
         />
         {/* Part2 Ref Form */}
-
         <ReferenceForm
           label="输入变量"
           dynamic
           nodes={[...(upstreamNode as any)]}
-          values={[...(data.config?.inputs?.input_param || [])]}
+          value={[...(data.config?.inputs?.input_param || [])]}
           onChange={(values) => {
-            console.log('ReferenceForm', values);
+            setNode(data.id, (old) => ({
+              ...old,
+              data: {
+                ...old.data,
+                config: {
+                  ...(old.data.config as Record<string, any>),
+                  inputs: {
+                    ...old.data.config.inputs,
+                    input_param: [...values],
+                  },
+                },
+              },
+            }));
           }}
         />
         {/* Part3 PromptEditor */}
@@ -82,17 +90,37 @@ export const LLMNode = (props: Props) => {
           className="mt-3"
           label={'Prompt'}
           content={
-            <div className="h-[200px] bg-white rounded-md cursor-pointer">
+            <div className="h-[200px] bg-white rounded-md cursor-pointer nodrag p-3 overflow-y-auto">
               <PromptEditor
-                value={value}
+                value={
+                  ((data.config?.inputs?.prompt as BasicSchema).value
+                    ?.content as string) || ''
+                }
                 placeholder="请输入 Prompt"
-                onChange={(val) => setValue(val)}
+                onChange={(values) => {
+                  setNode(data.id, (old) => ({
+                    ...old,
+                    data: {
+                      ...old.data,
+                      config: {
+                        ...(old.data.config as Record<string, any>),
+                        inputs: {
+                          ...old.data.config.inputs,
+                          prompt: {
+                            ...old.data.config.inputs.prompt,
+                            value: values,
+                          },
+                        },
+                      },
+                    },
+                  }));
+                }}
                 variableBlock={{
                   show: true,
                   variables: data.config?.inputs?.input_param.map((input) => {
                     return {
-                      name: input.name!,
-                      value: input.name!,
+                      name: input.name,
+                      value: input.name,
                     };
                   }),
                 }}
@@ -103,13 +131,13 @@ export const LLMNode = (props: Props) => {
         {/* Part4 Outputer */}
         <CollapseWrapper
           className="mt-3"
-          label={'Prompt'}
+          label={'Output'}
           content={
             <>
               {(data.config?.outputs || []).map((output) => (
                 <OutputVariable
-                  key={output.name!}
-                  name={output.name!}
+                  key={output.name}
+                  name={output.name}
                   type={output.type}
                 />
               ))}

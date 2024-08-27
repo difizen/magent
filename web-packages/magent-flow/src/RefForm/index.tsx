@@ -15,7 +15,7 @@ interface CascaderOptions {
  */
 const getCascaderOptions = (node: NodeDataType) => {
   const jsonSchema = node.config?.inputs?.jsonschema;
-  console.log('🚀 ~ getCascaderOptions ~ jsonSchema:', jsonSchema);
+
   const options: CascaderOptions[] = [
     {
       label: `${node.name}`,

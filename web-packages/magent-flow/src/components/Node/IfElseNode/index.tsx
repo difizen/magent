@@ -1,8 +1,5 @@
-import { Form } from 'antd';
-
-import { SelectInNode } from '@/components/AIBasic/SelectInNode/index.js';
-import { ReferenceSelect } from '@/components/ReferenceSelect/index.js';
-import type { NodeDataType } from '@/interfaces/flow.js';
+import { ConditionForm } from '@/components/ConditionForm/index.js';
+import type { NodeDataType, NodeType } from '@/interfaces/flow.js';
 import { useFlowStore } from '@/stores/useFlowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
@@ -16,11 +13,10 @@ type Props = {
 
 export const IfElseNode = (props: Props) => {
   const { data } = props;
-  const [form] = Form.useForm();
-  const compare = Form.useWatch('compare', form);
-  const { findUpstreamNodes } = useFlowStore();
+
+  const { findUpstreamNodes, setNode } = useFlowStore();
   const upstreamNode = findUpstreamNodes(data.id.toString());
-  const options = upstreamNode.map((node) => {
+  const options = upstreamNode.map((node: NodeType) => {
     return {
       label: node.data.name,
       value: node.data.id,
@@ -45,27 +41,26 @@ export const IfElseNode = (props: Props) => {
         <div className="flex items-center gap-2 bg-gray-100 p-3 rounded-md mb-2">
           <div>
             <div className="ml-1 mb-2 font-medium">如果</div>
-            <Form form={form} layout="inline">
-              <Form.Item name="left">
-                <ReferenceSelect refOptions={options} />
-              </Form.Item>
-              <Form.Item name="compare">
-                <SelectInNode
-                  className="w-[80px]"
-                  defaultValue={'equal'}
-                  options={[
-                    { label: '等于', value: 'equal' },
-                    { label: '不等于', value: 'not_equal' },
-                    { label: '为空', value: 'blank' },
-                  ]}
-                />
-              </Form.Item>
-              {compare !== 'blank' && (
-                <Form.Item name="right">
-                  <ReferenceSelect refOptions={options} />
-                </Form.Item>
-              )}
-            </Form>
+            <ConditionForm
+              refOptions={options}
+              value={data.config?.inputs?.branches[0]}
+              onChange={(val) => {
+                setNode(data.id, (old) => ({
+                  ...old,
+                  data: {
+                    ...old.data,
+                    config: {
+                      ...(old.data.config as Record<string, any>),
+
+                      inputs: {
+                        ...old.data.config.inputs,
+                        branches: [val],
+                      },
+                    },
+                  },
+                }));
+              }}
+            />
           </div>
         </div>
         <div className="bg-gray-100 p-3 rounded-md">

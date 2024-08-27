@@ -20,7 +20,7 @@ type Props = {
 export const KnowledgeNode = (props: Props) => {
   const { data } = props;
   // const { config } = data;
-  const { findUpstreamNodes } = useFlowStore();
+  const { findUpstreamNodes, setNode } = useFlowStore();
 
   const { knowledges } = useKnowledgeStore();
   const upstreamNode = findUpstreamNodes(data.id.toString());
@@ -31,9 +31,21 @@ export const KnowledgeNode = (props: Props) => {
         <ReferenceForm
           label="输入变量"
           nodes={[...(upstreamNode as any)]}
-          values={[...(data.config?.inputs?.input_param || [])]}
+          value={[...(data.config?.inputs?.input_param || [])]}
           onChange={(values) => {
-            console.log('ReferenceForm', values);
+            setNode(data.id, (old) => ({
+              ...old,
+              data: {
+                ...old.data,
+                config: {
+                  ...(old.data.config as Record<string, any>),
+                  inputs: {
+                    ...old.data.config.inputs,
+                    input_param: [...values],
+                  },
+                },
+              },
+            }));
           }}
         />
         <CollapseWrapper

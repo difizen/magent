@@ -1,6 +1,6 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Space } from 'antd';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import type { BasicSchema, NodeType } from '@/interfaces/flow.js';
 
@@ -9,21 +9,20 @@ import { ReferenceSelect } from '../ReferenceSelect/index.js';
 
 export interface RefrenceFormProps {
   label: string;
-  values: BasicSchema[];
-  onChange: (values: []) => void;
+  value: BasicSchema[];
+  onChange: (values: BasicSchema[]) => void;
   nodes: NodeType[];
   dynamic?: boolean;
 }
 
 export const ReferenceForm = (props: RefrenceFormProps) => {
-  const { label, values, onChange, nodes, dynamic = false } = props;
+  const { label, value, onChange, nodes, dynamic = false } = props;
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldValue('variables', values);
+    form.setFieldValue('variables', value);
   }, []);
-  console.log('🚀 ~ useEffect ~ values:', values);
 
   const options = nodes.map((node) => {
     return {
@@ -46,7 +45,6 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
           form={form}
           autoComplete="off"
           onValuesChange={(_, allFields) => {
-            console.log('🚀 ~ form.validateFields ~ allFields:', allFields);
             form.validateFields().then(() => {
               if (allFields.variables) {
                 onChange(allFields.variables.filter((item: any) => item !== undefined));

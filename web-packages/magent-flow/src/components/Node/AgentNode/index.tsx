@@ -1,7 +1,8 @@
 import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper/index.js';
 import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
+import PromptEditor from '@/components/AIBasic/PromptEditor/index.js';
 import { ReferenceForm } from '@/components/ReferenceForm/index.js';
-import type { NodeDataType } from '@/interfaces/flow.js';
+import type { BasicSchema, NodeDataType } from '@/interfaces/flow.js';
 import { useFlowStore } from '@/stores/useFlowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
@@ -16,9 +17,8 @@ type Props = {
 export const AgentNode = (props: Props) => {
   const { data } = props;
   // const { config } = data;
-  const { findUpstreamNodes } = useFlowStore();
+  const { findUpstreamNodes, setNode } = useFlowStore();
   const upstreamNodes = findUpstreamNodes(data.id.toString());
-  console.log('🚀 ~ AgentNode ~ upstreamNodes:', upstreamNodes);
 
   return (
     <NodeWrapper nodeProps={props}>
@@ -26,12 +26,65 @@ export const AgentNode = (props: Props) => {
         <ReferenceForm
           label="输入变量"
           nodes={[...(upstreamNodes as any)]}
-          values={[...(data.config?.inputs?.input_param || [])]}
+          value={[...(data.config?.inputs?.input_param || [])]}
           onChange={(values) => {
-            console.log('ReferenceForm', values);
+            setNode(data.id, (old) => ({
+              ...old,
+              data: {
+                ...old.data,
+                config: {
+                  ...(old.data.config as Record<string, any>),
+                  inputs: {
+                    ...old.data.config.inputs,
+                    input_param: [...values],
+                  },
+                },
+              },
+            }));
           }}
         />
-
+        <CollapseWrapper
+          className="mt-3"
+          label={'Prompt'}
+          content={
+            <div className="h-[200px] bg-white rounded-md cursor-pointer overflow-auto">
+              <PromptEditor
+                value={
+                  ((data.config?.inputs?.prompt as BasicSchema)?.value
+                    ?.content as string) || ''
+                }
+                placeholder="请输入 Prompt"
+                onChange={(values) => {
+                  setNode(data.id, (old) => ({
+                    ...old,
+                    data: {
+                      ...old.data,
+                      config: {
+                        ...(old.data.config as Record<string, any>),
+                        inputs: {
+                          ...old.data.config.inputs,
+                          prompt: {
+                            ...old.data.config.inputs.prompt,
+                            value: values,
+                          },
+                        },
+                      },
+                    },
+                  }));
+                }}
+                variableBlock={{
+                  show: true,
+                  variables: data.config?.inputs?.input_param.map((input) => {
+                    return {
+                      name: input.name,
+                      value: input.name,
+                    };
+                  }),
+                }}
+              />
+            </div>
+          }
+        />
         <CollapseWrapper
           className="mt-3"
           label={'Output'}
@@ -39,8 +92,8 @@ export const AgentNode = (props: Props) => {
             <>
               {(data.config?.outputs || []).map((output) => (
                 <OutputVariable
-                  key={output.name!}
-                  name={output.name!}
+                  key={output.name}
+                  name={output.name}
                   type={output.type}
                 />
               ))}

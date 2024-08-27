@@ -89,6 +89,7 @@ export const VariableForm = (props: VariableFormProps) => {
                           className="w-[200px]"
                         >
                           <SelectInNode
+                            disabled
                             options={[
                               { label: 'String', value: 'String' },
                               { label: 'Integer', value: 'Integer' },

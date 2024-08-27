@@ -1,5 +1,4 @@
 import yaml from 'js-yaml';
-import React from 'react';
 
 import { EventEmitterContextProvider } from '@/context/event-emitter.js';
 import type { NodeDataType } from '@/interfaces/flow.js';
@@ -19,9 +18,6 @@ const yamlContent = `
   name: 开始节点
   description: 工作流的起始节点，用于设定启动工作流需要的信息
   type: start
-  position:
-    x: 100
-    y: 100
   data:
     outputs:
       - name: user_input
@@ -41,19 +37,20 @@ const yamlContent = `
           type: string
           value:
             type: reference
-            content: ['llm1', 'output'] # 通过nodeId + paramKey 定位引用变量
       prompt:
         name: response
         type: string
         description: 输出内容
-        value: '{{response}}'
+        value:
+          type: reference
+          content: '{{response}}'
+    outputs:
+      - name: output
+        type: string
 - id: 3
   name: 大模型节点
   description: 调用大语言模型,使用变量和提示词生成回复
   type: llm
-  position:
-    x: 300
-    y: 100
   data:
     inputs:
       input_param:
@@ -78,8 +75,11 @@ const yamlContent = `
           name: temperature
           value: '0.7'
         - type: string
-          name: prompt
-          value: |
+      prompt:
+        type: string
+        value:
+          type: value
+          content: |
             你是一位精通信息分析的ai助手。你的目标是使用中文结合查询的背景信息及你所拥有的知识回答用户提出的问题。
             你需要遵守的规则是:
             1. 必须使用中文结合查询的背景信息结合你所拥有的知识回答用户提出的问题。
@@ -91,20 +91,17 @@ const yamlContent = `
             7. 尽量多的使用数值类信息。
 
             背景信息是:
-            {background}
+            {{background}}
 
             开始!
-            需要回答的问题是: {input}
+            需要回答的问题是: {{input}}
     outputs:
       - type: string
         name: output
 - id: 4
-  name: 知识库示例
+  name: 知识库
   description:
   type: knowledge
-  position:
-    x: 400
-    y: 100
   data:
     inputs:
       knowledge_param:
@@ -125,7 +122,7 @@ const yamlContent = `
       - name: output
         type: string
 - id: 5
-  name: 谷歌搜索工具
+  name: 工具
   description:
   type: tool
   position:
@@ -142,17 +139,14 @@ const yamlContent = `
           name: input
           value:
             type: value
-            content: 'output' # 通过nodeId + paramKey 定位引用变量
+            content: 'output'
     outputs:
       - name: output
         type: string
 - id: 6
-  name: rag智能体
+  name: Agent智能体
   description:
   type: agent
-  position:
-    x: 600
-    y: 100
   data:
     inputs:
       agent_param:
@@ -172,12 +166,9 @@ const yamlContent = `
   name: 条件判断
   description:
   type: ifelse
-  position:
-    x: 700
-    y: 100
   data:
     inputs:
-      branches: # 这一期这做一层，不包括 and or 还有我理解默认逻辑不展示在这块对吧，只在edge体现
+      branches:
         - name: branch-1
           conditions:
             - compare: equal
@@ -189,16 +180,14 @@ const yamlContent = `
                 type: string # 只有 if 和 else，branch-1和branch-default
                 value:
                   type: reference
-
-
 `;
 
 export const NodeSchemaParser = (obj: Record<string, any>) => {
-  obj.config = obj.data;
-  obj.icon =
+  obj['config'] = obj['data'];
+  obj['icon'] =
     'https://mdn.alipayobjects.com/huamei_xbkogb/afts/img/A*PzmdRpvZz58AAAAAAAAAAAAADqarAQ/original';
 
-  delete obj.data;
+  delete obj['data'];
 };
 
 const nodeTypes = {
@@ -216,7 +205,6 @@ export const FlowWithPanel = () => {
   (yaml_data as Record<string, any>[]).forEach((item) => {
     NodeSchemaParser(item);
   });
-  console.log('🚀 ~ yaml_data:', yaml_data);
 
   // const setNodes = useFlowStore((state) => state.setNodes);
   // const reactFlowInstance = useFlowStore((state) => state.reactFlowInstance);

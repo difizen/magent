@@ -3,6 +3,7 @@ import { Background, ReactFlow } from '@xyflow/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
+import { Toolbar } from '@/components/Toolbar/index.js';
 import type { NodeType } from '@/interfaces/flow.js';
 import { useFlowStore } from '@/stores/useFlowStore.js';
 import { useShortcutsStore } from '@/stores/useShortcutsStore.js';
@@ -160,6 +161,7 @@ function Flow(props: FlowProps) {
       >
         <Background />
         {miniMap && <FlowController />}
+        <Toolbar classname="absolute right-4 top-4 z-[9] m-0" />
       </ReactFlow>
     </div>
   );
