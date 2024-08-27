@@ -12,6 +12,7 @@ pnpm-lock.yaml
 # generated code
 **/.dumi/tmp
 **/.dumi/tmp-production
+**/.umi-production
 **/.docusaurus
 **/.umi
 

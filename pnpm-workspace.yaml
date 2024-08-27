@@ -1,5 +1,4 @@
 packages:
-  - 'web/platform'
-  - 'web/ui'
-  - 'web/packages/*'
+  - 'web-apps/*'
+  - 'web-packages/*'
   - 'docs/site'
