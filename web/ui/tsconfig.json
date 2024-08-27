@@ -1,6 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     /* interop */
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

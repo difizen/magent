@@ -3,33 +3,15 @@ import { ViewInstance, useInject } from '@difizen/mana-app';
 import { Button, Form, Select, Popover, Avatar, Slider } from 'antd';
 import { forwardRef, useEffect } from 'react';
 
+import { LLMIcon } from '@/modules/model/model-icon/index.js';
+
 import { LLMManager } from '../../../../modules/model/llm-manager.js';
 import type { ModelMeta } from '../../../../modules/model/protocol.js';
 import type { AgentConfigView } from '../../view.js';
 
 import './index.less';
-import { DefaultLogo, OpenAILogo, QwenLogo } from './logos.js';
 
 const clsPrefix = 'agent-config-model-selector';
-
-const LLMIcon = (props: { data: ModelMeta }) => {
-  const { data } = props;
-  if (
-    data.id.toLowerCase().includes('qwen') ||
-    data.nickname.toLowerCase().includes('qwen') ||
-    data.model_name[0].toLowerCase().includes('qwen')
-  ) {
-    return <QwenLogo />;
-  }
-  if (
-    data.id.toLowerCase().includes('openai') ||
-    data.nickname.toLowerCase().includes('openai') ||
-    data.model_name[0].toLowerCase().includes('openai')
-  ) {
-    return <OpenAILogo />;
-  }
-  return <DefaultLogo />;
-};
 
 const ModelSelectorOption = (props: { model: ModelMeta; flat?: boolean }) => {
   const { model, flat } = props;

@@ -14,3 +14,4 @@ interface Pagination<T = any> {
 }
 
 declare module '*.jpg';
+declare module '*.svg';

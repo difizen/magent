@@ -7,8 +7,9 @@ import { Avatar } from 'antd';
 import { Col, Drawer, Row, Select, Tree } from 'antd';
 import { useState } from 'react';
 
+import { DefaultLLMIcon } from '@/modules/model/model-icon/index.js';
+
 import { DefaultToolIcon } from '../../modules/tool/tool-icon.js';
-import { DefaultLogo } from '../agent-config/components/model-selector/logos.js';
 import { HumanIcon } from '../chat/components/message/human-message.js';
 import type { ChatView } from '../chat/view.js';
 
@@ -45,10 +46,10 @@ export function DebugModalComponent({
       children: invocationChain.map((item) => {
         let iconSrc = undefined;
         if (item.type === 'llm') {
-          iconSrc = <DefaultLogo />;
+          iconSrc = <DefaultLLMIcon />;
         }
         if (item.type === 'agent') {
-          iconSrc = <DefaultLogo />;
+          iconSrc = <DefaultLLMIcon />;
         }
         if (item.type === 'tool') {
           iconSrc = <DefaultToolIcon />;
