@@ -1,0 +1,78 @@
+{
+  "name": "@difizen/magent-flow",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [
+    "flow",
+    "ai",
+    "workflow"
+  ],
+  "type": "module",
+  "repository": "git@github.com:difizen/magent.git",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "typings": "./es/index.d.ts",
+      "default": "./es/index.js"
+    },
+    "./mock": {
+      "typings": "./es/mock/index.d.ts",
+      "default": "./es/mock/index.js"
+    },
+    "./es/mock": {
+      "typings": "./es/mock/index.d.ts",
+      "default": "./es/mock/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.ts",
+  "files": [
+    "es",
+    "src"
+  ],
+  "scripts": {
+    "setup": "father build",
+    "build": "father build",
+    "test": ": Note: lint task is delegated to test:* scripts",
+    "test:vitest": "vitest run",
+    "test:jest": "jest",
+    "coverage": ": Note: lint task is delegated to coverage:* scripts",
+    "coverage:vitest": "vitest run --coverage",
+    "coverage:jest": "jest --coverage",
+    "lint": ": Note: lint task is delegated to lint:* scripts",
+    "lint:eslint": "eslint src",
+    "tailwind": "tailwindcss -i ./src/tailwind.css -o ./src/tailwind.out.css --watch",
+    "typecheck:tsc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.1.0",
+    "@babel/runtime": "^7.18.0",
+    "@floating-ui/react": "^0.26.22",
+    "@lexical/react": "^0.17.0",
+    "@types/json-schema": "^7.0.15",
+    "@xyflow/react": "^12.0.2",
+    "antd": "^5.19.2",
+    "ajv": "^8.17.1",
+    "js-yaml": "^4.1.0",
+    "lexical": "^0.17.0",
+    "lodash": "^4.17.21",
+    "react-hotkeys-hook": "^4.5.0",
+    "short-unique-id": "^5.2.0",
+    "styled-components": "^6.0.7",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "uuid": "^10.0.0",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.25",
+    "@types/uuid": "^10.0.0",
+    "tailwindcss": "^3"
+  },
+  "peerDependencies": {
+    "antd": "^5.8.6",
+    "react": ">=16"
+  }
+}
