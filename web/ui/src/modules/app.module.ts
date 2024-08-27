@@ -1,14 +1,15 @@
 import { ManaModule } from '@difizen/mana-app';
 
-import { AgentConfigViewModule } from '../views/agent-config/module.js';
-import { AgentChatModule } from '../views/agent-dev/module.js';
-import { AgentFlowModule } from '../views/agent-flow/module.js';
-import { AgentsPageModule } from '../views/agents/module.js';
-import { ChatViewModule } from '../views/chat/module.js';
-import { KnowledgePageModule } from '../views/knowledge/module.js';
-import { PortalsModule } from '../views/protal-layout/module.js';
-import { SessionsViewModule } from '../views/sessions/module.js';
-import { ToolPageModule } from '../views/tools/module.js';
+import { AgentConfigViewModule } from '@/views/agent-config/module.js';
+import { AgentChatModule } from '@/views/agent-dev/module.js';
+import { AgentFlowModule } from '@/views/agent-flow/module.js';
+import { AgentsPageModule } from '@/views/agents/module.js';
+import { ChatViewModule } from '@/views/chat/module.js';
+import { DebugModule } from '@/views/debug/module.js';
+import { KnowledgePageModule } from '@/views/knowledge/module.js';
+import { PortalsModule } from '@/views/protal-layout/module.js';
+import { SessionsViewModule } from '@/views/sessions/module.js';
+import { ToolPageModule } from '@/views/tools/module.js';
 
 import { AgentBotModule } from './agent/module.js';
 import { AxiosClientModule } from './axios-client/module.js';
@@ -41,6 +42,7 @@ export const AppBaseModule = new ManaModule()
     AgentConfigViewModule,
     PortalsModule,
     AgentFlowModule,
+    DebugModule,
   );
 
 export default AppBaseModule;

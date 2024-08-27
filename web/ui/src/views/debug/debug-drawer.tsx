@@ -7,29 +7,29 @@ import { Avatar } from 'antd';
 import { Col, Drawer, Row, Select, Tree } from 'antd';
 import { useState } from 'react';
 
+import { copy2clipboard } from '@/common/utils.js';
 import { DefaultLLMIcon } from '@/modules/model/model-icon/index.js';
 import { DefaultToolIcon } from '@/modules/tool/tool-icon.js';
 
 import { HumanIcon } from '../chat/components/message/human-message.js';
 import type { ChatView } from '../chat/view.js';
 
-import { copy2clipboard } from './utils.js';
+import { debugDrawerId } from './protocol.js';
 
-export function DebugModalComponentContext(props: ModalItemProps<{ chat: ChatView }>) {
+export function DebugDrawerComponentContext(props: ModalItemProps<{ chat: ChatView }>) {
   const { data } = props;
   if (!data) {
     return null;
   }
   return (
     <ViewContext view={data.chat}>
-      <DebugModalComponent {...props} />
+      <DebugDrawerComponent {...props} />
     </ViewContext>
   );
 }
-export function DebugModalComponent({
+export function DebugDrawerComponent({
   visible,
   close,
-  data,
 }: ModalItemProps<{ chat: ChatView }>) {
   const chat = useInject<ChatView>(ViewInstance);
   const [selected, setSelected] = useState<string | undefined>(undefined);
@@ -137,7 +137,7 @@ export function DebugModalComponent({
   );
 }
 
-export const DebugModal: ModalItem = {
-  id: 'debug.modal',
-  component: DebugModalComponentContext,
+export const DebugDrawer: ModalItem = {
+  id: debugDrawerId,
+  component: DebugDrawerComponentContext,
 };

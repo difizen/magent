@@ -1,10 +1,10 @@
 import { ModalContribution, singleton } from '@difizen/mana-app';
 
-import { DebugModal } from './debug-modal.js';
+import { DebugDrawer } from './debug-drawer.js';
 
 @singleton({ contrib: [ModalContribution] })
 export class DebugDrawerContribution implements ModalContribution {
   registerModal() {
-    return DebugModal;
+    return DebugDrawer;
   }
 }

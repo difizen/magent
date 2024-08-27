@@ -6,10 +6,11 @@ import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import type { AgentConfigManager } from '@/modules/agent/agent-config-manager.js';
+
 import { AgentConfigView } from '../agent-config/view.js';
+import { DebugDrawer } from '../debug/debug-drawer.js';
 
 import { AgentView } from './chat-view.js';
-import { DebugModal } from './debug-modal.js';
 import './index.less';
 
 const viewId = 'magent-agent-dev';
@@ -38,7 +39,7 @@ const AgentDevComponent = forwardRef<HTMLDivElement>(
               <h3>预览</h3>
               <Button
                 onClick={() => {
-                  modalService.openModal(DebugModal, { chat: instance.chat });
+                  modalService.openModal(DebugDrawer, { chat: instance.chat });
                 }}
                 type="text"
               >

@@ -19,35 +19,58 @@
 .magent-agent-flow-dev-layout {
   height: 100%;
   width: 100%;
-}
-
-.magent-agent-dev-layout {
-  height: 100%;
 
   &-container {
-    gap: 16px;
     box-sizing: border-box;
-    padding: 12px 24px;
+  }
+
+  &-chat-switch {
+    position: absolute;
+    right: 0;
+    top: 16px;
+    z-index: 1;
   }
 
   &-config {
     width: 55%;
+
+    .magent-agent-flow {
+      > :first-child {
+        > :first-child {
+          box-shadow: var(--mana-ant-box-shadow-card);
+          z-index: 1;
+        }
+      }
+
+      .react-flow {
+        background-color: var(--mana-ant-color-bg-layout);
+      }
+    }
   }
 
   &-chat-dev {
     height: 100%;
-    min-width: 520px;
-    width: 520px;
+    min-width: 416px;
+    width: 416px;
     background-color: var(--mana-color-bg-container);
-    border-radius: 8px;
+    box-shadow: var(--mana-ant-box-shadow-card);
 
     &-header {
-      padding: 0 24px;
+      padding: 0 24px 0 6px;
       height: 64px;
       border-bottom: 1px solid var(--mana-color-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      &-left {
+        display: flex;
+        align-items: center;
+
+        button {
+          margin-right: 16px;
+        }
+      }
 
       h3 {
         margin: 0;
@@ -57,6 +80,12 @@
     &-content {
       height: calc(100% - 64px);
     }
+  }
+
+  &-chat-dev-hide {
+    width: 0;
+    min-width: 0;
+    transition: var(--mana-ant-motion-duration-fast);
   }
 }
 
@@ -127,5 +156,4 @@
   flex-direction: column;
   background-color: var(--mana-color-bg-container);
   box-sizing: border-box;
-  border-radius: 8px;
 }
