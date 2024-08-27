@@ -1,11 +1,11 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodes } from 'lexical';
 
-import { useEventEmitterContextContext } from '@/context/event-emitter';
+import { useEventEmitterContextContext } from '@/context/event-emitter.js';
 
-import { textToEditorState } from '../utils';
+import { textToEditorState } from '../utils.js';
 
-import { CustomTextNode } from './custom-text/node';
+import { CustomTextNode } from './custom-text/node.js';
 
 export const PROMPT_EDITOR_UPDATE_VALUE_BY_EVENT_EMITTER =
   'PROMPT_EDITOR_UPDATE_VALUE_BY_EVENT_EMITTER';

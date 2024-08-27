@@ -1,10 +1,11 @@
-import { SelectInNode } from '@/components/AIBasic/SelectInNode';
-import { ReferenceSelect } from '@/components/ReferenceSelect';
-import { NodeDataType } from '@/interfaces/flow';
-import { useFlowStore } from '@/stores/useFlowStore';
 import { Form } from 'antd';
-import React from 'react';
-import { NodeWrapper } from '../NodeWrapper';
+
+import { SelectInNode } from '@/components/AIBasic/SelectInNode/index.js';
+import { ReferenceSelect } from '@/components/ReferenceSelect/index.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { useFlowStore } from '@/stores/useFlowStore.js';
+
+import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {
   data: NodeDataType;

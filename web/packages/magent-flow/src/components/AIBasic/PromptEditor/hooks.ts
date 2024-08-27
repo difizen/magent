@@ -4,8 +4,8 @@ import { mergeRegister } from '@lexical/utils';
 import type { Klass, LexicalEditor, TextNode } from 'lexical';
 import { useCallback, useEffect } from 'react';
 
-import type { CustomTextNode } from './plugins/custom-text/node';
-import { registerLexicalTextEntity } from './utils';
+import type { CustomTextNode } from './plugins/custom-text/node.js';
+import { registerLexicalTextEntity } from './utils.js';
 
 export function useLexicalTextEntity<T extends TextNode>(
   getMatch: (text: string) => null | EntityMatch,

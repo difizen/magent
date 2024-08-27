@@ -7,16 +7,17 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import type { EditorState } from 'lexical';
 import { $getRoot, TextNode } from 'lexical';
 import React, { type FC } from 'react';
-import ComponentPickerBlock from './plugins/component-picker-block';
-import { CustomTextNode } from './plugins/custom-text/node';
-import OnBlurBlock from './plugins/on-blur-or-focus-block';
-import Placeholder from './plugins/placeholder';
-import UpdateBlock from './plugins/update-block';
-import VariableBlock from './plugins/variable-block';
-import VariableValueBlock from './plugins/variable-value-block';
-import { VariableValueBlockNode } from './plugins/variable-value-block/node';
-import type { ExternalToolBlockType, VariableBlockType } from './types';
-import { textToEditorState } from './utils';
+
+import ComponentPickerBlock from './plugins/component-picker-block/index.js';
+import { CustomTextNode } from './plugins/custom-text/node.js';
+import OnBlurBlock from './plugins/on-blur-or-focus-block.js';
+import Placeholder from './plugins/placeholder.js';
+import UpdateBlock from './plugins/update-block.js';
+import VariableBlock from './plugins/variable-block/index.js';
+import VariableValueBlock from './plugins/variable-value-block/index.js';
+import { VariableValueBlockNode } from './plugins/variable-value-block/node.js';
+import type { ExternalToolBlockType, VariableBlockType } from './types.js';
+import { textToEditorState } from './utils.js';
 
 export type PromptEditorProps = {
   instanceId?: string;
@@ -74,7 +75,9 @@ const PromptEditor: FC<PromptEditorProps> = ({
         .join('\n');
     });
 
-    if (onChange) onChange(text);
+    if (onChange) {
+      onChange(text);
+    }
   };
 
   return (

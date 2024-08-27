@@ -3,6 +3,8 @@ export function classNames(...classes: Array<string>): string {
 }
 
 export function capitalizeFirstLetter(s: string) {
-  if (!s) return '';
+  if (!s) {
+    return '';
+  }
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }

@@ -1,11 +1,12 @@
-import {
+import type {
   NodeDataConfigType,
   NodeDataMetaType,
   NodeDataType,
-  NodeTypeEnum,
-} from '@/interfaces/flow';
-import { FormSchema } from './FormSchema';
-import { UUID } from './uuid';
+} from '@/interfaces/flow.js';
+import { NodeTypeEnum } from '@/interfaces/flow.js';
+
+import { FormSchema } from './FormSchema/index.js';
+import { UUID } from './uuid.js';
 
 // 不同类型的节点的基础类
 //

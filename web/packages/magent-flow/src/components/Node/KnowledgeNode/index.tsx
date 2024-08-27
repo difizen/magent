@@ -1,13 +1,14 @@
-import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper';
-import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable';
-import { ReferenceForm } from '@/components/ReferenceForm';
-import { NodeDataType } from '@/interfaces/flow';
-import { useFlowStore } from '@/stores/useFlowStore';
-import { useKnowledgeStore } from '@/stores/useKnowledgeStore';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Modal } from 'antd';
-import React from 'react';
-import { NodeWrapper } from '../NodeWrapper';
+
+import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper/index.js';
+import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
+import { ReferenceForm } from '@/components/ReferenceForm/index.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { useFlowStore } from '@/stores/useFlowStore.js';
+import { useKnowledgeStore } from '@/stores/useKnowledgeStore.js';
+
+import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {
   data: NodeDataType;

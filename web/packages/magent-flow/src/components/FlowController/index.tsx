@@ -1,5 +1,4 @@
 import { Controls, MiniMap } from '@xyflow/react';
-import React from 'react';
 
 export const FlowController = () => {
   return (

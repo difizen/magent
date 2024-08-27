@@ -1,9 +1,10 @@
-import { ReferenceForm } from '@/components/ReferenceForm';
-import { NodeDataType } from '@/interfaces/flow';
-import { useFlowStore } from '@/stores/useFlowStore';
 import { Collapse } from 'antd';
-import React from 'react';
-import { NodeWrapper } from '../NodeWrapper';
+
+import { ReferenceForm } from '@/components/ReferenceForm/index.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { useFlowStore } from '@/stores/useFlowStore.js';
+
+import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {
   data: NodeDataType;

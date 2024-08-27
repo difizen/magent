@@ -1,6 +1,8 @@
-import { classNames } from '@/utils';
-import { Cascader, CascaderProps } from 'antd';
+import type { CascaderProps } from 'antd';
+import { Cascader } from 'antd';
 import React from 'react';
+
+import { classNames } from '@/utils/index.js';
 
 export const CascaderInNode = (props: CascaderProps) => {
   return (

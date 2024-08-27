@@ -2,7 +2,7 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import { Button, Cascader, Collapse, Flex, Input, Select, Space, theme } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import type { NodeDataType } from '@/interfaces/flow';
+import type { NodeDataType } from '@/interfaces/flow.js';
 
 interface CascaderOptions {
   value: string;

@@ -1,10 +1,10 @@
-import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper';
-import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable';
-import { ReferenceForm } from '@/components/ReferenceForm';
-import { NodeDataType } from '@/interfaces/flow';
-import { useFlowStore } from '@/stores/useFlowStore';
-import React from 'react';
-import { NodeWrapper } from '../NodeWrapper';
+import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper/index.js';
+import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
+import { ReferenceForm } from '@/components/ReferenceForm/index.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { useFlowStore } from '@/stores/useFlowStore.js';
+
+import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {
   data: NodeDataType;

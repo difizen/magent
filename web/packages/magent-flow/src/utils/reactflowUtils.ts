@@ -1,9 +1,9 @@
-import { Edge } from '@xyflow/react';
+import type { Edge } from '@xyflow/react';
 import { cloneDeep } from 'lodash';
 import { v4 } from 'uuid';
 
 export function cleanEdges(nodes: any[], edges: Edge[]) {
-  let newEdges = cloneDeep(edges);
+  const newEdges = cloneDeep(edges);
 
   return newEdges;
 }

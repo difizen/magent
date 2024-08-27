@@ -6,9 +6,9 @@ import {
 import { Button, Checkbox, Collapse, Form, Input, Space } from 'antd';
 import React, { useEffect } from 'react';
 
-import type { BasicSchema } from '@/interfaces/flow';
+import type { BasicSchema } from '@/interfaces/flow.js';
 
-import { SelectInNode } from '../AIBasic/SelectInNode';
+import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
 
 export interface VariableFormProps {
   label: string;

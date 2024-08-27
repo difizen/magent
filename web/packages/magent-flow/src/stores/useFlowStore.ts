@@ -14,8 +14,8 @@ import { addEdge, applyEdgeChanges, applyNodeChanges } from '@xyflow/react';
 import { cloneDeep } from 'lodash';
 import { create } from 'zustand';
 
-import type { NodeType } from '@/interfaces/flow';
-import { cleanEdges, getNodeId } from '@/utils/reactflowUtils';
+import type { NodeType } from '@/interfaces/flow.js';
+import { cleanEdges, getNodeId } from '@/utils/reactflowUtils.js';
 
 interface AdjacencyList {
   [key: number]: number[];

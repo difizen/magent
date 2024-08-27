@@ -2,10 +2,10 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Space } from 'antd';
 import React, { useEffect } from 'react';
 
-import type { BasicSchema, NodeType } from '@/interfaces/flow';
+import type { BasicSchema, NodeType } from '@/interfaces/flow.js';
 
-import { CollapseWrapper } from '../AIBasic/CollapseWrapper';
-import { ReferenceSelect } from '../ReferenceSelect';
+import { CollapseWrapper } from '../AIBasic/CollapseWrapper/index.js';
+import { ReferenceSelect } from '../ReferenceSelect/index.js';
 
 export interface RefrenceFormProps {
   label: string;

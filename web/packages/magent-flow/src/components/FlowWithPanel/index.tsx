@@ -1,15 +1,18 @@
-import { EventEmitterContextProvider } from '@/context/event-emitter';
-import { NodeDataType, NodeTypeEnum } from '@/interfaces/flow';
 import yaml from 'js-yaml';
 import React from 'react';
-import Flow from '../Flow';
-import { AgentNode } from '../Node/AgentNode';
-import { EndNode } from '../Node/EndNode';
-import { IfElseNode } from '../Node/IfElseNode';
-import { KnowledgeNode } from '../Node/KnowledgeNode';
-import { LLMNode } from '../Node/LLMNode';
-import { StartNode } from '../Node/StartNode';
-import { NodesPanel } from '../NodePanel';
+
+import { EventEmitterContextProvider } from '@/context/event-emitter.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { NodeTypeEnum } from '@/interfaces/flow.js';
+
+import Flow from '../Flow/index.js';
+import { AgentNode } from '../Node/AgentNode/index.js';
+import { EndNode } from '../Node/EndNode/index.js';
+import { IfElseNode } from '../Node/IfElseNode/index.js';
+import { KnowledgeNode } from '../Node/KnowledgeNode/index.js';
+import { LLMNode } from '../Node/LLMNode/index.js';
+import { StartNode } from '../Node/StartNode/index.js';
+import { NodesPanel } from '../NodePanel/index.js';
 
 const yamlContent = `
 - id: 1
@@ -233,7 +236,7 @@ export const FlowWithPanel = () => {
 
   return (
     <EventEmitterContextProvider>
-      <div className="flex">
+      <div className="flex flex-1">
         <NodesPanel className="w-[200px]" nodes={yaml_data as NodeDataType[]} />
         <Flow classNames="flex-1" nodeTypes={nodeTypes} />
       </div>

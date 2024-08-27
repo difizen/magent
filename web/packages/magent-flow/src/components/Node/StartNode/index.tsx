@@ -1,8 +1,9 @@
-import { VariableForm } from '@/components/VariableForm';
-import { NodeDataType } from '@/interfaces/flow';
 import { Collapse } from 'antd';
-import React from 'react';
-import { NodeWrapper } from '../NodeWrapper';
+
+import { VariableForm } from '@/components/VariableForm/index.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+
+import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {
   data: NodeDataType;

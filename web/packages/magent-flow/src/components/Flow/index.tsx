@@ -3,15 +3,14 @@ import { Background, ReactFlow } from '@xyflow/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import type { NodeType } from '@/interfaces/flow';
-import { useFlowStore } from '@/stores/useFlowStore';
-import { useShortcutsStore } from '@/stores/useShortcutsStore';
-import { useUndoRedoStore } from '@/stores/useUndoRedoStore';
-import { getNodeId } from '@/utils/reactflowUtils';
+import type { NodeType } from '@/interfaces/flow.js';
+import { useFlowStore } from '@/stores/useFlowStore.js';
+import { useShortcutsStore } from '@/stores/useShortcutsStore.js';
+import { useUndoRedoStore } from '@/stores/useUndoRedoStore.js';
+import { getNodeId } from '@/utils/reactflowUtils.js';
 
 import CustomEdge from '../CustomEdge/index.js';
 import { FlowController } from '../FlowController/index.js';
-import '@xyflow/react/dist/style.css';
 
 import {
   handleCopy,
@@ -21,7 +20,8 @@ import {
   handlePaste,
   handleRedo,
   handleUndo,
-} from './keys';
+} from './keys.js';
+import '@xyflow/react/dist/style.css';
 
 const edgeTypes = {
   custom: CustomEdge,
@@ -138,7 +138,7 @@ function Flow(props: FlowProps) {
 
   return (
     <div
-      style={{ height: '640px', width: '100%' }}
+      style={{ height: '100%', width: '100%' }}
       className={classNames}
       ref={reactFlowWrapper}
     >

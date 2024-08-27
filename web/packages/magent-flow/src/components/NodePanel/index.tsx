@@ -1,6 +1,7 @@
-import { NodeDataType } from '@/interfaces/flow';
 import { Input } from 'antd';
 import React from 'react';
+
+import type { NodeDataType } from '@/interfaces/flow.js';
 
 interface NodesPanelProps {
   /**

@@ -1,5 +1,5 @@
-import { BaseEdge, EdgeProps, getBezierPath, MarkerType } from '@xyflow/react';
-import React from 'react';
+import type { EdgeProps } from '@xyflow/react';
+import { BaseEdge, getBezierPath, MarkerType } from '@xyflow/react';
 
 export default function CustomEdge({
   // id,

@@ -7,8 +7,8 @@ import {
   $isTextNode,
 } from 'lexical';
 
-import { CustomTextNode } from './plugins/custom-text/node';
-import type { MenuTextMatch } from './types';
+import { CustomTextNode } from './plugins/custom-text/node.js';
+import type { MenuTextMatch } from './types.js';
 
 export function registerLexicalTextEntity<T extends TextNode>(
   editor: LexicalEditor,

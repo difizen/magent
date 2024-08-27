@@ -11,8 +11,8 @@ import { Card, Checkbox, Collapse, Form, Input, Select, Space, theme } from 'ant
 import type { JSONSchema7 } from 'json-schema';
 import React, { useState } from 'react';
 
-import { variableTypeOptions } from '@/FormSchema';
-import type { FormSchema, OrderJSONSchema7 } from '@/FormSchema';
+import { variableTypeOptions } from '@/FormSchema/index.js';
+import type { FormSchema, OrderJSONSchema7 } from '@/FormSchema/index.js';
 
 // import {
 //   FormSchema,

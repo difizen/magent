@@ -1,7 +1,8 @@
 import { Input } from 'antd';
 import React from 'react';
-import { CascaderInNode } from '../AIBasic/CascaderInNode';
-import { SelectInNode } from '../AIBasic/SelectInNode';
+
+import { CascaderInNode } from '../AIBasic/CascaderInNode/index.js';
+import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
 
 export const ReferenceSelect = (props: {
   value?: {

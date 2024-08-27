@@ -1,15 +1,17 @@
-import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper';
-import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable';
-import PromptEditor from '@/components/AIBasic/PromptEditor';
-import { SelectInNode } from '@/components/AIBasic/SelectInNode';
-import { ReferenceForm } from '@/components/ReferenceForm';
-import { NodeDataType } from '@/interfaces/flow';
-import { useFlowStore } from '@/stores/useFlowStore';
-import { useModelStore } from '@/stores/useModelStore';
 import { BarsOutlined } from '@ant-design/icons';
 import { Button, InputNumber, Popover } from 'antd';
-import React, { useState } from 'react';
-import { NodeWrapper } from '../NodeWrapper';
+import { useState } from 'react';
+
+import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper/index.js';
+import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
+import PromptEditor from '@/components/AIBasic/PromptEditor/index.js';
+import { SelectInNode } from '@/components/AIBasic/SelectInNode/index.js';
+import { ReferenceForm } from '@/components/ReferenceForm/index.js';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { useFlowStore } from '@/stores/useFlowStore.js';
+import { useModelStore } from '@/stores/useModelStore.js';
+
+import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {
   data: NodeDataType;

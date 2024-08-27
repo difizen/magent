@@ -3,12 +3,12 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $insertNodes } from 'lexical';
 import React, { useMemo } from 'react';
 
-import type { ExternalToolBlockType, VariableBlockType } from '../../types';
-import { $createCustomTextNode } from '../custom-text/node';
-import { INSERT_VARIABLE_VALUE_BLOCK_COMMAND } from '../variable-block';
+import type { ExternalToolBlockType, VariableBlockType } from '../../types.js';
+import { $createCustomTextNode } from '../custom-text/node.js';
+import { INSERT_VARIABLE_VALUE_BLOCK_COMMAND } from '../variable-block/index.js';
 
-import { PickerBlockMenuOption } from './menu';
-import { VariableMenuItem } from './variable-option';
+import { PickerBlockMenuOption } from './menu.js';
+import { VariableMenuItem } from './variable-option.js';
 
 export const useVariableOptions = (
   variableBlock?: VariableBlockType,

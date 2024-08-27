@@ -2,10 +2,10 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import type { TextNode } from 'lexical';
 import { useCallback, useEffect } from 'react';
 
-import { useLexicalTextEntity } from '../../hooks';
+import { useLexicalTextEntity } from '../../hooks.js';
 
-import { $createVariableValueBlockNode, VariableValueBlockNode } from './node';
-import { getHashtagRegexString } from './utils';
+import { $createVariableValueBlockNode, VariableValueBlockNode } from './node.js';
+import { getHashtagRegexString } from './utils.js';
 
 const REGEX = new RegExp(getHashtagRegexString(), 'i');
 

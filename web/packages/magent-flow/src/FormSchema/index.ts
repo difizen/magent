@@ -5,7 +5,7 @@ import type {
   JSONSchema7TypeName,
 } from 'json-schema';
 
-import { UUID } from '@/spec/uuid';
+import { UUID } from '@/spec/uuid.js';
 
 export type OrderJSONSchema7 = JSONSchema7 & {
   order: number;

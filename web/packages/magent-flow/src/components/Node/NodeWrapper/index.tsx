@@ -2,8 +2,8 @@ import { Handle, Position } from '@xyflow/react';
 import { Space } from 'antd';
 import React from 'react';
 
-import type { NodeDataType } from '@/interfaces/flow';
-import { classNames } from '@/utils';
+import type { NodeDataType } from '@/interfaces/flow.js';
+import { classNames } from '@/utils/index.js';
 
 type Props = {
   data: NodeDataType;

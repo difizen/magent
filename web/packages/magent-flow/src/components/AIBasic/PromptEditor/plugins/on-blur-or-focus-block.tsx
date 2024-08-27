@@ -30,7 +30,9 @@ const OnBlurBlock: FC<OnBlurBlockProps> = ({ onBlur, onFocus }) => {
             );
           }, 200);
 
-          if (onBlur) onBlur();
+          if (onBlur) {
+            onBlur();
+          }
 
           return true;
         },
@@ -39,7 +41,9 @@ const OnBlurBlock: FC<OnBlurBlockProps> = ({ onBlur, onFocus }) => {
       editor.registerCommand(
         FOCUS_COMMAND,
         () => {
-          if (onFocus) onFocus();
+          if (onFocus) {
+            onFocus();
+          }
           return true;
         },
         COMMAND_PRIORITY_EDITOR,

@@ -6,15 +6,15 @@ import type { TextNode } from 'lexical';
 import React, { Fragment, memo, useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import { useEventEmitterContextContext } from '@/context/event-emitter';
+import { useEventEmitterContextContext } from '@/context/event-emitter.js';
 
-import { useBasicTypeaheadTriggerMatch } from '../../hooks';
-import type { ExternalToolBlockType, VariableBlockType } from '../../types';
-import { $splitNodeContainingQuery } from '../../utils';
-import { INSERT_VARIABLE_VALUE_BLOCK_COMMAND } from '../variable-block';
+import { useBasicTypeaheadTriggerMatch } from '../../hooks.js';
+import type { ExternalToolBlockType, VariableBlockType } from '../../types.js';
+import { $splitNodeContainingQuery } from '../../utils.js';
+import { INSERT_VARIABLE_VALUE_BLOCK_COMMAND } from '../variable-block/index.js';
 
-import { useOptions } from './hooks';
-import type { PickerBlockMenuOption } from './menu';
+import { useOptions } from './hooks.js';
+import type { PickerBlockMenuOption } from './menu.js';
 
 type ComponentPickerProps = {
   triggerString: string;

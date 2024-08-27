@@ -2,7 +2,7 @@ import type { Edge, Node } from '@xyflow/react';
 import { cloneDeep } from 'lodash';
 import { create } from 'zustand';
 
-import { useFlowStore } from './useFlowStore';
+import { useFlowStore } from './useFlowStore.js';
 
 interface FlowRedoUndoStoreType {
   undo: () => void;
