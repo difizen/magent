@@ -30,6 +30,10 @@ export default [
         path: '/agent/:agentId/dev',
         slot: 'magent-agent-dev-slot',
       },
+      {
+        path: '/agent/:agentId/flow',
+        slot: 'magent-agent-flow-dev-slot',
+      },
     ],
   },
 ];

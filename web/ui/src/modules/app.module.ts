@@ -2,6 +2,7 @@ import { ManaModule } from '@difizen/mana-app';
 
 import { AgentConfigViewModule } from '../views/agent-config/index.js';
 import { AgentChatModule } from '../views/agent-dev/index.js';
+import { AgentFlowModule } from '../views/agent-flow/module.js';
 import { AgentsPageModule } from '../views/agents/index.js';
 import { ChatViewModule } from '../views/chat/module.js';
 import { KnowledgePageModule } from '../views/knowledge/module.js';
@@ -39,6 +40,7 @@ export const AppBaseModule = new ManaModule()
     KnowledgePageModule,
     AgentConfigViewModule,
     PortalsModule,
+    AgentFlowModule,
   );
 
 export default AppBaseModule;
