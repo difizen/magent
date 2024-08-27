@@ -26,6 +26,9 @@ async def get_agent_detail(agent_id):
 async def update_agent(agent_id, agent: AgentDTO):
     return AgentService.update_agent(agent)
 
+@router.post("/agents", response_model=AgentDTO)
+async def create_agent(agent: AgentDTO):
+    return AgentService.create_agent(agent)
 
 class MessageSenderType(enum.Enum):
     AI = "ai"
