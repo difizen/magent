@@ -1,4 +1,4 @@
-import { inject, transient } from '@difizen/mana-app';
+import { inject, prop, transient } from '@difizen/mana-app';
 
 import { LLMModelOption, type ModelMeta } from './protocol.js';
 
@@ -8,6 +8,7 @@ export class LLMModel {
   name: string;
   models: string[] = [];
 
+  @prop()
   temperature: number;
 
   protected configStr: string;

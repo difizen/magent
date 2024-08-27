@@ -3,6 +3,8 @@ import { inject, prop, transient } from '@difizen/mana-app';
 import { AsyncModel } from '../../common/async-model.js';
 import { AxiosClient } from '../axios-client/index.js';
 import type { KnowledgeModelOption } from '../knowledge/protocol.js';
+import { LLMManager } from '../model/llm-manager.js';
+import type { LLMModel } from '../model/llm-model.js';
 import type { ToolModelOption } from '../tool/index.js';
 import { ToolManager } from '../tool/index.js';
 
@@ -40,6 +42,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   axios: AxiosClient;
   // configManager: AgentConfigManager;
+  protected llmManager: LLMManager;
 
   id: string;
 
@@ -53,7 +56,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   description?: string;
 
   @prop()
-  llm?: LLMMeta;
+  llm?: LLMModel;
 
   @prop()
   prompt?: Prompt;
@@ -79,12 +82,14 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   constructor(
     @inject(AgentModelOption) option: AgentModelOption,
     @inject(AgentConfigManager) configManager: AgentConfigManager,
+    @inject(LLMManager) llmManager: LLMManager,
     @inject(AxiosClient) axios: AxiosClient,
   ) {
     super();
     this.option = option;
     // this.configManager = configManager;
     this.axios = axios;
+    this.llmManager = llmManager;
 
     this.id = option.id;
     this.initialize(option);
@@ -105,7 +110,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.description = option.description;
 
     this.prompt = option.prompt ? new Prompt(option.prompt) : undefined;
-    this.llm = option.llm;
+    this.llm = option.llm ? this.llmManager.getOrCreate(option.llm) : option.llm;
     this.memory = option.memory ?? '';
     this.planner = option.planner;
     this.knowledge = option.knowledge;
@@ -139,7 +144,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
       avatar: this.avatar,
       description: this.description,
       prompt: this.prompt?.toMeta(),
-      llm: this.llm,
+      llm: this.llm?.toMeta(),
       planner: this.planner,
       tool: this.tool,
       memory: this.memory,

@@ -8,13 +8,14 @@ import { LLMModelFactory } from './protocol.js';
 
 @singleton()
 export class LLMManager {
+  protected cache: Map<string, LLMModel> = new Map<string, LLMModel>();
   @inject(LLMModelFactory) factory: LLMModelFactory;
   @inject(AxiosClient) axios: AxiosClient;
 
   @prop()
   models: LLMModel[] = [];
 
-  // defaultModel?: ModelMeta;
+  defaultModel?: LLMModel;
 
   protected getModelsMeta = async () => {
     const defaultValue: ModelMeta[] = [];
@@ -27,10 +28,20 @@ export class LLMManager {
 
   updateModels = async () => {
     const metas = await this.getModelsMeta();
-    this.models = metas.map((item) => this.factory(item));
+    this.models = metas.map((item) => this.getOrCreate(item));
     if (this.models.length > 0) {
-      const defaultLLMs = this.models[0];
-      this.defaultModel = defaultLLMs.toSingleMeta(defaultLLMs.models[0]);
+      const defaultLLM = this.models[0];
+      this.defaultModel = defaultLLM;
     }
+  };
+
+  getOrCreate = (option: ModelMeta): LLMModel => {
+    const exist = this.cache.get(option.id);
+    if (exist) {
+      return exist;
+    }
+    const llm = this.factory(option);
+    this.cache.set(llm.id, llm);
+    return llm;
   };
 }
