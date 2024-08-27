@@ -1,20 +1,9 @@
-import { SaveOutlined } from '@ant-design/icons';
 import { FlowWithPanel } from '@difizen/magent-flow';
-import {
-  BaseView,
-  ViewInstance,
-  inject,
-  prop,
-  useInject,
-  view,
-  ViewOption,
-  transient,
-} from '@difizen/mana-app';
-import { Flex } from 'antd';
+import { BaseView, inject, prop, view, ViewOption, transient } from '@difizen/mana-app';
 import { forwardRef } from 'react';
 
-import { AgentManager } from '../../modules/agent/index.js';
-import type { AgentModel } from '../../modules/agent/index.js';
+import { AgentManager } from '@/modules/agent/agent-manager.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
 
 import './index.less';
 
@@ -22,8 +11,6 @@ const viewId = 'magent-agent-flow';
 
 const AgentFlowComponent = forwardRef<HTMLDivElement>(
   function AgentConfigViewComponent(props, ref) {
-    const instance = useInject<AgentFlowView>(ViewInstance);
-
     return (
       <div ref={ref} className={viewId}>
         <FlowWithPanel />
@@ -56,7 +43,7 @@ export class AgentFlowView extends BaseView {
   get modelOptions() {
     // TODO 大模型optios列表和对应存取值要怎么取？
     return (
-      this.agent?.llm?.model_name?.map((item) => {
+      this.agent?.llm?.models?.map((item) => {
         return {
           label: item,
           value: item,
@@ -67,7 +54,7 @@ export class AgentFlowView extends BaseView {
 
   protected initAgent = (agentId = this.agentId) => {
     if (agentId) {
-      const agent = this.agentManager.getOrCreateAgent({ id: agentId });
+      const agent = this.agentManager.getOrCreate({ id: agentId });
       agent.fetchInfo();
       this.agent = agent;
       return agent;

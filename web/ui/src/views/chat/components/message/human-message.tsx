@@ -4,8 +4,9 @@ import { Avatar, Space } from 'antd';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-import type { HumanChatMessageItem } from '../../../../modules/chat-message/chat-message-item.js';
-import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
+import type { HumanChatMessageItem } from '@/modules/chat-message/chat-message-item.js';
+import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
+
 import type { ChatView } from '../../view.js';
 
 import { TextMessage } from './text/index.js';

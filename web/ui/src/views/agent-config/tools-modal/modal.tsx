@@ -5,10 +5,10 @@ import { Modal, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
-import type { AgentModel } from '../../../modules/agent/protocol.js';
-import type { ToolModelOption } from '../../../modules/tool/protocol.js';
-import { ToolIcon } from '../../../modules/tool/tool-icon.js';
-import { ToolSpace } from '../../../modules/tool/tool-space.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
+import type { ToolModelOption } from '@/modules/tool/protocol.js';
+import { ToolIcon } from '@/modules/tool/tool-icon.js';
+import { ToolSpace } from '@/modules/tool/tool-space.js';
 import { ToolsModalId } from '../protocol.js';
 
 export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>) => {

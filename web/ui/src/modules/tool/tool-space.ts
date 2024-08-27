@@ -15,8 +15,8 @@ export class ToolSpace {
 
   async update() {
     this.loading = true;
-    const options = await this.toolManager.getTools();
-    this.list = options.map(this.toolManager.getOrCreateTool);
+    const options = await this.toolManager.getAll();
+    this.list = options.map(this.toolManager.getOrCreate);
     this.loading = false;
   }
 }

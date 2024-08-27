@@ -14,11 +14,12 @@ import { Button } from 'antd';
 import classNames from 'classnames';
 import { forwardRef, useMemo } from 'react';
 
-import type { SessionModel } from '../../modules/session/index.js';
-import { SessionManager } from '../../modules/session/index.js';
+import { SessionManager } from '@/modules/session/session-manager.js';
+import type { SessionModel } from '@/modules/session/session-model.js';
+
+import { ConversationItem } from './conversation-list/index.js';
 
 import './index.less';
-import { ConversationItem } from './conversation-list/index.js';
 
 const viewId = 'magent-sessions';
 

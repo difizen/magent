@@ -1,8 +1,8 @@
 import { Emitter, inject, prop, transient } from '@difizen/mana-app';
 import debounce from 'lodash.debounce';
 
-import { AsyncModel } from '../../common/async-model.js';
-import { AxiosClient } from '../axios-client/index.js';
+import { AsyncModel } from '@/common/async-model.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { ToolConfigOption, ToolConfigType } from './protocol.js';
 

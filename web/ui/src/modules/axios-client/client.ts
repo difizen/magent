@@ -4,7 +4,7 @@ import type { Syringe } from '@difizen/mana-app';
 import axios from 'axios';
 import qs from 'query-string';
 
-import { getPageConfig } from '../../common/page-config.js';
+import { getPageConfig } from '@/common/page-config.js';
 
 export const getContextClient = (ctx: Syringe.Context) => {
   const pageConfig = getPageConfig();

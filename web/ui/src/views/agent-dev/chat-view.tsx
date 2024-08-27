@@ -13,10 +13,10 @@ import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 import { history } from 'umi';
 
-import { AgentManager } from '../../modules/agent/agent-manager.js';
-import type { AgentModel } from '../../modules/agent/protocol.js';
-import { PageView } from '../../modules/base-layout/page-view.js';
-import type { SessionModel } from '../../modules/session/protocol.js';
+import { AgentManager } from '@/modules/agent/agent-manager.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
+import { PageView } from '@/modules/base-layout/page-view.js';
+import type { SessionModel } from '@/modules/session/protocol.js';
 import { ChatView } from '../chat/view.js';
 import { SessionsView } from '../sessions/view.js';
 
@@ -119,7 +119,7 @@ export class AgentView extends PageView {
   };
   protected initAgent = () => {
     if (this.agentId) {
-      const agent = this.agentManager.getOrCreateAgent({ id: this.agentId });
+      const agent = this.agentManager.getOrCreate({ id: this.agentId });
       agent.fetchInfo();
       this.agent = agent;
       return agent;

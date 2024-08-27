@@ -2,7 +2,7 @@ import { inject, prop, transient } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { ChatMessageItemOption } from './protocol.js';
 import type { QuestionState, MessageSender, AnswerState } from './protocol.js';

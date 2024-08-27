@@ -1,15 +1,16 @@
 import { inject, prop, transient } from '@difizen/mana-app';
 
-import { AsyncModel } from '../../common/async-model.js';
-import { AxiosClient } from '../axios-client/index.js';
+import { AsyncModel } from '@/common/async-model.js';
+
+import { AxiosClient } from '../axios-client/protocol.js';
 import type { KnowledgeModelOption } from '../knowledge/protocol.js';
 import { LLMManager } from '../model/llm-manager.js';
 import type { LLMModel } from '../model/llm-model.js';
-import type { ToolModelOption } from '../tool/index.js';
-import { ToolManager } from '../tool/index.js';
+import type { ToolModelOption } from '../tool/protocol.js';
+import { ToolManager } from '../tool/tool-manager.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
-import type { LLMMeta, PromptMeta, PlannerMeta } from './protocol.js';
+import type { PromptMeta, PlannerMeta } from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
 class Prompt implements PromptMeta {

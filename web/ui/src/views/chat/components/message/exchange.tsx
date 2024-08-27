@@ -1,4 +1,4 @@
-import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
+import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
 
 import { Message } from './message.js';
 

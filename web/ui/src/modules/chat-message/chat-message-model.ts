@@ -8,7 +8,7 @@ import type { ParsedEvent } from 'eventsource-parser/stream';
 
 import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { AIChatMessageItem } from './ai-message-item.js';
 import type { ChatMessageItem } from './chat-message-item.js';
@@ -99,7 +99,7 @@ export class ChatMessageModel implements Disposable {
   }
 
   protected getAgent = async (id: string) => {
-    const agent = await this.agentManager.getOrCreateAgent({ id });
+    const agent = await this.agentManager.getOrCreate({ id });
     this.agent = agent;
     this.agent.fetchInfo();
     this.agentDeferred.resolve(agent);

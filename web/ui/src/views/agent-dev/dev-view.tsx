@@ -5,7 +5,7 @@ import { Button } from 'antd';
 import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 
-import type { AgentConfigManager } from '../../modules/agent/agent-config-manager.js';
+import type { AgentConfigManager } from '@/modules/agent/agent-config-manager.js';
 import { AgentConfigView } from '../agent-config/view.js';
 
 import { AgentView } from './chat-view.js';

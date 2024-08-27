@@ -14,8 +14,8 @@ import { forwardRef } from 'react';
 import { history } from 'umi';
 
 import './index.less';
-import { AgentIcon } from '../../modules/agent/agent-icon.js';
-import { AgentMarket } from '../../modules/agent/agent-market.js';
+import { AgentIcon } from '@/modules/agent/agent-icon.js';
+import { AgentMarket } from '@/modules/agent/agent-market.js';
 
 import { AgentCreateModal } from './modal/create.js';
 

@@ -1,6 +1,6 @@
 import { inject, singleton } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { AgentModelFactory } from './protocol.js';
 import type { AgentModel, AgentModelOption } from './protocol.js';
@@ -11,7 +11,7 @@ export class AgentManager {
   @inject(AgentModelFactory) botFactory: AgentModelFactory;
   @inject(AxiosClient) axios: AxiosClient;
 
-  getAgents = async (): Promise<AgentModelOption[]> => {
+  getAll = async (): Promise<AgentModelOption[]> => {
     const defaultValue: AgentModelOption[] = [];
     const res = await this.axios.get<AgentModelOption[]>(`/api/v1/agents`);
     if (res.status === 200) {
@@ -20,7 +20,7 @@ export class AgentManager {
     return defaultValue;
   };
 
-  getOrCreateAgent = (option: AgentModelOption): AgentModel => {
+  getOrCreate = (option: AgentModelOption): AgentModel => {
     const exist = this.cache.get(option.id);
     if (exist) {
       return exist;

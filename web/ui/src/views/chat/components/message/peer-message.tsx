@@ -10,11 +10,12 @@ import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
-import { AgentIcon } from '../../../../modules/agent/agent-icon.js';
-import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
-import type { PeerChatMessageItem } from '../../../../modules/chat-message/peer-message-item-model.js';
-import type { ChatEventStepQA } from '../../../../modules/chat-message/protocol.js';
-import { AnswerState } from '../../../../modules/chat-message/protocol.js';
+import { AgentIcon } from '@/modules/agent/agent-icon.js';
+import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
+import type { PeerChatMessageItem } from '@/modules/chat-message/peer-message-item-model.js';
+import type { ChatEventStepQA } from '@/modules/chat-message/protocol.js';
+import { AnswerState } from '@/modules/chat-message/protocol.js';
+
 import type { ChatView } from '../../view.js';
 
 import { Markdown } from './markdown/index.js';

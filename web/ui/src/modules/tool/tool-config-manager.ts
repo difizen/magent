@@ -1,6 +1,6 @@
 import { inject, singleton } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { ToolConfigFactory, type ToolConfigOption } from './protocol.js';
 import type { ToolConfig } from './tool-config.js';

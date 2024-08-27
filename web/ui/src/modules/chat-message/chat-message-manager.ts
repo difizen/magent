@@ -1,6 +1,6 @@
 import { inject, singleton } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import type { ChatMessageModel, ChatMessageOption } from './protocol.js';
 import { ChatMessageFactory } from './protocol.js';

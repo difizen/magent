@@ -1,7 +1,7 @@
 import { inject, singleton } from '@difizen/mana-app';
 import qs from 'query-string';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import type {
   APISession,

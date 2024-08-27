@@ -5,10 +5,10 @@ import { Modal, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
-import type { AgentModel } from '../../../modules/agent/protocol.js';
-import { KnowledgeIcon } from '../../../modules/knowledge/knowledge-icon.js';
-import { KnowledgeSpace } from '../../../modules/knowledge/knowledge-space.js';
-import type { KnowledgeModelOption } from '../../../modules/knowledge/protocol.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
+import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
+import { KnowledgeSpace } from '@/modules/knowledge/knowledge-space.js';
+import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
 import { KnowledgeModalId } from '../protocol.js';
 
 export const KnowledgeModalComponent = (

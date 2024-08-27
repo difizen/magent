@@ -8,8 +8,8 @@ import { Col, Drawer, Row, Select, Tree } from 'antd';
 import { useState } from 'react';
 
 import { DefaultLLMIcon } from '@/modules/model/model-icon/index.js';
+import { DefaultToolIcon } from '@/modules/tool/tool-icon.js';
 
-import { DefaultToolIcon } from '../../modules/tool/tool-icon.js';
 import { HumanIcon } from '../chat/components/message/human-message.js';
 import type { ChatView } from '../chat/view.js';
 

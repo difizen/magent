@@ -13,10 +13,10 @@ import {
 import { Flex } from 'antd';
 import { forwardRef } from 'react';
 
-import { AgentManager } from '../../modules/agent/index.js';
-import type { AgentModel } from '../../modules/agent/index.js';
-import { KnowledgeIcon } from '../../modules/knowledge/knowledge-icon.js';
-import { ToolIcon } from '../../modules/tool/tool-icon.js';
+import { AgentManager } from '@/modules/agent/agent-manager.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
+import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
+import { ToolIcon } from '@/modules/tool/tool-icon.js';
 
 import { CharacterSetting } from './components/character-setting/index.js';
 import { ConfigList } from './components/config-selector/index.js';
@@ -131,7 +131,7 @@ export class AgentConfigView extends BaseView {
   get modelOptions() {
     // TODO 大模型optios列表和对应存取值要怎么取？
     return (
-      this.agent?.llm?.model_name?.map((item) => {
+      this.agent?.llm?.models?.map((item) => {
         return {
           label: item,
           value: item,
@@ -142,7 +142,7 @@ export class AgentConfigView extends BaseView {
 
   protected initAgent = (agentId = this.agentId) => {
     if (agentId) {
-      const agent = this.agentManager.getOrCreateAgent({ id: agentId });
+      const agent = this.agentManager.getOrCreate({ id: agentId });
       agent.fetchInfo();
       this.agent = agent;
       return agent;

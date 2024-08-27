@@ -5,8 +5,8 @@ import { Emitter } from '@difizen/mana-app';
 import { inject, prop, transient } from '@difizen/mana-app';
 import dayjs from 'dayjs';
 
-import { AsyncModel } from '../../common/async-model.js';
-import { AxiosClient } from '../axios-client/index.js';
+import { AsyncModel } from '@/common/async-model.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 import type { ChatMessageItem } from '../chat-message/chat-message-item.js';
 import { ChatMessageManager } from '../chat-message/chat-message-manager.js';
 import type { ChatMessageModel, MessageCreate } from '../chat-message/protocol.js';

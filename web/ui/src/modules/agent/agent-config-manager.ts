@@ -1,11 +1,10 @@
 import { inject, singleton } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
+import { DefaultAgentConfigOptions } from './agent-config.js';
 import type { AgentConfig, AgentConfigOption } from './protocol.js';
 import { AgentConfigFactory } from './protocol.js';
-
-import { DefaultAgentConfigOptions } from './index.js';
 
 @singleton()
 export class AgentConfigManager {

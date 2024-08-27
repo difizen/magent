@@ -1,7 +1,8 @@
 import type { AvatarProps } from 'antd';
 import { Avatar } from 'antd';
 
-import { toResourceUrl } from '../../common/page-config.js';
+import { toResourceUrl } from '@/common/page-config.js';
+
 import { MagentLOGO } from '../base-layout/brand/logo.js';
 
 interface IProps extends AvatarProps {

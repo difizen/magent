@@ -1,8 +1,10 @@
 import { inject, prop, transient } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
+import { ToolManager } from '../tool/tool-manager.js';
+import type { ToolModel } from '../tool/tool-model.js';
 
-import type { LLMMeta, PlannerMeta, PromptMeta, ToolMeta } from './protocol.js';
+import type { LLMMeta, PlannerMeta, PromptMeta } from './protocol.js';
 import { AgentConfigOption } from './protocol.js';
 
 export const DefaultAgentConfigOptions: AgentConfigOption = {
@@ -12,6 +14,7 @@ export const DefaultAgentConfigOptions: AgentConfigOption = {
 @transient()
 export class AgentConfig {
   protected axios: AxiosClient;
+  protected toolManager: ToolManager;
   isDraft = true;
 
   @prop()
@@ -23,16 +26,18 @@ export class AgentConfig {
   planner: PlannerMeta;
 
   @prop()
-  tool: ToolMeta[];
+  tool: ToolModel[];
 
   option: AgentConfigOption;
 
   constructor(
     @inject(AgentConfigOption) option: AgentConfigOption,
     @inject(AxiosClient) axios: AxiosClient,
+    @inject(ToolManager) toolManager: ToolManager,
   ) {
     this.option = option;
     this.axios = axios;
+    this.toolManager = toolManager;
 
     this.fromMeta(option);
   }
@@ -45,6 +50,6 @@ export class AgentConfig {
       id: '',
       nickname: 'string',
     };
-    this.tool = option.tool ?? [];
+    this.tool = option.tool?.map((item) => this.toolManager.getOrCreate(item)) ?? [];
   }
 }

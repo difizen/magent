@@ -12,8 +12,8 @@ import { Col, List, Row, Tag, Tooltip } from 'antd';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import './index.less';
-import { ToolIcon } from '../../modules/tool/tool-icon.js';
-import { ToolSpace } from '../../modules/tool/tool-space.js';
+import { ToolIcon } from '@/modules/tool/tool-icon.js';
+import { ToolSpace } from '@/modules/tool/tool-space.js';
 
 export interface ToolItem {
   nickname: string;

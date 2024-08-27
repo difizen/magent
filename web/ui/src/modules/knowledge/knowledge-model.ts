@@ -1,7 +1,7 @@
 import { inject, prop, transient } from '@difizen/mana-app';
 
-import { AsyncModel } from '../../common/async-model.js';
-import { AxiosClient } from '../axios-client/index.js';
+import { AsyncModel } from '@/common/async-model.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { KnowledgeModelOption } from './protocol.js';
 import { KnowledgeModelType } from './protocol.js';

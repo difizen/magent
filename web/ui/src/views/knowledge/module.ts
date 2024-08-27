@@ -1,6 +1,6 @@
 import { createViewPreference, ManaModule } from '@difizen/mana-app';
 
-import { KnowledgeModule } from '../../modules/knowledge/module.js';
+import { KnowledgeModule } from '@/modules/knowledge/module.js';
 
 import { KnowledgeView, slot } from './view.js';
 

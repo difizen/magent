@@ -46,7 +46,7 @@ export class AIChatMessageItem extends ChatMessageItem {
   };
 
   protected getAgent = async () => {
-    const agent = await this.agentManager.getOrCreateAgent({ id: this.option.agentId });
+    const agent = await this.agentManager.getOrCreate({ id: this.option.agentId });
     this.agent = agent;
     this.agent.fetchInfo();
     this.agentDeferred.resolve(agent);

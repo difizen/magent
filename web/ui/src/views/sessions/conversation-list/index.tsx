@@ -1,11 +1,12 @@
-import { CaretRightOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import { Input, Popconfirm } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classNames from 'classnames';
 import { useLayoutEffect, useRef, useState } from 'react';
 
-import type { SessionModel } from '../../../modules/session/index.js';
+import type { SessionModel } from '@/modules/session/session-model.js';
+
 import type { SessionsView } from '../view.js';
 import './index.less';
 

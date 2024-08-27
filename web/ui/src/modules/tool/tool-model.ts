@@ -1,7 +1,7 @@
 import { Deferred, inject, prop, transient } from '@difizen/mana-app';
 
-import { AsyncModel } from '../../common/async-model.js';
-import { AxiosClient } from '../axios-client/index.js';
+import { AsyncModel } from '@/common/async-model.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { ToolModelOption, ToolModelType } from './protocol.js';
 import { ToolConfigManager } from './tool-config-manager.js';

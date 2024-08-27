@@ -5,11 +5,11 @@ import { Button, Form, Select, Popover, Avatar, Slider } from 'antd';
 import type { FC } from 'react';
 import { forwardRef, useEffect } from 'react';
 
+import { LLMManager } from '@/modules/model/llm-manager.js';
 import type { LLMModel } from '@/modules/model/llm-model.js';
 import { LLMIcon } from '@/modules/model/model-icon/index.js';
+import type { ModelMeta } from '@/modules/model/protocol.js';
 
-import { LLMManager } from '../../../../modules/model/llm-manager.js';
-import type { ModelMeta } from '../../../../modules/model/protocol.js';
 import type { AgentConfigView } from '../../view.js';
 
 import './index.less';

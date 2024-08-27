@@ -7,8 +7,8 @@ import { Modal } from 'antd';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 
-import { AvatarUpload } from '../../../components/avatar-upload/index.js';
-import { AgentIcon } from '../../../modules/agent/agent-icon.js';
+import { AvatarUpload } from '@/components/avatar-upload/index.js';
+import { AgentIcon } from '@/modules/agent/agent-icon.js';
 
 import './index.less';
 

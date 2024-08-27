@@ -9,10 +9,11 @@ import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
-import { AgentIcon } from '../../../../modules/agent/agent-icon.js';
-import type { AIChatMessageItem } from '../../../../modules/chat-message/ai-message-item.js';
-import type { ChatMessageModel } from '../../../../modules/chat-message/chat-message-model.js';
-import { AnswerState } from '../../../../modules/chat-message/protocol.js';
+import { AgentIcon } from '@/modules/agent/agent-icon.js';
+import type { AIChatMessageItem } from '@/modules/chat-message/ai-message-item.js';
+import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
+import { AnswerState } from '@/modules/chat-message/protocol.js';
+
 import type { ChatView } from '../../view.js';
 
 import { Markdown } from './markdown/index.js';

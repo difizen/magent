@@ -11,21 +11,20 @@ import {
   ViewOption,
 } from '@difizen/mana-app';
 import { useInject } from '@difizen/mana-app';
-import { Avatar, FloatButton } from 'antd';
+import { FloatButton } from 'antd';
 import classnames from 'classnames';
 import classNames from 'classnames';
 import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
-import { AgentIcon } from '../../modules/agent/agent-icon.js';
-import { AgentManager } from '../../modules/agent/agent-manager.js';
-import type { AgentModel } from '../../modules/agent/protocol.js';
-import { AxiosClient } from '../../modules/axios-client/index.js';
-import { MagentLOGO } from '../../modules/base-layout/brand/logo.js';
-import { ChatMessageManager } from '../../modules/chat-message/chat-message-manager.js';
-import type { MessageCreate } from '../../modules/chat-message/protocol.js';
-import { SessionManager } from '../../modules/session/session-manager.js';
-import type { SessionModel } from '../../modules/session/session-model.js';
+import { AgentIcon } from '@/modules/agent/agent-icon.js';
+import { AgentManager } from '@/modules/agent/agent-manager.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
+import { AxiosClient } from '@/modules/axios-client/protocol.js';
+import { ChatMessageManager } from '@/modules/chat-message/chat-message-manager.js';
+import type { MessageCreate } from '@/modules/chat-message/protocol.js';
+import { SessionManager } from '@/modules/session/session-manager.js';
+import type { SessionModel } from '@/modules/session/session-model.js';
 
 import { Input } from './components/input/index.js';
 import { MessageExchange } from './components/message/exchange.js';
@@ -174,7 +173,7 @@ export class ChatView extends BaseView {
   }
 
   protected getAgent = async (id: string) => {
-    this.agent = await this.agentManager.getOrCreateAgent({ id });
+    this.agent = await this.agentManager.getOrCreate({ id });
     this.agent.fetchInfo();
     this.agentDeferred.resolve(this.agent);
   };

@@ -1,6 +1,6 @@
 import { inject, singleton } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/index.js';
+import { AxiosClient } from '../axios-client/protocol.js';
 
 import { ToolFactory, type ToolModel, type ToolModelOption } from './protocol.js';
 
@@ -10,7 +10,7 @@ export class ToolManager {
   @inject(ToolFactory) toolFactory: ToolFactory;
   @inject(AxiosClient) axios: AxiosClient;
 
-  getTools = async (): Promise<ToolModelOption[]> => {
+  getAll = async (): Promise<ToolModelOption[]> => {
     const defaultValue: ToolModelOption[] = [];
     const res = await this.axios.get<ToolModelOption[]>(`/api/v1/tools`);
     if (res.status === 200) {
@@ -19,7 +19,7 @@ export class ToolManager {
     return defaultValue;
   };
 
-  getOrCreateTool = (option: ToolModelOption): ToolModel => {
+  getOrCreate = (option: ToolModelOption): ToolModel => {
     const exist = this.cache.get(option.id);
     if (exist) {
       return exist;

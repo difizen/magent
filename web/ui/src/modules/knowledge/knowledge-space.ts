@@ -15,8 +15,8 @@ export class KnowledgeSpace {
 
   async update() {
     this.loading = true;
-    const options = await this.manager.getKnowledge();
-    this.list = options.map(this.manager.getOrCreateKnowledge);
+    const options = await this.manager.getAll();
+    this.list = options.map(this.manager.getOrCreate);
     this.loading = false;
   }
 }

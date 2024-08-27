@@ -11,12 +11,12 @@ import {
 import { Col, List, Row } from 'antd';
 import { forwardRef, useState } from 'react';
 
-import { KnowledgeIcon } from '../../modules/knowledge/knowledge-icon.js';
-import { KnowledgeManager } from '../../modules/knowledge/knowledge-manager.js';
+import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
+import { KnowledgeManager } from '@/modules/knowledge/knowledge-manager.js';
 import type {
   KnowledgeModel,
   KnowledgeModelOption,
-} from '../../modules/knowledge/protocol.js';
+} from '@/modules/knowledge/protocol.js';
 
 import './index.less';
 
@@ -91,8 +91,8 @@ export class KnowledgeView extends BaseView {
   loadig = false;
 
   async update() {
-    const options = await this.manager.getKnowledge();
-    this.list = options.map(this.manager.getOrCreateKnowledge);
+    const options = await this.manager.getAll();
+    this.list = options.map(this.manager.getOrCreate);
   }
 
   override async onViewMount(): Promise<void> {

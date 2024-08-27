@@ -15,8 +15,8 @@ export class AgentMarket {
 
   async update() {
     this.loading = true;
-    const options = await this.agentManager.getAgents();
-    this.list = options.map(this.agentManager.getOrCreateAgent);
+    const options = await this.agentManager.getAll();
+    this.list = options.map(this.agentManager.getOrCreate);
     this.loading = false;
   }
 }

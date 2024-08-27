@@ -4,7 +4,7 @@ import { BoxPanel } from '@difizen/mana-react';
 import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 
-import type { AgentConfigManager } from '../../modules/agent/agent-config-manager.js';
+import type { AgentConfigManager } from '@/modules/agent/agent-config-manager.js';
 import { AgentView } from '../agent-dev/chat-view.js';
 
 import { AgentFlowView } from './agent-flow-view.js';
