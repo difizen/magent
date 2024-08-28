@@ -10,10 +10,12 @@ import { BaseView, inject, prop, view, ViewOption, transient } from '@difizen/ma
 import { Button } from 'antd';
 import { forwardRef, useEffect, useState } from 'react';
 
-import { AgentManager } from '../../modules/agent/index.js';
-import type { AgentModel, LLMMeta } from '../../modules/agent/index.js';
+import { AgentManager } from '@/modules/agent/agent-manager.js';
+import type { AgentModel } from '@/modules/agent/protocol.js';
 import './index.less';
-import type { KnowledgeModelOption } from '../../modules/knowledge/protocol.js';
+import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
+import type { LLMMeta } from '@/modules/model/protocol.js';
+
 import { ModelSelector } from '../agent-config/components/model-selector/index.js';
 import {
   KnowledgeModal,
@@ -45,9 +47,9 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
             data: {
               ...old.data,
               config: {
-                ...(old.data.config as Record<string, any>),
+                ...(old.data['config'] as Record<string, any>),
                 inputs: {
-                  ...old.data.config.inputs,
+                  ...old.data['config'].inputs,
                   llm_param: [
                     llmParam.find((p) => p.name === 'prompt'),
                     {
@@ -112,9 +114,9 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
             data: {
               ...old.data,
               config: {
-                ...(old.data.config as Record<string, any>),
+                ...(old.data['config'] as Record<string, any>),
                 inputs: {
-                  ...old.data.config.inputs,
+                  ...old.data['config'].inputs,
                   knowledge_param: [
                     {
                       name: 'top_k',
@@ -217,7 +219,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
         );
       };
       setKnowledgeSelector(Ele2 as any);
-    }, []);
+    }, [setKnowledgeSelector, setModelSelector, setNode]);
 
     return (
       <div ref={ref} className={viewId}>

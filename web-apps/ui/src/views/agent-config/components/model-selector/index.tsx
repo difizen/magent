@@ -1,22 +1,13 @@
 import { CaretDownOutlined } from '@ant-design/icons';
-import { ViewInstance, useInject, useObserve } from '@difizen/mana-app';
-import type { SliderSingleProps } from 'antd';
-import { Button, Form, Select, Popover, Avatar, Slider } from 'antd';
-import type { FC } from 'react';
+import { useInject } from '@difizen/mana-app';
+import { Button, Form, Select, Popover, Avatar } from 'antd';
 import { forwardRef, useEffect } from 'react';
 
-import type { LLMProvider } from '@/modules/model/llm-model.js';
 import { LLMProviderManager } from '@/modules/model/llm-provider-manager.js';
 import { LLMIcon } from '@/modules/model/model-icon/index.js';
 import type { LLMMeta } from '@/modules/model/protocol.js';
 
-import type { AgentConfigView } from '../../view.js';
-
-import './index.less';
-import { LLMManager } from '../../../../modules/model/llm-manager.js';
 import { DecimalStep } from '../decimal-step/index.js';
-
-import { DefaultLogo, OpenAILogo, QwenLogo } from './logos.js';
 import './index.less';
 
 const clsPrefix = 'agent-config-model-selector';
@@ -43,7 +34,13 @@ const toKey = (model?: LLMMeta) => {
   return model.id + model.model_name[0];
 };
 
-export const ModelSelector = forwardRef<HTMLDivElement>(function ModelSelectorComponent(
+export const ModelSelector = forwardRef<
+  HTMLDivElement,
+  {
+    value?: LLMMeta;
+    onChange?: (value: LLMMeta) => void;
+  }
+>(function ModelSelectorComponent(
   props: {
     value?: LLMMeta;
     onChange?: (value: LLMMeta) => void;
@@ -52,7 +49,7 @@ export const ModelSelector = forwardRef<HTMLDivElement>(function ModelSelectorCo
 ) {
   const { value, onChange } = props;
 
-  const modelManager = useInject(LLMManager);
+  const modelManager = useInject(LLMProviderManager);
   // const defaultModel = modelManager.defaultModel;
 
   const models = modelManager.models;
@@ -60,10 +57,10 @@ export const ModelSelector = forwardRef<HTMLDivElement>(function ModelSelectorCo
   const metaModels = models
     .map((item) => item.toSingleMetas())
     .filter((item) => !!item)
-    .flat() as ModelMeta[];
+    .flat() as LLMMeta[];
 
   useEffect(() => {
-    modelManager.updateModels();
+    modelManager.updateProviders();
   }, [modelManager]);
 
   const currentModel = metaModels.find((item) => value && toKey(item) === toKey(value));
@@ -74,7 +71,7 @@ export const ModelSelector = forwardRef<HTMLDivElement>(function ModelSelectorCo
     <div ref={ref} className={clsPrefix}>
       <Popover
         rootClassName={`${clsPrefix}-popover`}
-        getPopupContainer={(triggerNode) => triggerNode.parentElement}
+        getPopupContainer={(triggerNode) => triggerNode.parentElement!}
         arrow={false}
         placement="bottomLeft"
         title="模型设置"

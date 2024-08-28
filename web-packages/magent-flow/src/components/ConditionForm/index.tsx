@@ -1,6 +1,6 @@
 import { Form } from 'antd';
 import type { DefaultOptionType } from 'antd/es/cascader';
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import type { ConditionBranch } from '@/interfaces/flow.js';
 
@@ -18,19 +18,23 @@ export const ConditionForm = (props: {
 
   useEffect(() => {
     form.setFieldsValue(value.conditions[0]);
-  }, []);
+  }, [form, value.conditions]);
 
   return (
     <Form
       form={form}
       layout="inline"
       onValuesChange={(_, allFields) => {
-        form.validateFields().then(() => {
-          onChange({
-            name: value.name,
-            conditions: [allFields],
-          });
-        });
+        form
+          .validateFields()
+          .then(() => {
+            onChange({
+              name: value.name,
+              conditions: [allFields],
+            });
+            return;
+          })
+          .catch(console.error);
       }}
     >
       <Form.Item name={['left', 'value']}>

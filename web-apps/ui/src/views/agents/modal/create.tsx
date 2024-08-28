@@ -13,6 +13,7 @@ import { AgentTypeSelector } from '@/components/agent-type-selector/index.js';
 import { AvatarUpload } from '@/components/avatar-upload/index.js';
 import { AgentIcon } from '@/modules/agent/agent-icon.js';
 import { AgentManager } from '@/modules/agent/agent-manager.js';
+import { AgentMarket } from '@/modules/agent/agent-market.js';
 import { RequestHelper } from '@/modules/axios-client/request.js';
 import { LLMManager } from '@/modules/model/llm-manager.js';
 import { ModelSelector } from '@/modules/model/model-selector/index.js';
@@ -68,6 +69,7 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
   const agentManager = useInject(AgentManager);
   const llmManager = useInject(LLMManager);
   const req = useInject(RequestHelper);
+  const market = useInject(AgentMarket);
   const { visible, close } = props;
   const [form] = Form.useForm<{
     id: string;
@@ -125,6 +127,7 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
           const res = await agentManager.create(meta);
           if (res.status === 200) {
             close();
+            market.update();
             history.push(
               `/agent/${meta.id}/${meta.planner.id === 'workflow_planner' ? 'flow' : 'dev'}`,
             );
