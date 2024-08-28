@@ -13,7 +13,7 @@ import { AgentTypeSelector } from '@/components/agent-type-selector/index.js';
 import { AvatarUpload } from '@/components/avatar-upload/index.js';
 import { AgentIcon } from '@/modules/agent/agent-icon.js';
 import { AgentManager } from '@/modules/agent/agent-manager.js';
-import { AxiosClient } from '@/modules/axios-client/protocol.js';
+import { RequestHelper } from '@/modules/axios-client/request.js';
 import { LLMManager } from '@/modules/model/llm-manager.js';
 import { ModelSelector } from '@/modules/model/model-selector/index.js';
 import type { LLMMeta } from '@/modules/model/protocol.js';
@@ -67,7 +67,7 @@ const UploadButton = (props: { imageUrl?: string }) => {
 export const AgentModalComponent = (props: ModalItemProps<any>) => {
   const agentManager = useInject(AgentManager);
   const llmManager = useInject(LLMManager);
-  const axios = useInject<AxiosClient>(AxiosClient);
+  const req = useInject(RequestHelper);
   const { visible, close } = props;
   const [form] = Form.useForm<{
     id: string;
@@ -145,11 +145,17 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
           label="id"
           rules={[
             { required: true },
-            // ({ getFieldValue }) => ({
-            //   async validator(_, value) {
-            //     const res = await axios.get<LLMMeta[]>(`/api/v1/llms`);
-            //   },
-            // }),
+            () => ({
+              async validator(_, value) {
+                const res = await req.get<boolean>(`/api/v1/common/is_id_unique`, {
+                  id: value,
+                  type: 'agent',
+                });
+                if (res.status !== 200 || res.data === false) {
+                  throw new Error(`${value} 已存在，请更换其他 id`);
+                }
+              },
+            }),
           ]}
         >
           <Input placeholder="给智能体一个独一无二的 id" />
