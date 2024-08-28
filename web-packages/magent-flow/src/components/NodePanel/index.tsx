@@ -1,7 +1,6 @@
+import type { NodeDataType } from '@flow/interfaces/flow.js';
 import { Input } from 'antd';
 import React from 'react';
-
-import type { NodeDataType } from '@/interfaces/flow.js';
 
 interface NodesPanelProps {
   /**
@@ -46,7 +45,7 @@ export const NodesPanel = (props: NodesPanelProps) => {
       )}
       {nodes.sort().map((node) => (
         <div
-          className="m-2 p-2 bg-gray-50 rounded-xl cursor-pointer flex items-center"
+          className="m-3 p-2 bg-white rounded-xl cursor-pointer flex items-center shadow-lg"
           key={node.id}
           draggable
           onDragStart={(event) =>

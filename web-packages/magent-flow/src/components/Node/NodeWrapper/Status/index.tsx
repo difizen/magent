@@ -1,7 +1,7 @@
 import { Popover, Tag } from 'antd';
 import React from 'react';
 
-import { classNames } from '@/utils/basic.js';
+import { classNames } from '@flow/utils/basic.js';
 
 export enum RunStatusEnum {
   Success = 'success',

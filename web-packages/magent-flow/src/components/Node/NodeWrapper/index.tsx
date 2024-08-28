@@ -1,9 +1,8 @@
+import type { NodeDataType } from '@flow/interfaces/flow.js';
+import { classNames } from '@flow/utils/index.js';
 import { Handle, Position } from '@xyflow/react';
 import { Space } from 'antd';
 import React from 'react';
-
-import type { NodeDataType } from '@/interfaces/flow.js';
-import { classNames } from '@/utils/index.js';
 
 type Props = {
   data: NodeDataType;
@@ -34,7 +33,7 @@ export const NodeWrapper = (props: {
   return (
     <div
       className={classNames(
-        'relative flex flex-col justify-center rounded-xl bg-white border-4',
+        'relative flex flex-col justify-center rounded-xl bg-white shadow-lg',
         nodeProps.selected ? 'border-sky-500' : '',
       )}
     >

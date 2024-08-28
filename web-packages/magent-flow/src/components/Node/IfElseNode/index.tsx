@@ -1,6 +1,6 @@
-import { ConditionForm } from '@/components/ConditionForm/index.js';
-import type { NodeDataType, NodeType } from '@/interfaces/flow.js';
-import { useFlowStore } from '@/stores/useFlowStore.js';
+import { ConditionForm } from '@flow/components/ConditionForm/index.js';
+import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
+import { useFlowStore } from '@flow/stores/useFlowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
@@ -43,7 +43,7 @@ export const IfElseNode = (props: Props) => {
             <div className="ml-1 mb-2 font-medium">如果</div>
             <ConditionForm
               refOptions={options}
-              value={data.config?.inputs?.branches[0]}
+              value={data.config?.inputs?.branches?.[0]}
               onChange={(val) => {
                 setNode(data.id, (old) => ({
                   ...old,

@@ -5,6 +5,7 @@ import {
   inject,
   prop,
   transient,
+  useObserve,
   view,
   ViewInstance,
   ViewManager,
@@ -34,6 +35,25 @@ export interface ChatProps {
   className?: string;
 }
 
+export const OpeningSpeechMessage = (props: { agent: AgentModel | undefined }) => {
+  const agent = useObserve(props.agent);
+  return (
+    <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
+      <AgentIcon className="chat-message-avatar" agent={agent} />
+      <div className={`chat-message-container`}>
+        <div className={`chat-message-ai`}>
+          <div className={`markdown-message-md`}>
+            <span className={`markdown-message-md-pop`}>
+              <div className="chat-msg-md chat-msg-md-message tp-md">
+                <p>{agent?.openingSpeech}</p>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 export function ChatComponent(props: ChatProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const { className } = props;
@@ -46,63 +66,31 @@ export function ChatComponent(props: ChatProps) {
   return (
     <div className={classnames('chat', className)}>
       <div className="chat-content">
-        {instance.session && instance.session.messages.length ? (
-          <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
-            <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-              <AgentIcon className="chat-message-avatar" agent={instance.agent} />
-
-              <div className={`chat-message-container`}>
-                <div className={`chat-message-ai`}>
-                  <div className={`markdown-message-md`}>
-                    <span className={`markdown-message-md-pop`}>
-                      <div className="chat-msg-md chat-msg-md-message tp-md">
-                        <p>{instance.agent?.openingSpeech}</p>
-                      </div>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {instance.session?.messages.map((msg) => (
-              <MessageExchange key={msg.id} exchange={msg} />
-            ))}
-            {instance.showToBottomBtn && (
-              <FloatButton
-                onClick={() => instance.scrollToBottom()}
-                className="chat-content-list-to-bottom"
-                icon={<VerticalAlignBottomOutlined />}
-              />
-            )}
-          </div>
-        ) : (
-          <div className="chat-content-list">
-            <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-              <AgentIcon className="chat-message-avatar" agent={instance.agent} />
-
-              <div className={`chat-message-container`}>
-                <div className={`chat-message-ai`}>
-                  <div className={`markdown-message-md`}>
-                    <span className={`markdown-message-md-pop`}>
-                      <div className="chat-msg-md chat-msg-md-message tp-md">
-                        <p>{instance.agent?.openingSpeech}</p>
-                      </div>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
+          {instance.agent?.openingSpeech && (
+            <OpeningSpeechMessage agent={instance.agent} />
+          )}
+          {instance.session && instance.session.messages.length ? (
+            <>
+              {instance.session?.messages.map((msg) => (
+                <MessageExchange key={msg.id} exchange={msg} />
+              ))}
+              {instance.showToBottomBtn && (
+                <FloatButton
+                  onClick={() => instance.scrollToBottom()}
+                  className="chat-content-list-to-bottom"
+                  icon={<VerticalAlignBottomOutlined />}
+                />
+              )}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
 
         <div className="chat-content-input">
           <div className="chat-content-input-mask"></div>
           <div className="chat-content-input-main">
-            {/* <Button
-              className="chat-content-input-main-clear"
-              icon={<ClearOutlined />}
-              onClick={() => instance.clear()}
-            ></Button> */}
-            {/* <Input onSubmit={(v) => chat.sendMessageStream(v)} /> */}
             <Input onSubmit={(v) => instance.sendMessage(v)} />
           </div>
         </div>

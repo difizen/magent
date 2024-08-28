@@ -2,7 +2,7 @@ import type { CascaderProps } from 'antd';
 import { Cascader } from 'antd';
 import React from 'react';
 
-import { classNames } from '@/utils/index.js';
+import { classNames } from '@flow/utils/index.js';
 
 export const CascaderInNode = (props: CascaderProps) => {
   return (

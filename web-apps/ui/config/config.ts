@@ -60,6 +60,11 @@ export default defineConfig({
   jsMinifier: 'none',
   alias: {
     '@/modules': path.join(__dirname, '../src/modules'),
+    '@difizen/magent-flow': path.resolve(
+      __dirname,
+      '../../../web-packages/magent-flow/src',
+    ),
+    '@flow': path.resolve(__dirname, '../../../web-packages/magent-flow/src'),
   },
   favicons: ['/favicon.ico'],
 });

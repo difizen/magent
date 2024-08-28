@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { BasicSchema } from '@/interfaces/flow.js';
+import type { BasicSchema } from '@flow/interfaces/flow.js';
 
 export interface Knowledge {
   name: string;

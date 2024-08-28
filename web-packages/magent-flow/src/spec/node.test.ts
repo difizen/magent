@@ -149,7 +149,6 @@ describe('addField', () => {
       required: false,
     });
     const got = input.log();
-    console.log(got, '==got');
     expect(got).toMatchSnapshot();
     // expect(1).toBe(0);
   });
@@ -163,7 +162,6 @@ describe('addField', () => {
       description: 'this is a',
       required: false,
     });
-    console.log(input.log(), 'log1');
     input.addField({
       pointer: '/a/b', // 指定属性路径，如 /a/b
       name: 'b',
@@ -193,7 +191,6 @@ describe('addField', () => {
       required: true,
     });
     const got = input.log();
-    console.log(got);
     expect(got).toMatchSnapshot();
   });
 });

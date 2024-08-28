@@ -202,7 +202,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
                   width: '100%',
                   border: '1px dashed #d9d9d9',
                   padding: '6px',
-                  zIndex,
+                  // zIndex,
                 }}
                 type="link"
                 size="small"
@@ -240,7 +240,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
   },
 );
 
-export interface AgentConfigViewOption {
+export interface AgentFlowViewOption {
   agentId: string;
 }
 @transient()
@@ -252,7 +252,7 @@ export class AgentFlowView extends BaseView {
   @prop() agent: AgentModel;
   protected agentManager: AgentManager;
   constructor(
-    @inject(ViewOption) option: AgentConfigViewOption,
+    @inject(ViewOption) option: AgentFlowViewOption,
     @inject(AgentManager) agentManager: AgentManager,
   ) {
     super();

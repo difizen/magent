@@ -64,14 +64,6 @@ const AgentFlowDevComponent = forwardRef<HTMLDivElement>(
               {instance.chat && <ViewRender view={instance.chat} />}
             </div>
           </BoxPanel.Pane>
-          {instance.hideChat && (
-            <Button
-              icon={<MessageOutlined />}
-              type="text"
-              onClick={() => (instance.hideChat = false)}
-              className={`${viewId}-layout-chat-switch`}
-            ></Button>
-          )}
         </BoxPanel>
       </div>
     );
@@ -82,7 +74,7 @@ const AgentFlowDevComponent = forwardRef<HTMLDivElement>(
 @view(viewId)
 export class AgentFlowDevView extends AgentView {
   @prop()
-  hideChat = false;
+  hideChat = true;
 
   protected agentConfigManager: AgentConfigManager;
 

@@ -1,7 +1,7 @@
 import { Collapse } from 'antd';
 import React from 'react';
 
-import type { NodeDataType } from '@/interfaces/flow.js';
+import type { NodeDataType } from '@flow/interfaces/flow.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 

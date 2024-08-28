@@ -6,7 +6,7 @@ import type { TextNode } from 'lexical';
 import React, { Fragment, memo, useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import { useEventEmitterContextContext } from '@/context/event-emitter.js';
+import { useEventEmitterContextContext } from '@flow/context/event-emitter.js';
 
 import { useBasicTypeaheadTriggerMatch } from '../../hooks.js';
 import type { ExternalToolBlockType, VariableBlockType } from '../../types.js';

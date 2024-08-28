@@ -64,11 +64,11 @@ export interface NodeDataConfigType {
   outputs?: BasicSchema[];
 }
 
-// export interface NodeDataMetaType {
-//   name: string;
-//   icon?: string;
-//   description?: string;
-// }
+export interface NodeDataMetaType {
+  name: string;
+  icon?: string;
+  description?: string;
+}
 
 export interface NodeDataType {
   id: string;

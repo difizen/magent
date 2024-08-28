@@ -1,11 +1,10 @@
+import { UUID } from '@flow/spec/uuid.js';
 import { message } from 'antd';
 import type {
   JSONSchema7,
   JSONSchema7Definition,
   JSONSchema7TypeName,
 } from 'json-schema';
-
-import { UUID } from '@/spec/uuid.js';
 
 export type OrderJSONSchema7 = JSONSchema7 & {
   order: number;

@@ -1,8 +1,7 @@
+import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
+import type { NodeDataType } from '@flow/interfaces/flow.js';
+import { NodeTypeEnum } from '@flow/interfaces/flow.js';
 import yaml from 'js-yaml';
-
-import { EventEmitterContextProvider } from '@/context/event-emitter.js';
-import type { NodeDataType } from '@/interfaces/flow.js';
-import { NodeTypeEnum } from '@/interfaces/flow.js';
 
 import Flow from '../Flow/index.js';
 import { AgentNode } from '../Node/AgentNode/index.js';
@@ -12,6 +11,24 @@ import { KnowledgeNode } from '../Node/KnowledgeNode/index.js';
 import { LLMNode } from '../Node/LLMNode/index.js';
 import { StartNode } from '../Node/StartNode/index.js';
 import { NodesPanel } from '../NodePanel/index.js';
+
+import agentIcon from './icons/agent.svg';
+import endIcon from './icons/end.svg';
+import ifelseIcon from './icons/ifelse.svg';
+import knowledgeIcon from './icons/knowledge.svg';
+import llmIcon from './icons/llm.svg';
+import startIcon from './icons/start.svg';
+import toolIcon from './icons/tool.svg';
+
+const iconMap = {
+  start: startIcon,
+  end: endIcon,
+  llm: llmIcon,
+  knowledge: knowledgeIcon,
+  tool: toolIcon,
+  agent: agentIcon,
+  ifelse: ifelseIcon,
+};
 
 const yamlContent = `
 - id: 1
@@ -148,7 +165,7 @@ const yamlContent = `
       - name: output
         type: string
 - id: 6
-  name: Agent智能体
+  name: 智能体
   description:
   type: agent
   data:
@@ -188,7 +205,9 @@ const yamlContent = `
 
 export const NodeSchemaParser = (obj: Record<string, any>) => {
   obj['config'] = obj['data'];
+  const type = obj['type'];
   obj['icon'] =
+    iconMap[type as keyof typeof iconMap] ||
     'https://mdn.alipayobjects.com/huamei_xbkogb/afts/img/A*PzmdRpvZz58AAAAAAAAAAAAADqarAQ/original';
 
   delete obj['data'];
@@ -230,7 +249,10 @@ export const FlowWithPanel = (props: { toolbar?: React.ReactNode }) => {
   return (
     <EventEmitterContextProvider>
       <div className="flex flex-1">
-        <NodesPanel className="w-[200px]" nodes={yaml_data as NodeDataType[]} />
+        <NodesPanel
+          className="w-[200px] z-10 bg-gray-50 shadow-lg "
+          nodes={yaml_data as NodeDataType[]}
+        />
         <Flow classNames="flex-1" nodeTypes={nodeTypes} toolbar={toolbar} />
       </div>
     </EventEmitterContextProvider>

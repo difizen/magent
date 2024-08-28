@@ -1,8 +1,7 @@
 import { CaretRightOutlined } from '@ant-design/icons';
+import type { NodeDataType } from '@flow/interfaces/flow.js';
 import { Button, Cascader, Collapse, Flex, Input, Select, Space, theme } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
-
-import type { NodeDataType } from '@/interfaces/flow.js';
 
 interface CascaderOptions {
   value: string;
@@ -26,7 +25,7 @@ const getCascaderOptions = (node: NodeDataType) => {
 
   // 递归解析JSONSchema
   const parseSchema = (schema: any): CascaderOptions[] => {
-    console.log('🚀 ~ parseSchema ~ schema:', schema);
+    // console.log('🚀 ~ parseSchema ~ schema:', schema);
     const parsedOptions: CascaderOptions[] = [];
 
     for (const key in schema.properties) {

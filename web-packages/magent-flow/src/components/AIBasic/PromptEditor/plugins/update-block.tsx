@@ -1,7 +1,7 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodes } from 'lexical';
 
-import { useEventEmitterContextContext } from '@/context/event-emitter.js';
+import { useEventEmitterContextContext } from '@flow/context/event-emitter.js';
 
 import { textToEditorState } from '../utils.js';
 

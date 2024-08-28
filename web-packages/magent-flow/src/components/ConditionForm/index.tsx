@@ -1,8 +1,7 @@
+import type { ConditionBranch } from '@flow/interfaces/flow.js';
 import { Form } from 'antd';
 import type { DefaultOptionType } from 'antd/es/cascader';
 import { useEffect } from 'react';
-
-import type { ConditionBranch } from '@/interfaces/flow.js';
 
 import { SelectInNode } from '../AIBasic/SelectInNode//index.js';
 import { ReferenceSelect } from '../ReferenceSelect/index.js';
@@ -17,8 +16,10 @@ export const ConditionForm = (props: {
   const compare = Form.useWatch('compare', form);
 
   useEffect(() => {
-    form.setFieldsValue(value.conditions[0]);
-  }, [form, value.conditions]);
+    if (value) {
+      form.setFieldsValue(value.conditions[0]);
+    }
+  }, [form, value, value?.conditions]);
 
   return (
     <Form

@@ -1,7 +1,7 @@
 import type React from 'react';
 import { create } from 'zustand';
 
-import type { BasicSchema } from '@/interfaces/flow.js';
+import type { BasicSchema } from '@flow/interfaces/flow.js';
 
 // 注册 模型选择和配置组件 提供onChange事件
 export interface Model {

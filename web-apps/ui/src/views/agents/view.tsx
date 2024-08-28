@@ -16,6 +16,7 @@ import { history } from 'umi';
 import './index.less';
 import { AgentIcon } from '@/modules/agent/agent-icon.js';
 import { AgentMarket } from '@/modules/agent/agent-market.js';
+import type { AgentModel } from '@/modules/agent/agent-model.js';
 
 import { AgentCreateModal } from './modal/create.js';
 
@@ -42,14 +43,14 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
                 <EditOutlined
                   onClick={(e) => {
                     e.stopPropagation();
-                    instance.toDevPage(item.id);
+                    instance.toDevPage(item);
                   }}
                   key="dev"
                 />,
                 <MessageOutlined key="chat" />,
               ]}
               onClick={() => {
-                instance.toChatPage(item.id);
+                instance.toChatPage(item);
               }}
             >
               <Meta
@@ -94,11 +95,16 @@ export class AgentsView extends BaseView {
     this.loadig = false;
   }
 
-  toChatPage = (agentId: string) => {
-    history.push(`/agent/${agentId}/chat`);
+  toChatPage = (agent: AgentModel) => {
+    history.push(`/agent/${agent.id}/chat`);
   };
 
-  toDevPage = (agentId: string) => {
-    history.push(`/agent/${agentId}/dev`);
+  toDevPage = async (agent: AgentModel) => {
+    await agent.fetchInfo();
+    if (agent.planner?.id === 'workflow_planner') {
+      history.push(`/agent/${agent.id}/flow`);
+    } else {
+      history.push(`/agent/${agent.id}/dev`);
+    }
   };
 }

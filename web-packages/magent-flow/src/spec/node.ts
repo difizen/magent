@@ -2,8 +2,8 @@ import type {
   NodeDataConfigType,
   NodeDataMetaType,
   NodeDataType,
-} from '@/interfaces/flow.js';
-import { NodeTypeEnum } from '@/interfaces/flow.js';
+} from '@flow/interfaces/flow.js';
+import { NodeTypeEnum } from '@flow/interfaces/flow.js';
 
 import { FormSchema } from './FormSchema/index.js';
 import { UUID } from './uuid.js';

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { defaultShortcuts } from '@/constants/constant.js';
+import { defaultShortcuts } from '@flow/constants/constant.js';
 
 export type shortcutsStoreType = {
   updateUniqueShortcut: (name: string, combination: string) => void;

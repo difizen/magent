@@ -7,12 +7,11 @@ import {
   CaretRightOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
+import { variableTypeOptions } from '@flow/FormSchema/index.js';
+import type { FormSchema, OrderJSONSchema7 } from '@flow/FormSchema/index.js';
 import { Card, Checkbox, Collapse, Form, Input, Select, Space, theme } from 'antd';
 import type { JSONSchema7 } from 'json-schema';
 import React, { useState } from 'react';
-
-import { variableTypeOptions } from '@/FormSchema/index.js';
-import type { FormSchema, OrderJSONSchema7 } from '@/FormSchema/index.js';
 
 // import {
 //   FormSchema,
@@ -164,7 +163,6 @@ export const SchemaConfigForm = (props: {
         const propertiesKeys = Object.keys(schema.properties || {});
         propertiesKeys.sort((a, b) => {
           const p = schema.properties as { [key: string]: OrderJSONSchema7 };
-          console.log(p[a].order, p[b]?.order, '==order');
           return (p[a]?.order || 999) - (p[b]?.order || 999);
         });
 

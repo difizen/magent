@@ -3,12 +3,11 @@ import { Background, ReactFlow } from '@xyflow/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { Toolbar } from '@/components/Toolbar/index.js';
-import type { NodeType } from '@/interfaces/flow.js';
-import { useFlowStore } from '@/stores/useFlowStore.js';
-import { useShortcutsStore } from '@/stores/useShortcutsStore.js';
-import { useUndoRedoStore } from '@/stores/useUndoRedoStore.js';
-import { getNodeId } from '@/utils/reactflowUtils.js';
+import type { NodeType } from '@flow/interfaces/flow.js';
+import { useFlowStore } from '@flow/stores/useFlowStore.js';
+import { useShortcutsStore } from '@flow/stores/useShortcutsStore.js';
+import { useUndoRedoStore } from '@flow/stores/useUndoRedoStore.js';
+import { getNodeId } from '@flow/utils/reactflowUtils.js';
 
 import CustomEdge from '../CustomEdge/index.js';
 import { FlowController } from '../FlowController/index.js';
@@ -122,11 +121,13 @@ function Flow(props: FlowProps) {
             { nodes: [newNode], edges: [] },
             { x: event.clientX, y: event.clientY },
           );
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
     // Specify dependencies for useCallback
-    [getNodeId, setNodes, takeSnapshot, paste],
+    [takeSnapshot, paste],
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {

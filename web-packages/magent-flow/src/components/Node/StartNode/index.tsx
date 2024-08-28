@@ -1,7 +1,5 @@
-import { Collapse } from 'antd';
-
-import { VariableForm } from '@/components/VariableForm/index.js';
-import type { NodeDataType } from '@/interfaces/flow.js';
+import { VariableForm } from '@flow/components/VariableForm/index.js';
+import type { NodeDataType } from '@flow/interfaces/flow.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
@@ -17,19 +15,15 @@ export const StartNode = (props: Props) => {
 
   return (
     <NodeWrapper nodeProps={props} leftHandler={false}>
-      <Collapse>
-        {/* <SchemaConfigForm formSchema={mockSchema} /> */}
-
-        <VariableForm
-          label="输入"
-          showRequired={false}
-          dynamic={false}
-          values={data.config?.outputs || []}
-          onChange={(values) => {
-            console.log('qianyan', values);
-          }}
-        />
-      </Collapse>
+      <VariableForm
+        label="输入"
+        showRequired={false}
+        dynamic={false}
+        values={data.config?.outputs || []}
+        onChange={(values) => {
+          //
+        }}
+      />
     </NodeWrapper>
   );
 };

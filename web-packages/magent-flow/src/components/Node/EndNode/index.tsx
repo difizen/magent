@@ -1,8 +1,8 @@
-import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper/index.js';
-import PromptEditor from '@/components/AIBasic/PromptEditor/index.js';
-import { ReferenceForm } from '@/components/ReferenceForm/index.js';
-import type { BasicSchema, NodeDataType } from '@/interfaces/flow.js';
-import { useFlowStore } from '@/stores/useFlowStore.js';
+import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
+import PromptEditor from '@flow/components/AIBasic/PromptEditor/index.js';
+import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
+import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
+import { useFlowStore } from '@flow/stores/useFlowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 

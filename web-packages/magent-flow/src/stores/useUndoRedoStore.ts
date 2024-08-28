@@ -56,7 +56,6 @@ export const useUndoRedoStore = create<FlowRedoUndoStoreType>(() => ({
     future = [];
   },
   undo: () => {
-    console.log('🚀 ~ useUndoRedoStore ~ undo:');
     const newState = useFlowStore.getState();
 
     const pastLength = past?.length ?? 0;

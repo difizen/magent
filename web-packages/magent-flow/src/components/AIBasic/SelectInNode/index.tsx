@@ -1,7 +1,7 @@
 import type { SelectProps } from 'antd';
 import { Select } from 'antd';
 
-import { classNames } from '@/utils/index.js';
+import { classNames } from '@flow/utils/index.js';
 
 export const SelectInNode = (props: SelectProps) => {
   return (
