@@ -1,15 +1,22 @@
 import path from 'path';
 
 import type { ModalItem, ModalItemProps } from '@difizen/mana-app';
+import { useInject } from '@difizen/mana-app';
 import type { FormInstance } from 'antd';
 import { Button, Form, Input, Space } from 'antd';
 import { Modal } from 'antd';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
+import { history } from 'umi';
 
+import { AgentTypeSelector } from '@/components/agent-type-selector/index.js';
 import { AvatarUpload } from '@/components/avatar-upload/index.js';
 import { AgentIcon } from '@/modules/agent/agent-icon.js';
-
+import { AgentManager } from '@/modules/agent/agent-manager.js';
+import { AxiosClient } from '@/modules/axios-client/protocol.js';
+import { LLMManager } from '@/modules/model/llm-manager.js';
+import { ModelSelector } from '@/modules/model/model-selector/index.js';
+import type { LLMMeta } from '@/modules/model/protocol.js';
 import './index.less';
 
 interface SubmitButtonProps {
@@ -26,13 +33,20 @@ const SubmitButton: React.FC<PropsWithChildren<SubmitButtonProps>> = (
 
   useEffect(() => {
     form
-      .validateFields({ validateOnly: true })
+      .validateFields({
+        validateOnly: true,
+      })
       .then(() => setSubmittable(true))
       .catch(() => setSubmittable(false));
   }, [form, values]);
 
   return (
-    <Button type="primary" htmlType="submit" disabled={!submittable}>
+    <Button
+      onClick={() => form.submit()}
+      type="primary"
+      htmlType="submit"
+      disabled={!submittable}
+    >
       {children}
     </Button>
   );
@@ -51,9 +65,31 @@ const UploadButton = (props: { imageUrl?: string }) => {
 };
 
 export const AgentModalComponent = (props: ModalItemProps<any>) => {
+  const agentManager = useInject(AgentManager);
+  const llmManager = useInject(LLMManager);
+  const axios = useInject<AxiosClient>(AxiosClient);
   const { visible, close } = props;
-  const [form] = Form.useForm();
-  const [idValue, setId] = useState<string | undefined>(undefined);
+  const [form] = Form.useForm<{
+    id: string;
+    plannerId: string;
+    avatar?: string;
+    nickname: string;
+    description?: string;
+    llm: LLMMeta;
+  }>();
+  const idValue = Form.useWatch('id', form);
+  const plannerValue = Form.useWatch('plannerId', form);
+  useEffect(() => {
+    llmManager
+      .updateFromProvider()
+      .then(() => {
+        if (form.getFieldValue('llm') === undefined && llmManager.default) {
+          form.setFieldValue('llm', llmManager.default.toMeta());
+        }
+        return;
+      })
+      .catch(console.error);
+  }, [llmManager, form]);
 
   return (
     <Modal
@@ -74,27 +110,58 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
       <Form
         className="magent-agents-modal-create-form"
         form={form}
-        name="validateOnly"
         layout="vertical"
         autoComplete="off"
-        onFieldsChange={(changed) => {
-          const idChanged = changed.find(
-            (item) =>
-              item.name instanceof Array &&
-              item.name.length === 1 &&
-              item.name[0] === 'id',
-          );
-          if (idChanged && idChanged.validated) {
-            setId(idChanged.value);
+        onFinish={async (values) => {
+          const meta = {
+            id: values.id,
+            nickname: values.nickname,
+            avatar: values.avatar,
+            description: values.description,
+            prompt: { instruction: '', introduction: '', target: '' },
+            planner: { id: values.plannerId, nickname: '' },
+            llm: llmManager.default,
+          };
+          const res = await agentManager.create(meta);
+          if (res.status === 200) {
+            close();
+            history.push(
+              `/agent/${meta.id}/${meta.planner.id === 'workflow_planner' ? 'flow' : 'dev'}`,
+            );
           }
         }}
+        onFinishFailed={console.error}
+        initialValues={{ plannerId: 'rag_planner' }}
       >
-        <Form.Item name="id" label="id" rules={[{ required: true }]}>
-          <Input />
+        <Form.Item
+          name="plannerId"
+          label="想创建哪种类型的智能体？"
+          rules={[{ required: true }]}
+        >
+          <AgentTypeSelector />
+        </Form.Item>
+        <Form.Item
+          name="id"
+          label="id"
+          rules={[
+            { required: true },
+            // ({ getFieldValue }) => ({
+            //   async validator(_, value) {
+            //     const res = await axios.get<LLMMeta[]>(`/api/v1/llms`);
+            //   },
+            // }),
+          ]}
+        >
+          <Input placeholder="给智能体一个独一无二的 id" />
         </Form.Item>
         <Form.Item name="nickname" label="名称" rules={[{ required: true }]}>
-          <Input />
+          <Input placeholder="给你的智能体起个名字" />
         </Form.Item>
+        {plannerValue !== 'workflow_planner' && (
+          <Form.Item name="llm" label="模型" rules={[{ required: true }]}>
+            <ModelSelector showConfig={false} popoverMode={false} />
+          </Form.Item>
+        )}
         <Form.Item name="avatar" label="头像">
           <AvatarUpload
             disabled={!idValue}

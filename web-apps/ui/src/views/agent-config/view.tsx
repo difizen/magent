@@ -16,14 +16,14 @@ import { forwardRef } from 'react';
 import { AgentManager } from '@/modules/agent/agent-manager.js';
 import type { AgentModel } from '@/modules/agent/protocol.js';
 import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
+import { ModelSelector } from '@/modules/model/model-selector/index.js';
 import { ToolIcon } from '@/modules/tool/tool-icon.js';
 
 import { CharacterSetting } from './components/character-setting/index.js';
 import { ConfigList } from './components/config-selector/index.js';
-import { ModelSelector } from './components/model-selector/index.js';
-import './index.less';
 import { KnowledgeModal } from './knowledge-modal/modal.js';
 import { ToolsModal } from './tools-modal/modal.js';
+import './index.less';
 
 const viewId = 'magent-dev-config';
 
@@ -48,7 +48,19 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
           <div className={`${viewId}-content-right`}>
             <div className={`${viewId}-content-model`}>
               <div className={`${viewId}-content-model-title`}>模型</div>
-              <ModelSelector />
+              <ModelSelector
+                value={instance.agent.llm}
+                onChange={(meta) => {
+                  if (meta) {
+                    instance.agent.llm?.updateMeta(meta);
+                  }
+                }}
+                onConfigChanged={(meta) => {
+                  if (meta) {
+                    instance.agent.llm?.updateMeta(meta);
+                  }
+                }}
+              />
             </div>
             <ConfigList
               selector={[

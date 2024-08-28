@@ -1,5 +1,6 @@
 import { Syringe } from '@difizen/mana-app';
 
+import type { LLMMeta } from '../model/protocol.js';
 import type { ToolModelOption } from '../tool/protocol.js';
 
 import type { AgentConfig } from './agent-config.js';
@@ -16,12 +17,6 @@ export interface PromptMeta {
   introduction: string;
   target: string;
   instruction: string;
-}
-export interface LLMMeta {
-  id: string;
-  nickname: string;
-  temperature: number;
-  model_name: string[];
 }
 
 export interface AgentConfigOption {
@@ -91,6 +86,16 @@ export type AgentModelFactory = (options: AgentModelOption) => AgentModel;
 export const AgentModelFactory = Syringe.defineToken('AgentModelFactory', {
   multiple: false,
 });
+
+export interface AgentModelCreateOption {
+  description?: string;
+  avatar?: string;
+  nickname?: string;
+  planner: Partial<PlannerMeta>;
+  llm?: Partial<LLMMeta>;
+  prompt?: Partial<PromptMeta>;
+  id: string;
+}
 
 export const AgentModelType = {
   isOption(data?: Record<string, any>): data is AgentModelOption {

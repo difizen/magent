@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 
-import type { ModelMeta } from '@/modules/model/protocol.js';
+import type { LLMMeta } from '@/modules/model/protocol.js';
 
 const LazyIcon = (props: { loader: () => Promise<any> }) => {
   const Component = lazy(async () => {
@@ -30,7 +30,7 @@ export const DefaultLLMIcon = () => {
   );
 };
 
-const match = (data: ModelMeta, name: string): boolean => {
+const match = (data: LLMMeta, name: string): boolean => {
   if (
     data.id.toLowerCase().includes(name) ||
     data.nickname.toLowerCase().includes(name) ||
@@ -41,7 +41,7 @@ const match = (data: ModelMeta, name: string): boolean => {
   return false;
 };
 
-export const LLMIcon = (props: { data: ModelMeta }) => {
+export const LLMIcon = (props: { data: LLMMeta }) => {
   const { data } = props;
   if (match(data, 'qwen')) {
     return <LazyIcon loader={() => import('./qwen.svg')} />;

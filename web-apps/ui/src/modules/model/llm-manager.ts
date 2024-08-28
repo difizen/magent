@@ -1,47 +1,29 @@
-import { inject, prop, singleton } from '@difizen/mana-app';
+import { inject, singleton } from '@difizen/mana-app';
 
-import { AxiosClient } from '../axios-client/protocol.js';
-
-import type { LLMModel } from './llm-model.js';
-import type { ModelMeta } from './protocol.js';
+import type { LLMModel, LLMProvider } from './llm-model.js';
+import { LLMProviderManager } from './llm-provider-manager.js';
 import { LLMModelFactory } from './protocol.js';
 
 @singleton()
 export class LLMManager {
-  protected cache: Map<string, LLMModel> = new Map<string, LLMModel>();
+  protected cache: Map<string, LLMProvider> = new Map<string, LLMProvider>();
   @inject(LLMModelFactory) factory: LLMModelFactory;
-  @inject(AxiosClient) axios: AxiosClient;
+  @inject(LLMProviderManager) protected providerManager: LLMProviderManager;
 
-  @prop()
-  models: LLMModel[] = [];
-
-  defaultModel?: LLMModel;
-
-  protected getModelsMeta = async () => {
-    const defaultValue: ModelMeta[] = [];
-    const res = await this.axios.get<ModelMeta[]>(`/api/v1/llms`);
-    if (res.status === 200) {
-      return res.data;
+  get default(): LLMModel | undefined {
+    const llm = this.providerManager.models.find((item) => item.models.length > 0);
+    if (!llm) {
+      return undefined;
     }
-    return defaultValue;
-  };
-
-  updateModels = async () => {
-    const metas = await this.getModelsMeta();
-    this.models = metas.map((item) => this.getOrCreate(item));
-    if (this.models.length > 0) {
-      const defaultLLM = this.models[0];
-      this.defaultModel = defaultLLM;
+    const name = llm.models[0];
+    const meta = llm.toSingleMeta(name);
+    if (!meta) {
+      return undefined;
     }
-  };
+    return this.factory(meta);
+  }
 
-  getOrCreate = (option: ModelMeta): LLMModel => {
-    const exist = this.cache.get(option.id);
-    if (exist) {
-      return exist;
-    }
-    const llm = this.factory(option);
-    this.cache.set(llm.id, llm);
-    return llm;
+  updateFromProvider = () => {
+    return this.providerManager.updateProviders();
   };
 }

@@ -3,7 +3,11 @@ import { inject, singleton } from '@difizen/mana-app';
 import { AxiosClient } from '../axios-client/protocol.js';
 
 import { AgentModelFactory } from './protocol.js';
-import type { AgentModel, AgentModelOption } from './protocol.js';
+import type {
+  AgentModel,
+  AgentModelOption,
+  AgentModelCreateOption,
+} from './protocol.js';
 
 @singleton()
 export class AgentManager {
@@ -28,5 +32,22 @@ export class AgentManager {
     const bot = this.botFactory(option);
     this.cache.set(bot.id, bot);
     return bot;
+  };
+
+  create = async (option: AgentModelCreateOption) => {
+    let res;
+    if (option.planner.id === 'workflow_planner') {
+      res = await this.doCreateWorkflowAgent(option);
+    } else {
+      res = await this.doCreateNormalAgent(option);
+    }
+    return res;
+  };
+
+  protected doCreateNormalAgent = async (option: AgentModelCreateOption) => {
+    return await this.axios.post<AgentModelOption[]>(`/api/v1/agents`, option);
+  };
+  protected doCreateWorkflowAgent = async (option: AgentModelCreateOption) => {
+    return await this.axios.post<AgentModelOption[]>(`/api/v1/agents/workflow`, option);
   };
 }

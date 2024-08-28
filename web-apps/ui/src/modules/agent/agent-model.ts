@@ -111,7 +111,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.description = option.description;
 
     this.prompt = option.prompt ? new Prompt(option.prompt) : undefined;
-    this.llm = option.llm ? this.llmManager.getOrCreate(option.llm) : option.llm;
+    this.llm = option.llm ? this.llmManager.factory(option.llm) : option.llm;
     this.memory = option.memory ?? '';
     this.planner = option.planner;
     this.knowledge = option.knowledge;

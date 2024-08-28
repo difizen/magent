@@ -4,7 +4,10 @@ import json
 from typing import AsyncIterable, List
 from fastapi import APIRouter
 from agentuniverse_product.service.agent_service.agent_service import AgentService
+from agentuniverse_product.service.workflow_service.workflow_service import WorkflowService
 from agentuniverse_product.service.model.agent_dto import AgentDTO
+from agentuniverse_product.service.model.workflow_dto import WorkflowDTO
+from agentuniverse_product.service.model.planner_dto import PlannerDTO
 from pydantic import BaseModel
 from sse_starlette import EventSourceResponse, ServerSentEvent
 
@@ -26,8 +29,18 @@ async def get_agent_detail(agent_id):
 async def update_agent(agent_id, agent: AgentDTO):
     return AgentService.update_agent(agent)
 
-@router.post("/agents", response_model=AgentDTO)
+@router.post("/agents", response_model=str)
 async def create_agent(agent: AgentDTO):
+    return AgentService.create_agent(agent)
+
+
+@router.post("/agents/workflow", response_model=str)
+async def create_workflow_agent(agent: AgentDTO):
+    workflow_id = f"{agent.id}_workflow"
+    workflow_name = f"{agent.nickname}_workflow"
+    workflow = WorkflowDTO(id=workflow_id, name=workflow_name)
+    WorkflowService.create_workflow(workflow)
+    agent.planner = PlannerDTO(id='workflow_planner', workflow_id=workflow_id)
     return AgentService.create_agent(agent)
 
 class MessageSenderType(enum.Enum):

@@ -5,10 +5,10 @@ import { Button, Form, Select, Popover, Avatar, Slider } from 'antd';
 import type { FC } from 'react';
 import { forwardRef, useEffect } from 'react';
 
-import { LLMManager } from '@/modules/model/llm-manager.js';
-import type { LLMModel } from '@/modules/model/llm-model.js';
+import type { LLMProvider } from '@/modules/model/llm-model.js';
+import { LLMProviderManager } from '@/modules/model/llm-provider-manager.js';
 import { LLMIcon } from '@/modules/model/model-icon/index.js';
-import type { ModelMeta } from '@/modules/model/protocol.js';
+import type { LLMMeta } from '@/modules/model/protocol.js';
 
 import type { AgentConfigView } from '../../view.js';
 
@@ -16,7 +16,7 @@ import './index.less';
 
 const clsPrefix = 'agent-config-model-selector';
 
-const ModelSelectorOption = (props: { model: ModelMeta; flat?: boolean }) => {
+const ModelSelectorOption = (props: { model: LLMMeta; flat?: boolean }) => {
   const { model, flat } = props;
   return (
     <div className={`${clsPrefix}-option`}>
@@ -31,7 +31,7 @@ const ModelSelectorOption = (props: { model: ModelMeta; flat?: boolean }) => {
   );
 };
 
-const toKey = (model?: ModelMeta) => {
+const toKey = (model?: LLMMeta) => {
   if (!model) {
     return undefined;
   }
@@ -39,7 +39,7 @@ const toKey = (model?: ModelMeta) => {
 };
 
 interface TemperatureSliderProps extends SliderSingleProps {
-  llm?: LLMModel;
+  llm?: LLMProvider;
 }
 const TemperatureSlider: FC<TemperatureSliderProps> = (
   props: TemperatureSliderProps,
@@ -65,24 +65,23 @@ const TemperatureSlider: FC<TemperatureSliderProps> = (
 export const ModelSelector = forwardRef<HTMLDivElement>(
   function ModelSelectorComponent(props, ref) {
     const instance = useInject<AgentConfigView>(ViewInstance);
-    const modelManager = useInject(LLMManager);
-    // const defaultModel = modelManager.defaultModel;
+    const modelProviderManager = useInject(LLMProviderManager);
 
     const modelMeta = instance.agent?.llm;
 
-    const models = modelManager.models;
+    const models = modelProviderManager.models;
 
     const metaModels = models
       .map((item) => item.toSingleMetas())
       .filter((item) => !!item)
-      .flat() as ModelMeta[];
+      .flat() as LLMMeta[];
 
     useEffect(() => {
-      modelManager.updateModels();
-    }, [modelManager]);
+      modelProviderManager.updateProviders();
+    }, [modelProviderManager]);
 
     const currentModel = metaModels.find(
-      (item) => modelMeta && toKey(item) === toKey(modelMeta.toMeta()),
+      (item) => modelMeta && toKey(item) === toKey(modelMeta),
     );
 
     return (
@@ -101,7 +100,7 @@ export const ModelSelector = forwardRef<HTMLDivElement>(
                     onSelect={(v) => {
                       const llm = metaModels.find((i) => toKey(i) === v);
                       if (instance.agent.llm && llm) {
-                        instance.agent.llm = modelManager.getOrCreate(llm);
+                        instance.agent.llm = modelProviderManager.getOrCreate(llm);
                       }
                     }}
                     value={toKey(instance.agent.llm?.toMeta())}
