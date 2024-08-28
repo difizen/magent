@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.3.1",
+    "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.7",
     "@types/react": "^18.2.25",
     "@types/uuid": "^10.0.0",

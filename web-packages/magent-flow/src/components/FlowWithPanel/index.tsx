@@ -67,34 +67,39 @@ const yamlContent = `
       llm_param:
         - type: string
           name: id
-          value: qwen_llm
+          value:
+            type: value
+            content: qwen_llm
         - type: string
           name: model_name
-          value: qwen-max
+          value:
+            content: qwen-max
+            type: value
         - type: string
           name: temperature
-          value: '0.7'
+          value:
+            content: '0.7'
+            type: value
         - type: string
-      prompt:
-        type: string
-        value:
-          type: value
-          content: |
-            你是一位精通信息分析的ai助手。你的目标是使用中文结合查询的背景信息及你所拥有的知识回答用户提出的问题。
-            你需要遵守的规则是:
-            1. 必须使用中文结合查询的背景信息结合你所拥有的知识回答用户提出的问题。
-            2. 结构化答案生成，必要时通过空行提升阅读体验。
-            3. 不采用背景信息中的错误信息。
-            4. 要考虑答案和问题的相关性，不做对问题没有帮助的回答。
-            5. 详尽回答问题，重点突出，不过多花哨词藻。
-            6. 不说模糊的推测。
-            7. 尽量多的使用数值类信息。
+          name: prompt
+          value:
+            type: value
+            content: |
+              你是一位精通信息分析的ai助手。你的目标是使用中文结合查询的背景信息及你所拥有的知识回答用户提出的问题。
+              你需要遵守的规则是:
+              1. 必须使用中文结合查询的背景信息结合你所拥有的知识回答用户提出的问题。
+              2. 结构化答案生成，必要时通过空行提升阅读体验。
+              3. 不采用背景信息中的错误信息。
+              4. 要考虑答案和问题的相关性，不做对问题没有帮助的回答。
+              5. 详尽回答问题，重点突出，不过多花哨词藻。
+              6. 不说模糊的推测。
+              7. 尽量多的使用数值类信息。
 
-            背景信息是:
-            {{background}}
+              背景信息是:
+              {{background}}
 
-            开始!
-            需要回答的问题是: {{input}}
+              开始!
+              需要回答的问题是: {{input}}
     outputs:
       - type: string
         name: output
@@ -107,7 +112,6 @@ const yamlContent = `
       knowledge_param:
         - type: string
           name: id
-          value: demo_knowledge
         - type: string
           name: top_k
           value:
@@ -200,7 +204,8 @@ const nodeTypes = {
   [NodeTypeEnum.Agent]: AgentNode,
 };
 
-export const FlowWithPanel = () => {
+export const FlowWithPanel = (props: { toolbar?: React.ReactNode }) => {
+  const { toolbar } = props;
   const yaml_data = yaml.load(yamlContent);
   (yaml_data as Record<string, any>[]).forEach((item) => {
     NodeSchemaParser(item);
@@ -226,7 +231,7 @@ export const FlowWithPanel = () => {
     <EventEmitterContextProvider>
       <div className="flex flex-1">
         <NodesPanel className="w-[200px]" nodes={yaml_data as NodeDataType[]} />
-        <Flow classNames="flex-1" nodeTypes={nodeTypes} />
+        <Flow classNames="flex-1" nodeTypes={nodeTypes} toolbar={toolbar} />
       </div>
     </EventEmitterContextProvider>
   );

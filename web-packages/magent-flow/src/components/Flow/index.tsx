@@ -32,10 +32,11 @@ interface FlowProps {
   miniMap?: boolean;
   classNames?: string;
   nodeTypes: any;
+  toolbar: React.ReactNode;
 }
 
 function Flow(props: FlowProps) {
-  const { miniMap = true, classNames, nodeTypes } = props;
+  const { miniMap = true, classNames, nodeTypes, toolbar } = props;
   const position = useRef({ x: 0, y: 0 });
   const [lastSelection, setLastSelection] = useState<OnSelectionChangeParams | null>(
     null,
@@ -161,7 +162,7 @@ function Flow(props: FlowProps) {
       >
         <Background />
         {miniMap && <FlowController />}
-        <Toolbar classname="absolute right-4 top-4 z-[9] m-0" />
+        {toolbar}
       </ReactFlow>
     </div>
   );

@@ -4,7 +4,7 @@ import { Button, Modal } from 'antd';
 import { CollapseWrapper } from '@/components/AIBasic/CollapseWrapper/index.js';
 import { OutputVariable } from '@/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import { ReferenceForm } from '@/components/ReferenceForm/index.js';
-import type { NodeDataType } from '@/interfaces/flow.js';
+import type { BasicSchema, NodeDataType } from '@/interfaces/flow.js';
 import { useFlowStore } from '@/stores/useFlowStore.js';
 import { useKnowledgeStore } from '@/stores/useKnowledgeStore.js';
 
@@ -22,8 +22,10 @@ export const KnowledgeNode = (props: Props) => {
   // const { config } = data;
   const { findUpstreamNodes, setNode } = useFlowStore();
 
-  const { knowledges } = useKnowledgeStore();
+  const { KnowledgeSelector } = useKnowledgeStore();
   const upstreamNode = findUpstreamNodes(data.id.toString());
+
+  const knowledge_param = data.config?.inputs?.knowledge_param as BasicSchema[];
 
   return (
     <NodeWrapper nodeProps={props}>
@@ -50,31 +52,16 @@ export const KnowledgeNode = (props: Props) => {
         />
         <CollapseWrapper
           className="mt-3"
-          label={
-            <div className="flex items-center">
-              <div>知识库配置</div>
-              <Button
-                size="small"
-                type="link"
-                icon={<PlusOutlined />}
-                className="ml-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  Modal.confirm({
-                    title: '导入知识库',
-                    icon: null,
-                    content: <></>,
-                    onOk: () => {
-                      console.log('knowledges', knowledges);
-                    },
-                  });
-                }}
-              >
-                导入
-              </Button>
-            </div>
+          label={'知识库配置'}
+          content={
+            <>
+              {KnowledgeSelector !== null ? (
+                <KnowledgeSelector nodeId={data.id} knowledgeParam={knowledge_param} />
+              ) : (
+                <>知识库配置</>
+              )}
+            </>
           }
-          content={<>List</>}
         />
         <CollapseWrapper
           className="mt-3"

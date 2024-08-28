@@ -56,7 +56,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
     targetNode: string,
   ): Node[] => {
     const adjList: AdjacencyList = {};
-    console.log('🚀 ~ nodes.forEach ~ nodes:', nodes);
+
     nodes.forEach((node) => {
       adjList[node.id] = [];
     });

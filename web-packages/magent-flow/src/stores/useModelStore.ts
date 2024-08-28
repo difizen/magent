@@ -1,5 +1,9 @@
+import type React from 'react';
 import { create } from 'zustand';
 
+import type { BasicSchema } from '@/interfaces/flow.js';
+
+// 注册 模型选择和配置组件 提供onChange事件
 export interface Model {
   id: string;
   name: string;
@@ -14,17 +18,28 @@ export interface ModelConfig {
   [key: string]: number | undefined;
 }
 
+export type ModelSelectorNode =
+  | ((props: { nodeId: string; llmParam: BasicSchema[] }) => React.ReactNode)
+  | null;
+
 export interface ModelStoreType {
-  models: Model[];
-  setModels: (models: Model[]) => void;
+  ModelSelector: ModelSelectorNode;
+  setModelSelector: (ModelSelector: ModelSelectorNode) => void;
+  modelOptions: Model[];
+  setModelOptions: (models: Model[]) => void;
   modelConfig: ModelConfig;
   setModelConfig: (config: ModelConfig) => void;
 }
 
-export const useModelStore = create<ModelStoreType>((set, get) => ({
-  models: [],
-  setModels: (models: Model[]) => {
-    set({ models });
+export const useModelStore = create<ModelStoreType>((set) => ({
+  ModelSelector: null,
+  setModelSelector: (ModelSelector) => {
+    set({ ModelSelector });
+  },
+
+  modelOptions: [],
+  setModelOptions: (modelOptions: Model[]) => {
+    set({ modelOptions });
   },
   modelConfig: {},
   setModelConfig: (modelConfig: ModelConfig) => {

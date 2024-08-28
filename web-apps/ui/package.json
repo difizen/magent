@@ -22,6 +22,7 @@
     "deploy": "rimraf ../../packages/magent-ui/src/magent_ui/static && copyfiles -u 1 dist/* ../../packages/magent-ui/src/magent_ui/static/ && copyfiles -u 1 dist/**/* ../../packages/magent-ui/src/magent_ui/static/"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "@ant-design/icons": "^5.3.6",
     "@difizen/libro-jupyter": "^0.2.1",
     "@difizen/libro-lab": "^0.2.1",
@@ -49,6 +50,7 @@
     "umi": "^4.1.1"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@babel/plugin-proposal-decorators": "^7.23.7",
     "@babel/plugin-transform-class-properties": "^7.23.3",
     "@babel/plugin-transform-flow-strip-types": "^7.23.3",

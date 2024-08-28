@@ -1,22 +1,26 @@
 import type { ModalItem, ModalItemProps } from '@difizen/mana-app';
-import { useInject, useMount } from '@difizen/mana-app';
+import { useInject, useMount, useObserve } from '@difizen/mana-app';
 import type { TableColumnsType } from 'antd';
 import { Modal, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
-import type { AgentModel } from '@/modules/agent/protocol.js';
 import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
 import { KnowledgeSpace } from '@/modules/knowledge/knowledge-space.js';
 import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
+
 import { KnowledgeModalId } from '../protocol.js';
 
 export const KnowledgeModalComponent = (
-  props: ModalItemProps<{ agent: AgentModel }>,
+  props: ModalItemProps<{
+    dataProvider: { knowledge: KnowledgeModelOption[] };
+    onChange: (knowledge: KnowledgeModelOption[]) => void;
+  }>,
 ) => {
   const knowledgeSpace = useInject(KnowledgeSpace);
   const { visible, close } = props;
-  const { agent } = props.data || {};
+  const { onChange } = props.data || {};
+  const dataProvider = useObserve(props.data?.dataProvider);
 
   const columns = useMemo(() => {
     const c: TableColumnsType<KnowledgeModelOption> = [
@@ -53,20 +57,22 @@ export const KnowledgeModalComponent = (
     knowledgeSpace.update();
   });
 
-  if (!agent) {
-    return null;
-  }
-
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    agent.knowledge = knowledgeSpace.list
-      .filter((item) => newSelectedRowKeys.includes(item.id))
-      .map((item) => item.toMeta());
+    onChange?.(
+      knowledgeSpace.list
+        .filter((item) => newSelectedRowKeys.includes(item.id))
+        .map((item) => item.toMeta()),
+    );
   };
 
   const rowSelection: TableRowSelection<KnowledgeModelOption> = {
-    selectedRowKeys: (agent.knowledge || []).map((item) => item.id),
+    selectedRowKeys: (dataProvider?.knowledge || []).map((item) => item.id),
     onChange: onSelectChange,
   };
+
+  if (!dataProvider?.knowledge) {
+    return null;
+  }
 
   return (
     <Modal

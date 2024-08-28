@@ -160,7 +160,6 @@ const Parameter = (props: {
           className="noflow nowheel nopan nodelete nodrag"
           options={options}
           onChange={(v) => {
-            console.log('🚀 ~ v:', v);
             setValue((s) => {
               return {
                 ...s,
