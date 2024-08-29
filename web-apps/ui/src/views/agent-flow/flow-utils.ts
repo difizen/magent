@@ -1,4 +1,4 @@
-import type { NodeType, Edge, NodeDataType } from '@difizen/magent-flow';
+import type { NodeType, Edge } from '@difizen/magent-flow';
 
 import { nodeIconMap } from './flow-with-tabs/index.js';
 
@@ -19,7 +19,7 @@ export const OutputEdgeParser = (edge: Edge) => {
     source_handler: edge.sourceHandle,
     source_node_id: edge.source,
     target_node_id: edge.target,
-  } as Edge;
+  } as any;
 };
 
 export const InitNodeParser = (node: NodeType) => {
@@ -40,7 +40,7 @@ export const InitNodeParser = (node: NodeType) => {
   return obj;
 };
 
-export const InitEdgeParser = (edge: Edge) => {
+export const InitEdgeParser = (edge: any) => {
   const obj: Edge = {
     id: edge.id,
     targetHandle: edge.target_handler,

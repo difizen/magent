@@ -19,7 +19,7 @@ import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
 import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
 import { ModelSelector } from '@/modules/model/model-selector/index.js';
 import { ToolIcon } from '@/modules/tool/icon/index.js';
-import type { ToolModelOption } from '@/modules/tool/protocol.js';
+import type { ToolMeta } from '@/modules/tool/protocol.js';
 
 import { CharacterSetting } from './components/character-setting/index.js';
 import { ConfigList } from './components/config-selector/index.js';
@@ -70,7 +70,7 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
                     if (instance.agent) {
                       modalService.openModal(ToolsModal, {
                         dataProvider: instance.agent,
-                        onChange: (val: ToolModelOption[]) => {
+                        onChange: (val: ToolMeta[]) => {
                           instance.agent.tool = val;
                         },
                       });
