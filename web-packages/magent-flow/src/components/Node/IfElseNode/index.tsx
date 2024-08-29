@@ -33,8 +33,8 @@ export const IfElseNode = (props: Props) => {
     <NodeWrapper
       nodeProps={props}
       rightHandlerConfig={[
-        { id: 'IF', style: { top: 110 } },
-        { id: 'ELSE', style: { bottom: 34, top: 'auto' } },
+        { id: 'branch-1', style: { top: 110 } },
+        { id: 'branch-default', style: { bottom: 34, top: 'auto' } },
       ]}
     >
       <>

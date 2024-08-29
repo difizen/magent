@@ -1,16 +1,18 @@
-import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
-import type { NodeDataType } from '@flow/interfaces/flow.js';
-import { NodeTypeEnum } from '@flow/interfaces/flow.js';
+import type { NodeDataType } from '@difizen/magent-flow';
+import {
+  NodeTypeEnum,
+  StartNode,
+  EndNode,
+  KnowledgeNode,
+  LLMNode,
+  IfElseNode,
+  AgentNode,
+  NodesPanel,
+  Flow,
+  useFlowStore,
+} from '@difizen/magent-flow';
+import { Tabs } from 'antd';
 import yaml from 'js-yaml';
-
-import Flow from '../Flow/index.js';
-import { AgentNode } from '../Node/AgentNode/index.js';
-import { EndNode } from '../Node/EndNode/index.js';
-import { IfElseNode } from '../Node/IfElseNode/index.js';
-import { KnowledgeNode } from '../Node/KnowledgeNode/index.js';
-import { LLMNode } from '../Node/LLMNode/index.js';
-import { StartNode } from '../Node/StartNode/index.js';
-import { NodesPanel } from '../NodePanel/index.js';
 
 import agentIcon from './icons/agent.svg';
 import endIcon from './icons/end.svg';
@@ -223,7 +225,7 @@ const nodeTypes = {
   [NodeTypeEnum.Agent]: AgentNode,
 };
 
-export const FlowWithPanel = (props: { toolbar?: React.ReactNode }) => {
+export const FlowWithTabs = (props: { toolbar?: React.ReactNode }) => {
   const { toolbar } = props;
   const templateNodes = yaml.load(templateNodeYaml);
   (templateNodes as Record<string, any>[]).forEach((item) => {
@@ -232,10 +234,15 @@ export const FlowWithPanel = (props: { toolbar?: React.ReactNode }) => {
 
   return (
     <div className="flex flex-1">
-      <NodesPanel
-        className="w-[200px] z-10 bg-gray-50 shadow-lg"
-        nodes={templateNodes as NodeDataType[]}
-      />
+      <Tabs defaultActiveKey="node" centered>
+        <Tabs.TabPane key="node" tab="节点">
+          <NodesPanel
+            className="w-[200px] z-10 h-full"
+            nodes={templateNodes as NodeDataType[]}
+          />
+        </Tabs.TabPane>
+      </Tabs>
+
       <Flow classNames="flex-1" nodeTypes={nodeTypes} toolbar={toolbar} />
     </div>
   );

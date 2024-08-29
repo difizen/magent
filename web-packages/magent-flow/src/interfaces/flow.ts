@@ -77,7 +77,7 @@ export interface NodeDataType {
     status: string;
     result?: any;
   };
-  name: string;
+  name?: string;
   icon?: string;
   description?: string;
   config?: NodeDataConfigType;
