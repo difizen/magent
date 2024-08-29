@@ -116,6 +116,13 @@ export interface ChatEventChunk {
   output: string;
   type: 'token';
 }
+export interface ChatErrorInfo {
+  error_msg: string;
+}
+export interface ChatEventError {
+  error: ChatErrorInfo;
+  type: 'error';
+}
 
 export interface ChainItem {
   source: string;

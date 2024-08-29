@@ -7,6 +7,7 @@ import { AxiosClient } from '../axios-client/protocol.js';
 import { AIChatMessageItem } from './ai-message-item.js';
 import type {
   ChatEventChunk,
+  ChatEventError,
   ChatEventResult,
   ChatEventStep,
   ChatEventStepQA,
@@ -187,6 +188,10 @@ export class PeerChatMessageItem extends AIChatMessageItem {
     if (e.event === 'steps') {
       this.handleSteps(data as ChatEventStep);
     }
+
+    if (e.event === 'error') {
+      this.handleError(data as ChatEventError);
+    }
   }
 
   override handleSteps(e: ChatEventStep): void {
@@ -212,6 +217,7 @@ export class PeerChatMessageItem extends AIChatMessageItem {
   }
 
   override handleResult(e: ChatEventResult): void {
+    super.handleResult(e);
     this.currentStep = 4;
   }
 }

@@ -4,7 +4,7 @@ import {
   LikeOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
-import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
+import { prop, useInject, useObserve, ViewInstance } from '@difizen/mana-app';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
@@ -23,28 +23,45 @@ interface AIMessageProps {
   exchange: ChatMessageModel;
 }
 
+export const AIMessageError = (props: AIMessageProps) => {
+  if (!props.message?.error?.error_msg) {
+    return null;
+  }
+  return (
+    <div className={`chat-message-addon-error`}>
+      ERROR: {props.message.error?.error_msg}
+    </div>
+  );
+};
+
 export const AIMessageAddon = (props: AIMessageProps) => {
   const exchange = useObserve(props.exchange);
-  if (!exchange.tokenUsage && !exchange.responseTime) {
-    return null;
+  let content = null;
+  if (exchange.tokenUsage || exchange.responseTime) {
+    content = (
+      <div className={`chat-message-addon`}>
+        {exchange.tokenUsage && (
+          <div className={`chat-message-addon-item`}>
+            <span>Total token: {exchange.tokenUsage.total_tokens}</span>
+            <span>Completion: {exchange.tokenUsage.completion_tokens}</span>
+            <span>Prompt: {exchange.tokenUsage.prompt_tokens}</span>
+          </div>
+        )}
+        {exchange.responseTime && (
+          <div className={`chat-message-addon-item`}>
+            <span>结束时间: {exchange.endTime?.format('YYYY-MM-DD HH:mm:ss')}</span>
+            <span>耗时: {exchange.responseTime}</span>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
-    <div className={`chat-message-addon`}>
-      {exchange.tokenUsage && (
-        <div className={`chat-message-addon-item`}>
-          <span>Total token: {exchange.tokenUsage.total_tokens}</span>
-          <span>Completion: {exchange.tokenUsage.completion_tokens}</span>
-          <span>Prompt: {exchange.tokenUsage.prompt_tokens}</span>
-        </div>
-      )}
-      {exchange.responseTime && (
-        <div className={`chat-message-addon-item`}>
-          <span>结束时间: {exchange.endTime?.format('YYYY-MM-DD HH:mm:ss')}</span>
-          <span>耗时: {exchange.responseTime}</span>
-        </div>
-      )}
-    </div>
+    <>
+      {content}
+      <AIMessageError {...props} />
+    </>
   );
 };
 
@@ -53,14 +70,27 @@ export const AIMessageContent = (props: AIMessageProps) => {
   const content: ReactNode = message.content;
   if (!content) {
     return (
-      <div className={`chat-message-ai-empty`}>
-        <LoadingOutlined className="chat-message-ai-receiving" />
+      <div
+        className={classNames({
+          ['chat-message-ai-empty']: true,
+          ['chat-message-ai-error']: message.error,
+        })}
+      >
+        <div className="chat-message-ai-content">
+          <LoadingOutlined className="chat-message-ai-receiving" />
+        </div>
+        <AIMessageAddon {...props} />
       </div>
     );
   } else {
     return (
-      <div className={`chat-message-ai`}>
-        <div className={`markdown-message-md`}>
+      <div
+        className={classNames({
+          ['chat-message-ai']: true,
+          ['chat-message-ai-error']: message.error,
+        })}
+      >
+        <div className={classNames(`markdown-message-md`, 'chat-message-ai-content')}>
           <span className={`markdown-message-md-pop`}>
             <Markdown
               className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}

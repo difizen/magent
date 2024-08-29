@@ -110,21 +110,35 @@
   background-color: #f8f8fb;
   border-radius: 8px;
   width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0%);
 
   & > :first-child {
     width: 100%;
   }
-}
 
-.chat-message-ai-empty {
-  background-color: #f8f8fb;
-  border-radius: 8px;
-  width: 100%;
-}
+  &-empty {
+    background-color: #f8f8fb;
+    border-radius: 8px;
+    width: 100%;
+  }
 
-.chat-message-ai-receiving {
-  color: var(--mana-text-quaternary);
-  padding: 8px 16px;
+  &-receiving {
+    color: var(--mana-text-quaternary);
+    padding: 8px 16px;
+  }
+
+  &-error {
+    // border: 1px solid var(--mana-ant-color-error);
+
+    .chat-message-ai-content {
+      box-shadow: var(--mana-ant-box-shadow-tabs-overflow-bottom);
+    }
+
+    .chat-message-addon-error {
+      padding: 4px 12px;
+      color: var(--mana-ant-color-error);
+    }
+  }
 }
 
 .chat-message-addon {

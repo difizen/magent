@@ -6,7 +6,13 @@ import type { AgentModel } from '../agent/agent-model.js';
 import { AxiosClient } from '../axios-client/protocol.js';
 
 import { ChatMessageItem } from './chat-message-item.js';
-import type { ChatEventChunk, ChatEventResult, ChatEventStep } from './protocol.js';
+import type {
+  ChatErrorInfo,
+  ChatEventChunk,
+  ChatEventError,
+  ChatEventResult,
+  ChatEventStep,
+} from './protocol.js';
 import { AnswerState, ChatMessageItemOption } from './protocol.js';
 
 @transient()
@@ -20,6 +26,9 @@ export class AIChatMessageItem extends ChatMessageItem {
 
   @prop()
   declare state: AnswerState;
+
+  @prop()
+  error: ChatErrorInfo;
 
   constructor(
     @inject(ChatMessageItemOption) option: ChatMessageItemOption,
@@ -64,11 +73,21 @@ export class AIChatMessageItem extends ChatMessageItem {
     if (e.event === 'steps') {
       this.handleSteps(data as ChatEventStep);
     }
+
+    if (e.event === 'error') {
+      this.handleError(data as ChatEventError);
+    }
   }
 
   appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;
   }
+
+  handleError(e: ChatEventError) {
+    // {"error": {"error_msg": "The node type is not supported"}, "type": "error"}
+    this.error = e.error;
+  }
+
   handleSteps(e: ChatEventStep) {
     // if (e.agent_id === this.agent?.id) {
     //   this.content = this.content + `${e.output}`;
@@ -76,6 +95,6 @@ export class AIChatMessageItem extends ChatMessageItem {
   }
 
   handleResult(e: ChatEventResult) {
-    // this.content = e.output;
+    this.content = e.output;
   }
 }
