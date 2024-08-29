@@ -6,9 +6,10 @@ import type { TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
 import type { AgentModel } from '@/modules/agent/protocol.js';
-import type { ToolModelOption } from '@/modules/tool/protocol.js';
-import { ToolIcon } from '@/modules/tool/tool-icon.js';
+import type { ToolMeta } from '@/modules/tool/protocol.js';
+import { ToolIcon } from '@/modules/tool/icon/index.js';
 import { ToolSpace } from '@/modules/tool/tool-space.js';
+
 import { ToolsModalId } from '../protocol.js';
 
 export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>) => {
@@ -17,7 +18,7 @@ export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>
   const { agent } = props.data || {};
 
   const columns = useMemo(() => {
-    const c: TableColumnsType<ToolModelOption> = [
+    const c: TableColumnsType<ToolMeta> = [
       {
         title: 'id',
         dataIndex: 'id',
@@ -61,7 +62,7 @@ export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>
       .map((item) => item.toMeta());
   };
 
-  const rowSelection: TableRowSelection<ToolModelOption> = {
+  const rowSelection: TableRowSelection<ToolMeta> = {
     selectedRowKeys: (agent.tool || []).map((item) => item.id),
     onChange: onSelectChange,
   };
@@ -74,7 +75,7 @@ export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>
       title="选择工具"
       footer={null}
     >
-      <Table<ToolModelOption>
+      <Table<ToolMeta>
         loading={toolSpace.loading}
         rowSelection={rowSelection}
         dataSource={toolSpace.list}

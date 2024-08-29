@@ -3,7 +3,6 @@ import {
   BaseView,
   ViewInstance,
   inject,
-  prop,
   singleton,
   useInject,
   view,
@@ -12,7 +11,9 @@ import { Col, List, Row, Tag, Tooltip } from 'antd';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import './index.less';
-import { ToolIcon } from '@/modules/tool/tool-icon.js';
+import { TagList } from '@/components/tag-list/index.js';
+import { PluginManager } from '@/modules/plugin/plugin-manager.js';
+import { ToolIcon } from '@/modules/tool/icon/index.js';
 import { ToolSpace } from '@/modules/tool/tool-space.js';
 
 export interface ToolItem {
@@ -25,73 +26,6 @@ export interface ToolItem {
 
 const viewId = 'magent-tools';
 export const slot = `${viewId}-slot`;
-
-const TagList: React.FC<{
-  tags: string[];
-  maxWidth: number;
-}> = ({ tags, maxWidth }) => {
-  const [visibleTags, setVisibleTags] = useState<string[]>([]);
-  const [hiddenTags, setHiddenTags] = useState<string[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const measurementRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const measureTagWidth = (tag: string) => {
-      if (measurementRef.current) {
-        measurementRef.current.innerText = tag;
-        return measurementRef.current.getBoundingClientRect().width;
-      }
-      return 0;
-    };
-    const width = maxWidth - 78;
-    let currentWidth = 0;
-    const visible = [];
-    const hidden = [];
-
-    for (const tag of tags) {
-      const tagWidth = measureTagWidth(tag) + 8; // 加上 Tag 组件的 padding 和 margin
-      if (currentWidth + tagWidth <= width) {
-        visible.push(tag);
-        currentWidth += tagWidth;
-      } else {
-        hidden.push(tag);
-      }
-    }
-    setVisibleTags(visible);
-    setHiddenTags(hidden);
-  }, [tags, maxWidth]);
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        maxWidth,
-      }}
-      className="tag-list-container"
-    >
-      <div
-        ref={measurementRef}
-        style={{ visibility: 'hidden', position: 'absolute', whiteSpace: 'nowrap' }}
-      />
-      {visibleTags.map((tag, index) => (
-        <Tag key={index}>{tag}</Tag>
-      ))}
-      {hiddenTags.length > 0 && (
-        <Tooltip
-          title={
-            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-              {hiddenTags.map((tag) => (
-                <div key={tag}>{tag}</div>
-              ))}
-            </div>
-          }
-        >
-          <Tag>+{hiddenTags.length} more</Tag>
-        </Tooltip>
-      )}
-    </div>
-  );
-};
 
 const ToolsViewComponent = forwardRef<HTMLDivElement>(
   function ToolsViewComponent(props, ref) {
@@ -142,14 +76,11 @@ const ToolsViewComponent = forwardRef<HTMLDivElement>(
 @view(viewId)
 export class ToolsView extends BaseView {
   override view = ToolsViewComponent;
-  @prop()
-  loadig = false;
 
   @inject(ToolSpace) toolSpace: ToolSpace;
+  @inject(PluginManager) pluginManager: PluginManager;
 
   override async onViewMount(): Promise<void> {
-    this.loadig = true;
     await this.toolSpace.update();
-    this.loadig = false;
   }
 }

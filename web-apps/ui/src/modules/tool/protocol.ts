@@ -39,7 +39,7 @@ export const ToolConfigType = {
 
 export type { ToolModel } from './tool-model.js';
 
-export interface ToolModelOption {
+export interface ToolMeta {
   id: string;
   nickname: string;
   avatar: string;
@@ -51,13 +51,13 @@ export const ToolModelOption = Syringe.defineToken('ToolModelOption', {
   multiple: false,
 });
 
-export type ToolFactory = (options: ToolModelOption) => ToolModel;
+export type ToolFactory = (options: ToolMeta) => ToolModel;
 export const ToolFactory = Syringe.defineToken('ToolFactory', {
   multiple: false,
 });
 
 export const ToolModelType = {
-  isOption(data?: Record<string, any>): data is ToolModelOption {
+  isOption(data?: Record<string, any>): data is ToolMeta {
     return !!(data && 'id' in data);
   },
   isFullOption(data?: Record<string, any>): boolean {

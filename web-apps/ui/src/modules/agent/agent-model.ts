@@ -6,7 +6,7 @@ import { AxiosClient } from '../axios-client/protocol.js';
 import type { KnowledgeModelOption } from '../knowledge/protocol.js';
 import { LLMManager } from '../model/llm-manager.js';
 import type { LLMModel } from '../model/llm-model.js';
-import type { ToolModelOption } from '../tool/protocol.js';
+import type { ToolMeta } from '../tool/protocol.js';
 import { ToolManager } from '../tool/tool-manager.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
@@ -71,7 +71,7 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   openingSpeech?: string;
 
   @prop()
-  tool: ToolModelOption[] = [];
+  tool: ToolMeta[] = [];
 
   @prop()
   knowledge?: KnowledgeModelOption[];

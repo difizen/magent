@@ -1,14 +1,16 @@
 import { Deferred, inject, prop, transient } from '@difizen/mana-app';
 
 import { AsyncModel } from '@/common/async-model.js';
+
 import { AxiosClient } from '../axios-client/protocol.js';
 
+import type { ToolMeta } from './protocol.js';
 import { ToolModelOption, ToolModelType } from './protocol.js';
 import { ToolConfigManager } from './tool-config-manager.js';
 import type { ToolConfig } from './tool-config.js';
 
 @transient()
-export class ToolModel extends AsyncModel<ToolModel, ToolModelOption> {
+export class ToolModel extends AsyncModel<ToolModel, ToolMeta> {
   axios: AxiosClient;
   configManager: ToolConfigManager;
 
@@ -29,10 +31,10 @@ export class ToolModel extends AsyncModel<ToolModel, ToolModelOption> {
     return this.draftDeferred.promise;
   }
 
-  option: ToolModelOption;
+  option: ToolMeta;
 
   constructor(
-    @inject(ToolModelOption) option: ToolModelOption,
+    @inject(ToolModelOption) option: ToolMeta,
     @inject(ToolConfigManager) configManager: ToolConfigManager,
     @inject(AxiosClient) axios: AxiosClient,
   ) {
@@ -49,29 +51,37 @@ export class ToolModel extends AsyncModel<ToolModel, ToolModelOption> {
     return true;
   }
 
-  updateOption(option: ToolModelOption) {
-    // TODO:
+  updateOption(option: ToolMeta) {
+    this.fromMeta(option);
   }
 
-  protected override fromMeta(option: ToolModelOption = this.option) {
+  protected override fromMeta(option: ToolMeta = this.option) {
     this.id = option.id;
-    this.nickname = option.nickname;
-    this.avatar = option.avatar;
-    this.description = option.description;
-    this.parameters = option.parameters;
+    if (option.nickname) {
+      this.nickname = option.nickname;
+    }
+    if (option.description) {
+      this.description = option.description;
+    }
+    if (option.avatar) {
+      this.avatar = option.avatar;
+    }
+    if (option.parameters.length > 0) {
+      this.parameters = option.parameters;
+    }
     if (ToolModelType.isFullOption(option)) {
       super.fromMeta(option);
     }
   }
 
-  async fetchInfo(option: ToolModelOption = this.option) {
-    const res = await this.axios.get<ToolModelOption>(`api/v1/tools/${option.id}`);
+  async fetchInfo(option: ToolMeta = this.option) {
+    const res = await this.axios.get<ToolMeta>(`api/v1/tools/${option.id}`);
     if (res.status === 200) {
       this.fromMeta(res.data);
     }
   }
 
-  toMeta(): ToolModelOption {
+  toMeta(): ToolMeta {
     return {
       id: this.id,
       nickname: this.nickname,

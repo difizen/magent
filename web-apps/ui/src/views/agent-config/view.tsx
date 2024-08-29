@@ -18,7 +18,7 @@ import type { AgentModel } from '@/modules/agent/protocol.js';
 import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
 import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
 import { ModelSelector } from '@/modules/model/model-selector/index.js';
-import { ToolIcon } from '@/modules/tool/tool-icon.js';
+import { ToolIcon } from '@/modules/tool/icon/index.js';
 
 import { CharacterSetting } from './components/character-setting/index.js';
 import { ConfigList } from './components/config-selector/index.js';

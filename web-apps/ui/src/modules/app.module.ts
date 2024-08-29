@@ -7,6 +7,7 @@ import { AgentsPageModule } from '@/views/agents/module.js';
 import { ChatViewModule } from '@/views/chat/module.js';
 import { DebugModule } from '@/views/debug/module.js';
 import { KnowledgePageModule } from '@/views/knowledge/module.js';
+import { PluginPageModule } from '@/views/plugins/module.js';
 import { PortalsModule } from '@/views/protal-layout/module.js';
 import { SessionsViewModule } from '@/views/sessions/module.js';
 import { ToolPageModule } from '@/views/tools/module.js';
@@ -16,6 +17,7 @@ import { AxiosClientModule } from './axios-client/module.js';
 import { BaseLayoutModule } from './base-layout/module.js';
 import { ChatMessageModule } from './chat-message/module.js';
 import { ModelModule } from './model/module.js';
+import { PluginModule } from './plugin/module.js';
 import { SessionModule } from './session/module.js';
 import { ToolModule } from './tool/module.js';
 
@@ -29,6 +31,7 @@ export const AppBaseModule = new ManaModule()
     AgentBotModule,
     AxiosClientModule,
     ToolModule,
+    PluginModule,
   )
   // 视图模块
   .dependOn(
@@ -43,6 +46,7 @@ export const AppBaseModule = new ManaModule()
     PortalsModule,
     AgentFlowModule,
     DebugModule,
+    PluginPageModule,
   );
 
 export default AppBaseModule;

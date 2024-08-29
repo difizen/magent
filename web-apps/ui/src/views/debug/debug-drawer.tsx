@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 import { copy2clipboard } from '@/common/utils.js';
 import { DefaultLLMIcon } from '@/modules/model/model-icon/index.js';
-import { DefaultToolIcon } from '@/modules/tool/tool-icon.js';
+import { DefaultToolIcon } from '@/modules/tool/icon/index.js';
 
 import { HumanIcon } from '../chat/components/message/human-message.js';
 import type { ChatView } from '../chat/view.js';

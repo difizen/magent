@@ -1,7 +1,20 @@
-.magent-tools {
+.magent-plugins {
   height: calc(100% - 24px);
   margin: 0 24px;
   border-radius: 8px;
+
+  &-creation {
+    position: absolute;
+    top: 0;
+    right: 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+
+    button {
+      border: none;
+    }
+  }
 
   &-list-header {
     padding: 0 0 0 24px;
@@ -22,7 +35,7 @@
 
   &-list {
     height: calc(100% - 48px);
-    padding: 0 0 0 24px;
+    padding-top: 12px;
 
     &-item {
       display: block;
@@ -30,6 +43,29 @@
 
     &-item + &-item {
       padding-left: 24px;
+    }
+
+    &-row {
+      padding-inline: 6px;
+      border-radius: 6px;
+
+      &:not(:last-child) &-content {
+        border-bottom: 1px solid var(--mana-ant-color-bg-text-hover);
+      }
+
+      &-content {
+        padding-left: 18px;
+        width: 100%;
+        display: flex;
+      }
+
+      &:hover {
+        background-color: var(--mana-ant-color-bg-text-hover);
+      }
+
+      &:hover &-content {
+        border-bottom: 1px solid transparent;
+      }
     }
   }
 
@@ -46,6 +82,17 @@
 
   .ant-list .ant-list-item .ant-list-item-meta .ant-list-item-meta-content {
     width: 100%;
+  }
+
+  .ant-list-item-meta-avatar {
+    background: var(--mana-ant-color-bg-container);
+    border: 1px solid var(--mana-ant-color-bg-container-disabled);
+    border-radius: 8px;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
   }
 
   .tool-lists-label {

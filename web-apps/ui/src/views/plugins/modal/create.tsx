@@ -7,19 +7,14 @@ import { Button, Form, Input, Space } from 'antd';
 import { Modal } from 'antd';
 import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
-import { history } from 'umi';
 
-import { AgentTypeSelector } from '@/components/agent-type-selector/index.js';
 import { AvatarUpload } from '@/components/avatar-upload/index.js';
-import { AgentIcon } from '@/modules/agent/agent-icon.js';
-import { AgentManager } from '@/modules/agent/agent-manager.js';
-import { AgentMarket } from '@/modules/agent/agent-market.js';
 import { RequestHelper } from '@/modules/axios-client/request.js';
-import { LLMManager } from '@/modules/model/llm-manager.js';
-import { ModelSelector } from '@/modules/model/model-selector/index.js';
-import type { LLMMeta } from '@/modules/model/protocol.js';
+import { PluginIcon } from '@/modules/plugin/icon/index.js';
 import './index.less';
+import { PluginManager } from '@/modules/plugin/plugin-manager.js';
 
+export const PluginCreateModalId = 'magent-plugin-creation';
 interface SubmitButtonProps {
   form: FormInstance;
 }
@@ -56,50 +51,35 @@ const SubmitButton: React.FC<PropsWithChildren<SubmitButtonProps>> = (
 const UploadButton = (props: { imageUrl?: string }) => {
   const { imageUrl } = props;
   return imageUrl ? (
-    <AgentIcon
+    <PluginIcon
       className="magent-agents-modal-avatar-uploader-content-icon"
-      agent={{ avatar: imageUrl }}
+      data={{ avatar: imageUrl }}
     />
   ) : (
-    <AgentIcon className="magent-agents-modal-avatar-uploader-content-icon magent-agents-modal-avatar-uploader-content-default-icon" />
+    <PluginIcon className="magent-agents-modal-avatar-uploader-content-icon magent-agents-modal-avatar-uploader-content-default-icon" />
   );
 };
 
-export const AgentModalComponent = (props: ModalItemProps<any>) => {
-  const agentManager = useInject(AgentManager);
-  const llmManager = useInject(LLMManager);
+export const PluginModalComponent = (props: ModalItemProps<any>) => {
+  const pluginManager = useInject(PluginManager);
   const req = useInject(RequestHelper);
-  const market = useInject(AgentMarket);
   const { visible, close } = props;
   const [form] = Form.useForm<{
     id: string;
-    plannerId: string;
     avatar?: string;
     nickname: string;
     description?: string;
-    llm: LLMMeta;
+    openapi_desc: string;
   }>();
   const idValue = Form.useWatch('id', form);
-  const plannerValue = Form.useWatch('plannerId', form);
-  useEffect(() => {
-    llmManager
-      .updateFromProvider()
-      .then(() => {
-        if (form.getFieldValue('llm') === undefined && llmManager.default) {
-          form.setFieldValue('llm', llmManager.default.toMeta());
-        }
-        return;
-      })
-      .catch(console.error);
-  }, [llmManager, form]);
 
   return (
     <Modal
-      className="magent-agents-modal"
+      className={`${PluginCreateModalId}`}
       open={visible}
       onCancel={() => close()}
       width={640}
-      title="新建智能体"
+      title="新建插件"
       footer={
         <Space>
           <Button htmlType="reset" onClick={close}>
@@ -110,7 +90,7 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
       }
     >
       <Form
-        className="magent-agents-modal-create-form"
+        className={`${PluginCreateModalId}-form`}
         form={form}
         layout="vertical"
         autoComplete="off"
@@ -120,29 +100,18 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
             nickname: values.nickname,
             avatar: values.avatar,
             description: values.description,
-            prompt: { instruction: '', introduction: '', target: '' },
-            planner: { id: values.plannerId, nickname: '' },
-            llm: llmManager.default,
+            openapi_desc: values.openapi_desc,
+            toolset: [],
           };
-          const res = await agentManager.create(meta);
+          const res = await pluginManager.create(meta);
           if (res.status === 200) {
             close();
-            market.update();
-            history.push(
-              `/agent/${meta.id}/${meta.planner.id === 'workflow_planner' ? 'flow' : 'dev'}`,
-            );
+            pluginManager.updatePublic();
           }
         }}
         onFinishFailed={console.error}
         initialValues={{ plannerId: 'rag_planner' }}
       >
-        <Form.Item
-          name="plannerId"
-          label="想创建哪种类型的智能体？"
-          rules={[{ required: true }]}
-        >
-          <AgentTypeSelector />
-        </Form.Item>
         <Form.Item
           name="id"
           label="id"
@@ -152,7 +121,7 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
               async validator(_, value) {
                 const res = await req.get<boolean>(`/api/v1/common/is_id_unique`, {
                   id: value,
-                  type: 'agent',
+                  type: 'tool',
                 });
                 if (res.status !== 200 || res.data === false) {
                   throw new Error(`${value} 已存在，请更换其他 id`);
@@ -161,16 +130,19 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
             }),
           ]}
         >
-          <Input placeholder="给智能体一个独一无二的 id" />
+          <Input placeholder="给插件一个独一无二的 id" />
         </Form.Item>
         <Form.Item name="nickname" label="名称" rules={[{ required: true }]}>
-          <Input placeholder="给你的智能体起个名字" />
+          <Input placeholder="给你的插件起个名字" />
         </Form.Item>
-        {plannerValue !== 'workflow_planner' && (
-          <Form.Item name="llm" label="模型" rules={[{ required: true }]}>
-            <ModelSelector showConfig={false} popoverMode={false} />
-          </Form.Item>
-        )}
+
+        <Form.Item
+          name="openapi_desc"
+          label="OpenAPI Schema"
+          rules={[{ required: true }]}
+        >
+          <Input.TextArea rows={5} placeholder="通过 OpenAPI Schema 导入工具" />
+        </Form.Item>
         <Form.Item name="avatar" label="头像">
           <AvatarUpload
             disabled={!idValue}
@@ -186,15 +158,14 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
           />
         </Form.Item>
         <Form.Item name="description" label="描述" rules={[]}>
-          <Input.TextArea placeholder="介绍一下你的智能体吧" />
+          <Input.TextArea placeholder="介绍一下你的插件吧" />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export const agentCreateModalId = 'magent-agent-creation';
-export const AgentCreateModal: ModalItem = {
-  id: agentCreateModalId,
-  component: AgentModalComponent,
+export const PluginCreateModal: ModalItem = {
+  id: PluginCreateModalId,
+  component: PluginModalComponent,
 };
