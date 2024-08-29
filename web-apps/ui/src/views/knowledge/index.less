@@ -32,6 +32,11 @@
       &-col {
         display: flex;
         align-items: center;
+
+        a {
+          text-decoration: none;
+          color: #1677ff;
+        }
       }
     }
 
@@ -50,6 +55,19 @@
     height: 100%;
   }
 
+  &-creation {
+    position: absolute;
+    top: -64px;
+    right: 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+
+    button {
+      border: none;
+    }
+  }
+
   .ant-list-items {
     padding-bottom: 24px;
     overflow-y: auto;
@@ -66,5 +84,30 @@
 
   .ant-checkbox-wrapper {
     width: 100%;
+  }
+}
+
+.magent-knowledge-upload {
+  &-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  &-dragger {
+    display: block;
+    width: 800px;
+    margin: 128px 0;
+    background-color: rgba(247, 247, 250);
+
+    .ant-upload-drag {
+      border-width: 3px;
+      height: 200px;
+    }
+  }
+
+  &-dragger:hover {
+    .ant-upload-drag {
+      background-color: #4096ff15;
+    }
   }
 }

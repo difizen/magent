@@ -1,5 +1,5 @@
-from typing import List
-from fastapi import APIRouter
+from typing import Annotated, List
+from fastapi import APIRouter, Body, File, UploadFile
 from agentuniverse_product.service.model.knowledge_dto import KnowledgeDTO
 from agentuniverse_product.service.knowledge_service.knowledge_service import KnowledgeService
 
@@ -10,3 +10,22 @@ knowledge_router = router
 @router.get("/knowledge", response_model=List[KnowledgeDTO])
 async def get_knowledge():
     return KnowledgeService.get_knowledge_list()
+
+@router.post("/knowledge", response_model=str)
+async def create_knowledge(knowledge: KnowledgeDTO):
+    return KnowledgeService.create_knowledge(knowledge)
+
+@router.put("/knowledge/{knowledge_id}", response_model=str)
+async def update_knowledge(knowledge_id: str, knowledge: KnowledgeDTO):
+    knowledge.id = knowledge_id
+    return KnowledgeService.update_knowledge(knowledge)
+
+@router.delete("/knowledge/{knowledge_id}", response_model=bool)
+async def delete_knowledge(knowledge_id: str):
+    return KnowledgeService.delete_knowledge(knowledge_id)
+
+@router.post("/knowledge/upload")
+async def upload_knowledge_file(knowledge_id: Annotated[str, Body()], file: UploadFile = File(...)):
+    print('here')
+    return KnowledgeService.upload_knowledge_file(knowledge_id, file)
+    

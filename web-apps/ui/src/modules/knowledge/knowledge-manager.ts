@@ -26,6 +26,27 @@ export class KnowledgeManager {
     return defaultValue;
   };
 
+  createKnowledge = async (nickname: string, description?: string): Promise<string> => {
+    const res = await this.axios.post<string>(`/api/v1/knowledge`, {
+      nickname: nickname,
+      description: description,
+    });
+    return res.data;
+  };
+
+  updateKnowledge = async (option: KnowledgeModelOption): Promise<string> => {
+    const res = await this.axios.put<string>(`/api/v1/knowledge/${option.id}`, {
+      nickname: option.nickname,
+      description: option.description,
+    });
+    return res.data;
+  };
+
+  deleteKnowledge = async (knowledge_id: string): Promise<boolean> => {
+    const res = await this.axios.delete<string>(`/api/v1/knowledge/${knowledge_id}`);
+    return Boolean(res.data);
+  };
+
   getOrCreate = (option: KnowledgeModelOption): KnowledgeModel => {
     const exist = this.cache.get(option.id);
     if (exist) {
