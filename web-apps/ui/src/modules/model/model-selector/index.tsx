@@ -14,7 +14,7 @@ import type { LLMMeta } from '@/modules/model/protocol.js';
 
 import './index.less';
 
-const clsPrefix = 'agent-config-model-selector';
+const clsPrefix = 'magent-llm-model-selector';
 
 const ModelSelectorOption = (props: { model: LLMMeta; flat?: boolean }) => {
   const { model, flat } = props;

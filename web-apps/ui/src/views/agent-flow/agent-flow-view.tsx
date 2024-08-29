@@ -14,9 +14,9 @@ import { AgentManager } from '@/modules/agent/agent-manager.js';
 import type { AgentModel } from '@/modules/agent/protocol.js';
 import './index.less';
 import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
+import { ModelSelector } from '@/modules/model/model-selector/index.js';
 import type { LLMMeta } from '@/modules/model/protocol.js';
 
-import { ModelSelector } from '../agent-config/components/model-selector/index.js';
 import {
   KnowledgeModal,
   KnowledgeModalComponent,
@@ -41,7 +41,10 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
         nodeId: string;
         llmParam: BasicSchema[];
       }) => {
-        const onChange = (val: LLMMeta) => {
+        const onChange = (val?: LLMMeta) => {
+          if (!val) {
+            return;
+          }
           setNode(nodeId, (old) => ({
             ...old,
             data: {
