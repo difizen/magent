@@ -1,7 +1,4 @@
 import { BarsOutlined } from '@ant-design/icons';
-import { Button, InputNumber, Popover } from 'antd';
-import { useEffect, useState } from 'react';
-
 import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import PromptEditor from '@flow/components/AIBasic/PromptEditor/index.js';
@@ -10,6 +7,8 @@ import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
 import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/useFlowStore.js';
 import { useModelStore } from '@flow/stores/useModelStore.js';
+import { Button, InputNumber, Popover } from 'antd';
+import { useEffect, useState } from 'react';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
@@ -74,7 +73,7 @@ export const LLMNode = (props: Props) => {
           label="输入变量"
           dynamic
           nodes={[...(upstreamNode as any)]}
-          value={[...(data.config.inputs?.input_param || [])]}
+          value={[...(data.config?.inputs?.input_param || [])]}
           onChange={(values) => {
             setNode(data.id, (old) => ({
               ...old,

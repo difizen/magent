@@ -1,13 +1,9 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import type { BasicSchema } from '@difizen/magent-flow';
-import {
-  FlowWithPanel,
-  useFlowStore,
-  useKnowledgeStore,
-  useModelStore,
-} from '@difizen/magent-flow';
+import { useFlowStore, useKnowledgeStore, useModelStore } from '@difizen/magent-flow';
 import { BaseView, inject, prop, view, ViewOption, transient } from '@difizen/mana-app';
 import { Button } from 'antd';
+import yaml from 'js-yaml';
 import { forwardRef, useEffect, useState } from 'react';
 
 import { AgentManager } from '@/modules/agent/agent-manager.js';
@@ -22,6 +18,8 @@ import {
   KnowledgeModalComponent,
 } from '../agent-config/knowledge-modal/modal.js';
 
+import { InitEdgeParser, InitNodeParser } from './flow-utils.js';
+import { FlowWithTabs } from './flow-with-tabs/index.js';
 import { Toolbar } from './toolbar.js';
 
 const viewId = 'magent-agent-flow';
@@ -30,7 +28,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
   function AgentConfigViewComponent(props, ref) {
     const { setModelSelector } = useModelStore();
     const { setKnowledgeSelector } = useKnowledgeStore();
-    const { setNode } = useFlowStore();
+    const { setNode, initFlow } = useFlowStore();
 
     useEffect(() => {
       // 注册 flow 中模型选择
@@ -175,13 +173,15 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
                   <div
                     style={{
                       width: '100%',
-                      border: '1px dashed #d9d9d9',
+                      border: '1px solid #d9d9d9',
                       borderRadius: '4px',
                       marginBottom: '6px',
-                      padding: '6px',
+                      paddingLeft: '12px',
+                      paddingRight: '12px',
                       display: 'flex',
-                      justifyItems: 'between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
+                      fontWeight: '500',
                     }}
                     key={k.id}
                   >
@@ -224,9 +224,31 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
       setKnowledgeSelector(Ele2 as any);
     }, [setKnowledgeSelector, setModelSelector, setNode]);
 
+    useEffect(() => {
+      const mockGraph = localStorage.getItem('magent_flow_testdata');
+      if (!mockGraph) {
+        return;
+      }
+      const graph = yaml.load(mockGraph);
+      const nodes = graph.nodes.map((n) => {
+        return InitNodeParser(n);
+      });
+
+      const edges = graph.edges.map((e) => {
+        return InitEdgeParser(e);
+      });
+
+      // 获取 yaml 初始化 flow
+      initFlow({
+        nodes: [...nodes],
+        edges: [...edges],
+      });
+      console.log('🚀 ~ AgentConfigViewComponent ~ initFlow:');
+    }, [initFlow]);
+
     return (
       <div ref={ref} className={viewId}>
-        <FlowWithPanel
+        <FlowWithTabs
           toolbar={
             <Toolbar
               style={{

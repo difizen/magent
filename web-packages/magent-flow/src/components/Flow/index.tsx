@@ -1,13 +1,12 @@
-import type { Connection, OnSelectionChangeParams } from '@xyflow/react';
-import { Background, ReactFlow } from '@xyflow/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-
 import type { NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/useFlowStore.js';
 import { useShortcutsStore } from '@flow/stores/useShortcutsStore.js';
 import { useUndoRedoStore } from '@flow/stores/useUndoRedoStore.js';
 import { getNodeId } from '@flow/utils/reactflowUtils.js';
+import { Background, ReactFlow } from '@xyflow/react';
+import type { Connection, OnSelectionChangeParams } from '@xyflow/react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import CustomEdge from '../CustomEdge/index.js';
 import { FlowController } from '../FlowController/index.js';
@@ -22,6 +21,7 @@ import {
   handleUndo,
 } from './keys.js';
 import '@xyflow/react/dist/style.css';
+import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
 
 const edgeTypes = {
   custom: CustomEdge,
@@ -139,33 +139,36 @@ function Flow(props: FlowProps) {
     }
   }, []);
 
+  console.log('🚀 ~ Flow ~ edges:', edges);
   return (
-    <div
-      style={{ height: '100%', width: '100%' }}
-      className={classNames}
-      ref={reactFlowWrapper}
-    >
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onInit={setReactFlowInstance}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnectMod}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        disableKeyboardA11y={true}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        proOptions={{ hideAttribution: true }}
-        maxZoom={2}
-        minZoom={0.1}
+    <EventEmitterContextProvider>
+      <div
+        style={{ height: '100%', width: '100%' }}
+        className={classNames}
+        ref={reactFlowWrapper}
       >
-        <Background />
-        {miniMap && <FlowController />}
-        {toolbar}
-      </ReactFlow>
-    </div>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onInit={setReactFlowInstance}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnectMod}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          disableKeyboardA11y={true}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          proOptions={{ hideAttribution: true }}
+          maxZoom={2}
+          minZoom={0.1}
+        >
+          <Background />
+          {miniMap && <FlowController />}
+          {toolbar}
+        </ReactFlow>
+      </div>
+    </EventEmitterContextProvider>
   );
 }
 

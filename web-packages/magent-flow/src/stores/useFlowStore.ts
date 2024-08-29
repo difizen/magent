@@ -1,3 +1,5 @@
+import type { NodeType } from '@flow/interfaces/flow.js';
+import { cleanEdges, getNodeId } from '@flow/utils/reactflowUtils.js';
 import type {
   Connection,
   Edge,
@@ -14,9 +16,6 @@ import { addEdge, applyEdgeChanges, applyNodeChanges } from '@xyflow/react';
 import { cloneDeep } from 'lodash';
 import { create } from 'zustand';
 
-import type { NodeType } from '@flow/interfaces/flow.js';
-import { cleanEdges, getNodeId } from '@flow/utils/reactflowUtils.js';
-
 interface AdjacencyList {
   [key: number]: number[];
 }
@@ -24,6 +23,10 @@ interface AdjacencyList {
 interface FlowStoreType {
   nodes: Node[];
   edges: Edge[];
+  initFlow: (grapg: { nodes: Node[]; edges: Edge[] }) => {
+    nodes: Node[];
+    edges: Edge[];
+  };
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
 
@@ -89,6 +92,12 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
   return {
     nodes: [],
     edges: [],
+    initFlow: (graph: { nodes: Node[]; edges: Edge[] }) => {
+      set({
+        nodes: graph.nodes,
+        edges: graph.edges,
+      });
+    },
     reactFlowInstance: null,
     setReactFlowInstance: (newState) => {
       set({ reactFlowInstance: newState });
@@ -114,6 +123,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
         edges: applyEdgeChanges(changes, get().edges),
       });
     },
+
     setNode: (id: string, change: Node | ((oldState: Node) => Node)) => {
       const newChange =
         typeof change === 'function'
@@ -185,9 +195,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
               targetHandle: connection.targetHandle!,
               sourceHandle: connection.sourceHandle!,
             },
-            // style: { stroke: "#555" },
             type: 'custom',
-            // className: "stroke-foreground stroke-connection",
           },
           oldEdges,
         );
