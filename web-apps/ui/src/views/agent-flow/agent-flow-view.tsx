@@ -1,17 +1,29 @@
 import { DeleteOutlined } from '@ant-design/icons';
 import type { BasicSchema } from '@difizen/magent-flow';
 import { useFlowStore, useKnowledgeStore, useModelStore } from '@difizen/magent-flow';
-import { BaseView, inject, prop, view, ViewOption, transient } from '@difizen/mana-app';
+import {
+  BaseView,
+  inject,
+  prop,
+  view,
+  ViewOption,
+  transient,
+  useInject,
+  ViewInstance,
+} from '@difizen/mana-app';
 import { Button } from 'antd';
-import yaml from 'js-yaml';
+// import yaml from 'js-yaml';
 import { forwardRef, useEffect, useState } from 'react';
 
 import { AgentManager } from '@/modules/agent/agent-manager.js';
 import type { AgentModel } from '@/modules/agent/protocol.js';
 import './index.less';
+import { RequestHelper } from '@/modules/axios-client/request.js';
 import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
 import { ModelSelector } from '@/modules/model/model-selector/index.js';
 import type { LLMMeta } from '@/modules/model/protocol.js';
+import type { WorkflowPlannerMeta } from '@/modules/planner/protocol.js';
+import type { Graph, WorkflowMeta } from '@/modules/workflow/protocol.js';
 
 import {
   KnowledgeModal,
@@ -29,6 +41,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
     const { setModelSelector } = useModelStore();
     const { setKnowledgeSelector } = useKnowledgeStore();
     const { setNode, initFlow } = useFlowStore();
+    const instance = useInject<AgentFlowView>(ViewInstance);
 
     useEffect(() => {
       // 注册 flow 中模型选择
@@ -225,26 +238,52 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
     }, [setKnowledgeSelector, setModelSelector, setNode]);
 
     useEffect(() => {
-      const mockGraph = localStorage.getItem('magent_flow_testdata');
-      if (!mockGraph) {
-        return;
-      }
-      const graph = yaml.load(mockGraph);
-      const nodes = graph.nodes.map((n) => {
-        return InitNodeParser(n);
-      });
+      instance
+        .getGraphInfo()
+        .then((info) => {
+          // const graph = yaml.load(mockGraph) as Graph;
+          const graph = info.graph || { nodes: [], edges: [] };
+          const nodes = graph.nodes.map((n) => {
+            return InitNodeParser(n);
+          });
 
-      const edges = graph.edges.map((e) => {
-        return InitEdgeParser(e);
-      });
+          const edges = graph.edges.map((e) => {
+            return InitEdgeParser(e);
+          });
 
-      // 获取 yaml 初始化 flow
-      initFlow({
-        nodes: [...nodes],
-        edges: [...edges],
-      });
-      console.log('🚀 ~ AgentConfigViewComponent ~ initFlow:');
-    }, [initFlow]);
+          // 获取 yaml 初始化 flow
+          initFlow({
+            nodes: [...nodes],
+            edges: [...edges],
+          });
+          return;
+        })
+        .catch(() => {
+          initFlow({
+            nodes: [],
+            edges: [],
+          });
+        });
+      // const mockGraph = localStorage.getItem('magent_flow_testdata');
+      // if (!mockGraph) {
+      //   return;
+      // }
+      // const graph = yaml.load(mockGraph) as Graph;
+      // const nodes = graph.nodes.map((n) => {
+      //   return InitNodeParser(n);
+      // });
+
+      // const edges = graph.edges.map((e) => {
+      //   return InitEdgeParser(e);
+      // });
+
+      // // 获取 yaml 初始化 flow
+      // initFlow({
+      //   nodes: [...nodes],
+      //   edges: [...edges],
+      // });
+      // console.log('🚀 ~ AgentConfigViewComponent ~ initFlow:');
+    }, [initFlow, instance]);
 
     return (
       <div ref={ref} className={viewId}>
@@ -271,10 +310,15 @@ export interface AgentFlowViewOption {
 @transient()
 @view(viewId)
 export class AgentFlowView extends BaseView {
+  @inject(RequestHelper) request: RequestHelper;
   agentId: string;
   override view = AgentFlowComponent;
 
   @prop() agent: AgentModel;
+
+  @prop() workflowId: string;
+  @prop() workflow: WorkflowMeta;
+
   protected agentManager: AgentManager;
   constructor(
     @inject(ViewOption) option: AgentFlowViewOption,
@@ -306,5 +350,37 @@ export class AgentFlowView extends BaseView {
       return agent;
     }
     return undefined;
+  };
+
+  protected getWorkflowInfo = async (workflowId: string) => {
+    const res = await this.request.get<WorkflowMeta>(
+      `/api/v1/workflows/${workflowId}`,
+      {},
+    );
+    if (res.status === 200) {
+      this.workflow = res.data;
+    }
+    return this.workflow;
+  };
+
+  getGraphInfo = async () => {
+    await this.agent.ready;
+    const planner = this.agent.planner as WorkflowPlannerMeta;
+    const workflowId = planner.workflow_id;
+    this.workflowId = workflowId;
+    return await this.getWorkflowInfo(workflowId);
+  };
+
+  saveGraph = async (graph: Graph) => {
+    await this.agent.ready;
+    if (!this.workflowId || !this.workflow) {
+      return;
+    }
+    this.workflow.graph = graph;
+    const res = await this.request.put<WorkflowMeta>(
+      `/api/v1/workflows/${this.workflowId}`,
+      this.workflow,
+    );
+    return res;
   };
 }

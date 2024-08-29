@@ -139,7 +139,8 @@ function Flow(props: FlowProps) {
     }
   }, []);
 
-  console.log('🚀 ~ Flow ~ edges:', edges);
+  // console.log('🚀 ~ Flow ~ edges:', edges);
+  // console.log('🚀 ~ Flow ~ nodes:', nodes);
   return (
     <EventEmitterContextProvider>
       <div

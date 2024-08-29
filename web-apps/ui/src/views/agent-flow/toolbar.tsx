@@ -35,7 +35,7 @@ export const Toolbar = (props: { classname?: string; style?: React.CSSProperties
       <Button
         type="primary"
         icon={<SaveOutlined />}
-        onClick={() => {
+        onClick={async () => {
           const flow = JSON.parse(JSON.stringify(getFlow()));
           const nodes = flow.nodes.map((node) => {
             return OutputNodeParser(node as NodeType);
@@ -48,9 +48,14 @@ export const Toolbar = (props: { classname?: string; style?: React.CSSProperties
             edges,
           };
 
+          const res = await flowDevView.agentFlow?.saveGraph(graph);
+          if (res?.status === 200) {
+            message.success('保存成功');
+          }
+
           const graph_yaml = yaml.dump(graph);
           localStorage.setItem('magent_flow_testdata', graph_yaml);
-          message.success('保存成功');
+          // message.success('保存成功');
         }}
       >
         保存

@@ -39,7 +39,7 @@ async def create_workflow_agent(agent: AgentDTO):
     workflow_id = f"{agent.id}_workflow"
     workflow_name = f"{agent.nickname}_workflow"
     workflow = WorkflowDTO(id=workflow_id, name=workflow_name)
-    WorkflowService.create_workflow(workflow)
+    workflow_id = WorkflowService.create_workflow(workflow)
     agent.planner = PlannerDTO(id='workflow_planner', workflow_id=workflow_id)
     return AgentService.create_agent(agent)
 

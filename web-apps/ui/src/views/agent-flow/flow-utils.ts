@@ -12,7 +12,7 @@ export const OutputNodeParser = (node: NodeType) => {
 
 export const OutputEdgeParser = (edge: Edge) => {
   return {
-    id: edge.id,
+    id: edge.id.toString(),
     target_handler: edge.targetHandle,
     source_handler: edge.sourceHandle,
     source_node_id: edge.source,
@@ -24,9 +24,9 @@ export const InitNodeParser = (node: NodeType) => {
   node['config'] = node['data'];
   delete node['data'];
   const obj: NodeType = {
-    id: node.id,
+    id: node.id.toString(),
     type: node.type,
-    position: node.position,
+    position: node.position || { x: 0, y: 0 },
     data: { ...node },
   };
   return obj;
@@ -37,8 +37,8 @@ export const InitEdgeParser = (edge: Edge) => {
     id: edge.id,
     targetHandle: edge.target_handler,
     sourceHandle: edge.source_handler,
-    source: edge.source_node_id,
-    target: edge.target_node_id,
+    source: edge.source_node_id.toString(),
+    target: edge.target_node_id.toString(),
   };
   return obj;
 };

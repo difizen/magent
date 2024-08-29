@@ -1,6 +1,7 @@
 import { Syringe } from '@difizen/mana-app';
 
 import type { LLMMeta } from '../model/protocol.js';
+import type { PlannerMeta } from '../planner/protocol.js';
 import type { ToolMeta } from '../tool/protocol.js';
 
 import type { AgentConfig } from './agent-config.js';
@@ -8,11 +9,6 @@ import type { AgentModel } from './agent-model.js';
 
 export type { AgentConfig } from './agent-config.js';
 
-export interface PlannerMeta {
-  id: string;
-  nickname: string;
-  members?: AgentModelOption[];
-}
 export interface PromptMeta {
   introduction: string;
   target: string;

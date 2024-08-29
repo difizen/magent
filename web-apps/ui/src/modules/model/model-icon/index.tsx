@@ -31,10 +31,13 @@ export const DefaultLLMIcon = () => {
 };
 
 const match = (data: LLMMeta, name: string): boolean => {
+  const labels = [data.id, data.nickname, data.model_name?.[0]];
+
   if (
-    data.id.toLowerCase().includes(name) ||
-    data.nickname.toLowerCase().includes(name) ||
-    data.model_name[0].toLowerCase().includes(name)
+    labels
+      .filter((item) => !!item)
+      .map((item) => item.toLowerCase())
+      .find((item) => item.includes(name))
   ) {
     return true;
   }

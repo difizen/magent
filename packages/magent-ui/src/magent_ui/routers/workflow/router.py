@@ -11,7 +11,7 @@ async def get_agent_detail(workflow_id):
     return WorkflowService.get_workflow_detail(workflow_id)
 
 
-@router.put("/workflows/{workflow_id}", response_model=WorkflowDTO | None)
+@router.put("/workflows/{workflow_id}", response_model=str | None)
 async def update_agent(workflow_id, workflow: WorkflowDTO):
     return WorkflowService.update_workflow(workflow)
 
