@@ -1,6 +1,6 @@
 # <img src="./docs/assets//logo.svg" width="30"> magent
 
-为智能体研发提供专业产品方案
+智能体研发产品方案
 
 ## magent-ui
 
