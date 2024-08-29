@@ -5,13 +5,18 @@ import type { AgentModel } from './agent-model.js';
 
 @singleton()
 export class AgentMarket {
-  @inject(AgentManager) agentManager: AgentManager;
+  agentManager: AgentManager;
 
   @prop()
   list: AgentModel[] = [];
 
   @prop()
   loading = false;
+
+  constructor(@inject(AgentManager) agentManager: AgentManager) {
+    this.agentManager = agentManager;
+    this.update();
+  }
 
   async update() {
     this.loading = true;

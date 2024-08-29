@@ -1,14 +1,13 @@
 import { BarsOutlined } from '@ant-design/icons';
 import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
-import PromptEditor from '@flow/components/AIBasic/PromptEditor/index.js';
+import { PromptEditor } from '@flow/components/AIBasic/PromptEditor/index.js';
 import { SelectInNode } from '@flow/components/AIBasic/SelectInNode/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
 import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/useFlowStore.js';
 import { useModelStore } from '@flow/stores/useModelStore.js';
 import { Button, InputNumber, Popover } from 'antd';
-import { useEffect, useState } from 'react';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
@@ -27,7 +26,7 @@ export const LLMNode = (props: Props) => {
 
   const upstreamNode = findUpstreamNodes(data.id.toString());
 
-  const llm_param = data.config?.inputs?.llm_param as BasicSchema[];
+  const llmParam = data.config?.inputs?.llm_param as BasicSchema[];
 
   return (
     <NodeWrapper nodeProps={props}>
@@ -38,7 +37,7 @@ export const LLMNode = (props: Props) => {
           label={'模型配置'}
           content={
             ModelSelector !== null ? (
-              <ModelSelector nodeId={data.id} llmParam={llm_param} />
+              <ModelSelector nodeId={data.id} llmParam={llmParam} />
             ) : (
               <div className="flex">
                 <SelectInNode
@@ -98,7 +97,7 @@ export const LLMNode = (props: Props) => {
             <div className="h-[200px] bg-white rounded-md cursor-pointer nodrag p-3 overflow-y-auto">
               <PromptEditor
                 value={
-                  (llm_param.find((item) => item.name === 'prompt')?.value
+                  (llmParam.find((item) => item.name === 'prompt')?.value
                     ?.content as string) || ''
                 }
                 placeholder="请输入 Prompt"
@@ -112,7 +111,7 @@ export const LLMNode = (props: Props) => {
                         inputs: {
                           ...old.data.config.inputs,
                           llm_param: [
-                            ...llm_param,
+                            ...llmParam.filter((p) => p.name !== 'prompt'),
                             {
                               name: 'prompt',
                               type: 'string',

@@ -33,22 +33,22 @@ export const NodeWrapper = (props: {
     name,
     extra,
   } = props;
-  const { name: defautName, description, icon: defautIcon } = nodeProps.data;
+  const { name: defaultName, description, icon: defaultIcon } = nodeProps.data;
 
   return (
     <div
       className={classNames(
-        'relative flex flex-col justify-center rounded-xl bg-white shadow-lg p-5',
+        'relative flex flex-col justify-center rounded-xl bg-white shadow-lg p-5 w-[520px]',
         nodeProps.selected ? 'border-sky-500' : '',
       )}
     >
       {/* <NodeStatus status={'success' as any} runDuration={1020} /> */}
       <div className="flex w-full items-center justify-between gap-8 rounded-t-lg bg-muted pb-2">
         <div className="flex items-center">
-          {(defautIcon || icon) && (
-            <img src={icon ?? defautIcon} className="h-10 rounded p-1" />
+          {(defaultIcon || icon) && (
+            <img src={icon ?? defaultIcon} className="h-10 rounded p-1" />
           )}
-          <div className="ml-2 truncate text-gray-800">{name ?? defautName}</div>
+          <div className="ml-2 truncate text-gray-800">{name ?? defaultName}</div>
         </div>
         {extra}
       </div>
@@ -86,9 +86,11 @@ export const NodeWrapper = (props: {
           />
         ))}
 
-      <div className="h-full w-full text-gray-400 pb-1">
-        <div className="w-full  pb-2 text-sm">{description}</div>
-      </div>
+      {description && (
+        <div className="h-full w-full text-gray-400 pb-1">
+          <div className="w-full pb-2 text-sm truncate">{description}</div>
+        </div>
+      )}
       <div className="">{children}</div>
     </div>
   );

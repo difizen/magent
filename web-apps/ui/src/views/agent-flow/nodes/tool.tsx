@@ -7,7 +7,6 @@ import {
   OutputVariable,
 } from '@difizen/magent-flow';
 import { useInject } from '@difizen/mana-app';
-import { Button } from 'antd';
 import { useState } from 'react';
 
 import { ToolSpace } from '@/modules/tool/tool-space.js';
@@ -16,7 +15,7 @@ import {
   ToolsModalComponent,
 } from '@/views/agent-config/tools-modal/modal.js';
 
-import transferIcon from '../icons/transfer.svg';
+import { TransferButton } from './transfer-button.js';
 
 type Props = {
   data: NodeDataType;
@@ -41,16 +40,8 @@ export const ToolNode = (props: Props) => {
     <NodeWrapper
       nodeProps={props}
       icon={toolMeta?.avatar}
-      name={data?.name || '工具'}
       extra={
-        <Button
-          className="bg-gray-50"
-          type="text"
-          icon={<img src={transferIcon} className="h-6" />}
-          onClick={() => setToolModalOpen(true)}
-        >
-          选择工具
-        </Button>
+        <TransferButton onClick={() => setToolModalOpen(true)}>选择工具</TransferButton>
       }
     >
       <ToolsModalComponent
@@ -71,6 +62,7 @@ export const ToolNode = (props: Props) => {
               data: {
                 ...old.data,
                 name: val[0].nickname,
+                description: val[0].description,
                 config: {
                   ...(old.data.config as Record<string, any>),
                   inputs: {

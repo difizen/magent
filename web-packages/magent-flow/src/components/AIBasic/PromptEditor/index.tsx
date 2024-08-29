@@ -35,7 +35,7 @@ export type PromptEditorProps = {
   externalToolBlock?: ExternalToolBlockType;
 };
 
-const PromptEditor: FC<PromptEditorProps> = ({
+export const PromptEditor: FC<PromptEditorProps> = ({
   instanceId,
   compact,
   className,
@@ -126,5 +126,3 @@ const PromptEditor: FC<PromptEditorProps> = ({
     </LexicalComposer>
   );
 };
-
-export default PromptEditor;

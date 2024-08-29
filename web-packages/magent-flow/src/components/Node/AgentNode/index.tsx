@@ -1,8 +1,7 @@
 import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
-import PromptEditor from '@flow/components/AIBasic/PromptEditor/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
-import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
+import type { NodeDataType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/useFlowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
@@ -43,7 +42,7 @@ export const AgentNode = (props: Props) => {
             }));
           }}
         />
-        <CollapseWrapper
+        {/* <CollapseWrapper
           className="mt-3"
           label={'Prompt'}
           content={
@@ -84,7 +83,7 @@ export const AgentNode = (props: Props) => {
               />
             </div>
           }
-        />
+        /> */}
         <CollapseWrapper
           className="mt-3"
           label={'Output'}

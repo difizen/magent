@@ -6,7 +6,6 @@ import {
   KnowledgeNode,
   LLMNode,
   IfElseNode,
-  AgentNode,
   NodesPanel,
   Flow,
 } from '@difizen/magent-flow';
@@ -20,6 +19,7 @@ import knowledgeIcon from '../icons/knowledge.svg';
 import llmIcon from '../icons/llm.svg';
 import startIcon from '../icons/start.svg';
 import toolIcon from '../icons/tool.svg';
+import { AgentNode } from '../nodes/agent.js';
 import { ToolNode } from '../nodes/tool.js';
 
 export const nodeIconMap = {
@@ -57,7 +57,6 @@ const templateNodeYaml = `
           value:
             type: reference
       prompt:
-        name: response
         type: string
         description: 输出内容
         value:
@@ -158,9 +157,14 @@ const templateNodeYaml = `
   data:
     inputs:
       agent_param:
-        - type: string
-          name: id
-          value: demo_rag_agent
+        - name: id
+          type: string
+        - name: prompt
+          type: string
+          value:
+            type: value
+            content: |
+              需要回答的问题是: {{input}}
       input_param:
         - type: string
           name: input
