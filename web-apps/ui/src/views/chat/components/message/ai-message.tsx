@@ -77,7 +77,9 @@ export const AIMessageContent = (props: AIMessageProps) => {
         })}
       >
         <div className="chat-message-ai-content">
-          <LoadingOutlined className="chat-message-ai-receiving" />
+          {message.state === AnswerState.RECEIVING && (
+            <LoadingOutlined className="chat-message-ai-receiving" />
+          )}
         </div>
         <AIMessageAddon {...props} />
       </div>
@@ -90,7 +92,7 @@ export const AIMessageContent = (props: AIMessageProps) => {
           ['chat-message-ai-error']: message.error,
         })}
       >
-        <div className={classNames(`markdown-message-md`, 'chat-message-ai-content')}>
+        <div className={classNames('markdown-message-md', 'chat-message-ai-content')}>
           <span className={`markdown-message-md-pop`}>
             <Markdown
               className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
