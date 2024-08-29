@@ -9,18 +9,18 @@ import {
   AgentNode,
   NodesPanel,
   Flow,
-  useFlowStore,
 } from '@difizen/magent-flow';
 import { Tabs } from 'antd';
 import yaml from 'js-yaml';
 
-import agentIcon from './icons/agent.svg';
-import endIcon from './icons/end.svg';
-import ifelseIcon from './icons/ifelse.svg';
-import knowledgeIcon from './icons/knowledge.svg';
-import llmIcon from './icons/llm.svg';
-import startIcon from './icons/start.svg';
-import toolIcon from './icons/tool.svg';
+import agentIcon from '../icons/agent.svg';
+import endIcon from '../icons/end.svg';
+import ifelseIcon from '../icons/ifelse.svg';
+import knowledgeIcon from '../icons/knowledge.svg';
+import llmIcon from '../icons/llm.svg';
+import startIcon from '../icons/start.svg';
+import toolIcon from '../icons/tool.svg';
+import { ToolNode } from '../nodes/tool.js';
 
 export const nodeIconMap = {
   start: startIcon,
@@ -131,11 +131,6 @@ const templateNodeYaml = `
       knowledge_param:
         - type: string
           name: id
-        - type: string
-          name: top_k
-          value:
-            type: value
-            content: '2'
       input_param:
         - type: string
           name: query # 自然语言的知识库query
@@ -148,21 +143,11 @@ const templateNodeYaml = `
   name: 工具
   description:
   type: tool
-  position:
-    x: 500
-    y: 100
   data:
     inputs:
       tool_param:
         - type: string
           name: id
-          value: google_search
-      input_param:
-        - type: string
-          name: input
-          value:
-            type: value
-            content: 'output'
     outputs:
       - name: output
         type: string
@@ -220,8 +205,9 @@ const nodeTypes = {
   [NodeTypeEnum.LLM]: LLMNode,
   [NodeTypeEnum.Knowledge]: KnowledgeNode,
   [NodeTypeEnum.IfElse]: IfElseNode,
-  [NodeTypeEnum.Tool]: IfElseNode,
   [NodeTypeEnum.Agent]: AgentNode,
+  // 工具节点
+  [NodeTypeEnum.Tool]: ToolNode,
 };
 
 export const FlowWithTabs = (props: { toolbar?: React.ReactNode }) => {

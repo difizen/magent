@@ -2,20 +2,25 @@ import type { ModalItem, ModalItemProps } from '@difizen/mana-app';
 import { useInject, useMount } from '@difizen/mana-app';
 import type { TableColumnsType } from 'antd';
 import { Modal, Table } from 'antd';
-import type { TableRowSelection } from 'antd/es/table/interface.js';
+import type { RowSelectionType, TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
-import type { AgentModel } from '@/modules/agent/protocol.js';
 import { ToolIcon } from '@/modules/tool/icon/index.js';
 import type { ToolMeta } from '@/modules/tool/protocol.js';
 import { ToolSpace } from '@/modules/tool/tool-space.js';
 
 import { ToolsModalId } from '../protocol.js';
 
-export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>) => {
+export const ToolsModalComponent = (
+  props: ModalItemProps<{
+    dataProvider: { tool: ToolMeta[] };
+    rowSelectionType?: RowSelectionType;
+    onChange: (tool: ToolMeta[]) => void;
+  }>,
+) => {
   const toolSpace = useInject(ToolSpace);
   const { visible, close } = props;
-  const { agent } = props.data || {};
+  const { dataProvider, onChange, rowSelectionType = 'checkbox' } = props.data || {};
 
   const columns = useMemo(() => {
     const c: TableColumnsType<ToolMeta> = [
@@ -52,19 +57,22 @@ export const ToolsModalComponent = (props: ModalItemProps<{ agent: AgentModel }>
     toolSpace.update();
   });
 
-  if (!agent) {
+  if (!dataProvider) {
     return null;
   }
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    agent.tool = toolSpace.list
-      .filter((item) => newSelectedRowKeys.includes(item.id))
-      .map((item) => item.toMeta());
+    onChange?.(
+      toolSpace.list
+        .filter((item) => newSelectedRowKeys.includes(item.id))
+        .map((item) => item.toMeta()),
+    );
   };
 
   const rowSelection: TableRowSelection<ToolMeta> = {
-    selectedRowKeys: (agent.tool || []).map((item) => item.id),
+    selectedRowKeys: (dataProvider.tool || []).map((item) => item.id),
     onChange: onSelectChange,
+    type: rowSelectionType,
   };
 
   return (

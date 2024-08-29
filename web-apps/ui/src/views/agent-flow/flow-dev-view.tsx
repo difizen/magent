@@ -1,4 +1,4 @@
-import { MessageOutlined, RightOutlined } from '@ant-design/icons';
+import { RightOutlined } from '@ant-design/icons';
 import { ModalService, prop, ViewRender } from '@difizen/mana-app';
 import { ViewInstance, singleton, useInject, view } from '@difizen/mana-app';
 import { BoxPanel } from '@difizen/mana-react';

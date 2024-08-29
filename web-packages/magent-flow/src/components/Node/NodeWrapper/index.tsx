@@ -1,7 +1,6 @@
 import type { NodeDataType } from '@flow/interfaces/flow.js';
 import { classNames } from '@flow/utils/index.js';
 import { Handle, Position } from '@xyflow/react';
-import { Space } from 'antd';
 import React from 'react';
 
 type Props = {
@@ -20,6 +19,9 @@ export const NodeWrapper = (props: {
     id: string;
     style: Record<string, any>;
   }[];
+  icon?: string;
+  name?: string | React.ReactNode;
+  extra?: React.ReactNode;
 }) => {
   const {
     nodeProps,
@@ -27,8 +29,11 @@ export const NodeWrapper = (props: {
     leftHandler = true,
     rightHandler = true,
     rightHandlerConfig,
+    icon,
+    name,
+    extra,
   } = props;
-  const { name, description, icon } = nodeProps.data;
+  const { name: defautName, description, icon: defautIcon } = nodeProps.data;
 
   return (
     <div
@@ -39,10 +44,13 @@ export const NodeWrapper = (props: {
     >
       {/* <NodeStatus status={'success' as any} runDuration={1020} /> */}
       <div className="flex w-full items-center justify-between gap-8 rounded-t-lg bg-muted pb-2">
-        <Space className="text-lg">
-          {icon && <img src={icon} className="h-10 rounded p-1" />}
-          <div className="ml-2 truncate text-gray-800">{name}</div>
-        </Space>
+        <div className="flex items-center">
+          {(defautIcon || icon) && (
+            <img src={icon ?? defautIcon} className="h-10 rounded p-1" />
+          )}
+          <div className="ml-2 truncate text-gray-800">{name ?? defautName}</div>
+        </div>
+        {extra}
       </div>
       {leftHandler && (
         <Handle

@@ -1,4 +1,3 @@
-import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
 import type { NodeDataType } from '@flow/interfaces/flow.js';
 import { NodeTypeEnum } from '@flow/interfaces/flow.js';
 import yaml from 'js-yaml';
@@ -154,7 +153,6 @@ const templateNodeYaml = `
       tool_param:
         - type: string
           name: id
-          value: google_search
       input_param:
         - type: string
           name: input
