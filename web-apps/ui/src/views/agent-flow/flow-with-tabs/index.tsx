@@ -22,7 +22,7 @@ import llmIcon from './icons/llm.svg';
 import startIcon from './icons/start.svg';
 import toolIcon from './icons/tool.svg';
 
-const iconMap = {
+export const nodeIconMap = {
   start: startIcon,
   end: endIcon,
   llm: llmIcon,
@@ -209,9 +209,8 @@ export const NodeSchemaParser = (obj: Record<string, any>) => {
   obj['config'] = obj['data'];
   const type = obj['type'];
   obj['icon'] =
-    iconMap[type as keyof typeof iconMap] ||
+    nodeIconMap[type as keyof typeof nodeIconMap] ||
     'https://mdn.alipayobjects.com/huamei_xbkogb/afts/img/A*PzmdRpvZz58AAAAAAAAAAAAADqarAQ/original';
-
   delete obj['data'];
 };
 

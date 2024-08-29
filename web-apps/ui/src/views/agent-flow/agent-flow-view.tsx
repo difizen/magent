@@ -258,31 +258,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
           });
           return;
         })
-        .catch(() => {
-          initFlow({
-            nodes: [],
-            edges: [],
-          });
-        });
-      // const mockGraph = localStorage.getItem('magent_flow_testdata');
-      // if (!mockGraph) {
-      //   return;
-      // }
-      // const graph = yaml.load(mockGraph) as Graph;
-      // const nodes = graph.nodes.map((n) => {
-      //   return InitNodeParser(n);
-      // });
-
-      // const edges = graph.edges.map((e) => {
-      //   return InitEdgeParser(e);
-      // });
-
-      // // 获取 yaml 初始化 flow
-      // initFlow({
-      //   nodes: [...nodes],
-      //   edges: [...edges],
-      // });
-      // console.log('🚀 ~ AgentConfigViewComponent ~ initFlow:');
+        .catch(console.error);
     }, [initFlow, instance]);
 
     return (

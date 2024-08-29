@@ -1,5 +1,7 @@
 import type { NodeType, Edge, NodeDataType } from '@difizen/magent-flow';
 
+import { nodeIconMap } from './flow-with-tabs/index.js';
+
 export const OutputNodeParser = (node: NodeType) => {
   const obj: any = node.data;
   obj['position'] = node.position;
@@ -27,8 +29,14 @@ export const InitNodeParser = (node: NodeType) => {
     id: node.id.toString(),
     type: node.type,
     position: node.position || { x: 0, y: 0 },
-    data: { ...node },
+    data: {
+      ...node,
+      icon:
+        nodeIconMap[node.type as keyof typeof nodeIconMap] ||
+        'https://mdn.alipayobjects.com/huamei_xbkogb/afts/img/A*PzmdRpvZz58AAAAAAAAAAAAADqarAQ/original',
+    },
   };
+
   return obj;
 };
 

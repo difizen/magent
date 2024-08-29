@@ -6,8 +6,8 @@ import type { TableRowSelection } from 'antd/es/table/interface.js';
 import { useMemo } from 'react';
 
 import type { AgentModel } from '@/modules/agent/protocol.js';
-import type { ToolMeta } from '@/modules/tool/protocol.js';
 import { ToolIcon } from '@/modules/tool/icon/index.js';
+import type { ToolMeta } from '@/modules/tool/protocol.js';
 import { ToolSpace } from '@/modules/tool/tool-space.js';
 
 import { ToolsModalId } from '../protocol.js';
