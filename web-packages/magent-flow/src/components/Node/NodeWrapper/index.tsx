@@ -33,12 +33,12 @@ export const NodeWrapper = (props: {
   return (
     <div
       className={classNames(
-        'relative flex flex-col justify-center rounded-xl bg-white shadow-lg',
+        'relative flex flex-col justify-center rounded-xl bg-white shadow-lg p-5',
         nodeProps.selected ? 'border-sky-500' : '',
       )}
     >
       {/* <NodeStatus status={'success' as any} runDuration={1020} /> */}
-      <div className="flex w-full items-center justify-between gap-8 rounded-t-lg bg-muted px-3 py-2">
+      <div className="flex w-full items-center justify-between gap-8 rounded-t-lg bg-muted pb-2">
         <Space className="text-lg">
           {icon && <img src={icon} className="h-10 rounded p-1" />}
           <div className="ml-2 truncate text-gray-800">{name}</div>
@@ -79,9 +79,9 @@ export const NodeWrapper = (props: {
         ))}
 
       <div className="h-full w-full text-gray-400 pb-1">
-        <div className="w-full px-5 pb-2 text-sm">{description}</div>
+        <div className="w-full  pb-2 text-sm">{description}</div>
       </div>
-      <div className="px-5 pb-5">{children}</div>
+      <div className="">{children}</div>
     </div>
   );
 };
