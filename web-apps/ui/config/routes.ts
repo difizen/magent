@@ -34,6 +34,10 @@ export default [
         path: '/agent/:agentId/flow',
         slot: 'magent-agent-flow-dev-slot',
       },
+      {
+        path: '/portal/knowledge/:knowledgeId/upload',
+        slot: 'magent-knowledge-upload-slot',
+      },
     ],
   },
 ];
