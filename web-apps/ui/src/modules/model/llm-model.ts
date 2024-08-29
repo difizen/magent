@@ -97,7 +97,10 @@ export class LLMModel implements LLMMeta {
     this.model_name = meta.model_name;
   }
 
-  updateMeta(meta: LLMMeta) {
+  updateMeta = (meta?: LLMMeta) => {
+    if (!meta) {
+      return;
+    }
     if (this.id !== meta.id) {
       this.id = meta.id;
     }
@@ -110,7 +113,7 @@ export class LLMModel implements LLMMeta {
     if (this.model_name.join(',') !== meta.model_name.join(',')) {
       this.model_name = meta.model_name;
     }
-  }
+  };
 
   toMeta = (): LLMMeta => {
     const meta: LLMMeta = {

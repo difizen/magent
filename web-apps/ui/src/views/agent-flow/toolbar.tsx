@@ -15,7 +15,11 @@ export const Toolbar = (props: { classname?: string; style?: React.CSSProperties
   return (
     <div
       style={style}
-      className={classNames(classname || '', 'flex items-center gap-2 border-none')}
+      className={classNames(
+        'magent-agent-flow-tool',
+        classname || '',
+        'flex items-center gap-2',
+      )}
     >
       {flowDevView.hideChat && (
         <Button

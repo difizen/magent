@@ -100,10 +100,6 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     return true;
   }
 
-  updateOption(option: AgentModelOption) {
-    // TODO:
-  }
-
   protected override fromMeta(option: AgentModelOption = this.option) {
     this.id = option.id;
     this.name = option.nickname;

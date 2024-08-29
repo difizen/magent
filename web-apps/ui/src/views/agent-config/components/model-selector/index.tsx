@@ -3,11 +3,11 @@ import { useInject } from '@difizen/mana-app';
 import { Button, Form, Select, Popover, Avatar } from 'antd';
 import { forwardRef, useEffect } from 'react';
 
+import { DecimalStep } from '@/components/decimal-step/index.js';
 import { LLMProviderManager } from '@/modules/model/llm-provider-manager.js';
 import { LLMIcon } from '@/modules/model/model-icon/index.js';
 import type { LLMMeta } from '@/modules/model/protocol.js';
 
-import { DecimalStep } from '../decimal-step/index.js';
 import './index.less';
 
 const clsPrefix = 'agent-config-model-selector';

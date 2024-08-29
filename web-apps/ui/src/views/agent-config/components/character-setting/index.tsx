@@ -7,7 +7,7 @@ import {
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import type { CollapseProps } from 'antd';
 import { Collapse } from 'antd';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import type { AgentConfigView } from '../../view.js';
 
@@ -16,7 +16,7 @@ import './index.less';
 
 const clsPrefix = 'character-settings';
 
-export const CharacterSetting = () => {
+export const CharacterSetting = memo(function CharacterSetting() {
   const instance = useInject<AgentConfigView>(ViewInstance);
   const agent = instance.agent;
   const prompt = agent.prompt;
@@ -143,4 +143,4 @@ export const CharacterSetting = () => {
       />
     </div>
   );
-};
+});

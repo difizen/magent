@@ -51,16 +51,8 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
               <div className={`${viewId}-content-model-title`}>模型</div>
               <ModelSelector
                 value={instance.agent.llm}
-                onChange={(meta) => {
-                  if (meta) {
-                    instance.agent.llm?.updateMeta(meta);
-                  }
-                }}
-                onConfigChanged={(meta) => {
-                  if (meta) {
-                    instance.agent.llm?.updateMeta(meta);
-                  }
-                }}
+                onChange={instance.agent.llm?.updateMeta}
+                onConfigChanged={instance.agent.llm?.updateMeta}
               />
             </div>
             <ConfigList

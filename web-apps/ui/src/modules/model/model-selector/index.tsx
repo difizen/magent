@@ -6,6 +6,7 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { forwardRef, useEffect } from 'react';
 
+import { DecimalStep } from '@/components/decimal-step/index.js';
 import { LLMModel } from '@/modules/model/llm-model.js';
 import { LLMProviderManager } from '@/modules/model/llm-provider-manager.js';
 import { LLMIcon } from '@/modules/model/model-icon/index.js';
@@ -47,7 +48,7 @@ const TemperatureSlider: FC<TemperatureSliderProps> = (
   const llm = useObserve(props.llm);
   const temperature = llm?.temperature;
   return (
-    <Slider
+    <DecimalStep
       {...props}
       step={0.01}
       min={0}
