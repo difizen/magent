@@ -54,7 +54,7 @@ export const NodeWrapper = (props: {
       </div>
       {leftHandler && (
         <Handle
-          type="source"
+          type="target"
           position={Position.Left}
           style={{ borderColor: 'rgb(59 130 246)' }}
           className={classNames('-ml-0.5 ', 'w-3 h-3 rounded-full border-2 bg-white')}
@@ -67,7 +67,7 @@ export const NodeWrapper = (props: {
               <Handle
                 key={item.id}
                 id={item.id}
-                type="target"
+                type="source"
                 position={Position.Right}
                 style={{ borderColor: 'rgb(59 130 246)', ...item.style }}
                 className={classNames(
@@ -79,7 +79,7 @@ export const NodeWrapper = (props: {
           </>
         ) : (
           <Handle
-            type="target"
+            type="source"
             position={Position.Right}
             style={{ borderColor: 'rgb(59 130 246)' }}
             className={classNames('-mr-0.5 ', 'w-3 h-3 rounded-full border-2 bg-white')}
