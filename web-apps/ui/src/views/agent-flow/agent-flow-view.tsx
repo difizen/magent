@@ -87,7 +87,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
                       type: 'string',
                       value: {
                         type: 'value',
-                        content: val.model_name,
+                        content: val.model_name[0],
                       },
                     },
                   ],
