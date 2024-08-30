@@ -29,7 +29,7 @@ export class ToolModel extends AsyncModel<ToolModel, ToolMeta> {
   parameters: string[] = [];
 
   @prop()
-  openapi_schema?: string;
+  openapi_schema?: Record<string, any>;
 
   protected draftDeferred = new Deferred<ToolConfig>();
 

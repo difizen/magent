@@ -45,11 +45,11 @@ export interface ToolMeta {
   avatar: string;
   description: string;
   parameters: string[];
-  openapi_schema?: string;
+  openapi_schema?: Record<string, any>;
 }
 
 export interface OpenAPIToolMeta extends ToolMeta {
-  openapi_schema: string;
+  openapi_schema: Record<string, any>;
 }
 
 export const ToolModelOption = Syringe.defineToken('ToolModelOption', {

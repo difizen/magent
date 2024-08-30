@@ -67,8 +67,8 @@ const PluginsViewComponent = forwardRef<HTMLDivElement>(
                 <Col className={`${viewId}-list-item`} span={8}>
                   <TagList
                     tags={item.toolset.map((item) =>
-                      item.openapi_schema
-                        ? `${item.openapi_schema.method}: ${item.openapi_schema.path}`
+                      item.openapi_schema && item.openapi_schema['method']
+                        ? `${item.openapi_schema['method']}: ${item.openapi_schema['path']}`
                         : item.nickname,
                     )}
                     maxWidth={400}

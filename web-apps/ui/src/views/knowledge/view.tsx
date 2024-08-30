@@ -10,18 +10,15 @@ import {
   view,
 } from '@difizen/mana-app';
 import { Button, Col, List, message, Row, Space } from 'antd';
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
+import { history } from 'umi';
 
 import { KnowledgeIcon } from '@/modules/knowledge/knowledge-icon.js';
 import { KnowledgeManager } from '@/modules/knowledge/knowledge-manager.js';
-import type {
-  KnowledgeModel,
-  KnowledgeModelOption,
-} from '@/modules/knowledge/protocol.js';
+import type { KnowledgeModel } from '@/modules/knowledge/protocol.js';
 
+import { KnowledgeEditModalId } from './protocol.js';
 import './index.less';
-import { KnowledgeModal } from './create-modal/modal.js';
-import { history } from 'umi';
 
 const viewId = 'magent-knowledge';
 export const slot = `${viewId}-slot`;
@@ -29,7 +26,6 @@ export const slot = `${viewId}-slot`;
 const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
   function ToolsViewComponent(props, ref) {
     const instance = useInject<KnowledgeView>(ViewInstance);
-    const [selectedItems, setSelectedItems] = useState<KnowledgeModelOption[]>([]);
 
     const modalService = useInject<ModalService>(ModalService);
 
@@ -72,7 +68,7 @@ const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
                   <Space size={24}>
                     <a
                       onClick={() =>
-                        modalService.openModal(KnowledgeModal, {
+                        modalService.openModal(KnowledgeEditModalId, {
                           type: 'edit',
                           knowledge_id: item.id,
                         })
@@ -108,7 +104,7 @@ const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
         <div className="magent-knowledge-creation">
           <Button
             onClick={() => {
-              modalService.openModal(KnowledgeModal, { type: 'create' });
+              modalService.openModal(KnowledgeEditModalId, { type: 'create' });
             }}
             type="default"
           >

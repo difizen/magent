@@ -8,7 +8,7 @@ import { RequestHelper } from '@/modules/axios-client/request.js';
 
 import { KnowledgeManager } from '../../../modules/knowledge/knowledge-manager.js';
 import { KnowledgeSpace } from '../../../modules/knowledge/knowledge-space.js';
-import { KnowledgeModalId } from '../protocol.js';
+import { KnowledgeEditModalId } from '../protocol.js';
 import { KnowledgeView } from '../view.js';
 
 import './index.less';
@@ -131,6 +131,6 @@ export const KnowledgeModalComponent = (
 };
 
 export const KnowledgeModal: ModalItem = {
-  id: KnowledgeModalId,
+  id: KnowledgeEditModalId,
   component: KnowledgeModalComponent,
 };
