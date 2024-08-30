@@ -64,7 +64,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
       adjList[node.id] = [];
     });
     edges.forEach((edge) => {
-      adjList[edge.source].push(edge.target);
+      adjList[edge.target].push(edge.source);
     });
 
     const visited = new Set<string>();
