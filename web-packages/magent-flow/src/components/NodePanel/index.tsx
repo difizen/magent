@@ -45,7 +45,7 @@ export const NodesPanel = (props: NodesPanelProps) => {
       )}
       {nodes.sort().map((node) => (
         <div
-          className="m-3 p-2 bg-white rounded-xl cursor-pointer flex items-center shadow-lg"
+          className="m-3 p-2 bg-white rounded-xl cursor-pointer flex items-center shadow-lg hover:shadow-xl"
           key={node.id}
           draggable
           onDragStart={(event) =>

@@ -83,10 +83,9 @@ function Flow(props: FlowProps) {
     handleDelete(e, lastSelection, deleteNode, deleteEdge, takeSnapshot),
   );
 
-  useEffect(() => {
-    reactFlowInstance?.fitView();
+  const onLoad = useCallback(() => {
+    setTimeout(() => reactFlowInstance?.fitView(), 0);
   }, [reactFlowInstance]);
-
   const onConnectMod = useCallback(
     (params: Connection) => {
       takeSnapshot();
@@ -161,10 +160,11 @@ function Flow(props: FlowProps) {
           onDrop={onDrop}
           onDragOver={onDragOver}
           proOptions={{ hideAttribution: true }}
+          onLoad={onLoad}
           maxZoom={2}
           minZoom={0.1}
         >
-          <Background />
+          <Background gap={16} className="border-slate-600" />
           {miniMap && <FlowController />}
           {toolbar}
         </ReactFlow>

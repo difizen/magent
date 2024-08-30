@@ -38,8 +38,8 @@ export const NodeWrapper = (props: {
   return (
     <div
       className={classNames(
-        'relative flex flex-col justify-center rounded-xl bg-white shadow-lg p-5 w-[520px]',
-        nodeProps.selected ? 'border-sky-500' : '',
+        'relative flex flex-col border-2 justify-center rounded-xl bg-white shadow-lg p-5 w-[520px] hover:shadow-2xl',
+        nodeProps.selected ? 'border-sky-500 shadow-2xl' : 'border-transparent',
       )}
     >
       {/* <NodeStatus status={'success' as any} runDuration={1020} /> */}
