@@ -118,16 +118,16 @@ export const CharacterSetting = memo(function CharacterSetting() {
 
   useEffect(() => {
     const keys = [];
-    if (prompt?.introduction) {
+    if (prompt?.introduction !== undefined) {
       keys.push('introduction');
     }
-    if (prompt?.target) {
+    if (prompt?.target !== undefined) {
       keys.push('target');
     }
-    if (prompt?.instruction) {
+    if (prompt?.instruction !== undefined) {
       keys.push('instruction');
     }
-    if (agent.openingSpeech) {
+    if (agent.openingSpeech !== undefined) {
       keys.push('openingSpeech');
     }
     setActiveKey(keys);

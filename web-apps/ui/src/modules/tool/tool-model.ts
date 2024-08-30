@@ -18,12 +18,18 @@ export class ToolModel extends AsyncModel<ToolModel, ToolMeta> {
 
   @prop()
   nickname: string;
+
   @prop()
   avatar: string;
+
   @prop()
   description: string;
+
   @prop()
   parameters: string[] = [];
+
+  @prop()
+  openapi_schema?: string;
 
   protected draftDeferred = new Deferred<ToolConfig>();
 
@@ -68,6 +74,9 @@ export class ToolModel extends AsyncModel<ToolModel, ToolMeta> {
     }
     if (option.parameters.length > 0) {
       this.parameters = option.parameters;
+    }
+    if (option.openapi_schema) {
+      this.openapi_schema = option.openapi_schema;
     }
     if (ToolModelType.isFullOption(option)) {
       super.fromMeta(option);

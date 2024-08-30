@@ -8,6 +8,7 @@ import { PluginFactory } from './protocol.js';
 
 export const PluginModule = ManaModule.create().register(
   PluginModel,
+  OpenAPIPluginModel,
   PluginManager,
 
   {

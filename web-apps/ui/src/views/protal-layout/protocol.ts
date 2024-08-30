@@ -8,10 +8,10 @@ export const portals: Portal[] = [
     path: 'agents',
     label: '智能体',
   },
-  {
-    path: 'tools',
-    label: '工具',
-  },
+  // {
+  //   path: 'tools',
+  //   label: '工具',
+  // },
   {
     path: 'plugins',
     label: '插件',

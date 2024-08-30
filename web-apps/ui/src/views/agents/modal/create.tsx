@@ -120,7 +120,7 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
             nickname: values.nickname,
             avatar: values.avatar,
             description: values.description,
-            prompt: { instruction: '', introduction: '', target: '' },
+            prompt: { instruction: ' ', introduction: ' ', target: ' ' },
             planner: { id: values.plannerId, nickname: '' },
             llm: llmManager.default,
           };

@@ -11,6 +11,6 @@ plugins_router = router
 async def get_agents():
     return PluginService.get_plugin_list()
 
-@router.post("/plugins/openapi", response_model=List[PluginDTO])
+@router.post("/plugins/openapi", response_model=str)
 async def create_plugin_with_openapi(plugin: PluginDTO):
     return PluginService.create_plugin_with_openapi(plugin)
