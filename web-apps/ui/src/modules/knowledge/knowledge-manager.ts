@@ -26,11 +26,8 @@ export class KnowledgeManager {
     return defaultValue;
   };
 
-  createKnowledge = async (nickname: string, description?: string): Promise<string> => {
-    const res = await this.axios.post<string>(`/api/v1/knowledge`, {
-      nickname: nickname,
-      description: description,
-    });
+  createKnowledge = async (option: KnowledgeModelOption): Promise<string> => {
+    const res = await this.axios.post<string>(`/api/v1/knowledge`, option);
     return res.data;
   };
 

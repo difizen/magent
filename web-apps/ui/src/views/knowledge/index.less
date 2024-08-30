@@ -90,13 +90,17 @@
   &-wrapper {
     display: flex;
     justify-content: center;
+    background: var(--mana-color-bg-layout);
   }
 
   &-dragger {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 800px;
-    margin: 128px 0;
-    background-color: rgba(247, 247, 250);
+    // margin: 128px 0;
+    align-items: center;
+    min-height: 400px;
+    justify-content: center;
 
     .ant-upload-drag {
       border-width: 3px;
