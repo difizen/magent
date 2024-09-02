@@ -33,7 +33,7 @@ export default function CustomEdge({
         markerEnd={MarkerType.ArrowClosed}
         style={{
           ...style,
-          stroke: selected ? 'rgb(29 78 216)' : 'rgb(156 163 175)',
+          // stroke: selected ? 'rgb(29 78 216)' : 'rgb(156 163 175)',
           strokeWidth: 2,
         }}
       />

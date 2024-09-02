@@ -12,6 +12,8 @@ import {
 import { Tabs } from 'antd';
 import yaml from 'js-yaml';
 
+import { CharacterSetting } from '@/views/agent-config/components/character-setting/index.js';
+
 import agentIcon from '../icons/agent.svg';
 import endIcon from '../icons/end.svg';
 import ifelseIcon from '../icons/ifelse.svg';
@@ -21,6 +23,7 @@ import startIcon from '../icons/start.svg';
 import toolIcon from '../icons/tool.svg';
 import { AgentNode } from '../nodes/agent.js';
 import { ToolNode } from '../nodes/tool.js';
+import './index.less';
 
 export const nodeIconMap = {
   start: startIcon,
@@ -223,12 +226,15 @@ export const FlowWithTabs = (props: { toolbar?: React.ReactNode }) => {
 
   return (
     <div className="flex flex-1">
-      <Tabs defaultActiveKey="node" centered>
+      <Tabs className="agent-flow-tabs" defaultActiveKey="node" centered>
         <Tabs.TabPane key="node" tab="节点">
           <NodesPanel
             className="w-[200px] z-10 h-full"
             nodes={templateNodes as NodeDataType[]}
           />
+        </Tabs.TabPane>
+        <Tabs.TabPane key="settings" tab="配置">
+          <CharacterSetting></CharacterSetting>
         </Tabs.TabPane>
       </Tabs>
 

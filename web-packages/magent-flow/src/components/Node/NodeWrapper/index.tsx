@@ -35,11 +35,12 @@ export const NodeWrapper = (props: {
   } = props;
   const { name: defaultName, description, icon: defaultIcon } = nodeProps.data;
 
+  const handlerClasses = 'w-3 h-3 border-blue-500 rounded-full border-2 bg-white';
   return (
     <div
       className={classNames(
         'relative flex flex-col border-2 justify-center rounded-xl bg-white shadow-lg p-5 w-[520px] hover:shadow-2xl',
-        nodeProps.selected ? 'border-sky-500 shadow-2xl' : 'border-transparent',
+        nodeProps.selected ? 'border-blue-500 shadow-2xl' : 'border-transparent',
       )}
     >
       {/* <NodeStatus status={'success' as any} runDuration={1020} /> */}
@@ -57,7 +58,7 @@ export const NodeWrapper = (props: {
           type="target"
           position={Position.Left}
           style={{ borderColor: 'rgb(59 130 246)' }}
-          className={classNames('-ml-0.5 ', 'w-3 h-3 rounded-full border-2 bg-white')}
+          className={classNames('-ml-0.5 ', handlerClasses)}
         />
       )}
       {rightHandler &&
@@ -70,10 +71,7 @@ export const NodeWrapper = (props: {
                 type="source"
                 position={Position.Right}
                 style={{ borderColor: 'rgb(59 130 246)', ...item.style }}
-                className={classNames(
-                  '-mr-0.5 ',
-                  'w-3 h-3 rounded-full border-2 bg-white',
-                )}
+                className={classNames('-mr-0.5 ', handlerClasses)}
               />
             ))}
           </>
@@ -82,7 +80,7 @@ export const NodeWrapper = (props: {
             type="source"
             position={Position.Right}
             style={{ borderColor: 'rgb(59 130 246)' }}
-            className={classNames('-mr-0.5 ', 'w-3 h-3 rounded-full border-2 bg-white')}
+            className={classNames('-mr-0.5 ', handlerClasses)}
           />
         ))}
 

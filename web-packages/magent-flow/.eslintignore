@@ -1,3 +1,5 @@
 **/dist/**/*.js
 **/dist/**/*.cjs
 **/dist/**/*.mjs
+
+tailwind.out.css
