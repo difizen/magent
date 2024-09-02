@@ -8,7 +8,7 @@ import { ChatViewModule } from '@/views/chat/module.js';
 import { DebugModule } from '@/views/debug/module.js';
 import { KnowledgePageModule } from '@/views/knowledge/module.js';
 import { PluginPageModule } from '@/views/plugins/module.js';
-import { PortalsModule } from '@/views/protal-layout/module.js';
+import { PortalsModule } from '@/views/portal-layout/module.js';
 import { SessionsViewModule } from '@/views/sessions/module.js';
 import { ToolPageModule } from '@/views/tools/module.js';
 
