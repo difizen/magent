@@ -122,7 +122,8 @@ export const AgentModalComponent = (props: ModalItemProps<any>) => {
             description: values.description,
             prompt: { instruction: ' ', introduction: ' ', target: ' ' },
             planner: { id: values.plannerId, nickname: '' },
-            llm: llmManager.default,
+            llm: values.llm,
+            // llm: llmManager.default,
           };
           const res = await agentManager.create(meta);
           if (res.status === 200) {
