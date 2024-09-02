@@ -73,3 +73,5 @@ export const ToolModelType = {
 export const ToolInstance = Syringe.defineToken('ToolInstance', {
   multiple: false,
 });
+
+export const ToolsModalId = 'tool.modal';

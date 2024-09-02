@@ -108,37 +108,6 @@ const PluginsViewComponent = forwardRef<HTMLDivElement>(
             };
           })}
         />
-        {/* <List
-          className={`${viewId}-list`}
-          itemLayout="horizontal"
-          dataSource={plugins.publicList}
-          renderItem={(item) => (
-            <div className={`${viewId}-list-row`}>
-              <Row className={`${viewId}-list-row-content`}>
-                <Col className={`${viewId}-list-item`} span={8}>
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<ToolIcon size={52} data={item} />}
-                      title={item.nickname}
-                      description={item.description}
-                    />
-                  </List.Item>
-                </Col>
-                <Col className={`${viewId}-list-item`} span={8}>
-                  <TagList
-                    tags={item.toolset.map((item) =>
-                      item.openapi_schema && item.openapi_schema['method']
-                        ? `${item.openapi_schema['method']}: ${item.openapi_schema['path']}`
-                        : item.nickname,
-                    )}
-                    maxWidth={400}
-                  ></TagList>
-                </Col>
-                <Col className={`${viewId}-list-item`} span={8}></Col>
-              </Row>
-            </div>
-          )}
-        /> */}
         <div className={`${viewId}-creation`}>
           <Button
             onClick={() => {

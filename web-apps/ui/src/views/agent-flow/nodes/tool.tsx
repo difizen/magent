@@ -10,10 +10,7 @@ import { useInject } from '@difizen/mana-app';
 import { useState } from 'react';
 
 import { ToolSpace } from '@/modules/tool/tool-space.js';
-import {
-  ToolsModal,
-  ToolsModalComponent,
-} from '@/views/agent-config/tools-modal/modal.js';
+import { ToolsModal, ToolsModalComponent } from '@/modules/tool/tools-modal/modal.js';
 
 import { TransferButton } from './transfer-button.js';
 
@@ -48,6 +45,7 @@ export const ToolNode = (props: Props) => {
         visible={toolModalOpen}
         close={() => setToolModalOpen(false)}
         data={{
+          expandAll: true,
           dataProvider: {
             tool: [
               {

@@ -20,11 +20,11 @@ import type { KnowledgeModelOption } from '@/modules/knowledge/protocol.js';
 import { ModelSelector } from '@/modules/model/model-selector/index.js';
 import { ToolIcon } from '@/modules/tool/icon/index.js';
 import type { ToolMeta } from '@/modules/tool/protocol.js';
+import { ToolsModalId } from '@/modules/tool/protocol.js';
 
 import { CharacterSetting } from './components/character-setting/index.js';
 import { ConfigList } from './components/config-selector/index.js';
 import { KnowledgeModal } from './knowledge-modal/modal.js';
-import { ToolsModal } from './tools-modal/modal.js';
 import './index.less';
 
 const viewId = 'magent-dev-config';
@@ -68,8 +68,9 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
                   }),
                   onAdd: () => {
                     if (instance.agent) {
-                      modalService.openModal(ToolsModal, {
+                      modalService.openModal(ToolsModalId, {
                         dataProvider: instance.agent,
+                        expandAll: true,
                         onChange: (val: ToolMeta[]) => {
                           instance.agent.tool = val;
                         },
