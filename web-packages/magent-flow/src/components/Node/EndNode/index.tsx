@@ -65,7 +65,10 @@ export const EndNode = (props: Props) => {
                           ...old.data.config.inputs,
                           prompt: {
                             ...old.data.config.inputs.prompt,
-                            value: values,
+                            value: {
+                              type: 'value',
+                              content: values,
+                            },
                           },
                         },
                       },
