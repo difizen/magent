@@ -8,7 +8,7 @@ import {
   view,
   ModalService,
 } from '@difizen/mana-app';
-import { Button, Col, List, Row } from 'antd';
+import { Button, Col, Collapse, List, Row } from 'antd';
 import { forwardRef } from 'react';
 
 import { TagList } from '@/components/tag-list/index.js';
@@ -48,7 +48,67 @@ const PluginsViewComponent = forwardRef<HTMLDivElement>(
             操作
           </Col>
         </Row>
-        <List
+        <Collapse
+          bordered={false}
+          defaultActiveKey={['1']}
+          className={`${viewId}-list`}
+          expandIcon={() => <></>}
+          // style={{ background: token.colorBgContainer }}
+          items={plugins.publicList.map((item) => {
+            return {
+              key: item.id,
+              // label: item.nickname,
+              label: (
+                <div className={`${viewId}-list-row`}>
+                  <Row className={`${viewId}-list-row-content`}>
+                    <Col className={`${viewId}-list-item`} span={8}>
+                      <div className={`${viewId}-list-item-info`}>
+                        <ToolIcon size={52} data={item} />
+                        <div className={`${viewId}-list-item-info-text`}>
+                          <label className={`${viewId}-list-item-info-name`}>
+                            {item.nickname}
+                          </label>
+                          <label className={`${viewId}-list-item-info-desc`}>
+                            {item.description}
+                          </label>
+                        </div>
+                      </div>
+                    </Col>
+                    <Col className={`${viewId}-list-item`} span={8}>
+                      <TagList
+                        tags={item.toolset.map((item) =>
+                          item.openapi_schema && item.openapi_schema['method']
+                            ? `${item.openapi_schema['method']}: ${item.openapi_schema['path']}`
+                            : item.nickname,
+                        )}
+                        maxWidth={400}
+                      ></TagList>
+                    </Col>
+                    <Col className={`${viewId}-list-item`} span={8}></Col>
+                  </Row>
+                </div>
+              ),
+
+              children: item.toolset.map((tool) => (
+                <Row key={tool.id} className={`${viewId}-tool`}>
+                  <Col className={`${viewId}-tool-item`} span={16}>
+                    <div className={`${viewId}-tool-item-info`}>
+                      <label className={`${viewId}-tool-item-info-name`}>
+                        {tool.nickname}
+                      </label>
+                      <label className={`${viewId}-tool-item-info-desc`}>
+                        {tool.description}
+                      </label>
+                    </div>
+                  </Col>
+
+                  <Col className={`${viewId}-tool-item`} span={8}></Col>
+                </Row>
+              )),
+            };
+          })}
+        />
+        {/* <List
           className={`${viewId}-list`}
           itemLayout="horizontal"
           dataSource={plugins.publicList}
@@ -78,7 +138,7 @@ const PluginsViewComponent = forwardRef<HTMLDivElement>(
               </Row>
             </div>
           )}
-        />
+        /> */}
         <div className={`${viewId}-creation`}>
           <Button
             onClick={() => {
