@@ -7,7 +7,7 @@ const GithubLinkComponent = forwardRef<HTMLDivElement>(
   function MagentBrandComponent(props, ref) {
     const instance = useInject<GithubLinkView>(ViewInstance);
     return (
-      <div ref={ref} className="magent-brand">
+      <div ref={ref}>
         <a href={instance.link} target="_blank" rel="noreferrer">
           <Button icon={<GithubFilled />} type="text"></Button>
         </a>

@@ -2,6 +2,7 @@ import { inject, prop, singleton } from '@difizen/mana-app';
 
 import { AgentManager } from './agent-manager.js';
 import type { AgentModel } from './agent-model.js';
+import type { AgentModelOption } from './protocol.js';
 
 @singleton()
 export class AgentMarket {
@@ -13,6 +14,8 @@ export class AgentMarket {
   @prop()
   loading = false;
 
+  protected fetching: Promise<AgentModelOption[]>;
+
   constructor(@inject(AgentManager) agentManager: AgentManager) {
     this.agentManager = agentManager;
     this.update();
@@ -20,8 +23,14 @@ export class AgentMarket {
 
   async update() {
     this.loading = true;
-    const options = await this.agentManager.getAll();
+    if (this.fetching) {
+      return this.fetching;
+    } else {
+      this.fetching = this.agentManager.getAll();
+    }
+    const options = await this.fetching;
     this.list = options.map(this.agentManager.getOrCreate);
     this.loading = false;
+    return options;
   }
 }

@@ -1,11 +1,17 @@
-import { BaseView, singleton, view } from '@difizen/mana-app';
+import { BaseView, singleton, useInject, view } from '@difizen/mana-app';
 import { forwardRef } from 'react';
+
+import { MainView } from '../main-view.js';
 
 import { AULOGO, MagentLOGO } from './logo.js';
 import './index.less';
 
 const MagentBrandComponent = forwardRef<HTMLDivElement>(
   function MagentBrandComponent(props, ref) {
+    const mainView = useInject(MainView);
+    if (mainView.active?.hideBrand) {
+      return null;
+    }
     return (
       <div ref={ref} className="magent-brand">
         <AULOGO />

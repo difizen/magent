@@ -54,7 +54,7 @@ export const BaseLayoutModule = ManaModule.create().register(
     },
   }),
   createViewPreference({
-    slot: HeaderArea.middle,
+    slot: HeaderArea.left,
     view: MagentMainTitleView,
     autoCreate: true,
   }),

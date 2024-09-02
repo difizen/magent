@@ -6,11 +6,12 @@ import { AxiosClient } from '../axios-client/protocol.js';
 import type { KnowledgeModelOption } from '../knowledge/protocol.js';
 import { LLMManager } from '../model/llm-manager.js';
 import type { LLMModel } from '../model/llm-model.js';
+import type { PlannerMeta } from '../planner/protocol.js';
 import type { ToolMeta } from '../tool/protocol.js';
 import { ToolManager } from '../tool/tool-manager.js';
 
 import { AgentConfigManager } from './agent-config-manager.js';
-import type { PromptMeta, PlannerMeta } from './protocol.js';
+import type { PromptMeta } from './protocol.js';
 import { AgentModelType, AgentModelOption } from './protocol.js';
 
 class Prompt implements PromptMeta {
@@ -75,6 +76,9 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
 
   @prop()
   knowledge?: KnowledgeModelOption[];
+
+  @prop()
+  saving?: boolean;
 
   option: AgentModelOption;
 
@@ -154,16 +158,15 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     return JSON.stringify(this.toMeta());
   }
 
-  async save(): Promise<boolean> {
+  save = async (): Promise<boolean> => {
+    this.saving = true;
     const res = await this.axios.put<number>(
       `/api/v1/agents/${this.id}`,
       this.toMeta(),
     );
-    if (res.status === 200) {
-      return res.data === 1;
-    }
-    return false;
-  }
+    this.saving = false;
+    return res.status === 200;
+  };
 
   async fetchKnowdledgeList() {
     try {

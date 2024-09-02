@@ -1,4 +1,4 @@
-import { SaveOutlined } from '@ant-design/icons';
+import { LoadingOutlined, SaveOutlined } from '@ant-design/icons';
 import {
   BaseView,
   ViewInstance,
@@ -10,7 +10,7 @@ import {
   transient,
   ModalService,
 } from '@difizen/mana-app';
-import { Flex } from 'antd';
+import { Button, Flex, message } from 'antd';
 import { forwardRef } from 'react';
 
 import { AgentManager } from '@/modules/agent/agent-manager.js';
@@ -33,15 +33,25 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
   function AgentConfigViewComponent(props, ref) {
     const instance = useInject<AgentConfigView>(ViewInstance);
     const modalService = useInject<ModalService>(ModalService);
+    const agent = instance.agent;
 
     return (
       <div ref={ref} className={viewId}>
         <Flex className={`${viewId}-header`} align="center" justify={'space-between'}>
           <h3>编排</h3>
-          <SaveOutlined
+          <Button
+            type="text"
             className={`${viewId}-header-save`}
-            onClick={() => instance.agent.save()}
-          />
+            onClick={() =>
+              agent.save().then((saved) => {
+                if (saved) {
+                  message.success('保存成功');
+                }
+                return;
+              })
+            }
+            icon={agent.saving ? <LoadingOutlined /> : <SaveOutlined />}
+          ></Button>
         </Flex>
         <div className={`${viewId}-content`}>
           <div className={`${viewId}-content-left`}>
@@ -50,68 +60,61 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
           <div className={`${viewId}-content-right`}>
             <div className={`${viewId}-content-model`}>
               <div className={`${viewId}-content-model-title`}>模型</div>
-              <ModelSelector
-                value={instance.agent.llm}
-                onChange={instance.agent.llm?.updateMeta}
-              />
+              <ModelSelector value={agent.llm} onChange={agent.llm?.updateMeta} />
             </div>
             <ConfigList
               selector={[
                 {
                   key: 'tool',
                   title: '能力',
-                  options: instance.agent.tool.map((item) => {
+                  options: agent.tool.map((item) => {
                     return {
                       ...item,
                       icon: <ToolIcon data={item} />,
                     };
                   }),
                   onAdd: () => {
-                    if (instance.agent) {
+                    if (agent) {
                       modalService.openModal(ToolsModalId, {
-                        dataProvider: instance.agent,
+                        dataProvider: agent,
                         expandAll: true,
                         onChange: (val: ToolMeta[]) => {
-                          instance.agent.tool = val;
+                          agent.tool = val;
                         },
                       });
                     }
                   },
                   onDelete: (item) => {
-                    if (!instance.agent) {
+                    if (!agent) {
                       return;
                     }
-                    instance.agent.tool = instance.agent.tool.filter(
-                      (i) => i.id !== item.id,
-                    );
+                    agent.tool = agent.tool.filter((i) => i.id !== item.id);
                   },
                 },
                 {
                   key: 'knowledge',
                   title: '知识',
-                  options: (instance.agent.knowledge || []).map((item) => {
+                  options: (agent.knowledge || []).map((item) => {
                     return {
                       ...item,
                       icon: <KnowledgeIcon data={item} />,
                     };
                   }),
                   onAdd: () => {
-                    if (instance.agent) {
+                    if (agent) {
                       modalService.openModal(KnowledgeModal, {
-                        dataProvider: instance.agent,
+                        dataProvider: agent,
                         onChange: (knowledges: KnowledgeModelOption[]) => {
-                          instance.agent.knowledge = [...knowledges];
+                          agent.knowledge = [...knowledges];
                         },
                       });
                     }
                   },
                   onDelete: (item) => {
-                    if (!instance.agent || !instance.agent.knowledge) {
+                    if (!agent || !agent.knowledge) {
                       return;
                     }
-                    instance.agent.knowledge = instance.agent.knowledge.filter(
-                      (i) => i.id !== item.id,
-                    );
+                    agent.knowledge = agent.knowledge.filter((i) => i.id !== item.id);
                   },
                 },
               ]}

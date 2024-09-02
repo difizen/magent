@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 export interface NavigatablePage extends View {
   goBack?: () => void;
   pageTitle: () => ReactNode;
+  hideBrand?: boolean;
 }
 
 export const NavigatablePageType = {

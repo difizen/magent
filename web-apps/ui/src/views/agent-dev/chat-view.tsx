@@ -13,10 +13,12 @@ import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 import { history } from 'umi';
 
+import { AgentIcon } from '@/modules/agent/agent-icon.js';
 import { AgentManager } from '@/modules/agent/agent-manager.js';
 import type { AgentModel } from '@/modules/agent/protocol.js';
 import { PageView } from '@/modules/base-layout/page-view.js';
 import type { SessionModel } from '@/modules/session/protocol.js';
+
 import { ChatView } from '../chat/view.js';
 import { SessionsView } from '../sessions/view.js';
 
@@ -53,12 +55,18 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
 
 const Title = () => {
   const instance = useInject<AgentView>(ViewInstance);
-  return <>{instance.agent?.name}</>;
+  return (
+    <div className="magent-agent-title">
+      <AgentIcon className="magent-agent-title-icon" agent={instance.agent}></AgentIcon>
+      {instance.agent?.name}
+    </div>
+  );
 };
 
 @singleton()
 @view(viewId)
 export class AgentView extends PageView {
+  hideBrand = true;
   protected _agentId?: string;
 
   get agentId(): string | undefined {
