@@ -47,6 +47,7 @@ export const InitEdgeParser = (edge: any) => {
     sourceHandle: edge.source_handler,
     source: edge.source_node_id.toString(),
     target: edge.target_node_id.toString(),
+    type: 'custom',
   };
   return obj;
 };

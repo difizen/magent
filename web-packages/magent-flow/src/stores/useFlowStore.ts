@@ -42,6 +42,7 @@ interface FlowStoreType {
   ) => void;
   setNode: (id: string, update: Node | ((oldState: Node) => Node)) => void;
   getNode: (id: string) => Node | undefined;
+  setEdge: (id: string, update: Edge | ((oldState: Edge) => Edge)) => void;
   deleteNode: (nodeId: string | Array<string>) => void;
   deleteEdge: (edgeId: string | Array<string>) => void;
   onConnect: (connection: Connection) => void;
@@ -124,6 +125,23 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
       });
     },
 
+    setEdge: (id: string, change: Edge | ((oldState: Edge) => Edge)) => {
+      const newChange =
+        typeof change === 'function'
+          ? change(get().edges.find((edge) => edge.id === id)!)
+          : change;
+      get().setEdges((oldEdges) =>
+        oldEdges.map((edge) => {
+          if (edge.id === id) {
+            // if ((node.data as NodeDataType).node?.frozen) {
+            //   (newChange.data as NodeDataType).node!.frozen = false;
+            // }
+            return newChange;
+          }
+          return edge;
+        }),
+      );
+    },
     setNode: (id: string, change: Node | ((oldState: Node) => Node)) => {
       const newChange =
         typeof change === 'function'

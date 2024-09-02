@@ -22,6 +22,7 @@ import {
   handleUndo,
 } from './keys.js';
 import '@xyflow/react/dist/style.css';
+import { MarkerDefinition } from '../CustomMaker/index.js';
 
 const edgeTypes = {
   custom: CustomEdge,
@@ -46,9 +47,9 @@ function Flow(props: FlowProps) {
   const edges = useFlowStore((state) => state.edges);
   const onNodesChange = useFlowStore((state) => state.onNodesChange);
   const onEdgesChange = useFlowStore((state) => state.onEdgesChange);
-  const setNodes = useFlowStore((state) => state.setNodes);
+  // const setNodes = useFlowStore((state) => state.setNodes);
   // const setEdges = useFlowStore((state) => state.setEdges);
-  const reactFlowInstance = useFlowStore((state) => state.reactFlowInstance);
+  // const reactFlowInstance = useFlowStore((state) => state.reactFlowInstance);
   const setReactFlowInstance = useFlowStore((state) => state.setReactFlowInstance);
   const deleteNode = useFlowStore((state) => state.deleteNode);
   const deleteEdge = useFlowStore((state) => state.deleteEdge);
