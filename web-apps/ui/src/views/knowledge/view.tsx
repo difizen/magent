@@ -66,7 +66,7 @@ const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
                   span={8}
                 >
                   <Space size={24}>
-                    <a
+                    {/* <a
                       onClick={() =>
                         modalService.openModal(KnowledgeEditModalId, {
                           type: 'edit',
@@ -75,7 +75,7 @@ const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
                       }
                     >
                       编辑
-                    </a>
+                    </a> */}
                     <a
                       onClick={() =>
                         history.push(`/portal/knowledge/${item.id}/upload`)
@@ -83,7 +83,7 @@ const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
                     >
                       上传
                     </a>
-                    <a
+                    {/* <a
                       onClick={async () => {
                         const res = await instance.manager.deleteKnowledge(item.id);
                         if (res) {
@@ -93,7 +93,7 @@ const KnowledgeViewComponent = forwardRef<HTMLDivElement>(
                       }}
                     >
                       删除
-                    </a>
+                    </a> */}
                   </Space>
                 </Col>
               </Row>
