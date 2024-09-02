@@ -13,7 +13,7 @@ import { useNavigate } from 'umi';
 
 import { portals } from './protocol.js';
 
-import './index.less.js';
+import './index.less';
 
 const viewId = 'magent-portal';
 export const slot = `${viewId}-slot`;

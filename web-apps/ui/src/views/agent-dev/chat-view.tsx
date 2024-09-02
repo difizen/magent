@@ -23,6 +23,7 @@ import { ChatView } from '../chat/view.js';
 import { SessionsView } from '../sessions/view.js';
 
 import './index.less';
+import { FieldTimeOutlined } from '@ant-design/icons';
 
 const viewId = 'magent-agent-chat';
 export const slot = `${viewId}-slot`;
@@ -55,10 +56,24 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
 
 const Title = () => {
   const instance = useInject<AgentView>(ViewInstance);
+  const agent = instance.agent;
+  let title = <h5>{agent?.name}</h5>;
+  if (agent?.mtime) {
+    title = (
+      <div className="magent-agent-title-text">
+        <h5>{agent.name}</h5>
+        <span className="magent-agent-title-text-mtime">
+          <FieldTimeOutlined />
+          最近更新：
+          {agent.mtime.format('YYYY-MM-DD HH:mm:ss')}
+        </span>
+      </div>
+    );
+  }
   return (
     <div className="magent-agent-title">
-      <AgentIcon className="magent-agent-title-icon" agent={instance.agent}></AgentIcon>
-      {instance.agent?.name}
+      <AgentIcon className="magent-agent-title-icon" agent={agent}></AgentIcon>
+      {title}
     </div>
   );
 };

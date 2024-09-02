@@ -1,4 +1,6 @@
 import { inject, prop, transient } from '@difizen/mana-app';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 import { AsyncModel } from '@/common/async-model.js';
 
@@ -78,6 +80,9 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
   knowledge?: KnowledgeModelOption[];
 
   @prop()
+  mtime?: Dayjs;
+
+  @prop()
   saving?: boolean;
 
   option: AgentModelOption;
@@ -117,6 +122,9 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     this.knowledge = option.knowledge;
     this.tool = option.tool ?? [];
     this.openingSpeech = option.opening_speech;
+    if (option.mtime) {
+      this.mtime = dayjs.unix(option.mtime);
+    }
 
     if (AgentModelType.isFullOption(option)) {
       super.fromMeta(option);

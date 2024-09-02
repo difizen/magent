@@ -47,6 +47,7 @@ const AgentConfigViewComponent = forwardRef<HTMLDivElement>(
                 if (saved) {
                   message.success('保存成功');
                 }
+                agent.fetchInfo(undefined, true);
                 return;
               })
             }

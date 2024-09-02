@@ -72,6 +72,7 @@ export interface AgentModelOption {
   planner?: PlannerMeta;
   tool?: ToolMeta[];
   knowledge?: any[];
+  mtime?: number;
 }
 
 export const AgentModelOption = Syringe.defineToken('AgentBotOption', {
