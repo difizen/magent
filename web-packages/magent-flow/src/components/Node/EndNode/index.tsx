@@ -22,6 +22,7 @@ export const EndNode = (props: Props) => {
     <NodeWrapper nodeProps={props} rightHandler={false}>
       <ReferenceForm
         label="输入变量"
+        dynamic={true}
         nodes={[...(upstreamNodes as any)]}
         value={[...(data.config?.inputs?.input_param || [])]}
         onChange={(values) => {
