@@ -15,6 +15,30 @@
     .agent-card {
       width: 100%;
       margin-bottom: 16px;
+
+      &-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+      }
+
+      &-mtime {
+        font-size: 12px;
+      }
+
+      &-actions {
+        button {
+          border: none;
+          color: var(--mana-ant-color-icon);
+        }
+      }
+    }
+
+    .ant-card-actions {
+      li {
+        margin: 0;
+      }
     }
   }
 

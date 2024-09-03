@@ -11,14 +11,15 @@ import {
 } from '@difizen/mana-app';
 import { Button, Card } from 'antd';
 import { forwardRef } from 'react';
+import { format } from 'timeago.js';
 import { history } from 'umi';
 
-import './index.less';
 import { AgentIcon } from '@/modules/agent/agent-icon.js';
 import { AgentMarket } from '@/modules/agent/agent-market.js';
 import type { AgentModel } from '@/modules/agent/agent-model.js';
 
 import { AgentCreateModal } from './modal/create.js';
+import './index.less';
 
 const viewId = 'magent-agents';
 export const slot = `${viewId}-slot`;
@@ -40,14 +41,23 @@ const AgentsViewComponent = forwardRef<HTMLDivElement>(
               key={item.id}
               hoverable
               actions={[
-                <EditOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    instance.toDevPage(item);
-                  }}
-                  key="dev"
-                />,
-                <MessageOutlined key="chat" />,
+                <div key={item.id} className="agent-card-footer">
+                  <div className="agent-card-mtime">
+                    {item.mtime ? format(item.mtime.toDate(), 'zh_CN') : null}
+                  </div>
+                  <div className="agent-card-actions">
+                    <Button type="text" key="chat" icon={<MessageOutlined />}></Button>
+                    <Button
+                      type="text"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        instance.toDevPage(item);
+                      }}
+                      key="dev"
+                      icon={<EditOutlined />}
+                    ></Button>
+                  </div>
+                </div>,
               ]}
               onClick={() => {
                 instance.toChatPage(item);

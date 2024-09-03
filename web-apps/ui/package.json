@@ -22,7 +22,6 @@
     "deploy": "rimraf ../../packages/magent-ui/src/magent_ui/static && copyfiles -u 1 dist/* ../../packages/magent-ui/src/magent_ui/static/ && copyfiles -u 1 dist/**/* ../../packages/magent-ui/src/magent_ui/static/"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0",
     "@ant-design/icons": "^5.3.6",
     "@difizen/libro-jupyter": "^0.2.1",
     "@difizen/libro-lab": "^0.2.1",
@@ -39,6 +38,7 @@
     "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.10",
     "eventsource-parser": "^1.1.2",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "query-string": "^9.0.0",
@@ -47,15 +47,16 @@
     "react-zoom-pan-pinch": "^3.6.1",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
+    "timeago.js": "^4.0.2",
     "umi": "^4.1.1"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
     "@babel/plugin-proposal-decorators": "^7.23.7",
     "@babel/plugin-transform-class-properties": "^7.23.3",
     "@babel/plugin-transform-flow-strip-types": "^7.23.3",
     "@babel/plugin-transform-private-methods": "^7.23.3",
     "@babel/plugin-transform-private-property-in-object": "^7.23.4",
+    "@types/js-yaml": "^4.0.9",
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
