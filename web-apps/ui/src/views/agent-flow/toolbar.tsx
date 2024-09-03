@@ -53,6 +53,7 @@ export const SaveButton = () => {
         const saved = await flowDevView.save(graph);
         if (saved) {
           message.success('保存成功');
+          flowDevView.agent?.fetchInfo(undefined, true);
         }
         const graph_yaml = yaml.dump(graph);
         localStorage.setItem('magent_flow_testdata', graph_yaml);
