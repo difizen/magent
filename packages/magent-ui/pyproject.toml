@@ -1,6 +1,6 @@
 [project]
 name = "magent-ui"
-version = "0.1.16"
+version = "0.1.16.dev6"
 description = ""
 authors = [
   { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" },
@@ -8,9 +8,9 @@ authors = [
 ]
 
 dependencies = [
-    "sse-starlette>=2.1.2",
-    "jinja2>=3.1.4",
-    "python-multipart>=0.0.9",
+  "sse-starlette>=2.1.2",
+  "jinja2>=3.1.4",
+  "python-multipart>=0.0.9",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"

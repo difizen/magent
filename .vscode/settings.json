@@ -40,8 +40,7 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/Thumbs.db": true,
-    "**/dist": true
+    "**/Thumbs.db": true
   },
   "[python]": {
     "editor.codeActionsOnSave": {
