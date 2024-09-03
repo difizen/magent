@@ -142,6 +142,11 @@ export class AgentModel extends AsyncModel<AgentModel, AgentModelOption> {
     if (!this.fetching || force) {
       this.fetching = this.doFetchInfo(option);
     }
+    this.fetching
+      .then(() => {
+        return (this.fetching = undefined);
+      })
+      .catch(console.error);
     return this.fetching;
   }
 

@@ -99,6 +99,7 @@ export class AgentsView extends BaseView {
 
   override view = AgentsViewComponent;
   @inject(AgentMarket) market: AgentMarket;
+
   override async onViewMount(): Promise<void> {
     this.loadig = true;
     await this.market.update();
