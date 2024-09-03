@@ -171,7 +171,13 @@ export class ChatView extends BaseView {
       id,
       agentId: this.agentId,
     });
-    const toDispose = this.session.onMessage(() => setImmediate(this.scrollToBottom));
+    const toDispose = this.session.onMessage(() =>
+      setImmediate(() => {
+        if (!this.showToBottomBtn) {
+          this.scrollToBottom();
+        }
+      }),
+    );
     this.toDispose.push(toDispose);
     this.sessionDeferred.resolve(this.session);
   };
