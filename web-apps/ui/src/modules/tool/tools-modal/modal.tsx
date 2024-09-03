@@ -26,7 +26,7 @@ const AddBtn = (props: ToolSelectProps & { tool: ToolModel }) => {
     return (
       <Button
         onClick={() => {
-          onChange?.([...dataProvider.tool, tool.toMeta()]);
+          onChange?.([tool.toMeta(), ...dataProvider.tool]);
         }}
       >
         添加
