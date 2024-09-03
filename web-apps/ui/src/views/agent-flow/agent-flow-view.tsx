@@ -32,7 +32,6 @@ import {
 
 import { InitEdgeParser, InitNodeParser } from './flow-utils.js';
 import { FlowWithTabs } from './flow-with-tabs/index.js';
-import { Toolbar } from './toolbar.js';
 
 const viewId = 'magent-agent-flow';
 
@@ -263,18 +262,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
 
     return (
       <div ref={ref} className={viewId}>
-        <FlowWithTabs
-          toolbar={
-            <Toolbar
-              style={{
-                right: 16,
-                top: 16,
-                zIndex: 9,
-                position: 'absolute',
-              }}
-            />
-          }
-        />
+        <FlowWithTabs toolbar={<></>} />
       </div>
     );
   },

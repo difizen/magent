@@ -13,6 +13,7 @@ import { GithubLinkView } from './github/view.js';
 import { MagentBaseLayoutSlots, MagentBaseLayoutView, slot } from './layout.js';
 import { MainView } from './main-view.js';
 import { MagentMainTitleView } from './title/view.js';
+import { MagentMainToolbarView } from './toolbar/index.js';
 
 export const BaseLayoutModule = ManaModule.create().register(
   MainView,
@@ -22,6 +23,7 @@ export const BaseLayoutModule = ManaModule.create().register(
   MagentBaseLayoutView,
   MagentBrandView,
   GithubLinkView,
+  MagentMainToolbarView,
 
   createSlotPreference({
     slot: MagentBaseLayoutSlots.header,
@@ -60,7 +62,18 @@ export const BaseLayoutModule = ManaModule.create().register(
   }),
   createViewPreference({
     slot: HeaderArea.right,
+    view: MagentMainToolbarView,
+    autoCreate: true,
+    openOptions: {
+      order: 'b_toolbar',
+    },
+  }),
+  createViewPreference({
+    slot: HeaderArea.right,
     view: GithubLinkView,
     autoCreate: true,
+    openOptions: {
+      order: 'a_github',
+    },
   }),
 );

@@ -8,6 +8,7 @@ import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import type { AgentConfigManager } from '@/modules/agent/agent-config-manager.js';
+import type { Graph } from '@/modules/workflow/protocol.js';
 
 import { AgentView } from '../agent-dev/chat-view.js';
 import { DebugDrawer } from '../debug/debug-drawer.js';
@@ -95,5 +96,13 @@ export class AgentFlowDevView extends AgentView {
       agentId: this.agentId,
     });
     this.agentFlow = agentFlow;
+  };
+
+  save = async (graph: Graph) => {
+    const res = await this.agentFlow?.saveGraph(graph);
+    if (res?.status === 200) {
+      return await this.agent?.save();
+    }
+    return false;
   };
 }
