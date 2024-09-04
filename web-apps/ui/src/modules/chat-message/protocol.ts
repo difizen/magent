@@ -15,6 +15,15 @@ export interface MessageCreate {
   stream?: boolean;
 }
 
+export interface StepContent {
+  currentStep: number; // 0-4
+  roundStartsAt: number; // 0-4
+  planningContent: string;
+  executingContent: ChatEventStepQA[];
+  expressingContent: string;
+  reviewingContent: string;
+}
+
 export interface MessageItem {
   senderType?: MessageSender;
   content: string;

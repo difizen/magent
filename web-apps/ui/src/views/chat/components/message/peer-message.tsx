@@ -5,14 +5,16 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
+import type { StepProps } from 'antd';
 import { Collapse, Steps } from 'antd';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { AgentIcon } from '@/modules/agent/agent-icon.js';
 import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
 import type { PeerChatMessageItem } from '@/modules/chat-message/peer-message-item-model.js';
+import type { StepContent } from '@/modules/chat-message/protocal.js';
 import type { ChatEventStepQA } from '@/modules/chat-message/protocol.js';
 import { AnswerState } from '@/modules/chat-message/protocol.js';
 
@@ -86,6 +88,117 @@ export const MarkdownThought = (props: { content: string }) => {
   );
 };
 
+const StepsInMessage = (props: { content: StepContent; isLast: boolean }) => {
+  return (
+    <Steps
+      direction="vertical"
+      size="small"
+      current={props.content.currentStep - props.content.roundStartsAt}
+      className={`chat-message-peer-steps`}
+      items={
+        [
+          props.content.roundStartsAt === 0
+            ? {
+                title: 'Planning',
+                description: (
+                  <MarkdownThought content={props.content.planningContent} />
+                ),
+                icon: props.content.currentStep === 0 ? <LoadingOutlined /> : undefined,
+              }
+            : (undefined as unknown as StepProps),
+          props.content.roundStartsAt <= 1
+            ? {
+                title: 'Executing',
+                description: <RenderExecuting qas={props.content.executingContent} />,
+                icon: props.content.currentStep === 1 ? <LoadingOutlined /> : undefined,
+              }
+            : (undefined as unknown as StepProps),
+          props.content.roundStartsAt <= 2
+            ? {
+                title: 'Expressing',
+                description: (
+                  <MarkdownThought
+                    content={
+                      !props.isLast
+                        ? props.content.expressingContent
+                        : props.content.expressingContent
+                          ? props.content.currentStep === 2
+                            ? '正文输出中...'
+                            : '见回复正文'
+                          : ''
+                    }
+                  />
+                ),
+                icon: props.content.currentStep === 2 ? <LoadingOutlined /> : undefined,
+              }
+            : (undefined as unknown as StepProps),
+          {
+            title: 'Reviewing',
+            description: <MarkdownThought content={props.content.reviewingContent} />,
+            icon: props.content.currentStep === 3 ? <LoadingOutlined /> : undefined,
+          },
+        ].filter((i) => i !== undefined) as StepProps[]
+      }
+    />
+  );
+};
+
+const MultiStepRoundMessage = (props: {
+  roundsContent: StepContent[];
+  exchange: ChatMessageModel;
+}) => {
+  const [activeKey, setActiveKey] = useState<string[]>([]);
+
+  useEffect(() => {
+    // 每次 roundsContent 变化时，设置 activeKey 为最后一项
+    const lastIndex = props.roundsContent.length - 1;
+    if (lastIndex >= 0) {
+      setActiveKey([`round${lastIndex}`]);
+    } else {
+      setActiveKey([]); // 如果 roundsContent 为空，则不展开
+    }
+  }, [props.roundsContent.length]);
+
+  const handleChange = (key: string | string[]) => {
+    // 更新 activeKey，支持多项展开
+    setActiveKey((prevActiveKey) => {
+      if (Array.isArray(key)) {
+        return key;
+      }
+      const index = prevActiveKey.indexOf(key as string);
+      if (index > -1) {
+        return prevActiveKey.filter((k) => k !== key);
+      } else {
+        return [...prevActiveKey, key as string];
+      }
+    });
+  };
+
+  return props.roundsContent.map((content, idx) => {
+    return (
+      <Collapse
+        key={`round_${idx + 1}`}
+        className={`chat-message-peer-multi-round-container`}
+        bordered={false}
+        activeKey={activeKey} // 使用受控属性 activeKey
+        onChange={handleChange} // 更新 activeKey
+        items={[
+          {
+            key: 'round' + idx,
+            label: 'round' + (idx + 1),
+            children: (
+              <StepsInMessage
+                content={content}
+                isLast={idx === props.roundsContent.length - 1}
+              />
+            ),
+          },
+        ]}
+      />
+    );
+  });
+};
+
 export const AIMessageContent = (props: AIMessageProps) => {
   const message = useObserve(props.message);
   const exchange = useObserve(props.exchange);
@@ -109,47 +222,9 @@ export const AIMessageContent = (props: AIMessageProps) => {
               key: 'peer',
               label: `${message.agent?.name} ${exchange.tokenUsage ? '思考过程' : '思考中...'}`,
               children: (
-                <Steps
-                  direction="vertical"
-                  size="small"
-                  current={message.currentStep}
-                  className={`chat-message-peer-steps`}
-                  items={[
-                    {
-                      title: 'Planning',
-                      description: (
-                        <MarkdownThought content={message.planningContent} />
-                      ),
-                      icon: message.currentStep === 0 ? <LoadingOutlined /> : undefined,
-                    },
-                    {
-                      title: 'Executing',
-                      description: <RenderExecuting qas={message.executingContent} />,
-                      icon: message.currentStep === 1 ? <LoadingOutlined /> : undefined,
-                    },
-                    {
-                      title: 'Expressing',
-                      description: (
-                        <MarkdownThought
-                          content={
-                            message.expressingContent
-                              ? message.currentStep === 2
-                                ? '正文输出中...'
-                                : '见回复正文'
-                              : ''
-                          }
-                        />
-                      ),
-                      icon: message.currentStep === 2 ? <LoadingOutlined /> : undefined,
-                    },
-                    {
-                      title: 'Reviewing',
-                      description: (
-                        <MarkdownThought content={message.reviewingContent} />
-                      ),
-                      icon: message.currentStep === 3 ? <LoadingOutlined /> : undefined,
-                    },
-                  ]}
+                <MultiStepRoundMessage
+                  roundsContent={message.roundsContent}
+                  exchange={exchange}
                 />
               ),
             },
