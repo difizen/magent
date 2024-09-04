@@ -48,7 +48,7 @@
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "timeago.js": "^4.0.2",
-    "umi": "^4.1.1"
+    "umi": "^4.3.18"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.23.7",

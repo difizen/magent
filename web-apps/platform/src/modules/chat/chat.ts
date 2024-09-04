@@ -232,7 +232,11 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
         const newMessageModel: ChatMessageModel = JSON.parse(e.data);
         const message = this.getOrCreateMessage(newMessageModel);
         this.messages = [...this.messages, message];
-        setImmediate(() => this.scrollToBottom(true, false));
+        setImmediate(() => {
+          if (!this.showToBottomBtn) {
+            this.scrollToBottom(true, false);
+          }
+        });
       }
 
       if (e.event === 'chunk') {
@@ -241,7 +245,11 @@ export class Chat extends AsyncModel<Chat, ChatOption> {
         if (msg) {
           this.processingChunk = msg;
           msg.appendChunk(chunk);
-          setImmediate(() => this.scrollToBottom(true, false));
+          setImmediate(() => {
+            if (!this.showToBottomBtn) {
+              this.scrollToBottom(true, false);
+            }
+          });
         }
       }
     } catch (e) {
