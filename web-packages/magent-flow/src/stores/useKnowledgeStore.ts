@@ -8,7 +8,7 @@ export interface Knowledge {
 }
 
 export type KnowledgeSelectorNode =
-  | ((props: { nodeId: string; knowledgeParam: BasicSchema[] }) => React.ReactNode)
+  | ((props: { nodeId: string; knowledgeParam: BasicSchema[] }) => JSX.Element)
   | null;
 
 export interface KnowledgeStoreType {

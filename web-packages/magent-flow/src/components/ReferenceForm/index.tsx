@@ -1,8 +1,7 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import type { BasicSchema, NodeType } from '@flow/interfaces/flow.js';
 import { Button, Form, Input, Space } from 'antd';
 import { useEffect } from 'react';
-
-import type { BasicSchema, NodeType } from '@flow/interfaces/flow.js';
 
 import { CollapseWrapper } from '../AIBasic/CollapseWrapper/index.js';
 import { ReferenceSelect } from '../ReferenceSelect/index.js';
@@ -22,7 +21,7 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
 
   useEffect(() => {
     form.setFieldValue('variables', value);
-  }, []);
+  }, [form, value]);
 
   const options = nodes.map((node) => {
     return {
@@ -45,11 +44,17 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
           form={form}
           autoComplete="off"
           onValuesChange={(_, allFields) => {
-            form.validateFields().then(() => {
-              if (allFields.variables) {
-                onChange(allFields.variables.filter((item: any) => item !== undefined));
-              }
-            });
+            form
+              .validateFields()
+              .then(() => {
+                if (allFields.variables) {
+                  onChange(
+                    allFields.variables.filter((item: any) => item !== undefined),
+                  );
+                }
+                return;
+              })
+              .catch(console.error);
           }}
         >
           <div className="mb-[-10px]">

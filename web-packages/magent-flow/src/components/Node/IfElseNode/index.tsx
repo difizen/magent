@@ -16,7 +16,8 @@ export const IfElseNode = (props: Props) => {
 
   const { findUpstreamNodes, setNode } = useFlowStore();
   const upstreamNode = findUpstreamNodes(data.id.toString());
-  const options = upstreamNode.map((node: NodeType) => {
+  const options = upstreamNode.map((n) => {
+    const node = n as any as NodeType;
     return {
       label: node.data.name,
       value: node.data.id,
@@ -50,10 +51,10 @@ export const IfElseNode = (props: Props) => {
                   data: {
                     ...old.data,
                     config: {
-                      ...(old.data.config as Record<string, any>),
+                      ...(old.data['config'] as Record<string, any>),
 
                       inputs: {
-                        ...old.data.config.inputs,
+                        ...(old.data['config'] as Record<string, any>)['inputs'],
                         branches: [val],
                       },
                     },

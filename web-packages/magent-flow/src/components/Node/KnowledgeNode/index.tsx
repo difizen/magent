@@ -1,6 +1,3 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal } from 'antd';
-
 import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
@@ -25,7 +22,7 @@ export const KnowledgeNode = (props: Props) => {
   const { KnowledgeSelector } = useKnowledgeStore();
   const upstreamNode = findUpstreamNodes(data.id.toString());
 
-  const knowledge_param = data.config?.inputs?.knowledge_param as BasicSchema[];
+  const knowledge_param = data.config?.inputs?.['knowledge_param'] as BasicSchema[];
 
   return (
     <NodeWrapper nodeProps={props}>
@@ -40,9 +37,9 @@ export const KnowledgeNode = (props: Props) => {
               data: {
                 ...old.data,
                 config: {
-                  ...(old.data.config as Record<string, any>),
+                  ...(old.data['config'] as Record<string, any>),
                   inputs: {
-                    ...old.data.config.inputs,
+                    ...(old.data['config'] as Record<string, any>)['inputs'],
                     input_param: [...values],
                   },
                 },

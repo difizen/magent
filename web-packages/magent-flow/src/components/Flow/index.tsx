@@ -1,5 +1,5 @@
 import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
-import type { NodeType } from '@flow/interfaces/flow.js';
+import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/useFlowStore.js';
 import { useShortcutsStore } from '@flow/stores/useShortcutsStore.js';
 import { useUndoRedoStore } from '@flow/stores/useUndoRedoStore.js';
@@ -22,7 +22,6 @@ import {
   handleUndo,
 } from './keys.js';
 import '@xyflow/react/dist/style.css';
-import { MarkerDefinition } from '../CustomMaker/index.js';
 
 const edgeTypes = {
   custom: CustomEdge,
@@ -116,7 +115,7 @@ function Flow(props: FlowProps) {
             data: {
               ...data.node,
               id: newId,
-            },
+            } as NodeDataType,
           };
           paste(
             { nodes: [newNode], edges: [] },

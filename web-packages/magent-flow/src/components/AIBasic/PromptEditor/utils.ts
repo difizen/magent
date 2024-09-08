@@ -74,6 +74,7 @@ export function registerLexicalTextEntity<T extends TextNode>(
       }
     }
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       match = getMatch(text);
       let nextText = match === null ? '' : text.slice(match.end);
@@ -126,7 +127,7 @@ export function registerLexicalTextEntity<T extends TextNode>(
       replacementNode.setFormat(nodeToReplace.getFormat());
       nodeToReplace.replace(replacementNode);
 
-      if (currentNode == null) {
+      if (currentNode === null) {
         return;
       }
     }

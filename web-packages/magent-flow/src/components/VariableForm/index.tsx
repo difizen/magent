@@ -5,7 +5,7 @@ import {
 } from '@ant-design/icons';
 import type { BasicSchema } from '@flow/interfaces/flow.js';
 import { Button, Checkbox, Collapse, Form, Input, Space } from 'antd';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
 
@@ -20,13 +20,13 @@ export interface VariableFormProps {
 export const VariableForm = (props: VariableFormProps) => {
   const { label, values, onChange, dynamic = true, showRequired = true } = props;
   const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
+    // console.log('Received values of form:', values);
   };
   const [form] = Form.useForm();
 
   useEffect(() => {
     form.setFieldValue('variables', values);
-  }, []);
+  }, [form, values]);
 
   return (
     <Collapse
@@ -44,13 +44,17 @@ export const VariableForm = (props: VariableFormProps) => {
               onFinish={onFinish}
               autoComplete="off"
               onValuesChange={(_, allFields) => {
-                form.validateFields().then(() => {
-                  if (allFields.variables) {
-                    onChange(
-                      allFields.variables.filter((item: any) => item !== undefined),
-                    );
-                  }
-                });
+                form
+                  .validateFields()
+                  .then(() => {
+                    if (allFields.variables) {
+                      onChange(
+                        allFields.variables.filter((item: any) => item !== undefined),
+                      );
+                    }
+                    return;
+                  })
+                  .catch(console.error);
               }}
             >
               <div className="mb-[-10px]">

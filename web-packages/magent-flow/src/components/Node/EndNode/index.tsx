@@ -31,9 +31,9 @@ export const EndNode = (props: Props) => {
             data: {
               ...old.data,
               config: {
-                ...(old.data.config as Record<string, any>),
+                ...(old.data['config'] as Record<string, any>),
                 inputs: {
-                  ...old.data.config.inputs,
+                  ...(old.data['config'] as Record<string, any>)['inputs'],
                   input_param: [...values],
                 },
               },
@@ -50,7 +50,7 @@ export const EndNode = (props: Props) => {
             <div className="h-[200px] bg-white rounded-md cursor-pointer overflow-auto">
               <PromptEditor
                 value={
-                  ((data.config?.inputs?.prompt as BasicSchema).value
+                  ((data.config?.inputs?.['prompt'] as BasicSchema).value
                     ?.content as string) || ''
                 }
                 placeholder="请输入 Prompt"
@@ -60,11 +60,12 @@ export const EndNode = (props: Props) => {
                     data: {
                       ...old.data,
                       config: {
-                        ...(old.data.config as Record<string, any>),
+                        ...(old.data['config'] as Record<string, any>),
                         inputs: {
-                          ...old.data.config.inputs,
+                          ...(old.data['config'] as Record<string, any>)['inputs'],
                           prompt: {
-                            ...old.data.config.inputs.prompt,
+                            ...(old.data['config'] as Record<string, any>)['inputs']
+                              .prompt,
                             value: {
                               type: 'value',
                               content: values,

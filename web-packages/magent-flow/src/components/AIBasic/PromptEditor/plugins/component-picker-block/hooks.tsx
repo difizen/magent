@@ -1,7 +1,7 @@
 import { AndroidFilled } from '@ant-design/icons';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodes } from 'lexical';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { ExternalToolBlockType, VariableBlockType } from '../../types.js';
 import { $createCustomTextNode } from '../custom-text/node.js';

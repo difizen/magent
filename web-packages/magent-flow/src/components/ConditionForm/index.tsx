@@ -8,7 +8,7 @@ import { ReferenceSelect } from '../ReferenceSelect/index.js';
 
 export const ConditionForm = (props: {
   refOptions: DefaultOptionType[];
-  value: ConditionBranch;
+  value?: ConditionBranch;
   onChange: (val: ConditionBranch) => void;
 }) => {
   const { refOptions, value, onChange } = props;
@@ -29,6 +29,9 @@ export const ConditionForm = (props: {
         form
           .validateFields()
           .then(() => {
+            if (!value) {
+              return;
+            }
             onChange({
               name: value.name,
               conditions: [allFields],

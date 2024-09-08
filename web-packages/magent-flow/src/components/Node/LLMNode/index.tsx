@@ -26,7 +26,7 @@ export const LLMNode = (props: Props) => {
 
   const upstreamNode = findUpstreamNodes(data.id.toString());
 
-  const llmParam = data.config?.inputs?.llm_param as BasicSchema[];
+  const llmParam = data.config?.inputs?.['llm_param'] as BasicSchema[];
 
   return (
     <NodeWrapper nodeProps={props}>
@@ -79,9 +79,9 @@ export const LLMNode = (props: Props) => {
               data: {
                 ...old.data,
                 config: {
-                  ...(old.data.config as Record<string, any>),
+                  ...(old.data['config'] as Record<string, any>),
                   inputs: {
-                    ...old.data.config.inputs,
+                    ...(old.data['config'] as Record<string, any>)['inputs'],
                     input_param: [...values],
                   },
                 },
@@ -107,9 +107,9 @@ export const LLMNode = (props: Props) => {
                     data: {
                       ...old.data,
                       config: {
-                        ...(old.data.config as Record<string, any>),
+                        ...(old.data['config'] as Record<string, any>),
                         inputs: {
-                          ...old.data.config.inputs,
+                          ...(old.data['config'] as Record<string, any>)['inputs'],
                           llm_param: [
                             ...llmParam.filter((p) => p.name !== 'prompt'),
                             {

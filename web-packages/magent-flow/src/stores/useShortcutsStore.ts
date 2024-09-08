@@ -71,7 +71,7 @@ export const useShortcutsStore = create<shortcutsStoreType>((set, get) => ({
     if (localStorage.getItem('langflow-shortcuts')) {
       const savedShortcuts = localStorage.getItem('langflow-shortcuts');
       const savedArr = JSON.parse(savedShortcuts!);
-      savedArr.forEach(({ name, shortcut }) => {
+      savedArr.forEach(({ name, shortcut }: any) => {
         const shortcutName = name.split(' ')[0].toLowerCase();
         set({
           [shortcutName]: shortcut,

@@ -1,12 +1,11 @@
 import { flip, offset, shift, useFloating } from '@floating-ui/react';
+import { useEventEmitterContextContext } from '@flow/context/event-emitter.js';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import type { MenuRenderFn } from '@lexical/react/LexicalTypeaheadMenuPlugin';
 import { LexicalTypeaheadMenuPlugin } from '@lexical/react/LexicalTypeaheadMenuPlugin';
 import type { TextNode } from 'lexical';
-import React, { Fragment, memo, useCallback, useState } from 'react';
+import { Fragment, memo, useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
-
-import { useEventEmitterContextContext } from '@flow/context/event-emitter.js';
 
 import { useBasicTypeaheadTriggerMatch } from '../../hooks.js';
 import type { ExternalToolBlockType, VariableBlockType } from '../../types.js';
@@ -138,14 +137,7 @@ const ComponentPicker = ({
         </>
       );
     },
-    [
-      allFlattenOptions.length,
-      refs,
-      isPositioned,
-      floatingStyles,
-      queryString,
-      handleSelectWorkflowVariable,
-    ],
+    [allFlattenOptions.length, refs, isPositioned, floatingStyles, queryString],
   );
 
   return (

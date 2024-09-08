@@ -18,7 +18,7 @@ export interface ModelConfig {
 }
 
 export type ModelSelectorNode =
-  | ((props: { nodeId: string; llmParam: BasicSchema[] }) => React.ReactNode)
+  | ((props: { nodeId: string; llmParam: BasicSchema[] }) => JSX.Element)
   | null;
 
 export interface ModelStoreType {

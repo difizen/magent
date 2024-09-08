@@ -99,7 +99,7 @@ export const PromptEditor: FC<PromptEditorProps> = ({
               compact={compact}
             />
           }
-          ErrorBoundary={LexicalErrorBoundary}
+          ErrorBoundary={LexicalErrorBoundary as any}
         />
         <ComponentPickerBlock
           triggerString="/"

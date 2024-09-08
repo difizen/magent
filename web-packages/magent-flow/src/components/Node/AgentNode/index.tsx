@@ -32,9 +32,9 @@ export const AgentNode = (props: Props) => {
               data: {
                 ...old.data,
                 config: {
-                  ...(old.data.config as Record<string, any>),
+                  ...(old.data['config'] as Record<string, any>),
                   inputs: {
-                    ...old.data.config.inputs,
+                    ...(old.data['config'] as Record<string, any>)['inputs'],
                     input_param: [...values],
                   },
                 },
