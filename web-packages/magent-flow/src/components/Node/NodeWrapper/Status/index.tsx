@@ -1,7 +1,7 @@
 import { classNames } from '@flow/utils/basic.js';
 import { Popover, Tag } from 'antd';
 
-export type RunStatus = 'success' | 'processing' | 'warning' | 'error';
+export type RunStatusTypes = 'success' | 'processing' | 'warning' | 'error';
 
 export const RunStatusMap = {
   ['success']: {
@@ -27,7 +27,7 @@ export const RunStatusMap = {
 };
 
 export interface RunResStatus {
-  status: keyof RunStatus;
+  status: RunStatusTypes;
   runDuration: number;
   runInput?: Record<string, string>;
   runOutput?: Record<string, string>;

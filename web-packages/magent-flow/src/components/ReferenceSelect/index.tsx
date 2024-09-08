@@ -1,7 +1,6 @@
+import type { SchemaValueType, ValueType } from '@flow/interfaces/flow.js';
 import { Input } from 'antd';
 import type { DefaultOptionType } from 'antd/es/cascader';
-
-import type { SchemaValueType, ValueType } from '@flow/interfaces/flow.js';
 
 import { CascaderInNode } from '../AIBasic/CascaderInNode/index.js';
 import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
@@ -43,10 +42,10 @@ export const ReferenceSelect = (props: {
         <CascaderInNode
           style={{ width: 120 }}
           value={value?.content || []}
-          onChange={(val: [string, string]) =>
+          onChange={(val: (string | number | null)[]) =>
             onChange?.({
               type: value?.type || 'reference',
-              content: val,
+              content: val as [string, string],
             })
           }
           options={refOptions}

@@ -1,5 +1,4 @@
 import type { BasicSchema } from '@flow/interfaces/flow.js';
-import type React from 'react';
 import { create } from 'zustand';
 
 // 注册 模型选择和配置组件 提供onChange事件

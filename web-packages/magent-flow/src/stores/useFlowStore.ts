@@ -17,9 +17,12 @@ import { cloneDeep } from 'lodash';
 import { create } from 'zustand';
 
 interface AdjacencyList {
-  [key: number]: number[];
+  [key: string]: string[];
 }
-
+interface PanePosition extends XYPosition {
+  paneX: number;
+  paneY: number;
+}
 interface FlowStoreType {
   nodes: Node[];
   edges: Edge[];
@@ -98,6 +101,10 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
         nodes: graph.nodes,
         edges: graph.edges,
       });
+      return {
+        nodes: graph.nodes,
+        edges: graph.edges,
+      };
     },
     reactFlowInstance: null,
     setReactFlowInstance: (newState) => {
@@ -262,8 +269,11 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
         }
       });
 
-      const insidePosition = position.paneX
-        ? { x: position.paneX + position.x, y: position.paneY! + position.y }
+      const insidePosition = (position as PanePosition).paneX
+        ? {
+            x: (position as PanePosition).paneX + position.x,
+            y: (position as PanePosition).paneY! + position.y,
+          }
         : get().reactFlowInstance!.screenToFlowPosition({
             x: position.x,
             y: position.y,
@@ -271,14 +281,14 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
 
       selection.nodes.forEach((node: Node) => {
         // Generate a unique node ID
-        const newId = getNodeId(node.data.type as string);
+        const newId = getNodeId(node.data['type'] as string);
 
         // idsMap[node.id] = newId;
 
         // Create a new node object
         const newNode: NodeType = {
           id: newId,
-          type: node.data.type,
+          type: node.data['type'] as string,
           position: {
             x: insidePosition.x + node.position!.x - minimumX,
             y: insidePosition.y + node.position!.y - minimumY,
@@ -297,7 +307,8 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
 
         // Add the new node to the list of nodes in state
         newNodes = newNodes
-          .map((node) => ({ ...node, selected: false }))
+          // eslint-disable-next-line @typescript-eslint/no-shadow
+          .map((node) => ({ ...node, selected: false }) as any)
           .concat({ ...newNode, selected: false });
       });
       get().setNodes(newNodes);

@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 
 import { useBasicTypeaheadTriggerMatch } from '../../hooks.js';
 import type { ExternalToolBlockType, VariableBlockType } from '../../types.js';
-import { $splitNodeContainingQuery } from '../../utils.js';
+// import { $splitNodeContainingQuery } from '../../utils.js';
 import { INSERT_VARIABLE_VALUE_BLOCK_COMMAND } from '../variable-block/index.js';
 
 import { useOptions } from './hooks.js';
@@ -70,19 +70,19 @@ const ComponentPicker = ({
     [editor],
   );
 
-  const handleSelectWorkflowVariable = useCallback(
-    (variables: string[]) => {
-      editor.update(() => {
-        const needRemove = $splitNodeContainingQuery(
-          checkForTriggerMatch(triggerString, editor)!,
-        );
-        if (needRemove) {
-          needRemove.remove();
-        }
-      });
-    },
-    [editor, checkForTriggerMatch, triggerString],
-  );
+  // const handleSelectWorkflowVariable = useCallback(
+  //   (variables: string[]) => {
+  //     editor.update(() => {
+  //       const needRemove = $splitNodeContainingQuery(
+  //         checkForTriggerMatch(triggerString, editor)!,
+  //       );
+  //       if (needRemove) {
+  //         needRemove.remove();
+  //       }
+  //     });
+  //   },
+  //   [editor, checkForTriggerMatch, triggerString],
+  // );
 
   const renderMenu = useCallback<MenuRenderFn<PickerBlockMenuOption>>(
     (

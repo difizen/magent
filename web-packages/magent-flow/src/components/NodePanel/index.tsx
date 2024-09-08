@@ -39,7 +39,7 @@ export const NodesPanel = (props: NodesPanelProps) => {
         <Input.Search
           placeholder="Search"
           onChange={(e) => {
-            nodes.filter((node) => node.name.includes(e.target.value));
+            nodes.filter((node) => node.name?.includes(e.target.value));
           }}
         />
       )}

@@ -25,17 +25,17 @@ module.exports = {
     curly: 'error',
 
     // stricter type correctness
-    // 'no-unused-vars': [
-    //   'warn',
-    //   {
-    //     vars: 'local',
-    //     args: 'none',
-    //     destructuredArrayIgnorePattern: '^_',
-    //     ignoreRestSiblings: true,
-    //     argsIgnorePattern: '^_',
-    //     caughtErrors: 'none',
-    //   },
-    // ],
+    'no-unused-vars': [
+      'warn',
+      {
+        vars: 'local',
+        args: 'none',
+        destructuredArrayIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+        argsIgnorePattern: '^_',
+        caughtErrors: 'none',
+      },
+    ],
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-explicit-any': ['warn', { ignoreRestArgs: true }],
     '@typescript-eslint/no-shadow': [
