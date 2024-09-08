@@ -1,6 +1,6 @@
-import type { NodeDataType } from '@flow/interfaces/flow.js';
-import { NodeTypeEnum } from '@flow/interfaces/flow.js';
+import type { NodeDataType, NodeTypes } from '@flow/interfaces/flow.js';
 import yaml from 'js-yaml';
+import type { FC } from 'react';
 
 import Flow from '../Flow/index.js';
 import { AgentNode } from '../Node/AgentNode/index.js';
@@ -211,14 +211,14 @@ export const NodeSchemaParser = (obj: Record<string, any>) => {
   delete obj['data'];
 };
 
-const nodeTypes = {
-  [NodeTypeEnum.Start]: StartNode,
-  [NodeTypeEnum.End]: EndNode,
-  [NodeTypeEnum.LLM]: LLMNode,
-  [NodeTypeEnum.Knowledge]: KnowledgeNode,
-  [NodeTypeEnum.IfElse]: IfElseNode,
-  [NodeTypeEnum.Tool]: IfElseNode,
-  [NodeTypeEnum.Agent]: AgentNode,
+const nodeTypes: Record<NodeTypes, FC<any>> = {
+  ['start']: StartNode,
+  ['end']: EndNode,
+  ['llm']: LLMNode,
+  ['knowledge']: KnowledgeNode,
+  ['ifelse']: IfElseNode,
+  ['tool']: IfElseNode,
+  ['agent']: AgentNode,
 };
 
 export const FlowWithPanel = (props: { toolbar?: React.ReactNode }) => {
