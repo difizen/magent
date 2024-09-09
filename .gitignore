@@ -322,3 +322,6 @@ pnpm-lock.yaml
 
 docker/volumes
 agent_universe.db
+
+
+packages/magent-ui/src/magent_ui/static

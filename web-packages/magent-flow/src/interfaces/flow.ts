@@ -8,6 +8,7 @@ export type NodeTypes =
   | 'agent'
   | 'tool'
   | 'ifelse';
+
 // export enum NodeTypeEnum {
 //   'Start' = 'start',
 //   'End' = 'end',

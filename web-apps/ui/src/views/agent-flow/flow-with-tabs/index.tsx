@@ -1,6 +1,5 @@
-import type { NodeDataType } from '@difizen/magent-flow';
+import type { NodeDataType, NodeTypes } from '@difizen/magent-flow';
 import {
-  NodeTypeEnum,
   StartNode,
   EndNode,
   KnowledgeNode,
@@ -11,6 +10,7 @@ import {
 } from '@difizen/magent-flow';
 import { Tabs } from 'antd';
 import yaml from 'js-yaml';
+import type { FC } from 'react';
 
 import { CharacterSetting } from '@/views/agent-config/components/character-setting/index.js';
 
@@ -206,15 +206,15 @@ export const NodeSchemaParser = (obj: Record<string, any>) => {
   delete obj['data'];
 };
 
-const nodeTypes = {
-  [NodeTypeEnum.Start]: StartNode,
-  [NodeTypeEnum.End]: EndNode,
-  [NodeTypeEnum.LLM]: LLMNode,
-  [NodeTypeEnum.Knowledge]: KnowledgeNode,
-  [NodeTypeEnum.IfElse]: IfElseNode,
-  [NodeTypeEnum.Agent]: AgentNode,
+const nodeTypes: Record<NodeTypes, FC<any>> = {
+  ['start']: StartNode,
+  ['end']: EndNode,
+  ['llm']: LLMNode,
+  ['knowledge']: KnowledgeNode,
+  ['ifelse']: IfElseNode,
+  ['agent']: AgentNode,
   // 工具节点
-  [NodeTypeEnum.Tool]: ToolNode,
+  ['tool']: ToolNode,
 };
 
 export const FlowWithTabs = (props: { toolbar?: React.ReactNode }) => {
