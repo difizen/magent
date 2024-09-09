@@ -42,6 +42,18 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true
   },
+
+  "search.exclude": {
+    "packages/**/dist": true,
+    "packages/**/es": true,
+    "packages/**/lib": true,
+    "web-packages/**/dist": true,
+    "web-packages/**/es": true,
+    "web-packages/**/lib": true,
+    "web-apps/**/dist": true,
+    "web-apps/**/es": true,
+    "web-apps/**/lib": true
+  },
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": "never",

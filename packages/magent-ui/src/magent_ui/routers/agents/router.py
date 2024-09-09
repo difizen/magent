@@ -3,6 +3,7 @@ import enum
 import json
 from typing import AsyncIterable, List
 from fastapi import APIRouter
+from magent_ui.utils import iterator_to_async_iterable
 from agentuniverse_product.service.agent_service.agent_service import AgentService
 from agentuniverse_product.service.workflow_service.workflow_service import WorkflowService
 from agentuniverse_product.service.model.agent_dto import AgentDTO
@@ -11,37 +12,39 @@ from agentuniverse_product.service.model.planner_dto import PlannerDTO
 from pydantic import BaseModel
 from sse_starlette import EventSourceResponse, ServerSentEvent
 
+
 router = APIRouter()
 agents_router = router
 
 
 @router.get("/agents", response_model=List[AgentDTO])
 async def get_agents():
-    return AgentService.get_agent_list()
-
+    return await asyncio.to_thread(AgentService.get_agent_list)
 
 @router.get("/agents/{agent_id}", response_model=AgentDTO | None)
 async def get_agent_detail(agent_id):
-    return AgentService.get_agent_detail(agent_id)
+    return await asyncio.to_thread(AgentService.get_agent_detail, agent_id)
 
 
 @router.put("/agents/{agent_id}", response_model=AgentDTO | None)
 async def update_agent(agent_id, agent: AgentDTO):
-    return AgentService.update_agent(agent)
+    return await asyncio.to_thread(AgentService.update_agent, agent)
 
 @router.post("/agents", response_model=str)
 async def create_agent(agent: AgentDTO):
-    return AgentService.create_agent(agent)
+    return await asyncio.to_thread(AgentService.create_agent, agent)
 
 
 @router.post("/agents/workflow", response_model=str)
 async def create_workflow_agent(agent: AgentDTO):
-    workflow_id = f"{agent.id}_workflow"
-    workflow_name = f"{agent.nickname}_workflow"
-    workflow = WorkflowDTO(id=workflow_id, name=workflow_name)
-    workflow_id = WorkflowService.create_workflow(workflow)
-    agent.planner = PlannerDTO(id='workflow_planner', workflow_id=workflow_id)
-    return AgentService.create_agent(agent)
+    def task():
+      workflow_id = f"{agent.id}_workflow"
+      workflow_name = f"{agent.nickname}_workflow"
+      workflow = WorkflowDTO(id=workflow_id, name=workflow_name)
+      workflow_id = WorkflowService.create_workflow(workflow)
+      agent.planner = PlannerDTO(id='workflow_planner', workflow_id=workflow_id)
+      return AgentService.create_agent(agent)
+    return await asyncio.to_thread(task)
 
 class MessageSenderType(enum.Enum):
     AI = "ai"
@@ -82,49 +85,9 @@ class SSEType(enum.Enum):
     RESULT = "result"
 
 
-# class AgentStep(BaseModel):
-#     input: str
-#     output: str
-
-
-# class AgentIntermediateSteps(BaseModel):
-#     type: str
-#     output: List[str | AgentStep] = []
-#     agent_id: str
-
-
-# class TokenUsage(BaseModel):
-#     completion_tokens: int
-#     prompt_tokens: int
-#     total_tokens: int
-
-
-# class InvocationSource(BaseModel):
-#     source: str
-#     type: str
-
-
-# class AgentOutput(BaseModel):
-#     message_id: int
-#     session_id: str
-#     response_time: float
-#     output: str
-#     start_time: str
-#     end_time: str
-#     type: str
-#     agent_id: str
-#     invocation_chain: List[InvocationSource] = []
-#     token_usage: TokenUsage
-
-async def iterator_to_async_iterable(sync_iter) -> AsyncIterable:
-    for item in sync_iter:
-        await asyncio.sleep(0)  # 允许其他异步任务运行
-        yield item
-
-
 async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
-    msg_iterator = iterator_to_async_iterable(AgentService.stream_chat(
-        model.agent_id, model.session_id, model.input))
+    msg_iterator = iterator_to_async_iterable(iter(AgentService.stream_chat(
+        model.agent_id, model.session_id, model.input)))
     async for msg_chunk in msg_iterator:
         type = msg_chunk.get("type", None)
         if type == "error":
