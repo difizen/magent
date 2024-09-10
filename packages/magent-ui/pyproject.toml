@@ -5,6 +5,7 @@ description = ""
 authors = [
   { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" },
   { name = "brokun", email = "brokun0128@gmail.com" },
+  { name = "sunshinesmilelk", email= "1176136681@qq.com"},
 ]
 
 dependencies = [
