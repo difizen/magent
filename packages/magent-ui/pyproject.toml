@@ -1,11 +1,11 @@
 [project]
 name = "magent-ui"
-version = "0.1.16.dev7"
+version = "0.1.17"
 description = ""
 authors = [
-  { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" },
   { name = "brokun", email = "brokun0128@gmail.com" },
-  { name = "sunshinesmilelk", email= "1176136681@qq.com"},
+  { name = "shiyu", email = "dongyuxin.dyx@antgroup.com" },
+  { name = "sunshinesmilelk", email = "1176136681@qq.com" },
 ]
 
 dependencies = [
