@@ -95,6 +95,7 @@ export class LLMModel implements LLMMeta {
     this.id = meta.id;
     this.nickname = meta.nickname;
     this.model_name = meta.model_name;
+    this.updateMeta(meta);
   }
 
   updateMeta = (meta?: LLMMeta) => {
