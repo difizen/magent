@@ -3,7 +3,6 @@ import enum
 import json
 from typing import AsyncIterable, List
 from fastapi import APIRouter
-from magent_ui.utils import iterator_to_async_iterable
 from agentuniverse_product.service.agent_service.agent_service import AgentService
 from agentuniverse_product.service.workflow_service.workflow_service import WorkflowService
 from agentuniverse_product.service.model.agent_dto import AgentDTO
@@ -21,6 +20,7 @@ agents_router = router
 async def get_agents():
     return await asyncio.to_thread(AgentService.get_agent_list)
 
+
 @router.get("/agents/{agent_id}", response_model=AgentDTO | None)
 async def get_agent_detail(agent_id):
     return await asyncio.to_thread(AgentService.get_agent_detail, agent_id)
@@ -30,6 +30,7 @@ async def get_agent_detail(agent_id):
 async def update_agent(agent_id, agent: AgentDTO):
     return await asyncio.to_thread(AgentService.update_agent, agent)
 
+
 @router.post("/agents", response_model=str)
 async def create_agent(agent: AgentDTO):
     return await asyncio.to_thread(AgentService.create_agent, agent)
@@ -38,13 +39,15 @@ async def create_agent(agent: AgentDTO):
 @router.post("/agents/workflow", response_model=str)
 async def create_workflow_agent(agent: AgentDTO):
     def task():
-      workflow_id = f"{agent.id}_workflow"
-      workflow_name = f"{agent.nickname}_workflow"
-      workflow = WorkflowDTO(id=workflow_id, name=workflow_name)
-      workflow_id = WorkflowService.create_workflow(workflow)
-      agent.planner = PlannerDTO(id='workflow_planner', workflow_id=workflow_id)
-      return AgentService.create_agent(agent)
+        workflow_id = f"{agent.id}_workflow"
+        workflow_name = f"{agent.nickname}_workflow"
+        workflow = WorkflowDTO(id=workflow_id, name=workflow_name)
+        workflow_id = WorkflowService.create_workflow(workflow)
+        agent.planner = PlannerDTO(
+            id='workflow_planner', workflow_id=workflow_id)
+        return AgentService.create_agent(agent)
     return await asyncio.to_thread(task)
+
 
 class MessageSenderType(enum.Enum):
     AI = "ai"
@@ -86,8 +89,8 @@ class SSEType(enum.Enum):
 
 
 async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
-    msg_iterator = iterator_to_async_iterable(iter(AgentService.stream_chat(
-        model.agent_id, model.session_id, model.input)))
+    msg_iterator = AgentService.async_stream_chat(
+        model.agent_id, model.session_id, model.input)
     async for msg_chunk in msg_iterator:
         type = msg_chunk.get("type", None)
         if type == "error":
@@ -102,4 +105,6 @@ async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
 
 @router.post("/agents/{agent_id}/stream-chat")
 async def stream_chat(agent_id, model: MessageCreate):
+    print(agent_id)
+    print(model)
     return EventSourceResponse(send_message(model), media_type="text/event-stream")
