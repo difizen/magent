@@ -26,7 +26,8 @@ export const VariableForm = (props: VariableFormProps) => {
 
   useEffect(() => {
     form.setFieldValue('variables', values);
-  }, [form, values]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Collapse

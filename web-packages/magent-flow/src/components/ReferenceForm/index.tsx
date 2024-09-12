@@ -21,7 +21,8 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
 
   useEffect(() => {
     form.setFieldValue('variables', value);
-  }, [form, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const options = nodes.map((node) => {
     return {
