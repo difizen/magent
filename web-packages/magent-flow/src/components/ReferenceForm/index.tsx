@@ -22,7 +22,7 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
   useEffect(() => {
     form.setFieldValue('variables', value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [value]);
 
   const options = nodes.map((node) => {
     return {
@@ -36,7 +36,6 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
       }),
     };
   });
-
   return (
     <CollapseWrapper
       label={label}
@@ -44,13 +43,18 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
         <Form
           form={form}
           autoComplete="off"
-          onValuesChange={(_, allFields) => {
+          onValuesChange={(changedValues, allFields) => {
             form
               .validateFields()
               .then(() => {
                 if (allFields.variables) {
                   onChange(
-                    allFields.variables.filter((item: any) => item !== undefined),
+                    allFields.variables.map((item: any) => {
+                      if (!item) {
+                        return {};
+                      }
+                      return item;
+                    }),
                   );
                 }
                 return;

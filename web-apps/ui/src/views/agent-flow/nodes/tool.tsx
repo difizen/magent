@@ -52,15 +52,16 @@ export const ToolNode = (props: Props) => {
                   },
                 },
               ],
-              input_param: v.parameters.map((p) => {
-                return {
-                  name: p,
-                  type: 'string',
-                  value: {
-                    type: 'reference',
-                  },
-                };
-              }),
+              input_param:
+                v.parameters?.map((p) => {
+                  return {
+                    name: p,
+                    type: 'string',
+                    value: {
+                      type: 'reference',
+                    },
+                  };
+                }) || [],
             },
           },
         },

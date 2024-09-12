@@ -27,7 +27,7 @@ export const VariableForm = (props: VariableFormProps) => {
   useEffect(() => {
     form.setFieldValue('variables', values);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [values]);
 
   return (
     <Collapse
@@ -50,7 +50,12 @@ export const VariableForm = (props: VariableFormProps) => {
                   .then(() => {
                     if (allFields.variables) {
                       onChange(
-                        allFields.variables.filter((item: any) => item !== undefined),
+                        allFields.variables.map((item: any) => {
+                          if (!item) {
+                            return {};
+                          }
+                          return item;
+                        }),
                       );
                     }
                     return;
