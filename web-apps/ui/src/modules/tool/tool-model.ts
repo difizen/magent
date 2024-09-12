@@ -72,7 +72,7 @@ export class ToolModel extends AsyncModel<ToolModel, ToolMeta> {
     if (option.avatar) {
       this.avatar = option.avatar;
     }
-    if (option.parameters.length > 0) {
+    if (option.parameters && option.parameters?.length > 0) {
       this.parameters = option.parameters;
     }
     if (option.openapi_schema) {

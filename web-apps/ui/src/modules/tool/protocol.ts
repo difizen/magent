@@ -42,9 +42,9 @@ export type { ToolModel } from './tool-model.js';
 export interface ToolMeta {
   id: string;
   nickname: string;
-  avatar: string;
-  description: string;
-  parameters: string[];
+  avatar?: string;
+  description?: string;
+  parameters?: string[];
   openapi_schema?: Record<string, any>;
 }
 
