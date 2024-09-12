@@ -80,7 +80,7 @@ export function registerLexicalTextEntity<T extends TextNode>(
       let nextText = match === null ? '' : text.slice(match.end);
       text = nextText;
 
-      if (nextText === '') {
+      if (nextText === '' && currentNode) {
         const nextSibling = currentNode.getNextSibling();
 
         if ($isTextNode(nextSibling)) {
