@@ -1,0 +1,53 @@
+body {
+  margin: 0%;
+}
+
+.magent-base-layout {
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: rgb(244, 244, 246);
+  -webkit-font-smoothing: antialiased;
+
+  .mana-header {
+    background: #fff;
+    height: 60px;
+    box-shadow: 0 2px 6px 0 var(--mana-activityBar-border);
+
+    .mana-header-left {
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+
+      .mana-flex {
+        .mana-flex-item {
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    .mana-header-middle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mana-header-right {
+      .mana-toolbar {
+        .ant-btn {
+          border: none;
+        }
+      }
+    }
+  }
+
+  &-header {
+    z-index: 3;
+  }
+
+  &-container {
+    height: calc(100% - 61px);
+    z-index: 2;
+  }
+}

@@ -11,6 +11,8 @@
 -e file:packages/magent-ui
 agentuniverse==0.0.11
     # via magent-api
+aiofiles==24.1.0
+    # via magent-ui
 aiohttp==3.9.5
     # via dashscope
     # via langchain

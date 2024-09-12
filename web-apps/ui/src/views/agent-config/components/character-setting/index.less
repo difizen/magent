@@ -1,0 +1,29 @@
+.character-settings {
+  &-header {
+    color: rgba(1, 1, 1, 88%);
+    margin-top: 16px;
+  }
+
+  &-container {
+    padding: 0;
+    min-width: 240px;
+
+    > &-collapse {
+      .ant-collapse-header {
+        padding: 0;
+        font-weight: 500;
+      }
+    }
+  }
+
+  &-body {
+    padding: 0;
+  }
+
+  &-textarea {
+    &.ant-input {
+      resize: none;
+      border: none;
+    }
+  }
+}

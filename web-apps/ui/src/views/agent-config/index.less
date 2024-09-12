@@ -1,0 +1,71 @@
+.magent-dev-config {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  justify-items: center;
+  flex-direction: column;
+  background-color: var(--mana-color-bg-container);
+  box-sizing: border-box;
+  border-radius: 8px;
+
+  &-header {
+    border-bottom: 1px solid var(--mana-color-border);
+    padding: 0 24px;
+    height: 64px;
+    min-height: 64px;
+
+    &-save {
+      cursor: pointer;
+      padding: 4px;
+      border: none;
+    }
+  }
+
+  &-content {
+    display: grid;
+    grid-template-columns: 13fr 13fr;
+    height: calc(100% - 56px);
+    overflow: hidden;
+
+    &-left {
+      overflow: auto;
+      padding: 12px;
+      border-right: 1px solid var(--mana-menubar-border);
+      padding-bottom: 36px;
+    }
+
+    &-right {
+      overflow: auto;
+      padding: 12px;
+      padding-bottom: 36px;
+    }
+
+    &-model {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+
+      &-title {
+        font-size: 14px;
+        color: #00000073;
+        text-wrap: nowrap;
+        margin-right: 16px;
+      }
+    }
+  }
+
+  .ant-card-meta-title {
+    font-size: 18px;
+  }
+
+  .ant-card-meta-description {
+    height: 60px;
+    font-size: 14px;
+
+    span {
+      height: 60px;
+      display: inline-block;
+      text-overflow: ellipsis;
+    }
+  }
+}

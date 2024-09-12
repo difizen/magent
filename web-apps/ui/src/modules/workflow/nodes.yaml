@@ -1,0 +1,42 @@
+nodes:
+  - id: start-e943701d-1e3c-4bd5-875f-af3be9cef708
+    name: 开始节点
+    description: 工作流的起始节点，用于设定启动工作流需要的信息
+    type: start
+    position:
+      x: 390
+      'y': 90
+    data:
+      outputs:
+        - name: user_input
+          type: string
+          description: 用户本轮对话输入内容
+  - id: end-a8dbad06-88c8-4efd-983c-096d2ad3e588
+    position:
+      x: 1102.8851405233877
+      'y': 69.68638988895759
+    name: 结束节点
+    description: 工作流的最终节点，用于返回工作流运行后的结果信息
+    type: end
+    data:
+      inputs:
+        input_param:
+          - name: response
+            type: string
+            value:
+              type: reference
+        prompt:
+          name: response
+          type: string
+          description: 输出内容
+          value:
+            type: reference
+            content: '{{response}}'
+      outputs:
+        - name: output
+          type: string
+edges:
+  - id: >-
+      xy-edge__end-a8dbad06-88c8-4efd-983c-096d2ad3e588-start-e943701d-1e3c-4bd5-875f-af3be9cef708
+    source_node_id: end-a8dbad06-88c8-4efd-983c-096d2ad3e588
+    target_node_id: start-e943701d-1e3c-4bd5-875f-af3be9cef708

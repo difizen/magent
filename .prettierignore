@@ -8,10 +8,12 @@ pnpm-lock.yaml
 **/dist
 **/coverage
 **/es
+packages/**/static
 
 # generated code
 **/.dumi/tmp
 **/.dumi/tmp-production
+**/.umi-production
 **/.docusaurus
 **/.umi
 
@@ -27,3 +29,5 @@ tinyColor.less
 .changeset
 
 docker
+
+tailwind.out.css

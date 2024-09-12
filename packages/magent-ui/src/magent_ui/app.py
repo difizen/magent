@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 import webbrowser
+from magent_ui.utils import AsyncTask
 import uvicorn
 import logging
 from magent_ui.routers.main import api_router
@@ -13,7 +14,7 @@ from agentuniverse.base.util.system_util import get_project_root_path
 from uvicorn.config import LOGGING_CONFIG
 
 # Use uvicorn's default logging configuration
-logging.config.dictConfig(LOGGING_CONFIG) # type: ignore
+logging.config.dictConfig(LOGGING_CONFIG)  # type: ignore
 
 # Get the uvicorn logger
 logger = logging.getLogger("uvicorn")
@@ -26,6 +27,7 @@ templates_dir = os.path.join(BASE_DIR, 'templates')
 
 templates = Jinja2Templates(directory=templates_dir)
 
+
 def launch(**kwargs):
     logger.info("Current log level is")
     project_root_path = get_project_root_path()
@@ -35,7 +37,8 @@ def launch(**kwargs):
     if app_config.log_level is not None:
         logger.setLevel(app_config.log_level)
 
-
+    if app_config.thread_worker is not None:
+        AsyncTask.set_max_worker(app_config.thread_worker)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -54,7 +57,7 @@ def launch(**kwargs):
     # static
     if os.path.exists(static_dir):
         app.mount(app_config.full_static_path, StaticFiles(directory=static_dir,
-                                                    html=True), name="static")
+                                                           html=True), name="static")
     else:
         logger.info('Can not find static directory. ', static_dir)
 
@@ -65,7 +68,7 @@ def launch(**kwargs):
         os.makedirs(app_config.resource_dir_path)
 
     app.mount(app_config.full_resource_path, StaticFiles(directory=app_config.resource_dir_path,
-                                                  html=True))
+                                                         html=True))
 
     # auto redirect to app url
     @app.get(app_config.root_path, response_class=HTMLResponse)
