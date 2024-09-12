@@ -10,17 +10,20 @@
 
 与 [agentUniverse](https://github.com/alipay/agentUniverse) 联合推出本地研发产品化方案，详见[产品化文档](https://github.com/alipay/agentUniverse/blob/master/docs/guidebook/zh/10_1_1_%E4%BA%A7%E5%93%81%E5%8C%96%E5%B9%B3%E5%8F%B0%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B.md)
 
+智能体工作流编排
+![智能体工作流编排](./docs/assets/au-flow.jpg)
+
+智能体编排
+![智能体编排](./docs/assets/au-react-dev.jpg)
+
 PEER 多智能体对话
 ![PEER 多智能体对话](./docs/assets/au-peer-chat.jpg)
-
-ReAct 智能体开发
-![ReAct 智能体开发](./docs/assets/au-react-dev.jpg)
 
 #### 后续计划
 
 - 9 月
-  - [ ] 支持 agent/tool/knowledge 产品化创建
-  - [ ] 支持 flow 方式研发 agent
+  - [x] 支持 agent/tool/knowledge 产品化创建
+  - [x] 支持 flow 方式研发 agent
   - [ ] 支持 peer 多智能体的表单编排
 
 #### 配置
