@@ -17,7 +17,7 @@ import './index.less';
 const prefix = 'magent-plugins-modal';
 
 const AddBtn = (props: ToolSelectProps & { tool: ToolModel }) => {
-  const { dataProvider, onChange, tool } = props;
+  const { dataProvider, onChange, tool, rowSelectionType } = props;
   const added = dataProvider.tool.find((t) => t.id === tool.id);
 
   const [hovered, setHovered] = useState(false);
@@ -42,7 +42,7 @@ const AddBtn = (props: ToolSelectProps & { tool: ToolModel }) => {
         setHovered(false);
       }}
     >
-      {hovered ? (
+      {rowSelectionType !== 'radio' && hovered ? (
         <Button
           onClick={() => {
             onChange?.([...dataProvider.tool].filter((item) => item.id !== tool.id));
@@ -63,6 +63,7 @@ interface ToolSelectProps {
   dataProvider: { tool: ToolMeta[] };
   onChange?: (tool: ToolMeta[]) => void;
   expandAll?: boolean;
+  rowSelectionType: string;
 }
 export const ToolsModalComponent = (props: ModalItemProps<ToolSelectProps>) => {
   const plugins = useInject(PluginManager);

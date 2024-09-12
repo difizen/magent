@@ -7,9 +7,10 @@ import {
   OutputVariable,
 } from '@difizen/magent-flow';
 import { useInject } from '@difizen/mana-app';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { ToolSpace } from '@/modules/tool/tool-space.js';
+import { PluginManager } from '@/modules/plugin/plugin-manager.js';
+import type { ToolMeta } from '@/modules/tool/protocol.js';
 import { ToolsModal, ToolsModalComponent } from '@/modules/tool/tools-modal/modal.js';
 
 import { TransferButton } from './transfer-button.js';
@@ -23,14 +24,68 @@ type Props = {
 
 export const ToolNode = (props: Props) => {
   const { data } = props;
-  const toolSpace = useInject(ToolSpace);
+  const pluginManager = useInject(PluginManager);
 
   const [toolModalOpen, setToolModalOpen] = useState<boolean>(false);
   const { findUpstreamNodes, setNode } = useFlowStore();
   const upstreamNodes = findUpstreamNodes(data.id.toString());
-  const toolParam = data.config?.inputs?.tool_param as BasicSchema[];
-  const toolMeta = toolSpace.list
-    .find((t) => t.id === toolParam.find((tool) => tool.name === 'id')?.value?.content)
+  const toolParam = data.config?.inputs?.['tool_param'] as BasicSchema[];
+
+  const setTool = useCallback(
+    (v: ToolMeta) => {
+      setNode(data.id, (old) => ({
+        ...old,
+        data: {
+          ...old.data,
+          name: v.nickname,
+          description: v.description,
+          config: {
+            ...(old.data['config'] as Record<string, any>),
+            inputs: {
+              ...(old.data['config'] as Record<string, any>)['inputs'],
+              tool_param: [
+                {
+                  name: 'id',
+                  type: 'string',
+                  value: {
+                    content: v.id,
+                  },
+                },
+              ],
+              input_param: v.parameters.map((p) => {
+                return {
+                  name: p,
+                  type: 'string',
+                  value: {
+                    type: 'reference',
+                  },
+                };
+              }),
+            },
+          },
+        },
+      }));
+    },
+    [data.id, setNode],
+  );
+
+  const toolMeta = pluginManager.publicList
+    .map((plugin) => plugin.toolset)
+    .flat()
+    .find((pluginTool) => {
+      const param = toolParam.find((tool) => tool.name === 'id');
+      if (!param || !param.value) {
+        return false;
+      }
+      let paramValue = param.value as unknown as string;
+      if (typeof param.value === 'string') {
+        paramValue = param.value;
+      }
+      if (typeof param.value.content === 'string') {
+        paramValue = param.value.content;
+      }
+      return pluginTool.id === paramValue;
+    })
     ?.toMeta();
 
   return (
@@ -49,45 +104,14 @@ export const ToolNode = (props: Props) => {
           dataProvider: {
             tool: [
               {
-                id: toolParam.find((p) => p.name === 'id')?.value?.content as string,
+                id: toolMeta?.id,
               } as any,
             ],
           },
           rowSelectionType: 'radio',
           onChange: (val) => {
-            setNode(data.id, (old) => ({
-              ...old,
-              data: {
-                ...old.data,
-                name: val[0].nickname,
-                description: val[0].description,
-                config: {
-                  ...(old.data.config as Record<string, any>),
-                  inputs: {
-                    ...old.data.config.inputs,
-                    tool_param: [
-                      {
-                        name: 'id',
-                        type: 'string',
-                        value: {
-                          content: val[0].id,
-                        },
-                      },
-                    ],
-                    input_param: val[0].parameters.map((p) => {
-                      return {
-                        name: p,
-                        type: 'string',
-                        value: {
-                          type: 'reference',
-                        },
-                      };
-                    }),
-                  },
-                },
-              },
-            }));
-
+            const v = val[0];
+            setTool(v);
             setToolModalOpen(false);
           },
         }}
@@ -105,9 +129,9 @@ export const ToolNode = (props: Props) => {
                 data: {
                   ...old.data,
                   config: {
-                    ...(old.data.config as Record<string, any>),
+                    ...(old.data['config'] as Record<string, any>),
                     inputs: {
-                      ...old.data.config.inputs,
+                      ...(old.data['config'] as Record<string, any>)['inputs'],
                       input_param: [...values],
                     },
                   },
