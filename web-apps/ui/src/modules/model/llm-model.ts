@@ -37,9 +37,17 @@ export class LLMProvider implements LLMProviderMeta {
     this.id = meta.id;
     this.nickname = meta.nickname;
     this.model_name = meta.model_name;
+    this.temperature = meta.temperature;
   }
 
-  toSingleMeta = (name: string): LLMMeta | undefined => {
+  toSingleMeta = (name?: string): LLMMeta | undefined => {
+    if (!name) {
+      if (this.models.length === 0) {
+        const meta = this.toMeta();
+        return { ...meta, model_name: [] };
+      }
+      return undefined;
+    }
     if (!this.models.includes(name)) {
       return undefined;
     }
@@ -58,6 +66,9 @@ export class LLMProvider implements LLMProviderMeta {
   };
 
   toSingleMetas = () => {
+    if (this.models.length === 0) {
+      return [this.toSingleMeta()];
+    }
     return this.models.map(this.toSingleMeta);
   };
 }
@@ -70,7 +81,7 @@ export class LLMModel implements LLMMeta {
   nickname: string;
 
   @prop()
-  model_name: [string];
+  model_name: [string] | [];
 
   get name(): string {
     return this.nickname;

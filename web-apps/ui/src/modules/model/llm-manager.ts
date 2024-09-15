@@ -11,16 +11,15 @@ export class LLMManager {
   @inject(LLMProviderManager) protected providerManager: LLMProviderManager;
 
   get default(): LLMModel | undefined {
-    const llm = this.providerManager.models.find((item) => item.models.length > 0);
+    const defaultProvider = this.providerManager.models[0];
+    if (!defaultProvider) {
+      return undefined;
+    }
+    const llm = defaultProvider.toSingleMeta(defaultProvider.model_name[0]);
     if (!llm) {
       return undefined;
     }
-    const name = llm.models[0];
-    const meta = llm.toSingleMeta(name);
-    if (!meta) {
-      return undefined;
-    }
-    return this.factory(meta);
+    return this.factory(llm);
   }
 
   updateFromProvider = () => {

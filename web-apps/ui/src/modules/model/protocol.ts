@@ -6,7 +6,7 @@ export interface LLMMeta {
   id: string;
   nickname: string;
   temperature: number;
-  model_name: [string];
+  model_name: [string] | [];
 }
 
 export type LLMModelFactory = (option: LLMMeta) => LLMModel;

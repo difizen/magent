@@ -26,7 +26,17 @@ export class LLMProviderManager {
 
   updateProviders = async () => {
     const metas = await this.getProviderssMeta();
-    this.models = metas.map((item) => this.getOrCreate(item));
+    this.models = metas
+      .map((item) => this.getOrCreate(item))
+      .sort((a, b) => {
+        if (b.model_name.length === 0) {
+          return 1;
+        }
+        if (a.model_name.length === 0) {
+          return -1;
+        }
+        return 0;
+      });
   };
 
   getOrCreate = (option: LLMProviderMeta): LLMProvider => {
