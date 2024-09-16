@@ -6,7 +6,7 @@ from routers.main import api_router
 
 from db import SessionLocal
 
-from config import settings
+from api_config import settings
 
 
 with SessionLocal() as session:
