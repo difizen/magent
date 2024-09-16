@@ -1,4 +1,4 @@
-# <img src="./docs/assets//logo.svg" width="30"> magent
+# <img src="./docs/site/public/logo.svg" width="30"> magent
 
 智能体研发产品方案
 
@@ -64,4 +64,4 @@ MAGENT_UI_SERVER_XX
 #### 通过钉钉群联系我们
 
 😊 加入我们的钉钉答疑群与我们联系。
-![](./docs/assets/magent-dingding-group.png)
+![](./docs/site/public/magent-dingding-group.png)

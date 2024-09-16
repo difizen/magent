@@ -1,6 +1,9 @@
+import { Button, message } from 'antd';
 import { Link, useSiteData } from 'dumi';
 import React, { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './index.less';
+import '../../tailwind.out.css';
 
 const Banner: React.FC = () => {
   const [animate, setAnimate] = useState({
@@ -25,88 +28,42 @@ const Banner: React.FC = () => {
   return (
     <div className="difizen-dumi-banner">
       <div className="difizen-dumi-banner-main">
-        {themeConfig.banner.coverImage ? (
-          <>
-            <div
-              className="difizen-dumi-banner-content"
-              style={{
-                opacity: animate.imgOpacity,
-                transform: animate.imgTranslate,
-              }}
-            >
-              <div className="difizen-dumi-banner-content-title">
+        <div className="from-zinc-50 to-white dark:from-zinc-950 to-black relative">
+          <div className="absolute bg-[url('/_convertfast/gradient-bg-0.svg')] bg-auto bg-no-repeat z-0 inset-0 top-0 bottom-0 left-0 right-0 grayscale"></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32 relative z-10">
+            <div className="max-w-3xl">
+              <div className="content-animate">
+                <div className="circle-first">
+                  <div className="circle-first-one" />
+                  <div className="circle-first-two" />
+                </div>
+                <div className="circle-second"></div>
+                <div className="circle-third"></div>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-primary mb-6 drop-shadow-md">
                 {themeConfig.banner.title}
-              </div>
-              <div className="difizen-dumi-banner-content-detail">
-                <p>{themeConfig.banner.desc}</p>
-              </div>
-              <div className="difizen-dumi-banner-content-actions">
-                {bottons.map((it: { link: string; name: string }) => {
-                  return (
-                    <Link
-                      style={{
-                        margin: '0 8px',
-                        textDecoration: 'none',
-                        border: '1px dashed #d9d9d9',
-                        backgroundColor: '#fff',
-                        padding: '4px 15px',
-                        color: 'rgba(0, 0, 0, 0.88)',
-                      }}
-                      to={it.link}
-                      key={`${it.name}-${it.link}`}
-                    >
-                      {it.name}{' '}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-            <div>
-              <img
-                className="difizen-dumi-banner-img"
-                style={{
-                  transition: 'all 1s ease-out',
-                  opacity: animate.imgOpacity,
-                  transform: animate.imgTranslate,
+              </h1>
+              <p className="text-xl sm:text-2xl text-muted-foreground mb-8">
+                {themeConfig.banner.desc}
+              </p>
+              <Link to={'/introduction'}>
+                <Button type="primary" size="large" className="start-btn">
+                  Start now
+                </Button>
+              </Link>
+              <CopyToClipboard
+                text="npm install @difizen/mana-app"
+                onCopy={() => {
+                  message.success('已复制');
                 }}
-                src="https://mdn.alipayobjects.com/huamei_usjdcg/afts/img/A*BQWiQbC8LkMAAAAAAAAAAAAADo6HAQ/original"
-              />
-            </div>
-          </>
-        ) : (
-          <div className="difizen-dumi-hero">
-            <h1 className="difizen-dumi-hero-title">
-              <span>{themeConfig.banner.title}</span>
-            </h1>
-            <p className="difizen-dumi-hero-desc">{themeConfig.banner.desc}</p>
-            <div className="difizen-dumi-hero-actions">
-              {bottons.map(({ name, link }, index) => {
-                const style =
-                  index === 0
-                    ? {
-                        color: '#fff',
-                        backgroundColor: '#1677ff',
-                      }
-                    : {};
-                return /^(\w+:)\/\/|^(mailto|tel):/.test(link) ? (
-                  <a
-                    style={style}
-                    href={link}
-                    target="_blank"
-                    rel="noreferrer"
-                    key={name}
-                  >
-                    {name}
-                  </a>
-                ) : (
-                  <Link style={style} key={name} to={link}>
-                    {name}
-                  </Link>
-                );
-              })}
+              >
+                <Button size="large" className="install-btn">
+                  pip install magent-ui
+                </Button>
+              </CopyToClipboard>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
