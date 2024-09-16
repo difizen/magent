@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from models.account import AccountCreate, AccountORM, AccountStatus
 
-from config import settings
+from api_config import settings
 
 
 class AccountHelper:
