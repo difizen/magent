@@ -1,6 +1,6 @@
-import { useSiteData } from 'dumi';
+import { useSiteData, Link } from 'dumi';
 import React from 'react';
-import './Footer.less';
+import './index.less';
 
 type DatumType = {
   title: string;
@@ -12,12 +12,18 @@ type DatumType = {
 
 const Footer: React.FC = () => {
   const { themeConfig } = useSiteData();
+  const qrcodes = themeConfig.qrcodes;
 
   return (
     <div className="difizen-dumi-footer">
       <div className="difizen-dumi-footer-content">
-        <div className="difizen-dumi-footer-text-group">
-          {themeConfig['linksTitle']}
+        <div className="difizen-dumi-footer-logo">
+          {themeConfig.logo && (
+            <Link to={themeConfig['link']}>
+              <img className="difizen-dumi-header-logo-img" src={themeConfig.logo} />
+              <span>{themeConfig.name}</span>
+            </Link>
+          )}
         </div>
         {(themeConfig['links'] || []).map((datum: DatumType) => (
           <div className="difizen-dumi-footer-text-group" key={datum.title}>
@@ -31,13 +37,16 @@ const Footer: React.FC = () => {
             ))}
           </div>
         ))}
+
+        <div className="difizen-dumi-footer-text-group"></div>
         <div className="difizen-dumi-footer-text-group">
-          <div className="difizen-dumi-footer-image-text">联系我们</div>
-          {themeConfig['groupQR'] && (
-            <div className="difizen-dumi-footer-image-group">
-              <img className="difizen-dumi-footer-img" src={themeConfig['groupQR']} />
+          <div className="difizen-dumi-footer-title">联系我们</div>
+          {qrcodes.map((item: { name: string; qrcode: string }) => (
+            <div className="difizen-dumi-footer-image-group" key={item.name}>
+              <img className="difizen-dumi-footer-img" src={item.qrcode} />
+              <label>{item.name}</label>
             </div>
-          )}
+          ))}
         </div>
       </div>
 

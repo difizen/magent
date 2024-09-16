@@ -5,25 +5,22 @@ export default defineConfig({
     hd: { rules: [] },
     name: 'magent',
     link: '/',
-    logo: 'https://mdn.alipayobjects.com/huamei_hdnzbp/afts/img/A*Jl1DTrw2uxkAAAAAAAAAAAAADjOxAQ/original',
+    logo: 'logo.svg',
     nav: [
       { title: '介绍', link: '/introduction' },
       { title: '教程', link: '/tutorial' },
       { title: '示例', link: '/examples' },
     ],
+    gitRepo: { owner: 'difizen', name: 'magent' },
+    qrcodes: [
+      {
+        name: '钉钉',
+        qrcode: 'magent-dingding-group.png',
+      },
+    ],
     banner: {
       title: 'magent',
-      desc: '不只是 notebook',
-      botton: [
-        {
-          name: '了解更多',
-          link: '/introduction',
-        },
-        {
-          name: 'Github',
-          link: 'https://github.com/difizen/magent',
-        },
-      ],
+      desc: '你需要的 agent 产品方案',
     },
     footer: `Open-source MIT Licensed | Copyright © 2023-present`,
     groupQR:
@@ -75,6 +72,7 @@ export default defineConfig({
     ['@babel/plugin-transform-private-property-in-object', { loose: true }],
     'babel-plugin-parameter-decorator',
   ],
+  favicons: ['/logo.svg'],
   plugins: ['./dumi-plugin-alias', './dumi-plugin-nodenext'],
   exportStatic: {},
   resolve: {

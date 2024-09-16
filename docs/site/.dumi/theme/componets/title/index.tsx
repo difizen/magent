@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react';
-import React from 'react';
 import './index.less';
 
 export function Title({
