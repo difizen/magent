@@ -1,0 +1,21 @@
+.chat-input-typing {
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  height: 14px;
+  display: inline-block;
+  border-left: 4px solid var(--mana-text-color);
+  animation: blink 0.8s infinite;
+  vertical-align: baseline;
+}

@@ -1,0 +1,95 @@
+.chat-input {
+  display: flex;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  background: #fff;
+
+  &-content {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #1677ff;
+    border-radius: 6px;
+  }
+
+  &-textarea {
+    flex-grow: 1;
+  }
+
+  &-operation {
+    align-self: center;
+    margin-right: 4px;
+  }
+
+  &-iconBottom {
+    width: 104px;
+    position: relative;
+    display: flex;
+  }
+
+  &-sendButton {
+    height: 38px;
+    width: 72px;
+    margin: auto auto 16px;
+    background-color: #0958d9;
+    border-radius: 6px;
+    display: flex;
+    cursor: pointer;
+
+    & > :first-child {
+      margin: auto;
+    }
+
+    &:hover {
+      background-color: #1677ff;
+      opacity: 0.65;
+    }
+  }
+
+  &-sendButton-disabled {
+    background-color: var(--mana-activityBar-border);
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: var(--mana-activityBar-border);
+      opacity: 0.65;
+    }
+  }
+
+  &-searchInput {
+    flex: 1;
+    display: flex;
+    border: 2px solid rgba(0, 0, 0, 15%);
+    border-radius: 8px;
+    background: #fff;
+    min-height: 94px;
+
+    &:focus-within {
+      border-color: #1677ff;
+    }
+
+    position: relative;
+  }
+
+  &-textArea {
+    padding: 11px 0;
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+  }
+
+  &-upload {
+    height: 20px;
+    display: flex;
+    margin-left: 20px;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    & > {
+      cursor: pointer;
+    }
+  }
+}
