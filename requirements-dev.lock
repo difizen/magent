@@ -57,11 +57,14 @@ beautifulsoup4==4.12.3
     # via wikipedia
 blinker==1.8.2
     # via flask
+brotli==1.1.0
+    # via geventhttpclient
 build==1.2.1
     # via chromadb
 cachetools==5.4.0
     # via google-auth
 certifi==2024.7.4
+    # via geventhttpclient
     # via httpcore
     # via httpx
     # via kubernetes
@@ -82,6 +85,8 @@ click==8.1.7
     # via uvicorn
 coloredlogs==15.0.1
     # via onnxruntime
+configargparse==1.7
+    # via locust
 dashscope==1.20.3
     # via agentuniverse
 dataclasses-json==0.6.7
@@ -124,8 +129,13 @@ filelock==3.15.4
 flask==2.3.3
     # via agentuniverse
     # via flask-cors
+    # via flask-login
+    # via locust
 flask-cors==4.0.0
     # via agentuniverse
+    # via locust
+flask-login==0.6.3
+    # via locust
 flatbuffers==24.3.25
     # via onnxruntime
 frozenlist==1.4.1
@@ -135,11 +145,18 @@ fsspec==2024.6.1
     # via huggingface-hub
 future==1.0.0
     # via bce-python-sdk
+gevent==24.2.1
+    # via geventhttpclient
+    # via locust
+geventhttpclient==2.3.1
+    # via locust
 google-auth==2.32.0
     # via kubernetes
 googleapis-common-protos==1.63.2
     # via agentuniverse
     # via opentelemetry-exporter-otlp-proto-grpc
+greenlet==3.0.3
+    # via gevent
 grpcio==1.63.0
     # via agentuniverse
     # via chromadb
@@ -215,6 +232,7 @@ langsmith==0.1.93
     # via langchain
     # via langchain-community
     # via langchain-core
+locust==2.31.5
 loguru==0.7.2
     # via agentuniverse
 mako==1.3.5
@@ -239,6 +257,8 @@ monotonic==1.6
     # via posthog
 mpmath==1.3.0
     # via sympy
+msgpack==1.1.0
+    # via locust
 multidict==6.0.5
     # via aiohttp
     # via yarl
@@ -325,6 +345,8 @@ protobuf==4.25.4
     # via googleapis-common-protos
     # via onnxruntime
     # via opentelemetry-proto
+psutil==6.0.0
+    # via locust
 psycopg2-binary==2.9.9
     # via magent-api
 pulsar-client==3.5.0
@@ -387,6 +409,8 @@ pyyaml==6.0.1
     # via myst-parser
     # via qianfan
     # via uvicorn
+pyzmq==26.2.0
+    # via locust
 qianfan==0.3.18
     # via agentuniverse
 regex==2024.7.24
@@ -400,6 +424,7 @@ requests==2.32.3
     # via langchain
     # via langchain-community
     # via langsmith
+    # via locust
     # via posthog
     # via qianfan
     # via requests-oauthlib
@@ -415,6 +440,8 @@ rsa==4.9
     # via google-auth
 setuptools==72.0.0
     # via opentelemetry-instrumentation
+    # via zope-event
+    # via zope-interface
 shellingham==1.5.4
     # via typer
 six==1.16.0
@@ -480,6 +507,7 @@ tokenizers==0.19.1
     # via chromadb
 tomli==2.0.1
     # via build
+    # via locust
     # via sphinx
 tqdm==4.66.4
     # via agentuniverse
@@ -499,6 +527,7 @@ typing-extensions==4.12.2
     # via fastapi
     # via fastapi-pagination
     # via huggingface-hub
+    # via locust
     # via openai
     # via opentelemetry-sdk
     # via pydantic
@@ -512,6 +541,7 @@ typing-inspect==0.9.0
 tzdata==2024.1
     # via pandas
 urllib3==2.2.2
+    # via geventhttpclient
     # via kubernetes
     # via requests
 uvicorn==0.30.3
@@ -532,6 +562,8 @@ websockets==12.0
 werkzeug==3.0.3
     # via agentuniverse
     # via flask
+    # via flask-login
+    # via locust
 wikipedia==1.4.0
     # via agentuniverse
 wrapt==1.16.0
@@ -541,3 +573,7 @@ yarl==1.9.4
     # via aiohttp
 zipp==3.19.2
     # via importlib-metadata
+zope-event==5.0
+    # via gevent
+zope-interface==7.0.3
+    # via gevent
