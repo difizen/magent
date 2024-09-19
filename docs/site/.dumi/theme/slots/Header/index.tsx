@@ -97,7 +97,7 @@ const Header: React.FC = () => {
               type="link"
               target="_blank"
               rel="noreferrer"
-              href="https://github.com/difizen/mana"
+              href={`https://github.com/${gitRepo.owner}/${gitRepo.name}`}
               className="difizen-dumi-header-right-github-btn"
               icon={<GithubOutlined />}
             >

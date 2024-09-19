@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
-  "description": "Document site for mana",
+  "description": "Document site for magent",
   "scripts": {
     "start": "dumi dev",
     "build": "dumi build"
@@ -20,12 +20,13 @@
   "packageManager": "pnpm@9.7.1",
   "dependencies": {
     "@ant-design/icons": "^5.1.0",
-    "@difizen/mana-app": "latest",
-    "@difizen/mana-react": "latest",
+    "@difizen/mana-app": "^0.1.26",
+    "@difizen/mana-react": "^0.1.26",
     "@difizen/umi-plugin-mana": "^0.1.26",
+    "@difizen/mana-l10n": "^0.1.26",
     "react": "^18.2.0",
     "antd": "^5.8.6",
-    "octokit": "^4",
+    "octokit": "^3",
     "react-copy-to-clipboard": "^5.1.0"
   }
 }

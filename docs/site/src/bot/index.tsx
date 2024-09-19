@@ -1,4 +1,4 @@
-const LibroExecution = (): JSX.Element => {
+const App = (): JSX.Element => {
   return (
     <div className="magent-bot">
       {/* <ManaComponents.Application
@@ -10,4 +10,4 @@ const LibroExecution = (): JSX.Element => {
   );
 };
 
-export default LibroExecution;
+export default App;

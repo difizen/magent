@@ -64,16 +64,12 @@ export default defineConfig({
     ],
     techCardData: [],
   },
-  extraBabelPlugins: [
-    ['@babel/plugin-proposal-decorators', { legacy: true }],
-    ['@babel/plugin-transform-flow-strip-types', { allowDeclareFields: true }],
-    ['@babel/plugin-transform-class-properties', { loose: true }],
-    ['@babel/plugin-transform-private-methods', { loose: true }],
-    ['@babel/plugin-transform-private-property-in-object', { loose: true }],
-    'babel-plugin-parameter-decorator',
-  ],
   favicons: ['/logo.svg'],
-  plugins: ['./dumi-plugin-alias', './dumi-plugin-nodenext'],
+  plugins: ['@difizen/umi-plugin-mana', './dumi-plugin-alias'],
+  mana: {
+    decorator: true,
+    nodenext: true,
+  },
   exportStatic: {},
   resolve: {
     docDirs: ['docs'],

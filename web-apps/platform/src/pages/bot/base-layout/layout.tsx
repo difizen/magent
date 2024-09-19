@@ -11,7 +11,7 @@ export const MagentBaseLayoutSlots = {
 };
 
 export const MagentBaseLayoutComponent = forwardRef(
-  function LibroExecutionLayoutComponent() {
+  function MagentBaseLayoutComponent() {
     return (
       <div className="magent-base-layout">
         <BoxPanel direction="top-to-bottom">
