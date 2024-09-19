@@ -6,7 +6,7 @@ import { AppBaseModule } from '../../modules/app.module.js';
 
 import { BotModule } from './module.js';
 
-const LibroExecution = (): JSX.Element => {
+const Bot = (): JSX.Element => {
   const { botId } = useParams();
   return (
     <div className="magent-bot">
@@ -19,4 +19,4 @@ const LibroExecution = (): JSX.Element => {
   );
 };
 
-export default LibroExecution;
+export default Bot;

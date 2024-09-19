@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "description": "",
   "keywords": [
-    "libro",
     "core",
-    "notebook"
+    "magent",
+    "agent"
   ],
   "type": "module",
-  "repository": "git@github.com:difizen/libro.git",
+  "repository": "git@github.com:difizen/magent.git",
   "license": "MIT",
   "exports": {
     ".": {
