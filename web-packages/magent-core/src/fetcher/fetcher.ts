@@ -4,7 +4,7 @@ import qs from 'query-string';
 import { AxiosClient } from './protocol.js';
 
 @singleton()
-export class RequestHelper {
+export class Fetcher {
   @inject(AxiosClient) axios: AxiosClient;
   get = <T>(basePath: string, params: Record<string, any>) => {
     const query = qs.stringify(params);
