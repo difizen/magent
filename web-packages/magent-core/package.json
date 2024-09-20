@@ -50,8 +50,10 @@
     "@difizen/mana-app": "latest",
     "@difizen/mana-l10n": "latest",
     "@difizen/mana-react": "latest",
+    "axios": "^1.7.2",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
+    "query-string": "^9.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
