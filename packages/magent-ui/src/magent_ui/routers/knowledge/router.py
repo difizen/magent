@@ -31,5 +31,4 @@ async def delete_knowledge(knowledge_id: str):
 
 @router.post("/knowledge/upload")
 async def upload_knowledge_file(knowledge_id: Annotated[str, Body()], file: UploadFile = File(...)):
-    print('here')
     return await AsyncTask.to_thread(KnowledgeService.upload_knowledge_file, knowledge_id, file)

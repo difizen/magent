@@ -1,6 +1,13 @@
 import { InboxOutlined } from '@ant-design/icons';
-import { BaseView, inject, singleton, view } from '@difizen/mana-app';
-import { message, Upload } from 'antd';
+import {
+  BaseView,
+  inject,
+  singleton,
+  useInject,
+  view,
+  ViewInstance,
+} from '@difizen/mana-app';
+import { message, Upload, UploadProps } from 'antd';
 import { forwardRef } from 'react';
 import { history } from 'umi';
 import { useParams } from 'umi';
@@ -9,6 +16,7 @@ import { MainView } from '@/modules/base-layout/main-view.js';
 import type { NavigatablePage } from '@/modules/base-layout/protocol.js';
 
 import './index.less';
+import { KnowledgeManager } from '@/modules/knowledge/knowledge-manager.js';
 
 const { Dragger } = Upload;
 
@@ -18,17 +26,16 @@ export const uploadslot = `${viewId}-slot`;
 const KnowledgeUploadComponent = forwardRef<HTMLDivElement>(
   function KnowledgeUploadComponent() {
     const { knowledgeId } = useParams();
+
+    const instance = useInject<KnowledgeUploadView>(ViewInstance);
+
     return (
       <div className={`${viewId}-wrapper`}>
         <Dragger
           className={`${viewId}-dragger`}
           name="file"
           multiple
-          data={{
-            knowledge_id: knowledgeId,
-          }}
           method="post"
-          action="/api/v1/knowledge/upload"
           listType="picture"
           onChange={(info) => {
             const { status } = info.file;
@@ -38,7 +45,18 @@ const KnowledgeUploadComponent = forwardRef<HTMLDivElement>(
               message.error(`${info.file.name} file upload failed.`);
             }
           }}
-          // onDrop={(e) => {}}
+          customRequest={async (info) => {
+            const { file, onSuccess, onError } = info;
+            const succ = await instance.manager.uploadFile({
+              knowledge_id: knowledgeId,
+              file: file as File,
+            });
+            if (succ) {
+              onSuccess?.('上传成功');
+            } else {
+              onError?.(new Error('上传失败'));
+            }
+          }}
         >
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
@@ -58,6 +76,8 @@ const KnowledgeUploadComponent = forwardRef<HTMLDivElement>(
 @view(viewId)
 export class KnowledgeUploadView extends BaseView implements NavigatablePage {
   @inject(MainView) protected mainView: MainView;
+
+  @inject(KnowledgeManager) manager: KnowledgeManager;
 
   override view = KnowledgeUploadComponent;
 
