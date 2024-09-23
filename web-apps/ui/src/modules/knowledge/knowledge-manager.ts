@@ -53,4 +53,22 @@ export class KnowledgeManager {
     this.cache.set(tool.id, tool);
     return tool;
   };
+
+  uploadFile = async (options: {
+    knowledge_id: string;
+    file: File;
+  }): Promise<boolean> => {
+    // create FormData object for multipart/form-data upload
+    const formData = new FormData();
+    formData.append('knowledge_id', options.knowledge_id); // add knowledge_id
+    formData.append('file', options.file); // add file
+
+    // send request via axios
+    const res = await this.axios.post<string>('/api/v1/knowledge/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // specify multipart/form-data
+      },
+    });
+    return Boolean(res.data);
+  };
 }
