@@ -39,24 +39,3 @@ export const prioritizedContributionFactory = <O = any, T = any>() => {
     };
   };
 };
-
-export namespace PContribution {
-  export interface Handler<O = any, T = any> {
-    canHandle: (option: O) => number;
-    handle: (option: O) => T;
-  }
-
-  export const find = <
-    O = any,
-    T extends PrioritizedContribution<O> = PrioritizedContribution,
-  >(
-    option: O,
-    provider: Contribution.Provider<T>,
-  ): T => {
-    const prioritized = Priority.sortSync(provider.getContributions(), (contribution) =>
-      contribution.canHandle(option),
-    );
-    const sorted = prioritized.map((c) => c.value);
-    return sorted[0];
-  };
-}
