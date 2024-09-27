@@ -1,11 +1,12 @@
 import type { SchemaValueType, ValueType } from '@flow/interfaces/flow.js';
 import { Input } from 'antd';
 import type { DefaultOptionType } from 'antd/es/cascader';
+import { memo } from 'react';
 
 import { CascaderInNode } from '../AIBasic/CascaderInNode/index.js';
 import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
 
-export const ReferenceSelect = (props: {
+export const ReferenceSelectRaw = (props: {
   value?: SchemaValueType;
   onChange?: (value: SchemaValueType) => void;
   refOptions: DefaultOptionType[];
@@ -15,7 +16,7 @@ export const ReferenceSelect = (props: {
   return (
     <div className="flex gap-2">
       <SelectInNode
-        value={value?.type}
+        value={value?.type || 'reference'}
         style={{ width: 80 }}
         onChange={(val: ValueType) =>
           onChange?.({
@@ -31,6 +32,7 @@ export const ReferenceSelect = (props: {
       {value?.type === 'value' ? (
         <Input
           style={{ width: 120 }}
+          value={value?.content}
           onChange={(e) =>
             onChange?.({
               type: value.type,
@@ -54,3 +56,5 @@ export const ReferenceSelect = (props: {
     </div>
   );
 };
+
+export const ReferenceSelect = memo(ReferenceSelectRaw);

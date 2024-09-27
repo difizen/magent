@@ -94,3 +94,5 @@ export const defaultShortcuts = [
     shortcut: `O`,
   },
 ];
+
+export const SAVE_DEBOUNCE_TIME = 300;

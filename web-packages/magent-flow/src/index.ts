@@ -3,7 +3,7 @@ export { FlowWithPanel } from './components/FlowWithPanel/index.js';
 export { NodesPanel } from './components/NodePanel/index.js';
 export type { Edge } from '@xyflow/react';
 
-export { useFlowStore } from './stores/useFlowStore.js';
+export { useFlowStore } from './stores/flowStore.js';
 export { useModelStore } from './stores/useModelStore.js';
 export { useKnowledgeStore } from './stores/useKnowledgeStore.js';
 export * from './components/AIBasic/index.js';

@@ -1,0 +1,3 @@
+html[data-theme='dark'] {
+  --color-components-input-bg-normal: #ffffff14;
+}

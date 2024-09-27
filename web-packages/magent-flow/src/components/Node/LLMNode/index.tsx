@@ -4,10 +4,13 @@ import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/Outp
 import { PromptEditor } from '@flow/components/AIBasic/PromptEditor/index.js';
 import { SelectInNode } from '@flow/components/AIBasic/SelectInNode/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
+import { ReferenceFormV2 } from '@flow/components/ReferenceForm/v2.js';
 import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
 import { useModelStore } from '@flow/stores/useModelStore.js';
 import { Button, InputNumber, Popover } from 'antd';
+import { cloneDeep } from 'lodash';
+import { memo } from 'react';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
@@ -16,9 +19,10 @@ type Props = {
   selected: boolean;
   xPos: number;
   yPos: number;
+  folded: boolean;
 };
 
-export const LLMNode = (props: Props) => {
+const LLMNode = (props: Props) => {
   const { data } = props;
 
   const { findUpstreamNodes, setNode } = useFlowStore();
@@ -72,7 +76,8 @@ export const LLMNode = (props: Props) => {
           label="输入变量"
           dynamic
           nodes={[...(upstreamNode as any)]}
-          value={[...(data.config?.inputs?.input_param || [])]}
+          value={cloneDeep(data.config?.inputs?.input_param || [])}
+          // initialValues={cloneDeep(data.config?.inputs?.input_param || [])}
           onChange={(values) => {
             setNode(data.id, (old) => ({
               ...old,
@@ -159,3 +164,5 @@ export const LLMNode = (props: Props) => {
     </NodeWrapper>
   );
 };
+
+export default memo(LLMNode);

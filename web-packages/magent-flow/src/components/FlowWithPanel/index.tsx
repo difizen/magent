@@ -7,7 +7,7 @@ import { AgentNode } from '../Node/AgentNode/index.js';
 import { EndNode } from '../Node/EndNode/index.js';
 import { IfElseNode } from '../Node/IfElseNode/index.js';
 import { KnowledgeNode } from '../Node/KnowledgeNode/index.js';
-import { LLMNode } from '../Node/LLMNode/index.js';
+import LLMNode from '../Node/LLMNode/index.js';
 import { StartNode } from '../Node/StartNode/index.js';
 import { NodesPanel } from '../NodePanel/index.js';
 

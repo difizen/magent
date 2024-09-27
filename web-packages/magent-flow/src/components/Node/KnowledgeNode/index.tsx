@@ -2,7 +2,7 @@ import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
 import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
 import { useKnowledgeStore } from '@flow/stores/useKnowledgeStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';

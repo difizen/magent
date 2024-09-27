@@ -1,6 +1,19 @@
+import { PopoverInNode } from '@flow/components/AIBasic/PopoverInNode/index.js';
+import { Popup } from '@flow/components/AIBasic/Popup/index.js';
+import { HoverBlock } from '@flow/components/FlowController/operator.js';
 import type { NodeDataType } from '@flow/interfaces/flow.js';
-import { classNames } from '@flow/utils/index.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
+import classNames from '@flow/utils/classnames.js';
+import {
+  Ri24HoursFill,
+  RiContractUpDownLine,
+  RiExpandUpDownLine,
+  RiMoreLine,
+  RiPlayLargeLine,
+  RiPlayLine,
+} from '@remixicon/react';
 import { Handle, Position } from '@xyflow/react';
+import { Popover } from 'antd';
 import React from 'react';
 
 type Props = {
@@ -22,6 +35,7 @@ export const NodeWrapper = (props: {
   icon?: string;
   name?: string | React.ReactNode;
   extra?: React.ReactNode;
+  folded?: boolean;
 }) => {
   const {
     nodeProps,
@@ -36,22 +50,79 @@ export const NodeWrapper = (props: {
   const { name: defaultName, description, icon: defaultIcon } = nodeProps.data;
 
   const handlerClasses = 'w-3 h-3 border-blue-500 rounded-full border-2 bg-white';
+
+  const setNodeFolded = useFlowStore((state) => state.setNodeFolded);
+
   return (
     <div
       className={classNames(
-        'relative flex flex-col border-2 justify-center rounded-xl bg-white shadow-lg p-5 w-[520px] hover:shadow-2xl',
+        'relative flex flex-col border-2 justify-center rounded-xl bg-white shadow-lg p-5 hover:shadow-2xl',
         nodeProps.selected ? 'border-blue-500 shadow-2xl' : 'border-transparent',
+        nodeProps.data.folded ? 'w-[320px]' : 'w-[520px]',
       )}
     >
+      {extra ??
+        (nodeProps.selected && (
+          <div className="absolute right-0 -top-10 flex items-center text-gray-500 bg-white rounded-lg p-[2px]">
+            <HoverBlock
+              tooltip={
+                <div className="text-[15px] font-semibold">
+                  {nodeProps.data.folded ? '展开' : '折叠'}
+                </div>
+              }
+              onClick={() =>
+                setNodeFolded(
+                  nodeProps.data.id,
+                  nodeProps.data.folded === undefined ? true : !nodeProps.data.folded,
+                )
+              }
+            >
+              {nodeProps.data.folded ? (
+                <RiExpandUpDownLine className="w-4" />
+              ) : (
+                <RiContractUpDownLine className="w-4" />
+              )}
+            </HoverBlock>
+            <HoverBlock
+              tooltip={<div className="text-[15px] font-semibold">测试节点</div>}
+            >
+              <RiPlayLargeLine className="w-4" />
+            </HoverBlock>
+            <PopoverInNode
+              overlayInnerStyle={{ padding: 0 }}
+              placement="bottomRight"
+              trigger="hover"
+              arrow={false}
+              content={
+                <div className="z-[9] p-1 bg-white rounded-lg shadow-sm border-[0.5px] border-gray-200 w-[126px]">
+                  <div
+                    className="flex items-center justify-between h-8 px-3 rounded-lg hover:bg-gray-50 cursor-pointer text-[13px] text-gray-600"
+                    onClick={() => {}}
+                  >
+                    复制
+                  </div>
+                  <div className="flex items-center justify-between h-8 px-3 rounded-lg hover:bg-red-50 cursor-pointer text-[13px] text-gray-600 hover:text-red-600">
+                    删除
+                  </div>
+                </div>
+              }
+            >
+              <HoverBlock>
+                <RiMoreLine />
+              </HoverBlock>
+            </PopoverInNode>
+          </div>
+        ))}
       {/* <NodeStatus status={'success' as any} runDuration={1020} /> */}
-      <div className="flex w-full items-center justify-between gap-8 rounded-t-lg bg-muted pb-2">
-        <div className="flex items-center">
+      <div className="flex w-full items-center justify-between gap-8 rounded-t-lg pb-2">
+        <div className="flex items-center justify-between">
           {(defaultIcon || icon) && (
-            <img src={icon ?? defaultIcon} className="h-10 rounded p-1" />
+            <img src={icon ?? defaultIcon} className="h-8 rounded-xl shadow-md" />
           )}
-          <div className="ml-2 truncate text-gray-800">{name ?? defaultName}</div>
+          <div className="ml-2 truncate text-gray-700 font-medium">
+            {name ?? defaultName}
+          </div>
         </div>
-        {extra}
       </div>
       {leftHandler && (
         <Handle
@@ -89,7 +160,7 @@ export const NodeWrapper = (props: {
           <div className="w-full pb-2 text-sm truncate">{description}</div>
         </div>
       )}
-      <div className="">{children}</div>
+      {!nodeProps.data.folded && <div className="">{children}</div>}
     </div>
   );
 };

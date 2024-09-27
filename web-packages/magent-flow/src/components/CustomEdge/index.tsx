@@ -1,4 +1,4 @@
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
 import type { EdgeProps } from '@xyflow/react';
 import { BaseEdge, getBezierPath, MarkerType } from '@xyflow/react';
 import { useEffect } from 'react';

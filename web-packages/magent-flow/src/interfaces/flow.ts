@@ -90,6 +90,7 @@ export interface NodeDataType {
   icon?: string;
   description?: string;
   config?: NodeDataConfigType;
+  folded?: boolean;
 }
 
 export interface NodeType {

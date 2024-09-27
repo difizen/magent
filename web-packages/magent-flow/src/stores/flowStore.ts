@@ -1,4 +1,4 @@
-import type { NodeType } from '@flow/interfaces/flow.js';
+import type { FlowType, NodeType } from '@flow/interfaces/flow.js';
 import { cleanEdges, getNodeId } from '@flow/utils/reactflowUtils.js';
 import type {
   Connection,
@@ -23,7 +23,19 @@ interface PanePosition extends XYPosition {
   paneX: number;
   paneY: number;
 }
+
 interface FlowStoreType {
+  currentFlow: FlowType | undefined;
+  setCurrentFlow: (flow: FlowType | undefined) => void;
+  updateCurrentFlow: ({
+    nodes,
+    edges,
+    viewport,
+  }: {
+    nodes?: Node[];
+    edges?: Edge[];
+    viewport?: Viewport;
+  }) => void;
   nodes: Node[];
   edges: Edge[];
   initFlow: (grapg: { nodes: Node[]; edges: Edge[] }) => {
@@ -50,9 +62,17 @@ interface FlowStoreType {
   deleteEdge: (edgeId: string | Array<string>) => void;
   onConnect: (connection: Connection) => void;
   getFlow: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
-  paste: any;
-
+  paste: (
+    selection: { nodes: any; edges: any },
+    position: { x: number; y: number; paneX?: number; paneY?: number },
+  ) => void;
   findUpstreamNodes: (id: string) => Node[];
+  lastCopiedSelection: { nodes: any; edges: any } | null;
+  setLastCopiedSelection: (
+    newSelection: { nodes: any; edges: any } | null,
+    isCrop?: boolean,
+  ) => void;
+  setNodeFolded: (id: string, folded: boolean) => void;
 }
 
 export const useFlowStore = create<FlowStoreType>((set, get) => {
@@ -126,6 +146,17 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
         nodes: applyNodeChanges(changes, get().nodes),
       });
     },
+    setNodeFolded: (id: string, folded: boolean) => {
+      get().setNode(id, (old: any) => {
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            folded,
+          },
+        };
+      });
+    },
     onEdgesChange: (changes: EdgeChange[]) => {
       set({
         edges: applyEdgeChanges(changes, get().edges),
@@ -169,25 +200,15 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
     setNodes: (change) => {
       const newChange = typeof change === 'function' ? change(get().nodes) : change;
       const newEdges = cleanEdges(newChange, get().edges);
-      // const { inputs, outputs } = getInputsAndOutputs(newChange);
 
       set({
         edges: newEdges,
         nodes: newChange,
-        // flowState: undefined,
-        // inputs,
-        // outputs,
-        // hasIO: inputs.length > 0 || outputs.length > 0,
       });
-
-      // const flowsManager = useFlowsManagerStore.getState();
-      // if (!get().isBuilding && !skipSave && get().onFlowPage) {
-      //   flowsManager.autoSaveCurrentFlow(
-      //     newChange,
-      //     newEdges,
-      //     get().reactFlowInstance?.getViewport() ?? { x: 0, y: 0, zoom: 1 },
-      //   );
-      // }
+      get().updateCurrentFlow({ nodes: newChange, edges: newEdges });
+      if (get().autoSaveFlow) {
+        get().autoSaveFlow!();
+      }
     },
 
     setEdges: (change) => {
@@ -353,6 +374,54 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
     },
     findUpstreamNodes: (id: string) => {
       return findUpstreamNodes(get().nodes, get().edges, id);
+    },
+
+    currentFlow: undefined,
+    setCurrentFlow: (flow) => {
+      set({ currentFlow: flow });
+    },
+    updateCurrentFlow: ({ nodes, edges }) => {
+      set({
+        currentFlow: {
+          ...get().currentFlow!,
+          data: {
+            nodes: nodes ?? get().currentFlow?.data?.nodes ?? [],
+            edges: edges ?? get().currentFlow?.data?.edges ?? [],
+            viewport: get().currentFlow?.data?.viewport ?? {
+              x: 0,
+              y: 0,
+              zoom: 1,
+            },
+          },
+        },
+      });
+    },
+
+    lastCopiedSelection: null,
+    setLastCopiedSelection: (newSelection, isCrop = false) => {
+      if (isCrop) {
+        const nodesIdsSelected = newSelection!.nodes.map((node) => node.id);
+        const edgesIdsSelected = newSelection!.edges.map((edge) => edge.id);
+
+        nodesIdsSelected.forEach((id) => {
+          get().deleteNode(id);
+        });
+
+        edgesIdsSelected.forEach((id) => {
+          get().deleteEdge(id);
+        });
+
+        const newNodes = get().nodes.filter(
+          (node) => !nodesIdsSelected.includes(node.id),
+        );
+        const newEdges = get().edges.filter(
+          (edge) => !edgesIdsSelected.includes(edge.id),
+        );
+
+        set({ nodes: newNodes, edges: newEdges });
+      }
+
+      set({ lastCopiedSelection: newSelection });
     },
   };
 });

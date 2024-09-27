@@ -1,6 +1,6 @@
 import { ConditionForm } from '@flow/components/ConditionForm/index.js';
 import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 

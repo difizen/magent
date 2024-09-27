@@ -1,9 +1,14 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import type { BasicSchema, NodeType } from '@flow/interfaces/flow.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
+import { RiAddLine, RiDeleteBin7Line } from '@remixicon/react';
+import type { FormInstance } from 'antd';
 import { Button, Form, Input, Space } from 'antd';
-import { useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
+import React from 'react';
 
 import { CollapseWrapper } from '../AIBasic/CollapseWrapper/index.js';
+import { HoverBlock } from '../FlowController/operator.js';
 import { ReferenceSelect } from '../ReferenceSelect/index.js';
 
 export interface RefrenceFormProps {
@@ -14,15 +19,15 @@ export interface RefrenceFormProps {
   dynamic?: boolean;
 }
 
-export const ReferenceForm = (props: RefrenceFormProps) => {
+export const ReferenceFormRaw = (props: RefrenceFormProps) => {
   const { label, value, onChange, nodes, dynamic = false } = props;
+  // const formRef = useRef<FormInstance>(null);
+  // const [form] = Form.useForm();
 
-  const [form] = Form.useForm();
-
-  useEffect(() => {
-    form.setFieldValue('variables', value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  // useEffect(() => {
+  //   // formRef.current?.setFieldValue('variables', value);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [value]);
 
   const options = nodes.map((node) => {
     return {
@@ -36,39 +41,33 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
       }),
     };
   });
+
   return (
     <CollapseWrapper
+      className="mb-[20px]"
       label={label}
       content={
         <Form
-          form={form}
+          initialValues={{ variables: value }}
           autoComplete="off"
-          onValuesChange={(changedValues, allFields) => {
-            form
-              .validateFields()
-              .then(() => {
-                if (allFields.variables) {
-                  onChange(
-                    allFields.variables.map((item: any) => {
-                      if (!item) {
-                        return {};
-                      }
-                      return item;
-                    }),
-                  );
-                }
-                return;
-              })
-              .catch(console.error);
-          }}
+          // onValuesChange={(changedValues, allFields) => {
+          //   onChange(
+          //     allFields.variables.map((item: any) => {
+          //       if (!item) {
+          //         return {};
+          //       }
+          //       return item;
+          //     }),
+          //   );
+          // }}
         >
-          <div className="mb-[-10px]">
+          <div className="mb-[-20px]">
             <Form.List name="variables">
               {() => (
                 <>
                   <Space style={{ display: 'flex' }} align="baseline">
-                    <Form.Item className="w-[240px]">参数名</Form.Item>
-                    <Form.Item className="w-[200px]">变量值</Form.Item>
+                    <Form.Item className="w-[180px]">参数名</Form.Item>
+                    <Form.Item>变量值</Form.Item>
                   </Space>
                 </>
               )}
@@ -82,7 +81,7 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
                     <Form.Item
                       {...restField}
                       name={[name, 'name']}
-                      className="w-[240px]"
+                      className="flex-1"
                       rules={[{ required: true, message: '变量名不可为空' }]}
                     >
                       <Input placeholder="变量名" disabled={!dynamic} />
@@ -96,24 +95,26 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
                     </Form.Item>
 
                     {dynamic && (
-                      <MinusCircleOutlined
-                        className="cursor-pointer"
+                      <HoverBlock
                         onClick={() => remove(name)}
-                      />
+                        className="bg-gray-100 hover:bg-red-500/5 hover:text-red-400"
+                      >
+                        <RiDeleteBin7Line
+                          className="w-[14px] h-[14px]"
+                          // onClick={() => remove(name)}
+                        />
+                      </HoverBlock>
                     )}
                   </Space>
                 ))}
                 {dynamic && (
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      添加变量
-                    </Button>
-                  </Form.Item>
+                  <Button
+                    className="w-[100%]"
+                    onClick={() => add()}
+                    icon={<RiAddLine className="w-4" />}
+                  >
+                    添加变量
+                  </Button>
                 )}
               </>
             )}
@@ -123,3 +124,5 @@ export const ReferenceForm = (props: RefrenceFormProps) => {
     />
   );
 };
+
+export const ReferenceForm = memo(ReferenceFormRaw);

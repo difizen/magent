@@ -1,26 +1,24 @@
 import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
 import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
+import { useFlowsManagerStore } from '@flow/stores/flowsManagerStore.js';
+import { useFlowStore } from '@flow/stores/flowStore.js';
 import { useShortcutsStore } from '@flow/stores/useShortcutsStore.js';
-import { useUndoRedoStore } from '@flow/stores/useUndoRedoStore.js';
 import { getNodeId } from '@flow/utils/reactflowUtils.js';
-import { Background, ReactFlow } from '@xyflow/react';
-import type { Connection, OnSelectionChangeParams } from '@xyflow/react';
-import React, { useCallback, useRef, useState } from 'react';
+import isWrappedWithClass from '@flow/utils/wrappedClass.js';
+import { Background, MiniMap, ReactFlow, useReactFlow } from '@xyflow/react';
+import type {
+  Connection,
+  OnSelectionChangeParams,
+  SelectionDragHandler,
+} from '@xyflow/react';
+import { Button } from 'antd';
+import _ from 'lodash';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import CustomEdge from '../CustomEdge/index.js';
-import { FlowController } from '../FlowController/index.js';
+import { Operator } from '../FlowController/operator.js';
 
-import {
-  handleCopy,
-  handleCut,
-  handleDelete,
-  handleDuplicate,
-  handlePaste,
-  handleRedo,
-  handleUndo,
-} from './keys.js';
 import '@xyflow/react/dist/style.css';
 
 const edgeTypes = {
@@ -48,17 +46,21 @@ function Flow(props: FlowProps) {
   const onEdgesChange = useFlowStore((state) => state.onEdgesChange);
   // const setNodes = useFlowStore((state) => state.setNodes);
   // const setEdges = useFlowStore((state) => state.setEdges);
-  // const reactFlowInstance = useFlowStore((state) => state.reactFlowInstance);
+  const reactFlowInstance = useFlowStore((state) => state.reactFlowInstance);
   const setReactFlowInstance = useFlowStore((state) => state.setReactFlowInstance);
   const deleteNode = useFlowStore((state) => state.deleteNode);
   const deleteEdge = useFlowStore((state) => state.deleteEdge);
   const onConnect = useFlowStore((state) => state.onConnect);
 
+  const setLastCopiedSelection = useFlowStore((state) => state.setLastCopiedSelection);
+  const lastCopiedSelection = useFlowStore((state) => state.lastCopiedSelection);
+
   const paste = useFlowStore((state) => state.paste);
 
-  const undo = useUndoRedoStore((state) => state.undo);
-  const redo = useUndoRedoStore((state) => state.redo);
-  const takeSnapshot = useUndoRedoStore((state) => state.takeSnapshot);
+  const undo = useFlowsManagerStore((state) => state.undo);
+  const redo = useFlowsManagerStore((state) => state.redo);
+  const takeSnapshot = useFlowsManagerStore((state) => state.takeSnapshot);
+  const autoLayout = useFlowsManagerStore((state) => state.autoLayout);
 
   // Hot keys
   const undoAction = useShortcutsStore((state) => state.undo);
@@ -68,20 +70,97 @@ function Flow(props: FlowProps) {
   const deleteAction = useShortcutsStore((state) => state.delete);
   const cutAction = useShortcutsStore((state) => state.cut);
   const pasteAction = useShortcutsStore((state) => state.paste);
-  useHotkeys(undoAction, (e) => handleUndo(e, undo));
-  useHotkeys(redoAction, (e) => handleRedo(e, redo));
-  useHotkeys(duplicate, (e) => handleDuplicate(e, paste, nodes, position));
-  useHotkeys(copyAction, (e) => handleCopy(e, lastSelection, setLastSelection));
-  useHotkeys(cutAction, (e) => handleCut(e, lastSelection, setLastSelection));
-  useHotkeys(pasteAction, (e) =>
-    handlePaste(e, lastSelection, takeSnapshot, paste, position),
-  );
-  useHotkeys(deleteAction, (e) =>
-    handleDelete(e, lastSelection, deleteNode, deleteEdge, takeSnapshot),
-  );
-  useHotkeys('delete', (e) =>
-    handleDelete(e, lastSelection, deleteNode, deleteEdge, takeSnapshot),
-  );
+
+  function handleUndo(e: KeyboardEvent) {
+    if (!isWrappedWithClass(e, 'noflow')) {
+      e.preventDefault();
+      (e as unknown as Event).stopImmediatePropagation();
+      undo();
+    }
+  }
+
+  function handleRedo(e: KeyboardEvent) {
+    if (!isWrappedWithClass(e, 'noflow')) {
+      e.preventDefault();
+      (e as unknown as Event).stopImmediatePropagation();
+      redo();
+    }
+  }
+
+  function handleDuplicate(e: KeyboardEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    (e as unknown as Event).stopImmediatePropagation();
+    const selectedNode = nodes.filter((obj) => obj.selected);
+    if (selectedNode.length > 0) {
+      paste(
+        { nodes: selectedNode, edges: [] },
+        {
+          x: position.current.x,
+          y: position.current.y,
+        },
+      );
+    }
+  }
+
+  function handleCopy(e: KeyboardEvent) {
+    const multipleSelection = lastSelection?.nodes
+      ? lastSelection?.nodes.length > 0
+      : false;
+    if (
+      !isWrappedWithClass(e, 'noflow') &&
+      (isWrappedWithClass(e, 'react-flow__node') || multipleSelection)
+    ) {
+      e.preventDefault();
+      (e as unknown as Event).stopImmediatePropagation();
+      if (window.getSelection()?.toString().length === 0 && lastSelection) {
+        setLastCopiedSelection(_.cloneDeep(lastSelection));
+      }
+    }
+  }
+
+  function handleCut(e: KeyboardEvent) {
+    if (!isWrappedWithClass(e, 'noflow')) {
+      e.preventDefault();
+      (e as unknown as Event).stopImmediatePropagation();
+      if (window.getSelection()?.toString().length === 0 && lastSelection) {
+        setLastCopiedSelection(_.cloneDeep(lastSelection), true);
+      }
+    }
+  }
+
+  function handlePaste(e: KeyboardEvent) {
+    if (!isWrappedWithClass(e, 'noflow')) {
+      e.preventDefault();
+      (e as unknown as Event).stopImmediatePropagation();
+      if (window.getSelection()?.toString().length === 0 && lastCopiedSelection) {
+        takeSnapshot();
+        paste(lastCopiedSelection, {
+          x: position.current.x,
+          y: position.current.y,
+        });
+      }
+    }
+  }
+
+  function handleDelete(e: KeyboardEvent) {
+    if (!isWrappedWithClass(e, 'nodelete') && lastSelection) {
+      e.preventDefault();
+      (e as unknown as Event).stopImmediatePropagation();
+      takeSnapshot();
+      deleteNode(lastSelection.nodes.map((node) => node.id));
+      deleteEdge(lastSelection.edges.map((edge) => edge.id));
+    }
+  }
+
+  useHotkeys(undoAction, handleUndo);
+  useHotkeys(redoAction, handleRedo);
+  useHotkeys(duplicate, handleDuplicate);
+  useHotkeys(copyAction, handleCopy);
+  useHotkeys(cutAction, handleCut);
+  useHotkeys(pasteAction, handlePaste);
+  useHotkeys(deleteAction, handleDelete);
+  useHotkeys('delete', handleDelete);
 
   // const onLoad = useCallback(() => {
   //   setTimeout(() => reactFlowInstance?.fitView(), 0);
@@ -115,6 +194,7 @@ function Flow(props: FlowProps) {
             data: {
               ...data.node,
               id: newId,
+              folded: false,
             } as NodeDataType,
           };
           paste(
@@ -139,8 +219,34 @@ function Flow(props: FlowProps) {
     }
   }, []);
 
-  // console.log('🚀 ~ Flow ~ edges:', edges);
-  // console.log('🚀 ~ Flow ~ nodes:', nodes);
+  const onNodeDragStart = useCallback(() => {
+    // 👇 make dragging a node undoable
+    takeSnapshot();
+    // 👉 you can place your event handlers here
+  }, [takeSnapshot]);
+
+  const onSelectionChange = useCallback((flow: OnSelectionChangeParams): void => {
+    setLastSelection(flow);
+  }, []);
+
+  const onSelectionDragStart: SelectionDragHandler = useCallback(() => {
+    // 👇 make dragging a selection undoable
+    takeSnapshot();
+  }, [takeSnapshot]);
+
+  // get current mouse position for paste node
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      position.current = { x: event.clientX, y: event.clientY };
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [lastCopiedSelection, lastSelection, takeSnapshot]);
+
   return (
     <EventEmitterContextProvider>
       <div
@@ -154,6 +260,9 @@ function Flow(props: FlowProps) {
           onInit={setReactFlowInstance}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeDragStart={onNodeDragStart}
+          onSelectionChange={onSelectionChange}
+          onSelectionDragStart={onSelectionDragStart}
           onConnect={onConnectMod}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
@@ -161,13 +270,22 @@ function Flow(props: FlowProps) {
           onDrop={onDrop}
           onDragOver={onDragOver}
           proOptions={{ hideAttribution: true }}
-          // onLoad={onLoad}
           maxZoom={2}
           minZoom={0.1}
           fitView
         >
-          <Background gap={16} className="border-gay-600" />
-          {miniMap && <FlowController />}
+          {/* <Background gap={16} className="border-gay-600" /> */}
+          <Background gap={[14, 14]} size={2} color="#E4E5E7" />
+          {miniMap && (
+            <MiniMap
+              style={{
+                width: 102,
+                height: 72,
+              }}
+              className="!absolute !left-4 !bottom-14 z-[9] !m-0 !w-[102px] !h-[72px] !border-[0.5px] !border-black/8 !rounded-lg !shadow-lg"
+            />
+          )}
+          <Operator />
           {toolbar}
         </ReactFlow>
       </div>

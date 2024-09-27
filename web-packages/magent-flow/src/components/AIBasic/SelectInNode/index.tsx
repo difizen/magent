@@ -1,4 +1,4 @@
-import { classNames } from '@flow/utils/index.js';
+import classNames from '@flow/utils/classnames.js';
 import type { SelectProps } from 'antd';
 import { Select } from 'antd';
 
