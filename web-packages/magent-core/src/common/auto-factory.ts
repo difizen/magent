@@ -8,8 +8,9 @@ export const AutoFactoryOption = Syringe.defineToken('AutoFactoryOption');
 export const AutoFactoryMeta = Syringe.defineToken('AutoFactoryMeta', {
   multiple: false,
 });
-export const AutoFactory = Syringe.defineToken('AutoFactory', { multiple: false });
-export type AutoFactory = <T>(token: Newable<T>) => (...args: any[]) => T;
+
+// export const AutoFactory = Syringe.defineToken('AutoFactory', { multiple: false });
+// export type AutoFactory = <T>(token: Newable<T>) => (...args: any[]) => T;
 
 export function autoFactory<T = any>() {
   return (target: Newable<T>): void => {
@@ -49,11 +50,11 @@ export function autoFactory<T = any>() {
   };
 }
 
-export type Factory<T extends Newable<any>> = (
-  ...args: ConstructorParameters<T>
+export type ToAutoFactory<T extends Newable<any>> = (
+  option: ConstructorParameters<T>[0],
 ) => InstanceType<T>;
 
-export const toFactory = <T extends Newable<any>>(
+export const toAutoFactory = <T extends Newable<any>>(
   target: T,
 ): Syringe.Token<(...args: ConstructorParameters<T>) => InstanceType<T>> => {
   const factoryToken = Reflect.getOwnMetadata(AutoFactoryMeta, target);
@@ -66,7 +67,7 @@ export const toFactory = <T extends Newable<any>>(
 export const injectFactory =
   <T extends Newable<any>>(token: T) =>
   (target: any, targetKey: any, index?: number | undefined) => {
-    const factoryToken = toFactory(token);
+    const factoryToken = toAutoFactory(token);
     inject(factoryToken)(target, targetKey, index);
   };
 

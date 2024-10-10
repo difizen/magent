@@ -2,8 +2,8 @@ import assert from 'assert';
 
 import { GlobalContainer, inject, singleton } from '@difizen/mana-app';
 
-import type { Factory } from './auto-factory.js';
-import { autoFactory, AutoFactoryOption, toFactory } from './auto-factory.js';
+import type { ToAutoFactory } from './auto-factory.js';
+import { autoFactory, AutoFactoryOption, toAutoFactory } from './auto-factory.js';
 
 describe('auto factory', () => {
   it('#decorator', async () => {
@@ -16,7 +16,7 @@ describe('auto factory', () => {
     }
 
     GlobalContainer.register(DataModel);
-    const factoryToken = toFactory(DataModel);
+    const factoryToken = toAutoFactory(DataModel);
     const factory = GlobalContainer.get(factoryToken);
     const model = factory({ data: 1 });
     assert(model.data === 1);
@@ -40,14 +40,14 @@ describe('auto factory', () => {
       }
     }
     GlobalContainer.register(DataModelBase);
-    const factoryTokenBase = toFactory(DataModelBase);
+    const factoryTokenBase = toAutoFactory(DataModelBase);
     const factoryBase = GlobalContainer.get(factoryTokenBase);
     const modelBase = factoryBase({ data: 1 });
     assert(modelBase instanceof DataModelBase);
     assert(modelBase.data === 1);
 
     GlobalContainer.register(DataModel);
-    const factoryToken = toFactory(DataModel);
+    const factoryToken = toAutoFactory(DataModel);
     const factory = GlobalContainer.get(factoryToken);
     const model = factory({ data: 1, count: 2 });
     assert(model instanceof DataModel);
@@ -65,10 +65,13 @@ describe('auto factory', () => {
       }
     }
 
+    toAutoFactory<typeof DataModel>(DataModel);
+
     @singleton()
     class DataModelManager {
-      @inject(toFactory(DataModel)) dataModelFactory: Factory<typeof DataModel>;
-
+      @inject(toAutoFactory(DataModel))
+      dataModelFactory: ToAutoFactory<typeof DataModel>;
+      // Factory<DataModel>
       create(option: { data: number }) {
         const data = this.dataModelFactory(option);
         return data;
