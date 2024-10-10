@@ -5,10 +5,11 @@ import { autoFactory, toAutoFactory } from '@difizen/magent-core';
 import type { Event, Disposable } from '@difizen/mana-app';
 import { DisposableCollection, Emitter, inject, prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 import { DefaultChatMessageModel } from './chat-message-model.js';
 import { ChatService } from './chat-service.js';
-import type { BaseChatMessageModel, IChatMessageItem } from './protocol.js';
+import type { BaseChatMessageItemModel, BaseChatMessageModel } from './protocol.js';
 import { ConversationOption } from './protocol.js';
 
 @autoFactory()
@@ -21,13 +22,21 @@ export class DefaultConversationModel
 
   @inject(ChatService) protected chatService: ChatService;
 
-  disposed = false;
-  onDispose: Event<void>;
-
   protected option: ConversationOption;
 
   protected toDispose = new DisposableCollection();
+
+  disposed = false;
+
   protected onDisposeEmitter = new Emitter<void>();
+  get onDispose(): Event<void> {
+    return this.onDisposeEmitter.event;
+  }
+
+  protected onMessageEmitter = new Emitter<BaseChatMessageItemModel>();
+  get onMessage(): Event<BaseChatMessageItemModel> {
+    return this.onMessageEmitter.event;
+  }
 
   id?: string;
 
@@ -52,7 +61,7 @@ export class DefaultConversationModel
 
   get previewTitle(): string {
     if (this.messages && this.messages.length > 0) {
-      const items = this.messages[0].messages;
+      const items = this.messages[0].items;
       if (items.length > 0) {
         return items[0].content;
       }
@@ -63,10 +72,22 @@ export class DefaultConversationModel
   constructor(@inject(AutoFactoryOption) option: ConversationOption) {
     super();
     this.option = option;
+    this.initialize(option);
   }
 
   shouldInitFromMeta(option: ConversationOption): boolean {
-    return ConversationOption.is(option);
+    return ConversationOption.isFull(option);
+  }
+
+  protected override fromMeta(option: ConversationOption = this.option) {
+    this.id = option.id;
+    this.created = dayjs(option.created);
+    this.modified = dayjs(option.modified);
+
+    this.messages =
+      option.messages?.map((opt) => this.messageFactory({ ...opt, parent: this })) ||
+      [];
+    super.fromMeta(option);
   }
 
   async fetchInfo(option: ConversationOption): Promise<void> {

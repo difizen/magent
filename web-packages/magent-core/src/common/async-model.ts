@@ -23,7 +23,9 @@ export abstract class AsyncModel<T = any, O = any> {
     if (this.shouldInitFromMeta(option)) {
       this.fromMeta(option);
     } else {
-      this.fetchInfo(option);
+      setImmediate(() => {
+        this.fetchInfo(option);
+      });
     }
   }
 

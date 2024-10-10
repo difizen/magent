@@ -5,6 +5,6 @@ import { DefaultChatMessageItemRenderContribution } from './default-chat-messsag
 import { ChatMessageItemRenderContribution } from './protocol.js';
 import { ChatView } from './view.js';
 
-export const ChatViewModule = ManaModule.create()
+export const ChatViewModule = ManaModule.create('magent-chat-view')
   .register(ChatView, DefaultChatMessageItemRenderContribution, ChatMessageRender)
   .contribution(ChatMessageItemRenderContribution);

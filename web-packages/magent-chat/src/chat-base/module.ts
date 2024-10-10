@@ -9,14 +9,14 @@ import {
 } from './chat-message-item-model.js';
 import { DefaultChatMessageModel } from './chat-message-model.js';
 import { ChatService } from './chat-service.js';
-import { ConversationMananger } from './conversation-manager.js';
+import { ConversationManager } from './conversation-manager.js';
 import { DefaultConversationModel } from './conversation-model.js';
 import { ChatMessageItemContribution } from './protocol.js';
 
-export const ChatBaseModule = ManaModule.create()
+export const ChatBaseModule = ManaModule.create('magent-chat-base')
   .register(
     ChatService,
-    ConversationMananger,
+    ConversationManager,
     DefaultConversationModel,
     DefaultChatMessageModel,
     DefaultChatMessageItemModel,

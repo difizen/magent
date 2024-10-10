@@ -24,7 +24,7 @@ export class DefaultChatMessageModel {
   protected itemManager: ChatMessageItemManager;
 
   @prop()
-  messages: BaseChatMessageItemModel[];
+  items: BaseChatMessageItemModel[] = [];
 
   @prop()
   created?: Dayjs;
@@ -46,10 +46,11 @@ export class DefaultChatMessageModel {
 
     this.created = dayjs(option.created);
     this.modified = dayjs(option.modified);
+    this.initMessageItems(option);
   }
 
   initMessageItems = (option: ChatMessageOption) => {
-    this.messages = option.messages.map((opt) => {
+    this.items = option.messages.map((opt) => {
       return this.itemManager.createChatMessageItem({ ...opt, parent: this });
     });
   };

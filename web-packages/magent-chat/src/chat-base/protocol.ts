@@ -98,4 +98,7 @@ export const ConversationOption = {
   is(data?: Record<string, any>): data is ConversationOption {
     return !!(data && 'id' in data);
   },
+  isFull(data?: Record<string, any>): data is ConversationOption {
+    return !!(data && 'id' in data && 'messages' in data);
+  },
 };

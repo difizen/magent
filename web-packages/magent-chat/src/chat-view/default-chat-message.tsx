@@ -24,7 +24,7 @@ export const DefaultChatMessage = (props: { message: BaseChatMessageModel }) => 
   const ChatMessageItem = instance.ChatMessageItem;
   return (
     <div className="chat-message-exchange">
-      {message.messages.map((msg) => (
+      {message.items.map((msg) => (
         <ChatMessageItem key={msg.id} message={message} item={msg} />
       ))}
     </div>

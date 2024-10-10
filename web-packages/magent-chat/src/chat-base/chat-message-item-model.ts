@@ -56,6 +56,7 @@ export class DefaultChatMessageItemModel {
     this.created = dayjs(option.created);
     this.modified = dayjs(option.modified);
     this.sender = option.sender;
+    this.content = option.content;
   }
 }
 
@@ -66,6 +67,10 @@ export class HumanChatMessageItemModel extends DefaultChatMessageItemModel {
 
   constructor(@inject(AutoFactoryOption) option: ChatMessageItemOption) {
     super(option);
-    this.state = QuestionState.SENDING;
+    if (option.content) {
+      this.state = QuestionState.SUCCESS;
+    } else {
+      this.state = QuestionState.SENDING;
+    }
   }
 }

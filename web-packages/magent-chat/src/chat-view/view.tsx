@@ -5,6 +5,7 @@ import {
 } from '@ant-design/icons';
 import {
   BaseView,
+  Deferred,
   inject,
   prop,
   transient,
@@ -17,10 +18,13 @@ import { useInject } from '@difizen/mana-app';
 import { Avatar, FloatButton } from 'antd';
 import classnames from 'classnames';
 import type { RefObject } from 'react';
+import { forwardRef } from 'react';
 import { useEffect, useRef } from 'react';
 
+import { ConversationManager } from '../chat-base/conversation-manager.js';
 import type {
   BaseConversationModel,
+  IChatMessage,
   IChatMessageItem,
   IChatMessageSender,
 } from '../chat-base/protocol.js';
@@ -92,45 +96,47 @@ const DefaultFooter = () => {
   return <div className="chat-footer">内容由AI生成，无法确保真实准确，仅供参考。</div>;
 };
 
-export function ChatComponent(props: ChatProps) {
-  const listRef = useRef<HTMLDivElement>(null);
-  const { className } = props;
-  const instance = useInject<ChatView>(ViewInstance);
-  const Messages = instance.Messages;
-  const Footer = instance.Footer;
-  const ChatInput = instance.Input;
+export const ChatComponent = forwardRef<HTMLDivElement, ChatProps>(
+  function ChatComponent(props: ChatProps, ref) {
+    const listRef = useRef<HTMLDivElement>(null);
+    const { className } = props;
+    const instance = useInject<ChatView>(ViewInstance);
+    const Messages = instance.Messages;
+    const Footer = instance.Footer;
+    const ChatInput = instance.Input;
 
-  useEffect(() => {
-    instance.setMessageListContainer(listRef);
-  }, [instance]);
+    useEffect(() => {
+      instance.setMessageListContainer(listRef);
+    }, [instance]);
 
-  return (
-    <div className={classnames('chat', className)}>
-      <div className="chat-content">
-        <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
-          <Messages />
+    return (
+      <div className={classnames('chat', className)} ref={ref}>
+        <div className="chat-content">
+          <div className="chat-content-list" ref={listRef} onScroll={instance.onScroll}>
+            <Messages />
+          </div>
+
+          <div className="chat-content-input">
+            <ChatInput />
+          </div>
+          <Footer />
         </div>
-
-        <div className="chat-content-input">
-          <ChatInput />
-        </div>
-        <Footer />
       </div>
-    </div>
-  );
-}
+    );
+  },
+);
 
 const viewId = 'magent-chat';
 
-export interface ChatViewOption {
-  agentId: string;
-  sessionId: string;
+export interface ChatViewOption extends IChatMessage {
+  id: string;
 }
 
 @transient()
 @view(viewId)
 export class ChatView extends BaseView {
   @inject(ViewManager) viewManager: ViewManager;
+  @inject(ConversationManager) conversationManager: ConversationManager;
   override view = ChatComponent;
 
   AvatarRender = DefaultAvatar;
@@ -145,7 +151,12 @@ export class ChatView extends BaseView {
   @prop()
   showToBottomBtn = false;
 
+  @prop()
   conversation?: BaseConversationModel;
+
+  conversationReady: Promise<BaseConversationModel>;
+  protected conversationDeferred: Deferred<BaseConversationModel> =
+    new Deferred<BaseConversationModel>();
 
   /**
    * A container DOM node for messages,
@@ -156,6 +167,7 @@ export class ChatView extends BaseView {
   constructor(@inject(ViewOption) option: ChatViewOption) {
     super();
     this.option = option;
+    // setImmediate(this.initConversation);
   }
 
   get sendable(): boolean {
@@ -173,6 +185,25 @@ export class ChatView extends BaseView {
     };
     this.conversation?.sendMessage(msg);
     setImmediate(this.scrollToBottom);
+  };
+
+  override onViewMount() {
+    this.initConversation(this.option.id);
+  }
+
+  protected initConversation = async (id: string) => {
+    this.conversation = this.conversationManager.getOrCreate({
+      id,
+    });
+    const toDispose = this.conversation.onMessage(() =>
+      setImmediate(() => {
+        if (!this.showToBottomBtn) {
+          this.scrollToBottom();
+        }
+      }),
+    );
+    this.toDispose.push(toDispose);
+    this.conversationDeferred.resolve(this.conversation);
   };
 
   clear = async () => {

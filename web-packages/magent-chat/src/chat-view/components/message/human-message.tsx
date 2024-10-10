@@ -32,6 +32,7 @@ export const HumanMessage = (props: HumanMessageProps) => {
   const item = useObserve(props.item);
   const instance = useInject<ChatView>(ViewInstance);
   const conversation = instance.conversation;
+  const AvatarRender = instance.AvatarRender;
   if (!conversation) {
     return null;
   }
@@ -48,7 +49,7 @@ export const HumanMessage = (props: HumanMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main')}>
-      <Avatar className="chat-message-avatar" src={<HumanIcon />} />
+      <AvatarRender type="HUMAN" id={item.sender.id} />
       <div className="chat-message-human">
         <TextMessage content={content} />
         <HumanMessageAddon {...props} />

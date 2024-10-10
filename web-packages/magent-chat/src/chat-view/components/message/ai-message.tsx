@@ -15,7 +15,6 @@ import type {
 } from '../../../chat-base/protocol.js';
 import { AnswerState } from '../../../chat-base/protocol.js';
 import type { ChatView } from '../../view.js';
-
 import { Markdown } from '../markdown/index.js';
 
 interface AIMessageProps {
@@ -142,7 +141,7 @@ export const AIMessage = (props: AIMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <AvatarRender type="AI" />
+      <AvatarRender type="AI" id={item.sender.id} />
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
 
