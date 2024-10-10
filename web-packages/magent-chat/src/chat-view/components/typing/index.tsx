@@ -10,7 +10,7 @@ export interface TypingProps {
   color?: string;
 }
 
-const Typing: FC<TypingProps> = (props) => {
+export const Typing: FC<TypingProps> = (props) => {
   return <div className="chat-input-typing" />;
 };
 

@@ -4,45 +4,45 @@ import { Avatar, Space } from 'antd';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-import type { HumanChatMessageItem } from '@/modules/chat-message/chat-message-item.js';
-import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
-
+import type {
+  BaseChatMessageItemModel,
+  BaseChatMessageModel,
+} from '../../../chat-base/protocol.js';
+import { QuestionState } from '../../../chat-base/protocol.js';
 import type { ChatView } from '../../view.js';
-
-import { TextMessage } from './text/index.js';
+import { TextMessage } from '../text/index.js';
 import './index.less';
 
 interface HumanMessageProps {
-  message: HumanChatMessageItem;
-  exchange: ChatMessageModel;
+  message: BaseChatMessageModel;
+  item: BaseChatMessageItemModel;
 }
 export const HumanMessageAddon = (props: HumanMessageProps) => {
-  const exchange = useObserve(props.exchange);
-  if (!exchange.startTime) {
+  const message = useObserve(props.message);
+  if (!message.created) {
     return null;
   }
   return (
     <div className={`chat-message-addon`}>
-      <span>开始时间: {exchange.startTime?.format('YYYY-MM-DD HH:mm:ss')}</span>
+      <span>开始时间: {message.created.format('YYYY-MM-DD HH:mm:ss')}</span>
     </div>
   );
 };
 export const HumanMessage = (props: HumanMessageProps) => {
-  const exchange = useObserve(props.exchange);
-  const message = useObserve(props.message);
+  const item = useObserve(props.item);
   const instance = useInject<ChatView>(ViewInstance);
-  const session = instance.session;
-  if (!session) {
+  const conversation = instance.conversation;
+  if (!conversation) {
     return null;
   }
 
-  const nickName = '';
-
   const content: ReactNode = (
     <>
-      {exchange.sending && <LoadingOutlined className="chat-message-human-sending" />}
+      {item.state === QuestionState.SENDING && (
+        <LoadingOutlined className="chat-message-human-sending" />
+      )}
       <Space />
-      {message.content || ''}
+      {item.content || ''}
     </>
   );
 

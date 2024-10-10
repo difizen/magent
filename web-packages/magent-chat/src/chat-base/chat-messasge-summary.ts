@@ -3,7 +3,7 @@ import { prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 
 @autoFactory()
-export class DeafaultChatMessageSummary {
+export class DefaultChatMessageSummary {
   /**
    * token usage for completion
    */
@@ -33,4 +33,10 @@ export class DeafaultChatMessageSummary {
    */
   @prop()
   endTime?: Dayjs;
+
+  /**
+   * the time chat ended
+   */
+  @prop()
+  responseTime?: number;
 }

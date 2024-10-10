@@ -14,7 +14,7 @@ import './index.less';
 //   return <div>pre</div>
 // }
 
-interface MarkdownProps {
+export interface MarkdownProps {
   children: any;
   className?: string;
   type?: 'message' | 'content';

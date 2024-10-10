@@ -4,53 +4,53 @@ import {
   LikeOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
-import { prop, useInject, useObserve, ViewInstance } from '@difizen/mana-app';
+import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
 
-import { AgentIcon } from '@/modules/agent/agent-icon.js';
-import type { AIChatMessageItem } from '@/modules/chat-message/ai-message-item.js';
-import type { ChatMessageModel } from '@/modules/chat-message/chat-message-model.js';
-import { AnswerState } from '@/modules/chat-message/protocol.js';
-
+import type {
+  BaseChatMessageItemModel,
+  BaseChatMessageModel,
+} from '../../../chat-base/protocol.js';
+import { AnswerState } from '../../../chat-base/protocol.js';
 import type { ChatView } from '../../view.js';
 
-import { Markdown } from './markdown/index.js';
+import { Markdown } from '../markdown/index.js';
 
 interface AIMessageProps {
-  message: AIChatMessageItem;
-  exchange: ChatMessageModel;
+  message: BaseChatMessageModel;
+  item: BaseChatMessageItemModel;
 }
 
 export const AIMessageError = (props: AIMessageProps) => {
-  if (!props.message?.error?.error_msg) {
+  if (!props.item?.error?.message) {
     return null;
   }
   return (
-    <div className={`chat-message-addon-error`}>
-      ERROR: {props.message.error?.error_msg}
-    </div>
+    <div className={`chat-message-addon-error`}>ERROR: {props.item.error?.message}</div>
   );
 };
 
 export const AIMessageAddon = (props: AIMessageProps) => {
-  const exchange = useObserve(props.exchange);
+  const message = useObserve(props.message);
   let content = null;
-  if (exchange.tokenUsage || exchange.responseTime) {
+  if (message.token) {
     content = (
       <div className={`chat-message-addon`}>
-        {exchange.tokenUsage && (
+        {message.token.total_tokens && (
           <div className={`chat-message-addon-item`}>
-            <span>Total token: {exchange.tokenUsage.total_tokens}</span>
-            <span>Completion: {exchange.tokenUsage.completion_tokens}</span>
-            <span>Prompt: {exchange.tokenUsage.prompt_tokens}</span>
+            <span>Total token: {message.token.total_tokens}</span>
+            <span>Completion: {message.token.completion_tokens}</span>
+            <span>Prompt: {message.token.prompt_tokens}</span>
           </div>
         )}
-        {exchange.responseTime && (
+        {message.token.endTime && (
           <div className={`chat-message-addon-item`}>
-            <span>结束时间: {exchange.endTime?.format('YYYY-MM-DD HH:mm:ss')}</span>
-            <span>耗时: {exchange.responseTime}</span>
+            <span>
+              结束时间: {message.token.endTime?.format('YYYY-MM-DD HH:mm:ss')}
+            </span>
+            <span>耗时: {message.token.responseTime}</span>
           </div>
         )}
       </div>
@@ -66,18 +66,18 @@ export const AIMessageAddon = (props: AIMessageProps) => {
 };
 
 export const AIMessageContent = (props: AIMessageProps) => {
-  const message = useObserve(props.message);
-  const content: ReactNode = message.content;
+  const item = useObserve(props.item);
+  const content: ReactNode = item.content;
   if (!content) {
     return (
       <div
         className={classNames({
           ['chat-message-ai-empty']: true,
-          ['chat-message-ai-error']: message.error,
+          ['chat-message-ai-error']: item.error,
         })}
       >
         <div className="chat-message-ai-content">
-          {message.state === AnswerState.RECEIVING && (
+          {item.state === AnswerState.RECEIVING && (
             <LoadingOutlined className="chat-message-ai-receiving" />
           )}
         </div>
@@ -89,21 +89,21 @@ export const AIMessageContent = (props: AIMessageProps) => {
       <div
         className={classNames({
           ['chat-message-ai']: true,
-          ['chat-message-ai-error']: message.error,
+          ['chat-message-ai-error']: item.error,
         })}
       >
         <div className={classNames('markdown-message-md', 'chat-message-ai-content')}>
           <span className={`markdown-message-md-pop`}>
             <Markdown
-              className={message.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
+              className={item.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
               type="message"
             >
-              {message.content}
+              {item.content}
             </Markdown>
           </span>
         </div>
 
-        {message.state === AnswerState.RECEIVING && (
+        {item.state === AnswerState.RECEIVING && (
           <LoadingOutlined className="chat-message-ai-receiving" />
         )}
         <AIMessageAddon {...props} />
@@ -112,16 +112,15 @@ export const AIMessageContent = (props: AIMessageProps) => {
   }
 };
 export const AIMessage = (props: AIMessageProps) => {
-  const message = useObserve(props.message);
+  const item = useObserve(props.item);
   const instance = useInject<ChatView>(ViewInstance);
-  const session = instance.session;
-  const agent = instance.agent;
-  if (!session) {
+  const conversation = instance.conversation;
+  const AvatarRender = instance.AvatarRender;
+  if (!conversation) {
     return null;
   }
 
   // const [contentHover, setContentHover] = useState<boolean>(false);
-  const nickName = agent?.name || '';
 
   const actions = [
     <span key="action-tag-3" className={`chat-message-action-tag`}>
@@ -134,7 +133,7 @@ export const AIMessage = (props: AIMessageProps) => {
       key="action-tag-1"
       className={`chat-message-action-tag`}
       onClick={() => {
-        copy(message.content);
+        copy(item.content);
       }}
     >
       <CopyOutlined />
@@ -143,7 +142,7 @@ export const AIMessage = (props: AIMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <AgentIcon className="chat-message-avatar" agent={agent} />
+      <AvatarRender type="AI" />
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
 

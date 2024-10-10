@@ -1,10 +1,28 @@
-import { AutoFactoryOption } from '@difizen/magent-core';
+import { autoFactory, AutoFactoryOption } from '@difizen/magent-core';
 import { inject, prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
-import type { IChatMessage, BaseChatMessageItemModel } from './protocol.js';
+import { ChatMessageItemManager } from './chat-message-item-manager.js';
+import type {
+  IChatMessage,
+  BaseChatMessageItemModel,
+  BaseConversationModel,
+  BaseChatMessageSummary,
+} from './protocol.js';
 
+export interface ChatMessageOption extends IChatMessage {
+  parent: BaseConversationModel;
+}
+
+@autoFactory()
 export class DefaultChatMessageModel {
+  id?: string;
+
+  protected option: ChatMessageOption;
+
+  protected itemManager: ChatMessageItemManager;
+
   @prop()
   messages: BaseChatMessageItemModel[];
 
@@ -14,10 +32,25 @@ export class DefaultChatMessageModel {
   @prop()
   modified?: Dayjs;
 
-  id?: number;
-  token?: any;
+  @prop()
+  token?: BaseChatMessageSummary;
 
-  constructor(@inject(AutoFactoryOption) option: IChatMessage) {
-    //
+  constructor(
+    @inject(AutoFactoryOption) option: ChatMessageOption,
+    @inject(ChatMessageItemManager)
+    itemManager: ChatMessageItemManager,
+  ) {
+    this.option = option;
+    this.id = option.id;
+    this.itemManager = itemManager;
+
+    this.created = dayjs(option.created);
+    this.modified = dayjs(option.modified);
   }
+
+  initMessageItems = (option: ChatMessageOption) => {
+    this.messages = option.messages.map((opt) => {
+      return this.itemManager.createChatMessageItem({ ...opt, parent: this });
+    });
+  };
 }
