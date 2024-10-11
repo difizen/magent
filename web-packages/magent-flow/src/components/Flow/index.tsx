@@ -5,9 +5,21 @@ import { useFlowStore } from '@flow/stores/flowStore.js';
 import { useShortcutsStore } from '@flow/stores/useShortcutsStore.js';
 import { getNodeId } from '@flow/utils/reactflowUtils.js';
 import isWrappedWithClass from '@flow/utils/wrappedClass.js';
-import { Background, MiniMap, ReactFlow, useReactFlow } from '@xyflow/react';
+import {
+  applyEdgeChanges,
+  applyNodeChanges,
+  Background,
+  MiniMap,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
+} from '@xyflow/react';
 import type {
   Connection,
+  Edge,
+  OnEdgesChange,
+  OnNodesChange,
   OnSelectionChangeParams,
   SelectionDragHandler,
 } from '@xyflow/react';
@@ -44,9 +56,7 @@ function Flow(props: FlowProps) {
   const edges = useFlowStore((state) => state.edges);
   const onNodesChange = useFlowStore((state) => state.onNodesChange);
   const onEdgesChange = useFlowStore((state) => state.onEdgesChange);
-  // const setNodes = useFlowStore((state) => state.setNodes);
-  // const setEdges = useFlowStore((state) => state.setEdges);
-  const reactFlowInstance = useFlowStore((state) => state.reactFlowInstance);
+
   const setReactFlowInstance = useFlowStore((state) => state.setReactFlowInstance);
   const deleteNode = useFlowStore((state) => state.deleteNode);
   const deleteEdge = useFlowStore((state) => state.deleteEdge);
@@ -54,13 +64,10 @@ function Flow(props: FlowProps) {
 
   const setLastCopiedSelection = useFlowStore((state) => state.setLastCopiedSelection);
   const lastCopiedSelection = useFlowStore((state) => state.lastCopiedSelection);
-
   const paste = useFlowStore((state) => state.paste);
-
   const undo = useFlowsManagerStore((state) => state.undo);
   const redo = useFlowsManagerStore((state) => state.redo);
   const takeSnapshot = useFlowsManagerStore((state) => state.takeSnapshot);
-  const autoLayout = useFlowsManagerStore((state) => state.autoLayout);
 
   // Hot keys
   const undoAction = useShortcutsStore((state) => state.undo);
@@ -269,12 +276,10 @@ function Flow(props: FlowProps) {
           disableKeyboardA11y={true}
           onDrop={onDrop}
           onDragOver={onDragOver}
-          proOptions={{ hideAttribution: true }}
           maxZoom={2}
           minZoom={0.1}
           fitView
         >
-          {/* <Background gap={16} className="border-gay-600" /> */}
           <Background gap={[14, 14]} size={2} color="#E4E5E7" />
           {miniMap && (
             <MiniMap

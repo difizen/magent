@@ -6,7 +6,7 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import type { EditorState } from 'lexical';
 import { $getRoot, TextNode } from 'lexical';
-import React, { type FC } from 'react';
+import React, { memo, type FC } from 'react';
 
 import ComponentPickerBlock from './plugins/component-picker-block/index.js';
 import { CustomTextNode } from './plugins/custom-text/node.js';
@@ -35,7 +35,7 @@ export type PromptEditorProps = {
   externalToolBlock?: ExternalToolBlockType;
 };
 
-export const PromptEditor: FC<PromptEditorProps> = ({
+const PromptEditorRaw: FC<PromptEditorProps> = ({
   instanceId,
   compact,
   className,
@@ -126,3 +126,5 @@ export const PromptEditor: FC<PromptEditorProps> = ({
     </LexicalComposer>
   );
 };
+
+export const PromptEditor = memo(PromptEditorRaw);

@@ -27,8 +27,11 @@ export const AgentNode = (props: Props) => {
   const { data } = props;
 
   const [agentModalOpen, setAgentModalOpen] = useState<boolean>(false);
-  const { findUpstreamNodes, setNode } = useFlowStore();
-  const upstreamNodes = findUpstreamNodes(data.id.toString());
+
+  const { setNode } = useFlowStore((state) => state.setNode);
+  const nodeLinkMap = useFlowStore((state) => state.nodeLinkMap);
+  const upstreamNodes = nodeLinkMap[data.id];
+
   const agentMarket = useInject(AgentMarket);
   const agentParam = data.config?.inputs?.agent_param as BasicSchema[];
 
@@ -102,7 +105,7 @@ export const AgentNode = (props: Props) => {
       <div>
         <ReferenceForm
           label="输入变量"
-          nodes={[...(upstreamNodes as any)]}
+          nodes={upstreamNodes}
           value={[...(data.config?.inputs?.input_param || [])]}
           onChange={(values) => {
             setNode(data.id, (old) => ({

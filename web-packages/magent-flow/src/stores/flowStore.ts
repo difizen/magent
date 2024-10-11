@@ -73,49 +73,56 @@ interface FlowStoreType {
     isCrop?: boolean,
   ) => void;
   setNodeFolded: (id: string, folded: boolean) => void;
+  nodeLinkMap: Record<string, Node[]>;
+  calculateNodeLinkMap: () => void;
 }
 
 export const useFlowStore = create<FlowStoreType>((set, get) => {
   // DFS 查找上游节点
-  const findUpstreamNodes = (
-    nodes: Node[],
-    edges: Edge[],
-    targetNode: string,
-  ): Node[] => {
-    const adjList: AdjacencyList = {};
-
-    nodes.forEach((node) => {
-      adjList[node.id] = [];
-    });
-    edges.forEach((edge) => {
-      adjList[edge.target].push(edge.source);
-    });
-
-    const visited = new Set<string>();
-    const result = new Set<string>();
-
-    const dfs = (node: string) => {
-      if (visited.has(node)) {
-        return;
-      }
-      visited.add(node);
-
-      if (adjList[node]) {
-        adjList[node].forEach((upstreamNode) => {
-          result.add(upstreamNode);
-          dfs(upstreamNode);
-        });
-      }
-    };
-
-    dfs(targetNode);
-
-    return get().nodes.filter((node) => Array.from(result).includes(node.id));
-  };
 
   return {
     nodes: [],
     edges: [],
+
+    findUpstreamNodes: (targetNode: string): Node[] => {
+      const adjList: AdjacencyList = {};
+
+      get().nodes.forEach((node) => {
+        adjList[node.id] = [];
+      });
+      get().edges.forEach((edge) => {
+        adjList[edge.target].push(edge.source);
+      });
+
+      const visited = new Set<string>();
+      const result = new Set<string>();
+
+      const dfs = (node: string) => {
+        if (visited.has(node)) {
+          return;
+        }
+        visited.add(node);
+
+        if (adjList[node]) {
+          adjList[node].forEach((upstreamNode) => {
+            result.add(upstreamNode);
+            dfs(upstreamNode);
+          });
+        }
+      };
+
+      dfs(targetNode);
+
+      return get().nodes.filter((node) => Array.from(result).includes(node.id));
+    },
+    nodeLinkMap: {},
+    calculateNodeLinkMap: () => {
+      set({
+        nodeLinkMap: get().nodes.reduce((pre, node) => {
+          return { ...pre, [node.id]: get().findUpstreamNodes(node.id) };
+        }, {}),
+      });
+    },
     initFlow: (graph: { nodes: Node[]; edges: Edge[] }) => {
       set({
         nodes: graph.nodes,
@@ -147,7 +154,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
       });
     },
     setNodeFolded: (id: string, folded: boolean) => {
-      get().setNode(id, (old: any) => {
+      get().setNode(id, (old: Node) => {
         return {
           ...old,
           data: {
@@ -188,9 +195,6 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
       get().setNodes((oldNodes) =>
         oldNodes.map((node) => {
           if (node.id === id) {
-            // if ((node.data as NodeDataType).node?.frozen) {
-            //   (newChange.data as NodeDataType).node!.frozen = false;
-            // }
             return newChange;
           }
           return node;
@@ -205,27 +209,14 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
         edges: newEdges,
         nodes: newChange,
       });
-      get().updateCurrentFlow({ nodes: newChange, edges: newEdges });
-      if (get().autoSaveFlow) {
-        get().autoSaveFlow!();
-      }
     },
 
     setEdges: (change) => {
       const newChange = typeof change === 'function' ? change(get().edges) : change;
       set({
         edges: newChange,
-        // flowState: undefined,
       });
-
-      // const flowsManager = useFlowsManagerStore.getState();
-      // if (!get().isBuilding && !skipSave && get().onFlowPage) {
-      //   flowsManager.autoSaveCurrentFlow(
-      //     get().nodes,
-      //     newChange,
-      //     get().reactFlowInstance?.getViewport() ?? { x: 0, y: 0, zoom: 1 },
-      //   );
-      // }
+      get().calculateNodeLinkMap();
     },
     getNode: (id: string) => {
       return get().nodes.find((node) => node.id === id);
@@ -295,10 +286,12 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
             x: (position as PanePosition).paneX + position.x,
             y: (position as PanePosition).paneY! + position.y,
           }
-        : get().reactFlowInstance!.screenToFlowPosition({
-            x: position.x,
-            y: position.y,
-          });
+        : get().reactFlowInstance !== null
+          ? get().reactFlowInstance!.screenToFlowPosition({
+              x: position.x,
+              y: position.y,
+            })
+          : { x: 0, y: 0 };
 
       selection.nodes.forEach((node: Node) => {
         // Generate a unique node ID
@@ -311,8 +304,8 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
           id: newId,
           type: node.data['type'] as string,
           position: {
-            x: insidePosition.x + node.position!.x - minimumX,
-            y: insidePosition.y + node.position!.y - minimumY,
+            x: insidePosition.x + node.position.x - minimumX,
+            y: insidePosition.y + node.position.y - minimumY,
           },
           data: {
             ...cloneDeep(node.data),
@@ -329,7 +322,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
         // Add the new node to the list of nodes in state
         newNodes = newNodes
           // eslint-disable-next-line @typescript-eslint/no-shadow
-          .map((node) => ({ ...node, selected: false }) as any)
+          .map((node) => ({ ...node, selected: false }))
           .concat({ ...newNode, selected: false });
       });
       get().setNodes(newNodes);
@@ -372,9 +365,6 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
       // });
       // get().setEdges(newEdges);
     },
-    findUpstreamNodes: (id: string) => {
-      return findUpstreamNodes(get().nodes, get().edges, id);
-    },
 
     currentFlow: undefined,
     setCurrentFlow: (flow) => {
@@ -399,15 +389,15 @@ export const useFlowStore = create<FlowStoreType>((set, get) => {
 
     lastCopiedSelection: null,
     setLastCopiedSelection: (newSelection, isCrop = false) => {
-      if (isCrop) {
-        const nodesIdsSelected = newSelection!.nodes.map((node) => node.id);
-        const edgesIdsSelected = newSelection!.edges.map((edge) => edge.id);
+      if (isCrop && newSelection) {
+        const nodesIdsSelected = newSelection.nodes.map((node: Node) => node.id);
+        const edgesIdsSelected = newSelection.edges.map((edge: Edge) => edge.id);
 
-        nodesIdsSelected.forEach((id) => {
+        nodesIdsSelected.forEach((id: string) => {
           get().deleteNode(id);
         });
 
-        edgesIdsSelected.forEach((id) => {
+        edgesIdsSelected.forEach((id: string) => {
           get().deleteEdge(id);
         });
 

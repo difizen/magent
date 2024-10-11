@@ -1,4 +1,5 @@
 import type { ReactFlowJsonObject, XYPosition } from '@xyflow/react';
+import type { Node } from '@xyflow/react';
 
 export type NodeTypes =
   | 'start'
@@ -79,7 +80,7 @@ export interface NodeDataMetaType {
   description?: string;
 }
 
-export interface NodeDataType {
+export interface NodeDataType extends Record<string, unknown> {
   id: string;
   type: NodeTypes;
   runResult?: {
@@ -93,13 +94,7 @@ export interface NodeDataType {
   folded?: boolean;
 }
 
-export interface NodeType {
-  id: string;
-  position: XYPosition;
-  type: string;
-  data: NodeDataType;
-  selected?: boolean;
-}
+export type NodeType = Node<NodeDataType>;
 
 export type FlowType = {
   id: string;

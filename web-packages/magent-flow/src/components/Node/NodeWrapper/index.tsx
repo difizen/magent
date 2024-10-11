@@ -1,7 +1,7 @@
 import { PopoverInNode } from '@flow/components/AIBasic/PopoverInNode/index.js';
 import { Popup } from '@flow/components/AIBasic/Popup/index.js';
 import { HoverBlock } from '@flow/components/FlowController/operator.js';
-import type { NodeDataType } from '@flow/interfaces/flow.js';
+import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/flowStore.js';
 import classNames from '@flow/utils/classnames.js';
 import {
@@ -13,18 +13,13 @@ import {
   RiPlayLine,
 } from '@remixicon/react';
 import { Handle, Position } from '@xyflow/react';
-import { Popover } from 'antd';
-import React from 'react';
+import type { NodeProps, Node } from '@xyflow/react';
+import React, { cloneElement } from 'react';
 
-type Props = {
-  data: NodeDataType;
-  selected: boolean;
-  xPos: number;
-  yPos: number;
-};
+export type A = Node<{ a: 1 }, 'counter'>;
 
 export const NodeWrapper = (props: {
-  nodeProps: Props;
+  nodeProps: NodeType;
   children: React.ReactNode;
   leftHandler?: boolean;
   rightHandler?: boolean;
@@ -36,6 +31,7 @@ export const NodeWrapper = (props: {
   name?: string | React.ReactNode;
   extra?: React.ReactNode;
   folded?: boolean;
+  className?: string;
 }) => {
   const {
     nodeProps,
@@ -46,6 +42,7 @@ export const NodeWrapper = (props: {
     icon,
     name,
     extra,
+    className,
   } = props;
   const { name: defaultName, description, icon: defaultIcon } = nodeProps.data;
 
@@ -59,6 +56,7 @@ export const NodeWrapper = (props: {
         'relative flex flex-col border-2 justify-center rounded-xl bg-white shadow-lg p-5 hover:shadow-2xl',
         nodeProps.selected ? 'border-blue-500 shadow-2xl' : 'border-transparent',
         nodeProps.data.folded ? 'w-[320px]' : 'w-[520px]',
+        className,
       )}
     >
       {extra ??

@@ -1,16 +1,9 @@
 import { VariableForm } from '@flow/components/VariableForm/index.js';
-import type { NodeDataType } from '@flow/interfaces/flow.js';
+import type { NodeType } from '@flow/interfaces/flow.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
-type Props = {
-  data: NodeDataType;
-  selected: boolean;
-  xPos: number;
-  yPos: number;
-};
-
-export const StartNode = (props: Props) => {
+const StartNode = (props: NodeType) => {
   const { data } = props;
 
   return (
@@ -27,3 +20,5 @@ export const StartNode = (props: Props) => {
     </NodeWrapper>
   );
 };
+
+export default StartNode;

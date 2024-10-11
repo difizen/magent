@@ -1,17 +1,13 @@
 import { CaretRightOutlined } from '@ant-design/icons';
 import { Collapse } from 'antd';
 import type { ReactNode } from 'react';
-import React from 'react';
 
-export const CollapseWrapper = ({
-  className,
-  label,
-  content,
-}: {
+export const CollapseWrapper = (props: {
+  label: string;
+  children: ReactNode;
   className?: string;
-  label?: string | React.ReactNode;
-  content: ReactNode;
 }) => {
+  const { label, children, className } = props;
   return (
     <Collapse
       className={className}
@@ -21,8 +17,8 @@ export const CollapseWrapper = ({
       items={[
         {
           key: '1',
-          label: label || '',
-          children: content,
+          label: label,
+          children: children,
         },
       ]}
     />

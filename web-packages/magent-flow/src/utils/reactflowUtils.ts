@@ -3,7 +3,7 @@ import type { Edge, Node } from '@xyflow/react';
 import { cloneDeep } from 'lodash';
 import { v4 } from 'uuid';
 
-export function cleanEdges(nodes: any[], edges: Edge[]) {
+export function cleanEdges(nodes: Node[], edges: Edge[]) {
   const newEdges = cloneDeep(edges);
 
   return newEdges;
@@ -24,8 +24,8 @@ export const getLayoutByDagre = (originNodes: Node[], originEdges: Edge[]) => {
     nodesep: 100,
     ranksep: 100,
     // ranker: 'tight-tree',
-    marginx: 100,
-    marginy: 100,
+    // marginx: 1300,
+    // marginy: 1200,
   });
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, {
@@ -41,4 +41,22 @@ export const getLayoutByDagre = (originNodes: Node[], originEdges: Edge[]) => {
   dagre.layout(dagreGraph);
 
   return dagreGraph;
+};
+
+export const findNodes = (
+  nodeId: string,
+  nodes: Node[],
+  edge: Edge[],
+  onlyParent?: boolean,
+) => {
+  if (onlyParent) {
+    return nodes.filter((node) =>
+      edge
+        .filter((item) => item.target === nodeId)
+        ?.map((item) => item.source)
+        .includes(node.id),
+    );
+  }
+
+  return;
 };

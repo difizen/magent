@@ -1,26 +1,21 @@
-import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
+import { CollapseWrapper } from '@flow/components/AIBasic/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
-import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
+import type { BasicSchema, NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/flowStore.js';
 import { useKnowledgeStore } from '@flow/stores/useKnowledgeStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
-type Props = {
-  data: NodeDataType;
-  selected: boolean;
-  xPos: number;
-  yPos: number;
-};
-
-export const KnowledgeNode = (props: Props) => {
+const KnowledgeNode = (props: NodeType) => {
   const { data } = props;
   // const { config } = data;
-  const { findUpstreamNodes, setNode } = useFlowStore();
 
+  const setNode = useFlowStore((state) => state.setNode);
+  const nodeLinkMap = useFlowStore((state) => state.nodeLinkMap);
   const { KnowledgeSelector } = useKnowledgeStore();
-  const upstreamNode = findUpstreamNodes(data.id.toString());
+
+  const upstreamNodes = nodeLinkMap[data.id];
 
   const knowledge_param = data.config?.inputs?.['knowledge_param'] as BasicSchema[];
 
@@ -29,8 +24,8 @@ export const KnowledgeNode = (props: Props) => {
       <div>
         <ReferenceForm
           label="输入变量"
-          nodes={[...(upstreamNode as any)]}
-          value={[...(data.config?.inputs?.input_param || [])]}
+          nodes={upstreamNodes}
+          value={data.config?.inputs?.input_param}
           onChange={(values) => {
             setNode(data.id, (old) => ({
               ...old,
@@ -47,35 +42,31 @@ export const KnowledgeNode = (props: Props) => {
             }));
           }}
         />
-        <CollapseWrapper
-          className="mt-3"
-          label={'知识库配置'}
-          content={
-            <>
-              {KnowledgeSelector !== null ? (
-                <KnowledgeSelector nodeId={data.id} knowledgeParam={knowledge_param} />
-              ) : (
-                <>知识库配置</>
-              )}
-            </>
-          }
-        />
-        <CollapseWrapper
-          className="mt-3"
-          label={'Output'}
-          content={
-            <>
-              {(data.config?.outputs || []).map((output) => (
-                <OutputVariable
-                  key={output.name!}
-                  name={output.name!}
-                  type={output.type}
-                />
-              ))}
-            </>
-          }
-        />
+        <CollapseWrapper className="mt-3" label={'知识库配置'}>
+          {' '}
+          <>
+            {KnowledgeSelector !== null ? (
+              <KnowledgeSelector nodeId={data.id} knowledgeParam={knowledge_param} />
+            ) : (
+              <>知识库配置</>
+            )}
+          </>
+        </CollapseWrapper>
+
+        <CollapseWrapper className="mt-3" label={'Output'}>
+          <>
+            {(data.config?.outputs || []).map((output) => (
+              <OutputVariable
+                key={output.name!}
+                name={output.name!}
+                type={output.type}
+              />
+            ))}
+          </>
+        </CollapseWrapper>
       </div>
     </NodeWrapper>
   );
 };
+
+export default KnowledgeNode;

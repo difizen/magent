@@ -12,7 +12,7 @@ import {
 } from '@remixicon/react';
 import { useReactFlow, useViewport } from '@xyflow/react';
 import { Divider } from 'antd';
-import type { HTMLAttributes } from 'react';
+import { memo, type HTMLAttributes } from 'react';
 
 import { Popup } from '../AIBasic/Popup/index.js';
 import { TipPopup } from '../AIBasic/TipPopup/index.js';
@@ -47,7 +47,7 @@ export const HoverBlock = (props: HoverBlockProps) => {
 
 const zoomOptions: ('Fit' | number)[] = [25, 50, 100, 125, 'Fit'];
 
-export const Operator = () => {
+const OperatorRaw = () => {
   const { zoomIn, zoomOut, zoomTo, fitView } = useReactFlow();
   const { zoom } = useViewport();
 
@@ -108,6 +108,7 @@ export const Operator = () => {
             <RiZoomInLine className="w-4 h-4" />
           </HoverBlock>
           <HoverBlock
+            tooltip="自适应"
             onClick={(e) => {
               e.stopPropagation();
               fitView();
@@ -173,3 +174,5 @@ export const Operator = () => {
     </div>
   );
 };
+
+export const Operator = memo(OperatorRaw);

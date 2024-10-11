@@ -1,46 +1,75 @@
 import { BarsOutlined } from '@ant-design/icons';
-import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
+import { CollapseWrapper, SelectInNode } from '@flow/components/AIBasic/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import { PromptEditor } from '@flow/components/AIBasic/PromptEditor/index.js';
-import { SelectInNode } from '@flow/components/AIBasic/SelectInNode/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
-import { ReferenceFormV2 } from '@flow/components/ReferenceForm/v2.js';
-import type { BasicSchema, NodeDataType } from '@flow/interfaces/flow.js';
+import type { BasicSchema, NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/flowStore.js';
 import { useModelStore } from '@flow/stores/useModelStore.js';
 import { Button, InputNumber, Popover } from 'antd';
-import { cloneDeep } from 'lodash';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
-type Props = {
-  data: NodeDataType;
-  selected: boolean;
-  xPos: number;
-  yPos: number;
-  folded: boolean;
+const Prompt = (props: {
+  value: string;
+  onChange: (value: string) => void;
+  variables: any[] | undefined;
+  className?: string;
+}) => {
+  const { value, onChange, className, variables } = props;
+  return (
+    <CollapseWrapper className={className} label={'Prompt'}>
+      <div className="h-[200px] bg-white rounded-md cursor-pointer nodrag p-3 overflow-y-auto">
+        <PromptEditor
+          value={value}
+          placeholder="请输入 Prompt"
+          onChange={onChange}
+          variableBlock={{
+            show: true,
+            variables,
+          }}
+        />
+      </div>
+    </CollapseWrapper>
+  );
 };
 
-const LLMNode = (props: Props) => {
+const PromptMemo = memo(Prompt, (prevProps, nextProps) => {
+  return (
+    prevProps.value === nextProps.value && prevProps.variables === nextProps.variables
+  );
+});
+
+const LLMNode = (props: NodeType) => {
   const { data } = props;
 
-  const { findUpstreamNodes, setNode } = useFlowStore();
-  const { ModelSelector, modelOptions, modelConfig } = useModelStore();
+  const setNode = useFlowStore((state) => state.setNode);
+  const nodeLinkMap = useFlowStore((state) => state.nodeLinkMap);
 
-  const upstreamNode = findUpstreamNodes(data.id.toString());
+  const { ModelSelector, modelOptions, modelConfig } = useModelStore();
+  const upstreamNodes = nodeLinkMap[data.id];
 
   const llmParam = data.config?.inputs?.['llm_param'] as BasicSchema[];
 
+  const variable = useMemo(
+    () =>
+      data.config?.inputs?.input_param.map((input) => {
+        return {
+          name: input.name,
+          value: input.name,
+        };
+      }),
+    [data.config?.inputs?.input_param],
+  );
+
   return (
     <NodeWrapper nodeProps={props}>
-      <div className="nodrag">
+      <div>
         {/* Part1 model selector & model config */}
-        <CollapseWrapper
-          className="mb-3"
-          label={'模型配置'}
-          content={
-            ModelSelector !== null ? (
+        <CollapseWrapper className="mb-4" label={'模型配置'}>
+          <>
+            {ModelSelector !== null ? (
               <ModelSelector nodeId={data.id} llmParam={llmParam} />
             ) : (
               <div className="flex">
@@ -56,9 +85,9 @@ const LLMNode = (props: Props) => {
                   content={
                     <div>
                       {Object.entries(modelConfig).map(([key, value]) => (
-                        <>
-                          {key} <InputNumber key={value} />
-                        </>
+                        <div key={key}>
+                          <InputNumber key={value} />
+                        </div>
                       ))}
                     </div>
                   }
@@ -68,16 +97,40 @@ const LLMNode = (props: Props) => {
                   )}
                 </Popover>
               </div>
-            )
-          }
-        />
+            )}
+          </>
+        </CollapseWrapper>
+
         {/* Part2 Ref Form */}
-        <ReferenceForm
-          label="输入变量"
-          dynamic
-          nodes={[...(upstreamNode as any)]}
-          value={cloneDeep(data.config?.inputs?.input_param || [])}
-          // initialValues={cloneDeep(data.config?.inputs?.input_param || [])}
+        {
+          <ReferenceForm
+            label="输入变量"
+            dynamic
+            nodes={upstreamNodes}
+            value={data.config?.inputs?.input_param}
+            onChange={(values) => {
+              setNode(data.id, (old) => ({
+                ...old,
+                data: {
+                  ...old.data,
+                  config: {
+                    ...(old.data['config'] as Record<string, any>),
+                    inputs: {
+                      ...(old.data['config'] as Record<string, any>)['inputs'],
+                      input_param: [...values],
+                    },
+                  },
+                },
+              }));
+            }}
+          />
+        }
+        {/* Part3 PromptEditor */}
+        <PromptMemo
+          value={
+            (llmParam.find((item) => item.name === 'prompt')?.value
+              ?.content as string) || ''
+          }
           onChange={(values) => {
             setNode(data.id, (old) => ({
               ...old,
@@ -87,79 +140,32 @@ const LLMNode = (props: Props) => {
                   ...(old.data['config'] as Record<string, any>),
                   inputs: {
                     ...(old.data['config'] as Record<string, any>)['inputs'],
-                    input_param: [...values],
+                    llm_param: [
+                      ...llmParam.filter((p) => p.name !== 'prompt'),
+                      {
+                        name: 'prompt',
+                        type: 'string',
+                        value: {
+                          type: 'value',
+                          content: values,
+                        },
+                      },
+                    ],
                   },
                 },
               },
             }));
           }}
-        />
-        {/* Part3 PromptEditor */}
-        <CollapseWrapper
-          className="mt-3"
-          label={'Prompt'}
-          content={
-            <div className="h-[200px] bg-white rounded-md cursor-pointer nodrag p-3 overflow-y-auto">
-              <PromptEditor
-                value={
-                  (llmParam.find((item) => item.name === 'prompt')?.value
-                    ?.content as string) || ''
-                }
-                placeholder="请输入 Prompt"
-                onChange={(values) => {
-                  setNode(data.id, (old) => ({
-                    ...old,
-                    data: {
-                      ...old.data,
-                      config: {
-                        ...(old.data['config'] as Record<string, any>),
-                        inputs: {
-                          ...(old.data['config'] as Record<string, any>)['inputs'],
-                          llm_param: [
-                            ...llmParam.filter((p) => p.name !== 'prompt'),
-                            {
-                              name: 'prompt',
-                              type: 'string',
-                              value: {
-                                type: 'value',
-                                content: values,
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    },
-                  }));
-                }}
-                variableBlock={{
-                  show: true,
-                  variables: data.config?.inputs?.input_param.map((input) => {
-                    return {
-                      name: input.name,
-                      value: input.name,
-                    };
-                  }),
-                }}
-              />
-            </div>
-          }
+          variables={variable}
         />
         {/* Part4 Outputer */}
-        <CollapseWrapper
-          className="mt-3"
-          label={'Output'}
-          content={
-            <>
-              {(data.config?.outputs || []).map((output) => (
-                <OutputVariable
-                  key={output.name}
-                  name={output.name}
-                  type={output.type}
-                />
-              ))}
-            </>
-          }
-        />
+        <CollapseWrapper className="mt-3" label={'Output'}>
+          <>
+            {(data.config?.outputs || []).map((output) => (
+              <OutputVariable key={output.name} name={output.name} type={output.type} />
+            ))}
+          </>
+        </CollapseWrapper>
       </div>
     </NodeWrapper>
   );

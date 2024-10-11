@@ -1,23 +1,18 @@
 import { ConditionForm } from '@flow/components/ConditionForm/index.js';
-import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
+import type { NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/flowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
-type Props = {
-  data: NodeDataType;
-  selected: boolean;
-  xPos: number;
-  yPos: number;
-};
-
-export const IfElseNode = (props: Props) => {
+const IfElseNode = (props: NodeType) => {
   const { data } = props;
 
-  const { findUpstreamNodes, setNode } = useFlowStore();
-  const upstreamNode = findUpstreamNodes(data.id.toString());
-  const options = upstreamNode.map((n) => {
-    const node = n as any as NodeType;
+  const setNode = useFlowStore((state) => state.setNode);
+  const nodeLinkMap = useFlowStore((state) => state.nodeLinkMap);
+
+  const upstreamNodes = nodeLinkMap[data.id] || [];
+  const options = upstreamNodes.map((n) => {
+    const node = n;
     return {
       label: node.data.name,
       value: node.data.id,
@@ -33,6 +28,7 @@ export const IfElseNode = (props: Props) => {
   return (
     <NodeWrapper
       nodeProps={props}
+      className="w-[610px]"
       rightHandlerConfig={[
         { id: 'branch-1', style: { top: 110 } },
         { id: 'branch-default', style: { bottom: 34, top: 'auto' } },
@@ -71,3 +67,5 @@ export const IfElseNode = (props: Props) => {
     </NodeWrapper>
   );
 };
+
+export default IfElseNode;

@@ -3,12 +3,7 @@ import yaml from 'js-yaml';
 import type { FC } from 'react';
 
 import Flow from '../Flow/index.js';
-import { AgentNode } from '../Node/AgentNode/index.js';
-import { EndNode } from '../Node/EndNode/index.js';
-import { IfElseNode } from '../Node/IfElseNode/index.js';
-import { KnowledgeNode } from '../Node/KnowledgeNode/index.js';
-import LLMNode from '../Node/LLMNode/index.js';
-import { StartNode } from '../Node/StartNode/index.js';
+import { CustomNode } from '../Node/index.js';
 import { NodesPanel } from '../NodePanel/index.js';
 
 import agentIcon from './icons/agent.svg';
@@ -212,13 +207,7 @@ export const NodeSchemaParser = (obj: Record<string, any>) => {
 };
 
 const nodeTypes: Record<NodeTypes, FC<any>> = {
-  ['start']: StartNode,
-  ['end']: EndNode,
-  ['llm']: LLMNode,
-  ['knowledge']: KnowledgeNode,
-  ['ifelse']: IfElseNode,
-  ['tool']: IfElseNode,
-  ['agent']: AgentNode,
+  ['CUSTOM_NODE']: CustomNode,
 };
 
 export const FlowWithPanel = (props: { toolbar?: React.ReactNode }) => {

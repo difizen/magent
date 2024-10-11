@@ -1,30 +1,23 @@
-import { CollapseWrapper } from '@flow/components/AIBasic/CollapseWrapper/index.js';
+import { CollapseWrapper } from '@flow/components/AIBasic/index.js';
 import { OutputVariable } from '@flow/components/AIBasic/OutputVariableTree/OutputVariable/index.js';
 import { ReferenceForm } from '@flow/components/ReferenceForm/index.js';
-import type { NodeDataType } from '@flow/interfaces/flow.js';
+import type { NodeType } from '@flow/interfaces/flow.js';
 import { useFlowStore } from '@flow/stores/flowStore.js';
 
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
-type Props = {
-  data: NodeDataType;
-  selected: boolean;
-  xPos: number;
-  yPos: number;
-};
-
-export const AgentNode = (props: Props) => {
+const AgentNode = (props: NodeType) => {
   const { data } = props;
   // const { config } = data;
-  const { findUpstreamNodes, setNode } = useFlowStore();
-  const upstreamNodes = findUpstreamNodes(data.id.toString());
+  const { nodeLinkMap, setNode } = useFlowStore();
+  const upstreamNodes = nodeLinkMap[data.id];
 
   return (
     <NodeWrapper nodeProps={props}>
       <div>
         <ReferenceForm
           label="输入变量"
-          nodes={[...(upstreamNodes as any)]}
+          nodes={upstreamNodes}
           value={[...(data.config?.inputs?.input_param || [])]}
           onChange={(values) => {
             setNode(data.id, (old) => ({
@@ -84,22 +77,15 @@ export const AgentNode = (props: Props) => {
             </div>
           }
         /> */}
-        <CollapseWrapper
-          className="mt-3"
-          label={'Output'}
-          content={
-            <>
-              {(data.config?.outputs || []).map((output) => (
-                <OutputVariable
-                  key={output.name}
-                  name={output.name}
-                  type={output.type}
-                />
-              ))}
-            </>
-          }
-        />
+        <CollapseWrapper className="mt-3" label={'Output2'}>
+          <>
+            {(data.config?.outputs || []).map((output) => (
+              <OutputVariable key={output.name} name={output.name} type={output.type} />
+            ))}
+          </>
+        </CollapseWrapper>
       </div>
     </NodeWrapper>
   );
 };
+export default AgentNode;

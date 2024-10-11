@@ -1,4 +1,4 @@
-import type { NodeDataType, NodeTypes } from '@difizen/magent-flow';
+import type { Edge, NodeDataType, NodeTypes, Node } from '@difizen/magent-flow';
 import {
   StartNode,
   EndNode,

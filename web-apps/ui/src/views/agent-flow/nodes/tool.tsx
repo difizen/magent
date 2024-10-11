@@ -27,8 +27,10 @@ export const ToolNode = (props: Props) => {
   const pluginManager = useInject(PluginManager);
 
   const [toolModalOpen, setToolModalOpen] = useState<boolean>(false);
-  const { findUpstreamNodes, setNode } = useFlowStore();
-  const upstreamNodes = findUpstreamNodes(data.id.toString());
+  const { setNode } = useFlowStore((state) => state.setNode);
+  const nodeLinkMap = useFlowStore((state) => state.nodeLinkMap);
+  const upstreamNodes = nodeLinkMap[data.id];
+
   const toolParam = data.config?.inputs?.['tool_param'] as BasicSchema[];
 
   const setTool = useCallback(
@@ -122,7 +124,7 @@ export const ToolNode = (props: Props) => {
         {data.config?.inputs?.input_param && (
           <ReferenceForm
             label="输入变量"
-            nodes={[...(upstreamNodes as any)]}
+            nodes={upstreamNodes}
             value={[...(data.config?.inputs?.input_param || [])]}
             onChange={(values) => {
               setNode(data.id, (old) => ({

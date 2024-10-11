@@ -1,5 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import type { BasicSchema } from '@difizen/magent-flow';
+import type { BasicSchema, Edge, Node } from '@difizen/magent-flow';
 import { useFlowStore, useKnowledgeStore, useModelStore } from '@difizen/magent-flow';
 import {
   BaseView,
@@ -255,6 +255,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
             nodes: [...nodes],
             edges: [...edges],
           });
+
           return;
         })
         .catch(console.error);

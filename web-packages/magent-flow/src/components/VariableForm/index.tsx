@@ -26,7 +26,6 @@ export const VariableForm = (props: VariableFormProps) => {
 
   useEffect(() => {
     form.setFieldValue('variables', values);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
 
   return (
