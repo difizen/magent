@@ -50,7 +50,7 @@
     "@difizen/mana-app": "latest",
     "@difizen/mana-l10n": "latest",
     "@difizen/mana-react": "latest",
-    "@difizen/magent-core": "^0.0.1",
+    "@difizen/magent-core": "^0.1.26",
     "antd": "^5.18.0",
     "classnames": "^2.3.2",
     "copy-to-clipboard": "^3.3.3",

@@ -19,7 +19,9 @@ export interface ChatMessageOption extends IChatMessage {
 export class DefaultChatMessageModel {
   id?: string;
 
-  protected option: ChatMessageOption;
+  parent?: BaseConversationModel;
+
+  protected option: ChatMessageOption | IChatMessage;
 
   protected itemManager: ChatMessageItemManager;
 
@@ -37,19 +39,18 @@ export class DefaultChatMessageModel {
 
   constructor(
     @inject(AutoFactoryOption) option: ChatMessageOption,
-    @inject(ChatMessageItemManager)
-    itemManager: ChatMessageItemManager,
+    @inject(ChatMessageItemManager) itemManager: ChatMessageItemManager,
   ) {
     this.option = option;
     this.id = option.id;
+    this.parent = option.parent;
     this.itemManager = itemManager;
-
     this.created = dayjs(option.created);
     this.modified = dayjs(option.modified);
     this.initMessageItems(option);
   }
 
-  initMessageItems = (option: ChatMessageOption) => {
+  initMessageItems = (option: IChatMessage | ChatMessageOption) => {
     this.items = option.messages.map((opt) => {
       return this.itemManager.createChatMessageItem({ ...opt, parent: this });
     });

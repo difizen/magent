@@ -25,7 +25,8 @@ export class DefaultChatMessageItemModel {
   id?: string;
   sender: IChatMessageSender;
 
-  protected option: ChatMessageItemOption;
+  option: ChatMessageItemOption;
+
   protected parent: BaseChatMessageModel;
 
   @prop()

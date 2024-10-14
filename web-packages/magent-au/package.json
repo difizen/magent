@@ -1,9 +1,9 @@
 {
-  "name": "@difizen/magent-core",
+  "name": "@difizen/magent-au",
   "version": "0.1.26",
   "description": "",
   "keywords": [
-    "core",
+    "chat",
     "magent",
     "agent"
   ],
@@ -50,14 +50,19 @@
     "@difizen/mana-app": "latest",
     "@difizen/mana-l10n": "latest",
     "@difizen/mana-react": "latest",
-    "axios": "^1.7.2",
+    "@difizen/magent-core": "^0.1.26",
+    "@difizen/magent-chat": "^0.1.26",
+    "@difizen/magent-flow": "^0.1.26",
+    "lodash.debounce": "^4.0.8",
+    "antd": "^5.18.0",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
-    "query-string": "^9.0.0",
+    "eventsource-parser": "^1.1.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.25",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@types/uuid": "^9.0.2"
   },
   "peerDependencies": {
