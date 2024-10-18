@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
-    "@difizen/magent-flow": "workspace:^",
+    "@difizen/magent-flow": "^0.1.26",
+    "@difizen/magent-core": "^0.1.26",
     "@difizen/mana-app": "^0.1.8",
     "@difizen/mana-react": "^0.1.8",
     "@rjsf/antd": "^5.18.2",
