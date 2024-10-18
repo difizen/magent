@@ -5,7 +5,7 @@ export default defineConfig({
     hd: { rules: [] },
     name: 'magent',
     link: '/',
-    logo: 'logo.svg',
+    logo: '/logo.svg',
     nav: [
       { title: '介绍', link: '/introduction' },
       { title: '教程', link: '/tutorial' },
@@ -15,7 +15,7 @@ export default defineConfig({
     qrcodes: [
       {
         name: '钉钉',
-        qrcode: 'magent-dingding-group.png',
+        qrcode: '/magent-dingding-group.png',
       },
     ],
     banner: {
@@ -77,5 +77,21 @@ export default defineConfig({
   },
 
   // dev
-  proxy: {},
+  proxy: {
+    // au api
+    '/api': {
+      target: 'http://localhost:8888/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
+    '/resources': {
+      target: 'http://localhost:8888/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
+  },
 });

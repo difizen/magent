@@ -1,18 +1,20 @@
-import type { BaseChatMessageItemModel } from '@difizen/magent-chat';
+import type {
+  BaseChatMessageItemModel,
+  ChatMessageOption,
+  IChatEvent,
+} from '@difizen/magent-chat';
 import { DefaultChatMessageModel, ChatMessageItemManager } from '@difizen/magent-chat';
 import { autoFactory, AutoFactoryOption, Fetcher } from '@difizen/magent-core';
-import type { Event } from '@difizen/mana-app';
-import { Emitter, Deferred } from '@difizen/mana-app';
+import { Deferred } from '@difizen/mana-app';
 import { inject, prop } from '@difizen/mana-app';
 import dayjs from 'dayjs';
 import { EventSourceParserStream } from 'eventsource-parser/stream';
-import type { ParsedEvent } from 'eventsource-parser/stream';
 
 import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
 
 import { AUAgentChatMessageItem } from './ai-message-item.js';
-import { AnswerState } from './protocol.js';
+import { AnswerState, AUChatEvent } from './protocol.js';
 import { AUChatMessageType } from './protocol.js';
 import type {
   APIMessage,
@@ -39,17 +41,7 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
   messages: BaseChatMessageItemModel[] = [];
 
   @prop()
-  sending?: boolean = false;
-
-  @prop()
   invocationChain?: ChainItem[];
-
-  disposed = false;
-  onDispose: Event<void>;
-  protected onDisposeEmitter = new Emitter<void>();
-
-  onMessageItem: Event<BaseChatMessageItemModel>;
-  protected onMessageItemEmitter = new Emitter<BaseChatMessageItemModel>();
 
   agentReady: Promise<AgentModel>;
   protected agentDeferred: Deferred<AgentModel> = new Deferred<AgentModel>();
@@ -64,8 +56,6 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     this.option = option;
     this.agentReady = this.agentDeferred.promise;
     this.fetcher = fetcher;
-    this.onDispose = this.onDisposeEmitter.event;
-    this.onMessageItem = this.onMessageItemEmitter.event;
     this.agentManager = agentManager;
     if (AUChatMessageType.isCreate(option)) {
       this.send(option);
@@ -80,11 +70,6 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     this.agent = agent;
     this.agent.fetchInfo();
     this.agentDeferred.resolve(agent);
-  };
-
-  dispose = (): void => {
-    this.disposed = true;
-    this.onDisposeEmitter.fire();
   };
 
   protected doUpdateMessages = async (option: AUMessageOption) => {
@@ -108,20 +93,14 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
       this.onMessageItemEmitter.fire(messages[messages.length - 1]);
     }
   };
-  updateMeta = (option: AUMessageOption) => {
-    this.id = option.id || dayjs().unix().toString();
-    this.agentId = option.agentId;
+
+  override updateMeta = (option: ChatMessageOption) => {
+    super.updateMeta(option);
     this.getAgent(this.agentId);
-    this.sessionId = option.sessionId;
-    if (option.created) {
-      this.created = dayjs(option.created);
-    }
-    if (option.modified) {
-      this.modified = dayjs(option.modified);
-    }
-    this.doUpdateMessages(option);
+    this.parent = option.parent;
   };
-  doChat = async (option: AUMessageCreate) => {
+
+  protected doChat = async (option: AUMessageCreate) => {
     const { agentId, sessionId, input } = option;
     const res = await this.fetcher.post<APIMessage>(
       `/api/v1/agents/${option.agentId}/chat`,
@@ -152,33 +131,18 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     }
   };
 
-  protected handleChatEvent = (
-    e: ParsedEvent | undefined,
-    ai: AUAgentChatMessageItem,
-  ) => {
+  protected handleChatEvent = (e: IChatEvent, ai: AUAgentChatMessageItem) => {
     if (!e) {
       return;
     }
     try {
-      const data = JSON.parse(e.data);
-      // if (e.event === 'message') {
-      //   const newMessageModel: ChatMessageModel = JSON.parse(e.data);
-      //   const message = this.getOrCreateMessage(newMessageModel);
-      //   this.messages = [...this.messages, message];
-      //   setImmediate(() => this.scrollToBottom(true, false));
-      // }
-
-      if (e.event === 'result') {
-        const result: ChatEventResult = data;
+      if (AUChatEvent.isResult(e)) {
+        const result: ChatEventResult = e;
         this.invocationChain = result.invocation_chain;
-        // this.tokenUsage = result.token_usage;
-        // this.responseTime = result.response_time;
-        // this.startTime = dayjs(result.start_time);
-        // this.endTime = dayjs(result.end_time);
         this.onMessageItemEmitter.fire(ai);
       }
 
-      ai.handleEventData(e, data);
+      ai.handleEventData(e);
       this.onMessageItemEmitter.fire(ai);
     } catch (e) {
       console.warn('[chat] recerved server send event', event);
@@ -186,7 +150,7 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     }
   };
 
-  doStreamChat = async (option: AUMessageCreate) => {
+  protected doStreamChat = async (option: AUMessageCreate) => {
     const { agentId, sessionId, input } = option;
 
     const url = `/api/v1/agents/${option.agentId}/stream-chat`;
@@ -228,7 +192,9 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
             alreayDone = true;
             break;
           }
-          this.handleChatEvent(value, ai);
+          const data = JSON.parse(value.data);
+          const event = AUChatEvent.format(value.event || 'chunk', data);
+          this.handleChatEvent(event, ai);
         }
       }
       ai.state = AnswerState.SUCCESS;
@@ -236,7 +202,7 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     }
   };
 
-  send = async (option: AUMessageCreate) => {
+  protected send = async (option: AUMessageCreate) => {
     const { input, stream = true } = option;
     this.sending = true;
 

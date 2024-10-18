@@ -1,0 +1,68 @@
+.card-item {
+  height: 100%;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  position: relative;
+
+  &-title {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  &-icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+  }
+
+  &-description {
+    color: var(--mana-text-tertiary);
+    font-size: 12px;
+    text-overflow: ellipsis;
+  }
+
+  &-show-action {
+    background-color: var(--mana-activityBar-background);
+  }
+
+  &-action {
+    max-width: 120px;
+    position: absolute;
+    right: 8px;
+    height: 100%;
+    background-color: var(--mana-activityBar-background);
+  }
+
+  &-content {
+    max-width: calc(100% - 64px);
+  }
+
+  &-icon-box {
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.focus {
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 0 8px #ccc;
+      cursor: pointer;
+    }
+  }
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ellipsis2Line {
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

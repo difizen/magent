@@ -2,10 +2,10 @@ import type { RadioGroupProps } from 'antd';
 import { Avatar } from 'antd';
 import { Radio } from 'antd';
 
-import ragIcon from './rag.svg.js';
-import reactIcon from './react.svg.js';
-import workflowIcon from './workflow.svg.js';
-import './index.less.js';
+import ragIcon from './rag.svg';
+import reactIcon from './react.svg';
+import workflowIcon from './workflow.svg';
+import './index.less';
 
 export const AgentTypeSelector = (props: RadioGroupProps) => {
   const options = [

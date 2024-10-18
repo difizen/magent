@@ -1,6 +1,6 @@
 import { Tag, Tooltip } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import './index.less.js';
+import './index.less';
 
 export interface TagListProps {
   tags: string[];

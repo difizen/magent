@@ -7,6 +7,7 @@ import {
   DefaultChatMessageItemModel,
   HumanChatMessageItemModel,
 } from './chat-message-item-model.js';
+import { ChatMessageManager } from './chat-message-manager.js';
 import { DefaultChatMessageModel } from './chat-message-model.js';
 import { ChatService } from './chat-service.js';
 import { ConversationManager } from './conversation-manager.js';
@@ -18,6 +19,7 @@ export const ChatBaseModule = ManaModule.create('magent-chat-base')
     ChatService,
     ConversationManager,
     DefaultConversationModel,
+    ChatMessageManager,
     DefaultChatMessageModel,
     DefaultChatMessageItemModel,
     HumanChatMessageItemModel,

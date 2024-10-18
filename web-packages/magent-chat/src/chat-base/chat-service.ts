@@ -13,8 +13,12 @@ export class ChatService {
   chat = async (msg: any): Promise<IChatMessageItem[]> => {
     throw new Error('Unimplemented');
   };
-  chatStream = async (msg: any, callback: (event: IChatEvent) => void) => {
-    //
+  chatStream = async (
+    msg: any,
+    messgeCallback: (event: IChatMessageItem) => void,
+    eventCallback: (event: IChatEvent) => void,
+  ): Promise<void> => {
+    throw new Error('Unimplemented');
   };
 
   getConversationMessages = async (
@@ -33,9 +37,7 @@ export class ChatService {
     return undefined;
   };
 
-  createConversation = async (
-    opt: IConversation,
-  ): Promise<ConversationOption | undefined> => {
+  createConversation = async (opt: any): Promise<ConversationOption | undefined> => {
     return undefined;
   };
 

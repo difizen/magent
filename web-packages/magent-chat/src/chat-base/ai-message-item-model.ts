@@ -1,10 +1,10 @@
 import { autoFactory, AutoFactoryOption } from '@difizen/magent-core';
 import { inject, prop } from '@difizen/mana-app';
-import type { ParsedEvent } from 'eventsource-parser';
 
 import type { ChatMessageItemOption } from './chat-message-item-model.js';
 import { DefaultChatMessageItemModel } from './chat-message-item-model.js';
-import type { ChatEventChunk } from './protocol.js';
+import type { ChatEventChunk, IChatEvent } from './protocol.js';
+import { ChatEvent } from './protocol.js';
 import { AnswerState } from './protocol.js';
 
 @autoFactory()
@@ -21,11 +21,11 @@ export class AIChatMessageItemModel extends DefaultChatMessageItemModel {
     }
   }
 
-  handleEventData(e: ParsedEvent, data: any) {
-    if (e.event === 'chunk') {
-      this.appendChunk(data as ChatEventChunk);
+  override handleEventData = (event: IChatEvent) => {
+    if (ChatEvent.isChunk(event)) {
+      this.appendChunk(event);
     }
-  }
+  };
 
   appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;

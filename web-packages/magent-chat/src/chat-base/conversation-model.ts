@@ -1,13 +1,12 @@
-import type { ToAutoFactory } from '@difizen/magent-core';
 import { AutoFactoryOption } from '@difizen/magent-core';
 import { AsyncModel } from '@difizen/magent-core';
-import { autoFactory, toAutoFactory } from '@difizen/magent-core';
+import { autoFactory } from '@difizen/magent-core';
 import type { Event, Disposable } from '@difizen/mana-app';
 import { DisposableCollection, Emitter, inject, prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 
-import { DefaultChatMessageModel } from './chat-message-model.js';
+import { ChatMessageManager } from './chat-message-manager.js';
 import { ChatService } from './chat-service.js';
 import type { BaseChatMessageItemModel, BaseChatMessageModel } from './protocol.js';
 import { ConversationOption } from './protocol.js';
@@ -17,8 +16,8 @@ export class DefaultConversationModel
   extends AsyncModel<DefaultConversationModel, ConversationOption>
   implements Disposable
 {
-  @inject(toAutoFactory(DefaultChatMessageModel))
-  protected messageFactory: ToAutoFactory<typeof DefaultChatMessageModel>;
+  @inject(ChatMessageManager)
+  protected messageManager: ChatMessageManager;
 
   @inject(ChatService) protected chatService: ChatService;
 
@@ -85,8 +84,9 @@ export class DefaultConversationModel
     this.modified = dayjs(option.modified);
 
     this.messages =
-      option.messages?.map((opt) => this.messageFactory({ ...opt, parent: this })) ||
-      [];
+      option.messages?.map((opt) =>
+        this.messageManager.getOrCreate({ ...opt, parent: this }),
+      ) || [];
     super.fromMeta(option);
   }
 
@@ -104,7 +104,7 @@ export class DefaultConversationModel
   };
 
   sendMessage = (msg: any) => {
-    const message = this.messageFactory({ ...msg, parent: this });
+    const message = this.messageManager.getOrCreate({ ...msg, parent: this });
     this.messages.push(message);
   };
 }

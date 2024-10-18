@@ -10,6 +10,7 @@ import type {
   BaseChatMessageModel,
   AnswerState,
   ErrorMessage,
+  IChatEvent,
 } from './protocol.js';
 
 export interface ChatMessageItemOption extends IChatMessageItem {
@@ -58,6 +59,10 @@ export class DefaultChatMessageItemModel {
     this.modified = dayjs(option.modified);
     this.sender = option.sender;
     this.content = option.content;
+  }
+
+  handleEventData(e: IChatEvent) {
+    // void
   }
 }
 

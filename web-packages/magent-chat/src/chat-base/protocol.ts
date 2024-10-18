@@ -76,9 +76,10 @@ export interface IChatEvent {
   type: string;
   [key: string]: any;
 }
+
 export interface ChatEventChunk extends IChatEvent {
   output: string;
-  type: 'token';
+  type: 'chunk';
   [key: string]: any;
 }
 
@@ -89,6 +90,22 @@ export interface ErrorMessage {
 export interface ChatEventError extends IChatEvent, ErrorMessage {
   type: 'error';
 }
+
+export interface ChatEventDone extends IChatEvent {
+  type: 'done';
+}
+
+export const ChatEvent = {
+  isChunk: (event: IChatEvent): event is ChatEventChunk => {
+    return !!event && event.type === 'chunk';
+  },
+  isError: (event: IChatEvent): event is ChatEventError => {
+    return !!event && event.type === 'error';
+  },
+  isDone: (event: IChatEvent): event is ChatEventDone => {
+    return !!event && event.type === 'done';
+  },
+};
 
 export interface ConversationOption extends IConversation {
   id: string;

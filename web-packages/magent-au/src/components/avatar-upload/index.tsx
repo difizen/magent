@@ -3,7 +3,7 @@ import type { GetProp, UploadProps } from 'antd';
 import { message, Upload } from 'antd';
 import type { FC } from 'react';
 import { useState } from 'react';
-import './index.less.js';
+import './index.less';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 

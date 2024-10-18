@@ -1,18 +1,18 @@
+import type { ChatEventChunk, ChatEventError, IChatEvent } from '@difizen/magent-chat';
+import { ChatEvent } from '@difizen/magent-chat';
 import { AIChatMessageItemModel } from '@difizen/magent-chat';
 import { autoFactory, AutoFactoryOption, Fetcher } from '@difizen/magent-core';
 import { Deferred, inject, prop } from '@difizen/mana-app';
-import type { ParsedEvent } from 'eventsource-parser';
 
 import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
 
 import type {
-  ChatEventChunk,
-  ChatEventError,
   ChatEventResult,
   ChatEventStep,
   AUChatMessageItemOption,
 } from './protocol.js';
+import { AUChatEvent } from './protocol.js';
 import { AnswerState } from './protocol.js';
 
 @autoFactory()
@@ -58,23 +58,23 @@ export class AUAgentChatMessageItem extends AIChatMessageItemModel {
     this.agentDeferred.resolve(agent);
   };
 
-  override handleEventData(e: ParsedEvent, data: any) {
-    if (e.event === 'chunk') {
-      this.appendChunk(data as ChatEventChunk);
+  override handleEventData = (e: IChatEvent) => {
+    if (ChatEvent.isChunk(e)) {
+      this.appendChunk(e as ChatEventChunk);
     }
 
-    if (e.event === 'result') {
-      this.handleResult(data as ChatEventResult);
+    if (AUChatEvent.isResult(e)) {
+      this.handleResult(e as ChatEventResult);
     }
 
-    if (e.event === 'steps') {
-      this.handleSteps(data as ChatEventStep);
+    if (AUChatEvent.isStep(e)) {
+      this.handleSteps(e as ChatEventStep);
     }
 
-    if (e.event === 'error') {
-      this.handleError(data as ChatEventError);
+    if (ChatEvent.isError(e)) {
+      this.handleError(e as ChatEventError);
     }
-  }
+  };
 
   override appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;
@@ -82,7 +82,7 @@ export class AUAgentChatMessageItem extends AIChatMessageItemModel {
 
   handleError(e: ChatEventError) {
     // {"error": {"error_msg": "The node type is not supported"}, "type": "error"}
-    this.error = { message: e.error.error_msg };
+    this.error = { message: e.message };
   }
 
   handleSteps(e: ChatEventStep) {

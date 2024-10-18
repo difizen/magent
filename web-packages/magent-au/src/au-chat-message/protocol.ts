@@ -1,4 +1,11 @@
-import type { ChatMessageItemOption, IChatMessage } from '@difizen/magent-chat';
+import type {
+  ChatEventChunk,
+  ChatEventDone,
+  ChatEventError,
+  ChatMessageItemOption,
+  IChatEvent,
+  IChatMessage,
+} from '@difizen/magent-chat';
 import type { ChatMessageOption, IChatMessageItem } from '@difizen/magent-chat';
 
 export type { AUChatMessageModel } from './chat-message-model.js';
@@ -98,19 +105,6 @@ export interface AUChatMessageItemOption extends ChatMessageItemOption {
   agentId: string;
 }
 
-export interface ChatEventChunk {
-  agent_id: string;
-  output: string;
-  type: 'token';
-}
-export interface ChatErrorInfo {
-  error_msg: string;
-}
-export interface ChatEventError {
-  error: ChatErrorInfo;
-  type: 'error';
-}
-
 export interface ChainItem {
   source: string;
   type: string;
@@ -121,7 +115,7 @@ export interface ChatTokenUsage {
   prompt_tokens: number;
   total_tokens: number;
 }
-export interface ChatEventResult {
+export interface ChatEventResult extends IChatEvent {
   response_time: number;
   message_id: number;
   session_id: string;
@@ -130,15 +124,47 @@ export interface ChatEventResult {
   end_time: string;
   invocation_chain: ChainItem[];
   token_usage: ChatTokenUsage;
-  type: 'final_result';
+  type: 'result';
 }
 export interface ChatEventStep {
   agent_id: string;
   output: (string | ChatEventStepQA)[] | string;
-  type: 'intermediate_steps';
+  type: 'steps';
 }
 
 export interface ChatEventStepQA {
   input: string;
   output: string;
 }
+
+export const AUChatEvent = {
+  isResult: (e: IChatEvent): e is ChatEventResult => {
+    return !!e && e.type === 'result';
+  },
+  isStep: (e: IChatEvent): e is ChatEventStep => {
+    return !!e && e.type === 'steps';
+  },
+  format: (
+    e: string,
+    data: any,
+  ):
+    | ChatEventResult
+    | ChatEventStep
+    | ChatEventChunk
+    | ChatEventError
+    | ChatEventDone => {
+    switch (e) {
+      case 'chunk':
+        return { ...data, type: 'chunk' };
+      case 'result':
+        return { ...data, type: 'result' };
+      case 'steps':
+        return { ...data, type: 'steps' };
+      case 'error':
+        return { ...data, type: 'error' };
+      case 'done':
+        return { ...data, type: 'done' };
+    }
+    return data;
+  },
+};
