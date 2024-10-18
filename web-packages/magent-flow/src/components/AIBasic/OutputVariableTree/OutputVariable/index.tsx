@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from '@flow/utils/basic.js';
+import { capitalizeFirstLetter } from '../../../../utils/basic.js';
 
 export const OutputVariable = (props: { name: string; type: string }) => {
   const { name, type } = props;

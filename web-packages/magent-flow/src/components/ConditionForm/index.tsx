@@ -1,8 +1,8 @@
-import type { ConditionBranch } from '@flow/interfaces/flow.js';
 import { Form } from 'antd';
 import type { DefaultOptionType } from 'antd/es/cascader';
 import { useEffect } from 'react';
 
+import type { ConditionBranch } from '../../interfaces/flow.js';
 import { SelectInNode } from '../AIBasic/SelectInNode//index.js';
 import { ReferenceSelect } from '../ReferenceSelect/index.js';
 

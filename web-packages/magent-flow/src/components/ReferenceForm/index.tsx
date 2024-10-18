@@ -1,8 +1,8 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import type { BasicSchema, NodeType } from '@flow/interfaces/flow.js';
 import { Button, Form, Input, Space } from 'antd';
 import { useEffect } from 'react';
 
+import type { BasicSchema, NodeType } from '../../interfaces/flow.js';
 import { CollapseWrapper } from '../AIBasic/CollapseWrapper/index.js';
 import { ReferenceSelect } from '../ReferenceSelect/index.js';
 

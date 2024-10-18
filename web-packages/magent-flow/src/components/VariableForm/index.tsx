@@ -3,10 +3,10 @@ import {
   MinusCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import type { BasicSchema } from '@flow/interfaces/flow.js';
 import { Button, Checkbox, Collapse, Form, Input, Space } from 'antd';
 import { useEffect } from 'react';
 
+import type { BasicSchema } from '../../interfaces/flow.js';
 import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
 
 export interface VariableFormProps {

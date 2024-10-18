@@ -1,7 +1,6 @@
-import { ConditionForm } from '@flow/components/ConditionForm/index.js';
-import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
-
+import { ConditionForm } from '../../../components/ConditionForm/index.js';
+import type { NodeDataType, NodeType } from '../../../interfaces/flow.js';
+import { useFlowStore } from '../../../stores/useFlowStore.js';
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {

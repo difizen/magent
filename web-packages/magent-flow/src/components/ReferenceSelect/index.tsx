@@ -1,7 +1,7 @@
-import type { SchemaValueType, ValueType } from '@flow/interfaces/flow.js';
 import { Input } from 'antd';
 import type { DefaultOptionType } from 'antd/es/cascader';
 
+import type { SchemaValueType, ValueType } from '../../interfaces/flow.js';
 import { CascaderInNode } from '../AIBasic/CascaderInNode/index.js';
 import { SelectInNode } from '../AIBasic/SelectInNode/index.js';
 

@@ -1,7 +1,8 @@
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
 import type { EdgeProps } from '@xyflow/react';
 import { BaseEdge, getBezierPath, MarkerType } from '@xyflow/react';
 import { useEffect } from 'react';
+
+import { useFlowStore } from '../../stores/useFlowStore.js';
 
 const EdgeColor = {
   Default: '#9ca3af',
