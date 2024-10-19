@@ -7,6 +7,7 @@ import {
   ManaModule,
   RootSlotId,
 } from '@difizen/mana-app';
+import './index.less';
 
 const AppModule = ManaModule.create().register(
   createViewPreference({

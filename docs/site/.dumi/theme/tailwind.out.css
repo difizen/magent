@@ -21,7 +21,7 @@
   iframe,
   embed,
   object {
-    display: block;
+    /* display: block; */
 
     /* 1 */
     vertical-align: middle;
@@ -1367,3 +1367,5 @@ body {
     line-height: 1;
   }
 }
+
+

@@ -10,6 +10,7 @@ export default defineConfig({
       { title: '介绍', link: '/introduction' },
       { title: '教程', link: '/tutorial' },
       { title: '示例', link: '/examples' },
+      { title: 'AU', link: '/au' },
     ],
     gitRepo: { owner: 'difizen', name: 'magent' },
     qrcodes: [

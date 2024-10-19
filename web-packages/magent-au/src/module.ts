@@ -30,7 +30,10 @@ export const AUDataModule = new ManaModule()
     AgentBotModule,
     ToolModule,
     PluginModule,
-  )
+  );
+
+export const AUModule = new ManaModule()
+  .dependOn(AUDataModule)
   .dependOn(
     BaseLayoutModule,
     PortalsModule,
@@ -46,5 +49,3 @@ export const AUDataModule = new ManaModule()
     DebugModule,
     PluginPageModule,
   );
-
-export const AUModule = new ManaModule().dependOn(AUDataModule);
