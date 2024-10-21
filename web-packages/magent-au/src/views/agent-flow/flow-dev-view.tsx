@@ -9,7 +9,7 @@ import { useMatch } from 'react-router-dom';
 
 import type { AgentConfigManager } from '../../agent/agent-config-manager.js';
 import type { Graph } from '../../workflow/protocol.js';
-import { AgentView } from '../agent-dev/chat-view.js';
+import { AgentChatView } from '../agent-chat/chat-view.js';
 import { DebugDrawer } from '../debug/debug-drawer.js';
 
 import { AgentFlowView } from './agent-flow-view.js';
@@ -72,7 +72,7 @@ const AgentFlowDevComponent = forwardRef<HTMLDivElement>(
 
 @singleton()
 @view(viewId)
-export class AgentFlowDevView extends AgentView {
+export class AgentFlowDevView extends AgentChatView {
   @prop()
   hideChat = true;
 

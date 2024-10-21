@@ -94,11 +94,14 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     }
   };
 
-  override updateMeta = (option: ChatMessageOption) => {
+  override updateMeta(option: ChatMessageOption) {
     super.updateMeta(option);
+    if ('agentId' in option) {
+      this.agentId = option['agentId'];
+    }
     this.getAgent(this.agentId);
     this.parent = option.parent;
-  };
+  }
 
   protected doChat = async (option: AUMessageCreate) => {
     const { agentId, sessionId, input } = option;

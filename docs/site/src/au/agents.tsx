@@ -5,6 +5,7 @@ const App = (): JSX.Element => {
   return (
     <div className="docs-view docs-agents">
       <ManaComponents.Application
+        key="docs-au-agents"
         asChild={true}
         modules={[ManaAppPreset, AUDataModule, BaseLayoutModule, AgentsPageModule]}
         renderChildren

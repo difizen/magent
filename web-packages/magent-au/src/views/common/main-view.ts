@@ -1,7 +1,7 @@
 import { prop } from '@difizen/mana-app';
 import { singleton } from '@difizen/mana-app';
 
-import type { NavigatablePage } from './protocol.js';
+import type { NavigatablePage } from '../base-layout/protocol.js';
 
 @singleton()
 export class MainView {

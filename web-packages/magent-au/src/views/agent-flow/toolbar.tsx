@@ -12,7 +12,7 @@ import { Button, message } from 'antd';
 import classNames from 'classnames';
 import yaml from 'js-yaml';
 
-import type { MainView } from '../base-layout/main-view.js';
+import type { MainView } from '../common/main-view.js';
 
 import { AgentFlowDevView } from './flow-dev-view.js';
 import { OutputEdgeParser, OutputNodeParser } from './flow-utils.js';

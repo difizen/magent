@@ -7,17 +7,21 @@ import type { BaseConversationModel } from './protocol.js';
 import type { ConversationOption } from './protocol.js';
 
 @singleton()
-export class ConversationManager {
+export class ConversationManager<
+  T extends BaseConversationModel = BaseConversationModel,
+> {
   protected option: any;
-  protected cache: Map<string, BaseConversationModel> = new Map<
-    string,
-    BaseConversationModel
-  >();
+  protected cache: Map<string, T> = new Map<string, T>();
+  protected factory: ToAutoFactory<typeof DefaultConversationModel>;
 
-  @inject(toAutoFactory(DefaultConversationModel))
-  factory: ToAutoFactory<typeof DefaultConversationModel>;
+  constructor(
+    @inject(toAutoFactory(DefaultConversationModel))
+    modelFactory: ToAutoFactory<typeof DefaultConversationModel>,
+  ) {
+    this.factory = modelFactory;
+  }
 
-  getOrCreate = (option: ConversationOption): BaseConversationModel => {
+  getOrCreate<O extends ConversationOption = ConversationOption>(option: O): T {
     const currentOption = option;
     if (!currentOption.id) {
       throw new Error('Missing id property in conversation option');
@@ -26,11 +30,11 @@ export class ConversationManager {
     if (exist) {
       return exist;
     }
-    const conversation = this.factory(currentOption);
+    const conversation = this.factory(currentOption) as T;
     conversation.onDispose(() => {
       this.cache.delete(currentOption.id);
     });
     this.cache.set(currentOption.id, conversation);
     return conversation;
-  };
+  }
 }

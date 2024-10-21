@@ -24,7 +24,7 @@ export const SessionOptionType = {
   },
 };
 
-export type { SessionModel as SessionModel } from './session-model.js';
+export type { SessionModel } from './session-model.js';
 
 export const SessionInstance = Syringe.defineToken('SessionInstance', {
   multiple: false,

@@ -14,8 +14,8 @@ import dayjs from 'dayjs';
 import { AUChatMessageModel } from '../au-chat-message/chat-message-model.js';
 // import type { AUMessageCreate } from '../au-chat-message/protocol.js';
 
-import type { APISession, SessionOption } from './protocol.js';
-import { SessionOptionType, toSessionOption } from './protocol.js';
+import type { SessionOption } from './protocol.js';
+import { SessionOptionType } from './protocol.js';
 
 @autoFactory()
 export class SessionModel extends DefaultConversationModel {
@@ -53,26 +53,15 @@ export class SessionModel extends DefaultConversationModel {
   }
 
   override fetchInfo = async (option: SessionOption): Promise<void> => {
-    const res = await this.fetcher.get<APISession>(`/api/v1/agents/${option.id}`);
-    if (res.status === 200) {
-      this.fromMeta(toSessionOption(res.data));
-    }
+    console.warn('fetch session model info not implemented');
   };
+
+  protected override fromMeta(option: SessionOption = this.option) {
+    this.agentId = option.agentId;
+    super.fromMeta(option);
+  }
 
   protected disposeMessage = (msg: AUChatMessageModel) => {
     this.messages = this.messages.filter((item) => !equals(item, msg));
   };
-
-  // chat(msg: AUMessageCreate) {
-  //   const message = this.chatMessage.createMessage(msg);
-  //   const toDispose = message.onMessageItem((e) => {
-  //     this.onMessageEmitter.fire(e);
-  //   });
-  //   this.toDispose.push(toDispose);
-  //   message.onDispose(() => {
-  //     toDispose.dispose();
-  //     this.disposeMessage(message);
-  //   });
-  //   this.messages.push(message);
-  // }
 }

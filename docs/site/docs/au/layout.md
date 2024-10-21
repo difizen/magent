@@ -3,6 +3,6 @@ title: layout
 order: 1
 ---
 
-# AgentUniverse layout
+# 主布局
 
 <code src="../../src/au/layout" compact="true"></code>

@@ -19,7 +19,7 @@ import { AgentManager } from '../../agent/agent-manager.js';
 import type { AgentModel } from '../../agent/protocol.js';
 import { RouterHistory } from '../../common/router.js';
 import type { SessionModel } from '../../session/protocol.js';
-import { PageView } from '../base-layout/page-view.js';
+import { PageView } from '../common/page-view.js';
 import { SessionsView } from '../sessions/view.js';
 
 import './index.less';
@@ -29,7 +29,7 @@ export const slot = `${viewId}-slot`;
 
 const AgentChatComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {
-    const instance = useInject<AgentView>(ViewInstance);
+    const instance = useInject<AgentChatView>(ViewInstance);
     const match = useMatch('/agent/:agentId/chat');
     const agentId = match?.params?.agentId;
     instance.agentId = agentId;
@@ -54,7 +54,7 @@ const AgentChatComponent = forwardRef<HTMLDivElement>(
 );
 
 const Title = () => {
-  const instance = useInject<AgentView>(ViewInstance);
+  const instance = useInject<AgentChatView>(ViewInstance);
   const agent = instance.agent;
   let title = <h5>{agent?.name}</h5>;
   if (agent?.mtime) {
@@ -79,7 +79,7 @@ const Title = () => {
 
 @singleton()
 @view(viewId)
-export class AgentView extends PageView {
+export class AgentChatView extends PageView {
   hideBrand = true;
   protected _agentId?: string;
 
@@ -204,7 +204,7 @@ export class AgentView extends PageView {
     }
     const chatView = await this.viewManager.getOrCreateView(ChatView, {
       agentId: session.agentId,
-      sessionId: session.id,
+      id: session.id,
     });
     this.chat = chatView;
   };

@@ -10,7 +10,10 @@ export * from './tool/index.js';
 export * from './workflow/index.js';
 export * from './session/index.js';
 export * from './module.js';
+export * from './data-module.js';
 
 export * from './views/base-layout/module.js';
 export * from './views/portal-layout/index.js';
 export * from './views/agents/index.js';
+export * from './views/agent-dev/module.js';
+export * from './views/agent-chat/index.js';

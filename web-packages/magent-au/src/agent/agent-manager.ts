@@ -11,7 +11,7 @@ import type {
 @singleton()
 export class AgentManager {
   protected cache: Map<string, AgentModel> = new Map<string, AgentModel>();
-  @inject(AgentModelFactory) botFactory: AgentModelFactory;
+  @inject(AgentModelFactory) factory: AgentModelFactory;
   @inject(Fetcher) fetcher: Fetcher;
 
   getAll = async (): Promise<AgentModelOption[]> => {
@@ -28,9 +28,9 @@ export class AgentManager {
     if (exist) {
       return exist;
     }
-    const bot = this.botFactory(option);
-    this.cache.set(bot.id, bot);
-    return bot;
+    const agent = this.factory(option);
+    this.cache.set(agent.id, agent);
+    return agent;
   };
 
   create = async (option: AgentModelCreateOption) => {

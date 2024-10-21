@@ -3,6 +3,7 @@ import { ManaModule } from '@difizen/mana-app';
 
 import { AUAgentChatMessageItem } from './ai-message-item.js';
 import { AUChatMessageModel } from './chat-message-model.js';
+import { AUChatService } from './chat-service.js';
 import { PeerChatMessageItem } from './peer-message-item-model.js';
 
 export const ChatMessageModule = ManaModule.create()
@@ -14,5 +15,6 @@ export const ChatMessageModule = ManaModule.create()
     },
     AUAgentChatMessageItem,
     PeerChatMessageItem,
+    AUChatService,
   )
   .dependOn(ChatModule);

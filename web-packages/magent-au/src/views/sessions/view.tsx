@@ -1,4 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
+import { ConversationManager } from '@difizen/magent-chat';
 import {
   BaseView,
   ViewInstance,
@@ -14,7 +15,7 @@ import { Button } from 'antd';
 import classNames from 'classnames';
 import { forwardRef, useMemo } from 'react';
 
-import { SessionManager } from '../../session/session-manager.js';
+import type { SessionManager } from '../../session/session-manager.js';
 import type { SessionModel } from '../../session/session-model.js';
 
 import { ConversationItem } from './conversation-list/index.js';
@@ -121,7 +122,7 @@ export interface SessionsViewOption {
 @transient()
 @view(viewId)
 export class SessionsView extends BaseView {
-  @inject(SessionManager) sessionManager: SessionManager;
+  @inject(ConversationManager) sessionManager: SessionManager;
 
   @prop()
   loadig = false;
@@ -159,7 +160,7 @@ export class SessionsView extends BaseView {
     this.loadig = true;
     const sessions = await this.sessionManager.getSessions(this.agentId);
     this.sessions = sessions.map((opt) => {
-      const session = this.sessionManager.getOrCreateSession(opt);
+      const session = this.sessionManager.getOrCreate(opt);
       session.onDispose(() => this.disposeSession(session));
       return session;
     });
@@ -179,7 +180,7 @@ export class SessionsView extends BaseView {
 
   createSession = async () => {
     const opt = await this.sessionManager.createSession({ agentId: this.agentId });
-    const session = this.sessionManager.getOrCreateSession(opt);
+    const session = this.sessionManager.getOrCreate(opt);
     session.onDispose(() => this.disposeSession(session));
     this.sessions.unshift(session);
     this.active = session;

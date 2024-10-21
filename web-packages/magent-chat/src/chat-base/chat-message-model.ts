@@ -91,7 +91,7 @@ export class DefaultChatMessageModel implements Disposable {
     });
   };
 
-  updateMeta = <T extends ChatMessageOption>(option: T) => {
+  updateMeta<T extends ChatMessageOption>(option: T) {
     this.id = option.id || dayjs().unix().toString();
     if (option.created) {
       this.created = dayjs(option.created);
@@ -111,7 +111,7 @@ export class DefaultChatMessageModel implements Disposable {
       this.items = items;
       this.onMessageItemEmitter.fire(items[items.length - 1]);
     }
-  };
+  }
 
   protected sendMessage = async (option: ChatMessageOption) => {
     const { input, stream = true } = option;

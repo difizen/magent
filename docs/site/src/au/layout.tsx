@@ -5,6 +5,7 @@ const App = (): JSX.Element => {
   return (
     <div className="docs-view">
       <ManaComponents.Application
+        key="docs-au-layout"
         asChild={true}
         modules={[ManaAppPreset, BaseLayoutModule]}
         renderChildren

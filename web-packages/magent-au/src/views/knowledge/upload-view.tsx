@@ -6,7 +6,7 @@ import { forwardRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { RouterHistory } from '../../common/router.js';
-import { MainView } from '../base-layout/main-view.js';
+import { MainView } from '../common/main-view.js';
 import type { NavigatablePage } from '../base-layout/protocol.js';
 
 import './index.less';

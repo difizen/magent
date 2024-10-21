@@ -75,7 +75,7 @@ export const toMessageOption = (msg: APIMessage, agentId: string): IAUMessage =>
     items = JSON.parse(msg.content);
   }
   return {
-    id: msg.message_id.toString() || msg.id.toString(),
+    id: msg.message_id?.toString() || msg.id?.toString(),
     sessionId: msg.session_id,
     agentId,
     messages: items.map(toMessageItem),

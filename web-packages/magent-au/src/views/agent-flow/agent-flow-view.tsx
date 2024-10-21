@@ -1,4 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons';
+import { Fetcher } from '@difizen/magent-core';
 import type { BasicSchema } from '@difizen/magent-flow';
 import { useFlowStore, useKnowledgeStore, useModelStore } from '@difizen/magent-flow';
 import {
@@ -17,7 +18,6 @@ import { forwardRef, useEffect, useState } from 'react';
 
 import { AgentManager } from '../../agent/agent-manager.js';
 import type { AgentModel } from '../../agent/protocol.js';
-import './index.less';
 import type { KnowledgeModelOption } from '../../knowledge/protocol.js';
 import { ModelSelector } from '../../model/model-selector/index.js';
 import type { LLMMeta } from '../../model/protocol.js';
@@ -30,7 +30,7 @@ import {
 
 import { InitEdgeParser, InitNodeParser } from './flow-utils.js';
 import { FlowWithTabs } from './flow-with-tabs/index.js';
-import { Fetcher } from '@difizen/magent-core';
+import './index.less';
 
 const viewId = 'magent-agent-flow';
 

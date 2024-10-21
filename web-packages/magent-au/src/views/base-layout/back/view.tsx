@@ -2,7 +2,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { BaseView, singleton, useInject, view } from '@difizen/mana-app';
 import { forwardRef } from 'react';
 
-import { MainView } from '../main-view.js';
+import { MainView } from '../../common/main-view.js';
 
 import './index.less';
 

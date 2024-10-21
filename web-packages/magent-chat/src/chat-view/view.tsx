@@ -188,12 +188,13 @@ export class ChatView extends BaseView {
   };
 
   override onViewMount() {
-    this.initConversation(this.option.id);
+    this.initConversation();
   }
 
-  protected initConversation = async (id: string) => {
+  protected initConversation = async () => {
     this.conversation = this.conversationManager.getOrCreate({
-      id,
+      ...this.option,
+      messages: [],
     });
     const toDispose = this.conversation.onMessage(() =>
       setImmediate(() => {

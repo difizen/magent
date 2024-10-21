@@ -6,10 +6,10 @@ import { forwardRef, useEffect } from 'react';
 import { useMatch } from 'react-router-dom';
 
 import type { AgentConfigManager } from '../../agent/agent-config-manager.js';
+import { AgentChatView } from '../agent-chat/chat-view.js';
 import { AgentConfigView } from '../agent-config/view.js';
 import { DebugDrawer } from '../debug/debug-drawer.js';
 
-import { AgentView } from './chat-view.js';
 import './index.less';
 
 const viewId = 'magent-agent-dev';
@@ -57,7 +57,7 @@ const AgentDevComponent = forwardRef<HTMLDivElement>(
 
 @singleton()
 @view(viewId)
-export class AgentDevView extends AgentView {
+export class AgentDevView extends AgentChatView {
   protected agentConfigManager: AgentConfigManager;
 
   agentConfig?: AgentConfigView;

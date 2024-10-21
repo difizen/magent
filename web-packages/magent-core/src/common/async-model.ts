@@ -20,13 +20,13 @@ export abstract class AsyncModel<T = any, O = any> {
   }
 
   initialize(option: O) {
-    if (this.shouldInitFromMeta(option)) {
-      this.fromMeta(option);
-    } else {
-      setImmediate(() => {
+    setImmediate(() => {
+      if (this.shouldInitFromMeta(option)) {
+        this.fromMeta(option);
+      } else {
         this.fetchInfo(option);
-      });
-    }
+      }
+    });
   }
 
   abstract shouldInitFromMeta(option: O): boolean;
