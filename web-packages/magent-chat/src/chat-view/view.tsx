@@ -25,7 +25,6 @@ import { ConversationManager } from '../chat-base/conversation-manager.js';
 import type {
   BaseConversationModel,
   IChatMessage,
-  IChatMessageItem,
   IChatMessageSender,
 } from '../chat-base/protocol.js';
 
@@ -62,8 +61,8 @@ const DefaultMessages = () => {
     <>
       {instance.conversation && instance.conversation.messages.length ? (
         <>
-          {instance.conversation?.messages.map((msg) => (
-            <ChatMessage key={msg.id} message={msg} />
+          {instance.conversation?.messages.map((msg, index) => (
+            <ChatMessage key={msg.id || index} message={msg} />
           ))}
           {instance.showToBottomBtn && (
             <FloatButton
@@ -178,11 +177,16 @@ export class ChatView extends BaseView {
     if (!this.id) {
       return;
     }
-    const msg: IChatMessageItem = {
+    const msg: IChatMessage = {
+      ...this.option,
       sender: { type: 'HUMAN' },
-      content: msgContent,
+      input: msgContent,
       stream: true,
     };
+    delete msg.id;
+    delete msg.messages;
+    delete msg.created;
+    delete msg.modified;
     this.conversation?.sendMessage(msg);
     setImmediate(this.scrollToBottom);
   };

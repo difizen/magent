@@ -14,6 +14,7 @@ import type {
   IChatEvent,
   IChatMessageItem,
 } from './protocol.js';
+import { ChatProtocol } from './protocol.js';
 
 export interface ChatMessageOption extends IChatMessage {
   parent: BaseConversationModel;
@@ -82,13 +83,18 @@ export class DefaultChatMessageModel implements Disposable {
     this.itemManager = itemManager;
     this.created = dayjs(option.created);
     this.modified = dayjs(option.modified);
-    this.initMessageItems(option);
+    setImmediate(() => {
+      this.initMessageItems(option);
+    });
   }
 
-  protected initMessageItems = (option: IChatMessage | ChatMessageOption) => {
-    this.items = option.messages.map((opt) => {
-      return this.itemManager.createChatMessageItem({ ...opt, parent: this });
-    });
+  protected initMessageItems = <T extends ChatMessageOption>(option: T) => {
+    if (ChatProtocol.isChatMessageCreate(option)) {
+      this.send(option);
+    }
+    if (ChatProtocol.isChatMessageRecord(option)) {
+      this.updateMeta(option);
+    }
   };
 
   updateMeta<T extends ChatMessageOption>(option: T) {
@@ -113,14 +119,17 @@ export class DefaultChatMessageModel implements Disposable {
     }
   }
 
-  protected sendMessage = async (option: ChatMessageOption) => {
+  protected send = async <T extends ChatMessageOption>(option: T) => {
+    if (!ChatProtocol.isChatMessageCreate(option)) {
+      return;
+    }
     const { input, stream = true } = option;
     this.sending = true;
 
     const human = this.itemManager.createChatMessageItem({
       parent: this,
       sender: { type: 'HUMAN' },
-      content: input,
+      content: input!,
     });
 
     const opt: ChatMessageOption = {
@@ -164,7 +173,7 @@ export class DefaultChatMessageModel implements Disposable {
     let current: BaseChatMessageItemModel | undefined = undefined;
     try {
       this.chatService.chatStream(
-        { input },
+        { ...option, content: input },
         (item) => {
           current = this.handleMessageItem(item);
         },

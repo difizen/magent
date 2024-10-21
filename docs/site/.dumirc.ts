@@ -11,6 +11,7 @@ export default defineConfig({
       { title: '教程', link: '/tutorial' },
       { title: '示例', link: '/examples' },
       { title: 'AU', link: '/au' },
+      { title: 'libro', link: '/libro' },
     ],
     gitRepo: { owner: 'difizen', name: 'magent' },
     qrcodes: [
@@ -88,6 +89,13 @@ export default defineConfig({
       ws: true,
     },
     '/resources': {
+      target: 'http://localhost:8888/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
+    '/libro/api': {
       target: 'http://localhost:8888/',
       changeOrigin: true,
       secure: false,

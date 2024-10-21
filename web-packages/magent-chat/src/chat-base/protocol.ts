@@ -24,15 +24,40 @@ export interface IChatMessageItem {
   [key: string]: any;
 }
 
-export interface IChatMessage {
-  id?: string;
-  messages: IChatMessageItem[];
-  created?: string;
-  modified?: string;
-  token?: any;
-
+export interface IChatMessageCreate {
+  id: string;
+  input: string;
+  stream?: boolean;
   [key: string]: any;
 }
+
+export interface IChatMessageRecord {
+  id: string;
+  created?: string;
+  messages: IChatMessageItem[];
+  modified?: string;
+  token?: any;
+  stream?: boolean;
+  [key: string]: any;
+}
+export interface IChatMessage {
+  id?: string;
+  created?: string;
+  input?: string;
+  messages?: IChatMessageItem[];
+  modified?: string;
+  stream?: boolean;
+  token?: any;
+  [key: string]: any;
+}
+export const ChatProtocol = {
+  isChatMessageCreate: (data: IChatMessage): data is IChatMessageCreate => {
+    return !!data && !('id' in data) && 'input' in data;
+  },
+  isChatMessageRecord: (data: IChatMessage): data is IChatMessageRecord => {
+    return !!data && 'id' in data && 'messages' in data;
+  },
+};
 
 export interface IConversation {
   id?: string;
@@ -94,6 +119,10 @@ export interface ChatEventError extends IChatEvent, ErrorMessage {
 export interface ChatEventDone extends IChatEvent {
   type: 'done';
 }
+export interface ChatEventResult extends IChatEvent {
+  output: string;
+  type: 'result';
+}
 
 export const ChatEvent = {
   isChunk: (event: IChatEvent): event is ChatEventChunk => {
@@ -102,8 +131,29 @@ export const ChatEvent = {
   isError: (event: IChatEvent): event is ChatEventError => {
     return !!event && event.type === 'error';
   },
+
+  isResult: (e: IChatEvent): e is ChatEventResult => {
+    return !!e && e.type === 'result';
+  },
   isDone: (event: IChatEvent): event is ChatEventDone => {
     return !!event && event.type === 'done';
+  },
+
+  format: (
+    e: string,
+    data: any,
+  ): ChatEventResult | ChatEventChunk | ChatEventError | ChatEventDone => {
+    switch (e) {
+      case 'chunk':
+        return { ...data, type: 'chunk' };
+      case 'result':
+        return { ...data, type: 'result' };
+      case 'error':
+        return { ...data, type: 'error' };
+      case 'done':
+        return { ...data, type: 'done' };
+    }
+    return data;
   },
 };
 

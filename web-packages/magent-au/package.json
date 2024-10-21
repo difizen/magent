@@ -9,6 +9,7 @@
   ],
   "type": "module",
   "repository": "git@github.com:difizen/magent.git",
+  "author": "brokun <brokun0128@gmail.com>",
   "license": "MIT",
   "exports": {
     ".": {

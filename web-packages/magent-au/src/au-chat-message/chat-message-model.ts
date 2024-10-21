@@ -57,13 +57,16 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     this.agentReady = this.agentDeferred.promise;
     this.fetcher = fetcher;
     this.agentManager = agentManager;
+  }
+
+  protected override initMessageItems = <T extends ChatMessageOption>(option: T) => {
     if (AUChatMessageType.isCreate(option)) {
       this.send(option);
     }
     if (AUChatMessageType.isMessageOption(option)) {
       this.updateMeta(option);
     }
-  }
+  };
 
   protected getAgent = async (id: string) => {
     const agent = await this.agentManager.getOrCreate({ id });
@@ -205,7 +208,10 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     }
   };
 
-  protected send = async (option: AUMessageCreate) => {
+  protected override send = async <T extends ChatMessageOption>(option: T) => {
+    if (!AUChatMessageType.isCreate(option)) {
+      return;
+    }
     const { input, stream = true } = option;
     this.sending = true;
 

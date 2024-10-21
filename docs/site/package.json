@@ -26,6 +26,7 @@
     "@difizen/mana-l10n": "^0.1.26",
     "@difizen/magent-chat": "^0.1.26",
     "@difizen/magent-au": "^0.1.26",
+    "@difizen/magent-libro": "^0.1.26",
     "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "antd": "^5.8.6",

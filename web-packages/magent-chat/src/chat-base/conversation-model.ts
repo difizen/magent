@@ -8,7 +8,11 @@ import dayjs from 'dayjs';
 
 import { ChatMessageManager } from './chat-message-manager.js';
 import { ChatService } from './chat-service.js';
-import type { BaseChatMessageItemModel, BaseChatMessageModel } from './protocol.js';
+import type {
+  BaseChatMessageItemModel,
+  BaseChatMessageModel,
+  IChatMessage,
+} from './protocol.js';
 import { ConversationOption } from './protocol.js';
 
 @autoFactory()
@@ -103,7 +107,7 @@ export class DefaultConversationModel
     this.toDispose.dispose();
   };
 
-  sendMessage = (msg: any) => {
+  sendMessage = (msg: IChatMessage) => {
     const message = this.messageManager.getOrCreate({ ...msg, parent: this });
     this.messages.push(message);
   };
