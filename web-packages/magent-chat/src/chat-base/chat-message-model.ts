@@ -4,6 +4,7 @@ import { Deferred, Emitter, inject, prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 
+import { AIChatMessageItemModel } from './ai-message-item-model.js';
 import { ChatMessageItemManager } from './chat-message-item-manager.js';
 import { ChatService } from './chat-service.js';
 import type {
@@ -178,7 +179,7 @@ export class DefaultChatMessageModel implements Disposable {
           current = this.handleMessageItem(item);
         },
         (event: IChatEvent) => {
-          if (current) {
+          if (current instanceof AIChatMessageItemModel) {
             current.handleEventData(event);
           }
         },
