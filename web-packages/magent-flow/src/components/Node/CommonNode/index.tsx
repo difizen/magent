@@ -1,6 +1,6 @@
-import type { NodeDataType } from '@flow/interfaces/flow.js';
 import { Collapse } from 'antd';
 
+import type { NodeDataType } from '../../../interfaces/flow.js';
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {

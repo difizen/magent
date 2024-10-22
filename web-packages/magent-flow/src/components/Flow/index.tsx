@@ -1,14 +1,14 @@
-import { EventEmitterContextProvider } from '@flow/context/event-emitter.js';
-import type { NodeDataType, NodeType } from '@flow/interfaces/flow.js';
-import { useFlowStore } from '@flow/stores/useFlowStore.js';
-import { useShortcutsStore } from '@flow/stores/useShortcutsStore.js';
-import { useUndoRedoStore } from '@flow/stores/useUndoRedoStore.js';
-import { getNodeId } from '@flow/utils/reactflowUtils.js';
 import { Background, ReactFlow } from '@xyflow/react';
 import type { Connection, OnSelectionChangeParams } from '@xyflow/react';
 import React, { useCallback, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
+import { EventEmitterContextProvider } from '../../context/event-emitter.js';
+import type { NodeDataType, NodeType } from '../../interfaces/flow.js';
+import { useFlowStore } from '../../stores/useFlowStore.js';
+import { useShortcutsStore } from '../../stores/useShortcutsStore.js';
+import { useUndoRedoStore } from '../../stores/useUndoRedoStore.js';
+import { getNodeId } from '../../utils/reactflowUtils.js';
 import CustomEdge from '../CustomEdge/index.js';
 import { FlowController } from '../FlowController/index.js';
 

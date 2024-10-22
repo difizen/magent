@@ -1,0 +1,81 @@
+{
+  "name": "@difizen/magent-au",
+  "version": "0.1.26",
+  "description": "",
+  "keywords": [
+    "chat",
+    "magent",
+    "agent"
+  ],
+  "type": "module",
+  "repository": "git@github.com:difizen/magent.git",
+  "author": "brokun <brokun0128@gmail.com>",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "typings": "./es/index.d.ts",
+      "default": "./es/index.js"
+    },
+    "./mock": {
+      "typings": "./es/mock/index.d.ts",
+      "default": "./es/mock/index.js"
+    },
+    "./es/mock": {
+      "typings": "./es/mock/index.d.ts",
+      "default": "./es/mock/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.ts",
+  "files": [
+    "es",
+    "src"
+  ],
+  "scripts": {
+    "setup": "father build",
+    "build": "father build",
+    "test": ": Note: lint task is delegated to test:* scripts",
+    "test:vitest": "vitest run",
+    "test:jest": "jest",
+    "coverage": ": Note: lint task is delegated to coverage:* scripts",
+    "coverage:vitest": "vitest run --coverage",
+    "coverage:jest": "jest --coverage",
+    "lint": ": Note: lint task is delegated to lint:* scripts",
+    "lint:eslint": "eslint src",
+    "typecheck:tsc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.1.0",
+    "@difizen/magent-chat": "^0.1.26",
+    "@difizen/magent-core": "^0.1.26",
+    "@difizen/magent-flow": "^0.1.26",
+    "@difizen/mana-app": "latest",
+    "@difizen/mana-l10n": "latest",
+    "@difizen/mana-react": "latest",
+    "antd": "^5.18.0",
+    "classnames": "^2.3.2",
+    "copy-to-clipboard": "^3.3.3",
+    "dayjs": "^1.11.10",
+    "eventsource-parser": "^1.1.2",
+    "history": "^5.3.0",
+    "js-yaml": "^4.1.0",
+    "lodash.debounce": "^4.0.8",
+    "react-router": "^6.27.0",
+    "react-router-dom": "^6.26.0",
+    "timeago.js": "^4.0.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.25",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/js-yaml": "^4.0.9",
+    "@types/uuid": "^9.0.2"
+  },
+  "peerDependencies": {
+    "antd": "^5.8.6",
+    "react": ">=16"
+  }
+}

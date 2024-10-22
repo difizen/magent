@@ -1,5 +1,6 @@
-import isWrappedWithClass from '@flow/utils/wrappedClass.js';
 import { cloneDeep } from 'lodash';
+
+import isWrappedWithClass from '../../utils/wrappedClass.js';
 
 export function handleUndo(e: KeyboardEvent, undo: any) {
   if (!isWrappedWithClass(e, 'noflow')) {

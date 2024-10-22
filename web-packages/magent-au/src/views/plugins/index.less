@@ -1,0 +1,220 @@
+.magent-plugins {
+  height: 100%;
+  margin: 0 24px;
+  border-radius: 8px;
+
+  .ant-collapse-borderless {
+    background: transparent;
+
+    > :not(.ant-collapse-item-active) {
+      &:hover {
+        border-radius: 6px;
+        background-color: var(--mana-ant-color-bg-text-hover);
+      }
+
+      &:hover .magent-plugins-list-row-content {
+        border-bottom: 1px solid transparent;
+      }
+
+      &:last-child {
+        .magent-plugins-list-row-content {
+          border-bottom: none;
+        }
+      }
+    }
+
+    > .ant-collapse-item {
+      // border-bottom: 1px solid var(--mana-ant-color-bg-text-hover);
+      border-bottom: none;
+
+      .magent-plugins-list-row {
+        padding-inline: 6px;
+        border-radius: 6px;
+
+        &-content {
+          padding-left: 18px;
+          width: 100%;
+          display: flex;
+          border-bottom: 1px solid var(--mana-ant-color-bg-text-hover);
+        }
+      }
+
+      .ant-list-item {
+        padding: 12px 0;
+      }
+
+      > .ant-collapse-header {
+        padding: 0;
+
+        .ant-collapse-expand-icon {
+          display: none;
+        }
+      }
+    }
+
+    > .ant-collapse-item-active {
+      .magent-plugins-list-row {
+        background-color: var(--mana-ant-color-bg-text-hover);
+        border-radius: 6px 6px 0 0;
+      }
+
+      .ant-collapse-content {
+        padding-bottom: 12px;
+
+        .ant-collapse-content-box {
+          background-color: var(--mana-ant-color-bg-text-hover);
+          border-radius: 0 0 6px 6px;
+          padding-left: 64px;
+        }
+      }
+    }
+  }
+
+  &-tool {
+    padding-inline: 6px;
+    border-radius: 6px;
+
+    &-item {
+      padding-left: 18px;
+      width: 100%;
+      display: flex;
+
+      &-info {
+        display: flex;
+        padding: 12px 0;
+        flex-direction: row;
+
+        &-text {
+          display: flex;
+          flex-direction: column;
+          padding: 0 12px;
+        }
+
+        &-name {
+          font-weight: 500;
+          font-size: 14px;
+          margin-bottom: 6px;
+        }
+
+        &-desc {
+          font-size: 12px;
+          flex: 1;
+          padding-inline: 18px;
+        }
+      }
+    }
+  }
+
+  &-creation {
+    position: absolute;
+    top: 0;
+    right: 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+
+    button {
+      border: none;
+    }
+  }
+
+  &-list-header {
+    padding: 0 0 0 24px;
+    height: 48px;
+    border-bottom: 1px solid var(--mana-ant-color-border);
+
+    &-label {
+      display: flex;
+      align-items: center;
+      color: black;
+      font-size: 16px;
+    }
+
+    &-label + &-label {
+      padding-left: 24px;
+    }
+  }
+
+  &-list {
+    height: calc(100% - 48px);
+    padding-top: 12px;
+    overflow-y: auto;
+
+    &-item {
+      display: block;
+
+      &-info {
+        display: flex;
+        padding: 12px 0;
+        flex-direction: row;
+
+        &-text {
+          display: flex;
+          flex-direction: column;
+          padding: 0 12px;
+        }
+
+        &-name {
+          font-weight: 500;
+          font-size: 16px;
+          margin-bottom: 6px;
+        }
+
+        &-desc {
+          font-size: 12px;
+        }
+      }
+    }
+
+    &-item + &-item {
+      padding-left: 24px;
+    }
+  }
+
+  .ant-spin-nested-loading,
+  .ant-spin-container,
+  .ant-list-items {
+    height: 100%;
+  }
+
+  .ant-list-items {
+    padding-bottom: 24px;
+    overflow-y: auto;
+  }
+
+  .ant-list .ant-list-item .ant-list-item-meta .ant-list-item-meta-content {
+    width: 100%;
+  }
+
+  .ant-list-item-meta-avatar {
+    background: var(--mana-ant-color-bg-container);
+    border: 1px solid var(--mana-ant-color-bg-container-disabled);
+    border-radius: 8px;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .tool-lists-label {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .ant-checkbox-wrapper {
+    width: 100%;
+  }
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tool-lists-label-item {
+  color: black;
+  font-size: 16px;
+  padding-bottom: 12px;
+}

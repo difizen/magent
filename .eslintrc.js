@@ -26,7 +26,7 @@ module.exports = {
 
     // stricter type correctness
     'no-unused-vars': [
-      'warn',
+      'error',
       {
         vars: 'local',
         args: 'none',

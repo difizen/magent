@@ -1,14 +1,15 @@
 {
   "name": "@difizen/magent-core",
-  "version": "0.0.1",
+  "version": "0.1.26",
   "description": "",
   "keywords": [
-    "libro",
     "core",
-    "notebook"
+    "magent",
+    "agent"
   ],
   "type": "module",
-  "repository": "git@github.com:difizen/libro.git",
+  "repository": "git@github.com:difizen/magent.git",
+  "author": "brokun <brokun0128@gmail.com>",
   "license": "MIT",
   "exports": {
     ".": {
@@ -50,8 +51,10 @@
     "@difizen/mana-app": "latest",
     "@difizen/mana-l10n": "latest",
     "@difizen/mana-react": "latest",
+    "axios": "^1.7.2",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
+    "query-string": "^9.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

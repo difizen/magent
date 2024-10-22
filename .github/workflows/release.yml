@@ -6,24 +6,23 @@ on:
     branches: ['main']
 
 jobs:
-  # changesets:
-  #   # prevents this action from running on forks
-  #   if: github.repository == 'difizen/magent'
+  changesets:
+    # prevents this action from running on forks
+    if: github.repository == 'difizen/magent'
+    name: Changesets
+    uses: difizen/actions/.github/workflows/release-changesets.yml@main
+    secrets:
+      BOT_APP_ID: ${{ secrets.BOT_APP_ID }}
+      BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
 
-  #   name: Changesets
-  #   uses: difizen/actions/.github/workflows/release-changesets.yml@main
-  #   secrets:
-  #     BOT_APP_ID: ${{ secrets.BOT_APP_ID }}
-  #     BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
-
-  #   permissions:
-  #     pull-requests: write
-  #     contents: write
+    permissions:
+      pull-requests: write
+      contents: write
 
   ci:
-    # needs: [changesets]
-    # if: |
-    #   needs.changesets.outputs.should-release == 'true'
+    needs: [changesets]
+    if: |
+      needs.changesets.outputs.should-release == 'true'
 
     name: Prerelease CI
     uses: ./.github/workflows/ci.yml
@@ -32,20 +31,110 @@ jobs:
       contents: read
       actions: read
 
-  # publish:
-  #   needs: [ci]
-  #   if: |
-  #     needs.ci.result == 'success'
+  publish:
+    needs: [ci]
+    if: |
+      needs.ci.result == 'success'
 
-  #   name: Publish
-  #   uses: difizen/actions/.github/workflows/release-publish.yml@main
+    name: Publish
+    uses: difizen/actions/.github/workflows/release-publish.yml@main
 
-  #   with:
-  #     node-version: '18'
-  #     python-version: '3.8'
+    with:
+      node-version: '20'
+      python-version: '3.10'
 
-  #   permissions:
-  #     contents: write
+    permissions:
+      contents: write
 
-  #   secrets:
-  #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # 新增的 release-notes Job
+  release-notes:
+    needs: [publish]
+    if: |
+      needs.publish.result == 'success'
+    name: Generate Release Notes
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up git
+        run: |
+          git fetch --prune --unshallow
+          git fetch --tags
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          # 获取最新的符合 @difizen/magent-xxx@ 格式的 tag
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+
+          # 输出最新的 tag
+          echo "Latest tag: $LATEST_TAG"
+
+          # 提取版本号（移除最后一个 '@' 之前的部分）
+          VERSION=${LATEST_TAG##*@}
+
+          # 输出提取的版本号
+          echo "Extracted version: $VERSION"
+
+          # 将版本号设置为输出变量供后续步骤使用
+          echo "::set-output name=latest_version::$VERSION"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          TAG_EXISTS=$(git tag -l "${{ steps.get_tag.outputs.latest_version }}")
+          if [ -z "$TAG_EXISTS" ]; then
+            echo "Tag does not exist"
+            echo "::set-output name=tag_exists::false"
+          else
+            echo "Tag already exists"
+            echo "::set-output name=tag_exists::true"
+          fi
+
+      - name: Install dependencies
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: npm install
+
+      - name: Extract Changeset Content
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        id: extract_changesets
+        run: |
+          COMMIT_CONTENT=""
+          for file in .changeset/*.md; do
+            echo "Processing $file"
+            CONTENT=$(awk '/^---$/{p++} p==2' "$file")
+            COMMIT_CONTENT+="$CONTENT"$'\n'
+          done
+          echo "::set-output name=release_notes::$COMMIT_CONTENT"
+
+      - name: Generate Snapshot
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        id: generate_snapshot
+        run: |
+          # 获取 changeset 的快照
+          SNAPSHOT=$(npx changeset status --snapshot)
+          echo "::set-output name=snapshot::$SNAPSHOT"
+
+      - name: Generate GitHub Release
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_tag.outputs.latest_version }} # 使用最近的 tag 作为 tag 名
+          release_name: Release ${{ steps.get_tag.outputs.latest_version }} # 使用最近的 tag 作为 release 名
+          body: |
+            ## Changes:
+            ${{ steps.extract_changesets.outputs.release_notes }}
+
+            ## Packages affected:
+            ${{ steps.generate_snapshot.outputs.snapshot }}
+          draft: false # 直接发布而非草稿

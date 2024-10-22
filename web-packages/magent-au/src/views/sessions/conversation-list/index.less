@@ -1,0 +1,65 @@
+@itemHoverBackground: rgb(0 10 26/4%);
+
+.chat-history-item {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 3px 8px;
+  line-height: 22px;
+  min-height: 38px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    background: @itemHoverBackground;
+
+    .chat-history-item-conv-action {
+      display: unset;
+    }
+  }
+
+  & + .chat-history-item {
+    margin-top: 4px;
+  }
+}
+
+.chat-history-item-time {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 25%);
+  line-height: 20px;
+  text-align: right;
+}
+
+.chat-history-item-show-action .chat-history-item-conv-action {
+  display: unset !important;
+}
+
+.chat-history-item-active {
+  background: @itemHoverBackground;
+  color: #000000d9;
+  font-weight: 500;
+}
+
+.chat-history-item-title {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-history-item-conv-action {
+  display: none;
+  font-size: 16px;
+  width: 24px;
+  padding: 4px;
+  border-radius: 6px;
+
+  &:hover {
+    background: @itemHoverBackground;
+  }
+}
+
+.chat-history-item-loadingIcon.chat-history-item-conv-action:hover {
+  background: none;
+}

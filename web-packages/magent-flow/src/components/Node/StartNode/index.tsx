@@ -1,6 +1,5 @@
-import { VariableForm } from '@flow/components/VariableForm/index.js';
-import type { NodeDataType } from '@flow/interfaces/flow.js';
-
+import { VariableForm } from '../../../components/VariableForm/index.js';
+import type { NodeDataType } from '../../../interfaces/flow.js';
 import { NodeWrapper } from '../NodeWrapper/index.js';
 
 type Props = {

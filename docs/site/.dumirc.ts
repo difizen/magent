@@ -5,17 +5,19 @@ export default defineConfig({
     hd: { rules: [] },
     name: 'magent',
     link: '/',
-    logo: 'logo.svg',
+    logo: '/logo.svg',
     nav: [
       { title: '介绍', link: '/introduction' },
       { title: '教程', link: '/tutorial' },
       { title: '示例', link: '/examples' },
+      { title: 'AU', link: '/au' },
+      { title: 'libro', link: '/libro' },
     ],
     gitRepo: { owner: 'difizen', name: 'magent' },
     qrcodes: [
       {
         name: '钉钉',
-        qrcode: 'magent-dingding-group.png',
+        qrcode: '/magent-dingding-group.png',
       },
     ],
     banner: {
@@ -64,16 +66,12 @@ export default defineConfig({
     ],
     techCardData: [],
   },
-  extraBabelPlugins: [
-    ['@babel/plugin-proposal-decorators', { legacy: true }],
-    ['@babel/plugin-transform-flow-strip-types', { allowDeclareFields: true }],
-    ['@babel/plugin-transform-class-properties', { loose: true }],
-    ['@babel/plugin-transform-private-methods', { loose: true }],
-    ['@babel/plugin-transform-private-property-in-object', { loose: true }],
-    'babel-plugin-parameter-decorator',
-  ],
   favicons: ['/logo.svg'],
-  plugins: ['./dumi-plugin-alias', './dumi-plugin-nodenext'],
+  plugins: ['@difizen/umi-plugin-mana', './dumi-plugin-alias'],
+  mana: {
+    decorator: true,
+    nodenext: true,
+  },
   exportStatic: {},
   resolve: {
     docDirs: ['docs'],
@@ -81,5 +79,28 @@ export default defineConfig({
   },
 
   // dev
-  proxy: {},
+  proxy: {
+    // au api
+    '/api': {
+      target: 'http://localhost:8888/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
+    '/resources': {
+      target: 'http://localhost:8888/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
+    '/libro/api': {
+      target: 'http://localhost:8888/',
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {},
+      ws: true,
+    },
+  },
 });

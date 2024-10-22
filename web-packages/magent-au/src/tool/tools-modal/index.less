@@ -1,0 +1,198 @@
+@prefix: magent-plugins-modal;
+
+.@{prefix} {
+  .ant-collapse-borderless {
+    background: transparent;
+
+    > :not(.ant-collapse-item-active) {
+      &:hover {
+        border-radius: 6px;
+        background-color: var(--mana-ant-color-bg-text-hover);
+      }
+
+      &:hover .@{prefix}-list-row-content {
+        border-bottom: 1px solid transparent;
+      }
+
+      &:last-child {
+        .@{prefix}-list-row-content {
+          border-bottom: none;
+        }
+      }
+    }
+
+    > .ant-collapse-item {
+      // border-bottom: 1px solid var(--mana-ant-color-bg-text-hover);
+      border-bottom: none;
+
+      .@{prefix}-list-row {
+        padding-inline: 6px;
+        border-radius: 6px;
+
+        &-content {
+          padding-left: 18px;
+          width: 100%;
+          display: flex;
+          border-bottom: 1px solid var(--mana-ant-color-bg-text-hover);
+          justify-content: space-between;
+        }
+      }
+
+      .ant-list-item {
+        padding: 12px 0;
+      }
+
+      > .ant-collapse-header {
+        padding: 0;
+
+        .ant-collapse-expand-icon {
+          display: none;
+        }
+      }
+    }
+
+    > .ant-collapse-item-active {
+      .@{prefix}-list-row {
+        background-color: var(--mana-ant-color-bg-text-hover);
+        border-radius: 6px 6px 0 0;
+      }
+
+      .ant-collapse-content {
+        padding-bottom: 12px;
+
+        .ant-collapse-content-box {
+          background-color: var(--mana-ant-color-bg-text-hover);
+          border-radius: 0 0 6px 6px;
+          padding: 4px 12px 16px 70px;
+        }
+      }
+    }
+  }
+
+  &-tool {
+    border-radius: 6px;
+    display: flex;
+
+    > :first-child {
+      flex: 1;
+    }
+
+    &-item {
+      padding-left: 18px;
+      // width: 100%;
+      display: flex;
+
+      &-info {
+        display: flex;
+        padding: 12px 0;
+        flex-direction: row;
+
+        &-text {
+          display: flex;
+          flex-direction: column;
+          padding: 0 12px;
+        }
+
+        &-name {
+          font-weight: 500;
+          font-size: 14px;
+          margin-bottom: 6px;
+        }
+
+        &-desc {
+          font-size: 12px;
+          flex: 1;
+          padding-inline: 18px;
+        }
+      }
+    }
+
+    &-actions {
+      width: 25%;
+      align-items: center;
+      justify-content: flex-end;
+
+      button {
+        border: none;
+      }
+    }
+  }
+
+  &-creation {
+    position: absolute;
+    top: 0;
+    right: 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+
+    button {
+      border: none;
+    }
+  }
+
+  &-list-header {
+    padding: 0 0 0 24px;
+    height: 48px;
+    border-bottom: 1px solid var(--mana-ant-color-border);
+
+    &-label {
+      display: flex;
+      align-items: center;
+      color: black;
+      font-size: 16px;
+    }
+
+    &-label + &-label {
+      padding-left: 24px;
+    }
+  }
+
+  &-list {
+    height: calc(100% - 48px);
+    padding-top: 12px;
+    overflow-y: auto;
+
+    &-item {
+      display: block;
+
+      &-info {
+        display: flex;
+        padding: 12px 0;
+        flex-direction: row;
+
+        &-text {
+          display: flex;
+          flex-direction: column;
+          padding: 0 12px;
+        }
+
+        &-name {
+          font-weight: 500;
+          font-size: 16px;
+          margin-bottom: 6px;
+        }
+
+        &-desc {
+          font-size: 12px;
+        }
+      }
+    }
+
+    &-item + &-item {
+      padding-left: 24px;
+    }
+  }
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tool-lists-label-item {
+  color: black;
+  font-size: 16px;
+  padding-bottom: 12px;
+}

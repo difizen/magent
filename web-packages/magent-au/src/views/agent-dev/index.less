@@ -1,0 +1,125 @@
+.magent-agent-dev-layout {
+  height: 100%;
+
+  &-container {
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 12px 24px;
+  }
+
+  &-config {
+    width: 55%;
+    border-radius: 8px;
+  }
+
+  &-chat-dev {
+    height: 100%;
+    min-width: 520px;
+    width: 520px;
+    background-color: var(--mana-color-bg-container);
+    border-radius: 8px;
+
+    &-header {
+      padding: 0 24px;
+      height: 64px;
+      border-bottom: 1px solid var(--mana-color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h3 {
+        margin: 0;
+      }
+    }
+
+    &-content {
+      height: calc(100% - 64px);
+    }
+  }
+}
+
+.magent-debug {
+  width: 622px;
+}
+
+.magent-debug-header {
+  background-color: #f7f7fa;
+  border-bottom: 1px solid rgba(29, 28, 35, 8%);
+  padding: 16px 24px;
+}
+
+.magent-select-container {
+  padding: 24px 24px 4px;
+  width: 100%;
+
+  :global {
+    background-color: rgba(139, 139, 149, 15%);
+    color: rgba(75, 74, 88, 100%);
+  }
+}
+
+.magent-summary-container {
+  padding: 16px 24px 24px;
+  position: relative;
+  width: 100%;
+}
+
+.magent-summary-title-container {
+  margin-bottom: 16px;
+}
+
+.magent-summary-title-data {
+  color: #1d1c23;
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.magent-des-item {
+  display: flex;
+  font-size: 13px;
+  line-height: 22px;
+  text-align: left;
+}
+
+.magent-des-key {
+  color: rgba(29, 28, 35, 35%);
+  margin-right: 4px;
+}
+
+.magent-des-value {
+  color: rgba(29, 28, 35, 80%);
+}
+
+.magent-des-icon {
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.magent-agent-title {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+
+  &-icon {
+    width: 42px;
+    height: 42px;
+    margin-right: 12px;
+  }
+
+  &-text {
+    &-mtime {
+      font-size: 12px;
+      font-weight: 400;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: var(--mana-ant-color-bg-layout);
+
+      .anticon {
+        margin-right: 4px;
+      }
+    }
+  }
+}

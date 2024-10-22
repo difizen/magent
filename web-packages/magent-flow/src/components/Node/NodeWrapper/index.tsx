@@ -1,7 +1,8 @@
-import type { NodeDataType } from '@flow/interfaces/flow.js';
-import { classNames } from '@flow/utils/index.js';
 import { Handle, Position } from '@xyflow/react';
 import React from 'react';
+
+import type { NodeDataType } from '../../../interfaces/flow.js';
+import { classNames } from '../../../utils/index.js';
 
 type Props = {
   data: NodeDataType;

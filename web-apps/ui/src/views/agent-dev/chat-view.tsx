@@ -1,3 +1,4 @@
+import { FieldTimeOutlined } from '@ant-design/icons';
 import { Deferred, ViewContext, ViewRender } from '@difizen/mana-app';
 import {
   ViewInstance,
@@ -23,7 +24,6 @@ import { ChatView } from '../chat/view.js';
 import { SessionsView } from '../sessions/view.js';
 
 import './index.less';
-import { FieldTimeOutlined } from '@ant-design/icons';
 
 const viewId = 'magent-agent-chat';
 export const slot = `${viewId}-slot`;

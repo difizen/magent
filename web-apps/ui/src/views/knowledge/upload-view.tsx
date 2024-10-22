@@ -12,6 +12,7 @@ import { forwardRef } from 'react';
 import { history } from 'umi';
 import { useParams } from 'umi';
 
+import { getPageConfig } from '@/common/page-config.js';
 import { MainView } from '@/modules/base-layout/main-view.js';
 import type { NavigatablePage } from '@/modules/base-layout/protocol.js';
 
@@ -28,7 +29,6 @@ const KnowledgeUploadComponent = forwardRef<HTMLDivElement>(
     const { knowledgeId } = useParams();
 
     const instance = useInject<KnowledgeUploadView>(ViewInstance);
-
     return (
       <div className={`${viewId}-wrapper`}>
         <Dragger

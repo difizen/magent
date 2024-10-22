@@ -1,7 +1,7 @@
-import type { NodeDataType, NodeTypes } from '@flow/interfaces/flow.js';
 import yaml from 'js-yaml';
 import type { FC } from 'react';
 
+import type { NodeDataType, NodeTypes } from '../../interfaces/flow.js';
 import Flow from '../Flow/index.js';
 import { AgentNode } from '../Node/AgentNode/index.js';
 import { EndNode } from '../Node/EndNode/index.js';

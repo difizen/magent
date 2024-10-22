@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import type { ReactFlowJsonObject, XYPosition } from '@xyflow/react';
 
 export type NodeTypes =

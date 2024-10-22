@@ -1,5 +1,6 @@
-import { classNames } from '@flow/utils/basic.js';
 import { Popover, Tag } from 'antd';
+
+import { classNames } from '../../../../utils/basic.js';
 
 export type RunStatusTypes = 'success' | 'processing' | 'warning' | 'error';
 

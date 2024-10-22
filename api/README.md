@@ -1,1 +1,1 @@
-# libro-server
+# magent-platform
