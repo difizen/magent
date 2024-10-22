@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import type { PrioritizedContribution } from '@difizen/magent-core';
 import { Syringe } from '@difizen/mana-app';
 

@@ -58,7 +58,7 @@ export class AUAgentChatMessageItem extends AIChatMessageItemModel {
     this.agentDeferred.resolve(agent);
   };
 
-  override handleEventData = (e: IChatEvent) => {
+  override handleEventData(e: IChatEvent) {
     if (ChatEvent.isChunk(e)) {
       this.appendChunk(e as ChatEventChunk);
     }
@@ -74,24 +74,13 @@ export class AUAgentChatMessageItem extends AIChatMessageItemModel {
     if (ChatEvent.isError(e)) {
       this.handleError(e as ChatEventError);
     }
-  };
+  }
 
   override appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;
   }
 
-  handleError(e: ChatEventError) {
-    // {"error": {"error_msg": "The node type is not supported"}, "type": "error"}
-    this.error = { message: e.message };
-  }
-
   handleSteps(e: ChatEventStep) {
-    // if (e.agent_id === this.agent?.id) {
-    //   this.content = this.content + `${e.output}`;
-    // }
-  }
-
-  handleResult(e: ChatEventResult) {
-    this.content = e.output;
+    //
   }
 }

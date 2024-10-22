@@ -1,6 +1,6 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
-import { Avatar, Space } from 'antd';
+import { Space } from 'antd';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 

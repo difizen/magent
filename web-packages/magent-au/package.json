@@ -70,6 +70,8 @@
   "devDependencies": {
     "@types/react": "^18.2.25",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/js-yaml": "^4.0.9",
     "@types/uuid": "^9.0.2"
   },
   "peerDependencies": {

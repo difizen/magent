@@ -3,7 +3,6 @@ import {
   ConversationManager,
   DefaultConversationModel,
 } from '@difizen/magent-chat';
-import { toAutoFactory } from '@difizen/magent-core';
 import { ManaModule, Syringe } from '@difizen/mana-app';
 
 import { SessionManager } from './session-manager.js';

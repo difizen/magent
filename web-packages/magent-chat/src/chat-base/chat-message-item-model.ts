@@ -3,17 +3,13 @@ import { inject, prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 
-import { ChatEvent, QuestionState } from './protocol.js';
+import { QuestionState } from './protocol.js';
 import type {
   IChatMessageItem,
   IChatMessageSender,
   BaseChatMessageModel,
   AnswerState,
   ErrorMessage,
-  IChatEvent,
-  ChatEventChunk,
-  ChatEventError,
-  ChatEventResult,
 } from './protocol.js';
 
 export interface ChatMessageItemOption extends IChatMessageItem {
@@ -62,30 +58,6 @@ export class DefaultChatMessageItemModel {
     this.modified = dayjs(option.modified);
     this.sender = option.sender;
     this.content = option.content;
-  }
-
-  handleEventData = (e: IChatEvent) => {
-    if (ChatEvent.isChunk(e)) {
-      this.appendChunk(e);
-    }
-    if (ChatEvent.isError(e)) {
-      this.handleError(e);
-    }
-    if (ChatEvent.isResult(e)) {
-      this.handleResult(e);
-    }
-  };
-  appendChunk(e: ChatEventChunk) {
-    this.content = `${this.content}${e.output}`;
-  }
-
-  handleResult(e: ChatEventResult) {
-    this.content = e.output;
-  }
-
-  handleError(e: ChatEventError) {
-    // {"error": {"error_msg": "The node type is not supported"}, "type": "error"}
-    this.error = { message: e.message };
   }
 }
 

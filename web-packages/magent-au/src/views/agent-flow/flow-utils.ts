@@ -22,8 +22,8 @@ export const OutputEdgeParser = (edge: Edge) => {
   } as any;
 };
 
-export const InitNodeParser = (node: NodeType) => {
-  node['config'] = node['data'];
+export const InitNodeParser = (node: any) => {
+  node.config = node['data'];
   delete node['data'];
   const obj: NodeType = {
     id: node.id.toString(),

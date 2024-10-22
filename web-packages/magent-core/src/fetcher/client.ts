@@ -15,7 +15,6 @@ export const getContextClient = (ctx: Syringe.Context) => {
     if (config.url) {
       const parsed = qs.parseUrl(config.url);
       const url = { ...parsed };
-      const query = url.query;
       if (baseUrl) {
         url.url = url.url.replace(
           '/api',

@@ -67,7 +67,7 @@ interface ToolSelectProps {
 export const ToolsModalComponent = (props: ModalItemProps<ToolSelectProps>) => {
   const plugins = useInject(PluginManager);
   const { visible, close } = props;
-  const { dataProvider, onChange, expandAll } = props.data || {};
+  const { dataProvider, expandAll } = props.data || {};
 
   useMount(() => {
     plugins.updatePublic();

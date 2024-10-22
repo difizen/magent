@@ -1,19 +1,19 @@
+import type { ChatEventChunk, ChatEventError, IChatEvent } from '@difizen/magent-chat';
+import { ChatEvent } from '@difizen/magent-chat';
 import { autoFactory, AutoFactoryOption, Fetcher } from '@difizen/magent-core';
-import { inject, prop, transient } from '@difizen/mana-app';
-import type { ParsedEvent } from 'eventsource-parser';
+import { inject, prop } from '@difizen/mana-app';
 
 import { AgentManager } from '../agent/agent-manager.js';
 
 import { AUAgentChatMessageItem } from './ai-message-item.js';
+import { AUChatEvent } from './protocol.js';
 import type {
-  ChatEventChunk,
-  ChatEventError,
+  AUChatMessageItemOption,
   ChatEventResult,
   ChatEventStep,
   ChatEventStepQA,
   StepContent,
 } from './protocol.js';
-import type { AUChatMessageItemOption } from './protocol.js';
 
 @autoFactory()
 export class PeerChatMessageItem extends AUAgentChatMessageItem {
@@ -186,8 +186,8 @@ export class PeerChatMessageItem extends AUAgentChatMessageItem {
 
   override appendChunk(e: ChatEventChunk) {
     if (this.planningPlanner) {
-      this.judgeAndAddEmptyRound(e.agent_id);
-      switch (e.agent_id) {
+      this.judgeAndAddEmptyRound(e['agent_id']);
+      switch (e['agent_id']) {
         case this.planningPlanner:
           this.currRoundContent.planningContent = `${this.currRoundContent.planningContent || ''}${e.output || ''}`;
           try {
@@ -212,11 +212,11 @@ export class PeerChatMessageItem extends AUAgentChatMessageItem {
           break;
       }
     } else {
-      this.contentMap[e.agent_id] =
-        `${this.contentMap[e.agent_id] || ''}${e.output || ''}`;
+      this.contentMap[e['agent_id']] =
+        `${this.contentMap[e['agent_id']] || ''}${e.output || ''}`;
     }
-    if (this.lastChunkAgent !== e.agent_id) {
-      this.lastChunkAgent = e.agent_id;
+    if (this.lastChunkAgent !== e['agent_id']) {
+      this.lastChunkAgent = e['agent_id'];
     }
   }
 
@@ -234,38 +234,39 @@ export class PeerChatMessageItem extends AUAgentChatMessageItem {
     return '';
   };
 
-  override handleEventData(e: ParsedEvent, data: any) {
+  override handleEventData(e: IChatEvent) {
     this.received = true;
-    if (e.event === 'chunk') {
-      this.appendChunk(data as ChatEventChunk);
+
+    if (ChatEvent.isChunk(e)) {
+      this.appendChunk(e as ChatEventChunk);
     }
     let eventStep = 0;
-    if (data.agent_id === this.planningPlanner) {
+    if (e['agent_id'] === this.planningPlanner) {
       eventStep = 0;
     }
-    if (data.agent_id === this.executingPlanner) {
+    if (e['agent_id'] === this.executingPlanner) {
       eventStep = 1;
     }
-    if (data.agent_id === this.expressingPlanner) {
+    if (e['agent_id'] === this.expressingPlanner) {
       eventStep = 2;
     }
-    if (data.agent_id === this.reviewingPlanner) {
+    if (e['agent_id'] === this.reviewingPlanner) {
       eventStep = 3;
     }
     if (eventStep > this.currRoundContent.currentStep) {
       this.currRoundContent.currentStep = eventStep;
     }
 
-    if (e.event === 'result') {
-      this.handleResult(data as ChatEventResult);
+    if (AUChatEvent.isResult(e)) {
+      this.handleResult(e as ChatEventResult);
     }
 
-    if (e.event === 'steps') {
-      this.handleSteps(data as ChatEventStep);
+    if (AUChatEvent.isStep(e)) {
+      this.handleSteps(e as ChatEventStep);
     }
 
-    if (e.event === 'error') {
-      this.handleError(data as ChatEventError);
+    if (ChatEvent.isError(e)) {
+      this.handleError(e as ChatEventError);
     }
   }
 

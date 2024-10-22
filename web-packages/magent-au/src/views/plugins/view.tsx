@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
 import {
   BaseView,
-  ViewInstance,
   inject,
   singleton,
   useInject,
   view,
   ModalService,
 } from '@difizen/mana-app';
-import { Button, Col, Collapse, List, Row } from 'antd';
+import { Button, Col, Collapse, Row } from 'antd';
 import { forwardRef } from 'react';
 
 import { TagList } from '../../components/tag-list/index.js';
@@ -31,7 +30,6 @@ export const slot = `${viewId}-slot`;
 
 const PluginsViewComponent = forwardRef<HTMLDivElement>(
   function PluginsViewComponent(props, ref) {
-    const instance = useInject<PluginsView>(ViewInstance);
     const plugins = useInject(PluginManager);
     const modalService = useInject(ModalService);
 

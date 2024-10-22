@@ -113,7 +113,6 @@ export const CharacterSetting = memo(function CharacterSetting() {
     ),
   });
 
-  const keys = [];
   const [activeKey, setActiveKey] = useState<string[]>([]);
 
   useEffect(() => {

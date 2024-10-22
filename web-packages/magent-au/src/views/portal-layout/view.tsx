@@ -1,11 +1,4 @@
-import {
-  BaseView,
-  Slot,
-  ViewInstance,
-  singleton,
-  useInject,
-  view,
-} from '@difizen/mana-app';
+import { BaseView, Slot, singleton, view } from '@difizen/mana-app';
 import { Segmented } from 'antd';
 import { forwardRef } from 'react';
 import { useMatch, useNavigate } from 'react-router-dom';
@@ -19,7 +12,6 @@ export const slot = `${viewId}-slot`;
 
 const PortalLayoutComponent = forwardRef<HTMLDivElement>(
   function PortalLayoutComponent(props, ref) {
-    const instance = useInject<PortalLayoutView>(ViewInstance);
     const match = useMatch('/portal/:portal');
     const portal = match?.params?.portal;
     const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useInject, useObserve } from '@difizen/mana-app';
 import type { SliderSingleProps } from 'antd';
-import { Button, Form, Select, Popover, Avatar, Slider } from 'antd';
+import { Button, Form, Select, Popover, Avatar } from 'antd';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { forwardRef, useEffect } from 'react';

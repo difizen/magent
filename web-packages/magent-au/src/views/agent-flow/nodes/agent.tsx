@@ -30,7 +30,7 @@ export const AgentNode = (props: Props) => {
   const { findUpstreamNodes, setNode } = useFlowStore();
   const upstreamNodes = findUpstreamNodes(data.id.toString());
   const agentMarket = useInject(AgentMarket);
-  const agentParam = data.config?.inputs?.agent_param as BasicSchema[];
+  const agentParam = data.config?.inputs?.['agent_param'] as BasicSchema[];
 
   const agentList = agentMarket?.list.map((item) => item.toMeta());
 
@@ -67,13 +67,13 @@ export const AgentNode = (props: Props) => {
                   name: item.nickname,
                   description: item.description,
                   config: {
-                    ...(old.data.config as Record<string, any>),
+                    ...(old.data['config'] as Record<string, any>),
                     inputs: {
-                      ...old.data.config.inputs,
+                      ...(old.data['config'] as Record<string, any>)['inputs'],
                       agent_param: [
-                        ...old.data.config.inputs.agent_param.filter(
-                          (p: BasicSchema) => p.name !== 'id',
-                        ),
+                        ...(old.data['config'] as Record<string, any>)[
+                          'inputs'
+                        ].agent_param.filter((p: BasicSchema) => p.name !== 'id'),
                         {
                           name: 'id',
                           type: 'string',
@@ -110,9 +110,9 @@ export const AgentNode = (props: Props) => {
               data: {
                 ...old.data,
                 config: {
-                  ...(old.data.config as Record<string, any>),
+                  ...(old.data['config'] as Record<string, any>),
                   inputs: {
-                    ...old.data.config.inputs,
+                    ...(old.data['config'] as Record<string, any>)['inputs'],
                     input_param: [...values],
                   },
                 },
@@ -137,9 +137,9 @@ export const AgentNode = (props: Props) => {
                     data: {
                       ...old.data,
                       config: {
-                        ...(old.data.config as Record<string, any>),
+                        ...(old.data['config'] as Record<string, any>),
                         inputs: {
-                          ...old.data.config.inputs,
+                          ...(old.data['config'] as Record<string, any>)['inputs'],
                           agent_param: [
                             ...agentParam.filter((p) => p.name !== 'prompt'),
                             {

@@ -61,7 +61,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
               config: {
                 ...(old.data['config'] as Record<string, any>),
                 inputs: {
-                  ...old.data['config'].inputs,
+                  ...(old.data['config'] as Record<string, any>)['inputs'],
                   llm_param: [
                     llmParam.find((p) => p.name === 'prompt'),
                     {
@@ -128,7 +128,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
               config: {
                 ...(old.data['config'] as Record<string, any>),
                 inputs: {
-                  ...old.data['config'].inputs,
+                  ...(old.data['config'] as Record<string, any>)['inputs'],
                   knowledge_param: [
                     {
                       name: 'top_k',
@@ -153,7 +153,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
           }));
         };
 
-        const value: any = {
+        const value = {
           knowledge: (
             (knowledgeParam.find((p) => p.name === 'id')?.value?.content ||
               []) as string[]
@@ -168,7 +168,9 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
               visible={knowledgeModal}
               close={() => setKnowledgeModal(false)}
               data={{
-                dataProvider: { knowledge: [...value.knowledge] },
+                dataProvider: {
+                  knowledge: [...(value.knowledge as KnowledgeModelOption[])],
+                },
                 onChange: (knowledges: KnowledgeModelOption[]) => {
                   onChange({
                     id: [...knowledges.map((k) => k.id)],
@@ -251,7 +253,7 @@ const AgentFlowComponent = forwardRef<HTMLDivElement>(
 
           // 获取 yaml 初始化 flow
           initFlow({
-            nodes: [...nodes],
+            nodes: [...nodes] as any[],
             edges: [...edges],
           });
           return;

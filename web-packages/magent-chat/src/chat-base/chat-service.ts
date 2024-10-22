@@ -1,12 +1,7 @@
 import { singleton } from '@difizen/mana-app';
 
 import type { ChatMessageItemOption } from './chat-message-item-model.js';
-import type {
-  ConversationOption,
-  IChatEvent,
-  IChatMessageItem,
-  IConversation,
-} from './protocol.js';
+import type { ConversationOption, IChatEvent, IChatMessageItem } from './protocol.js';
 
 @singleton()
 export class ChatService {

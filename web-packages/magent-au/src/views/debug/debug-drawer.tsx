@@ -8,14 +8,17 @@ import { Col, Drawer, Row, Select, Tree } from 'antd';
 import copy from 'copy-to-clipboard';
 import { useState } from 'react';
 
+import type { AUChatView } from '../../au-chat-message/chat-view.js';
 import { HumanIcon } from '../../au-chat-message/icon.js';
 import { DefaultLLMIcon } from '../../model/model-icon/index.js';
+import type { SessionModel } from '../../session/session-model.js';
 import { DefaultToolIcon } from '../../tool/icon/index.js';
-import type { ChatView } from '../chat/view.js';
 
 import { debugDrawerId } from './protocol.js';
 
-export function DebugDrawerComponentContext(props: ModalItemProps<{ chat: ChatView }>) {
+export function DebugDrawerComponentContext(
+  props: ModalItemProps<{ chat: AUChatView }>,
+) {
   const { data } = props;
   if (!data) {
     return null;
@@ -29,11 +32,12 @@ export function DebugDrawerComponentContext(props: ModalItemProps<{ chat: ChatVi
 export function DebugDrawerComponent({
   visible,
   close,
-}: ModalItemProps<{ chat: ChatView }>) {
-  const chat = useInject<ChatView>(ViewInstance);
+}: ModalItemProps<{ chat: AUChatView }>) {
+  const chat = useInject<AUChatView>(ViewInstance);
   const [selected, setSelected] = useState<string | undefined>(undefined);
 
-  let messages = chat.session?.messages || [];
+  const conversation = chat.conversation as SessionModel;
+  let messages = conversation?.messages || [];
   messages = messages.filter((item) => item?.token);
   const selectedMessage = messages.find((item) => item.id?.toString() === selected);
   const invocationChain = [...(selectedMessage?.invocationChain || [])];
@@ -72,7 +76,7 @@ export function DebugDrawerComponent({
               setSelected(e);
             }}
             options={messages.map((item) => {
-              return { value: item.id?.toString(), label: item.messages[0].content };
+              return { value: item.id?.toString(), label: item.items[0].content };
             })}
           />
         </div>
