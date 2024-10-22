@@ -20,11 +20,11 @@ export class Fetcher {
   };
 
   post = async <T>(url: string, data: any, config?: AxiosRequestConfig<any>) => {
-    return this.axios.post<T>(url, data);
+    return this.axios.post<T>(url, data, config);
   };
 
   put = async <T>(url: string, data: any, config?: AxiosRequestConfig<any>) => {
-    return this.axios.put<T>(url, data);
+    return this.axios.put<T>(url, data, config);
   };
   delete = async <T>(url: string, config?: AxiosRequestConfig<any>) => {
     return this.axios.delete<T>(url, config);
