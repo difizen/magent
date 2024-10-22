@@ -10,6 +10,7 @@
   ],
   "type": "module",
   "repository": "git@github.com:difizen/magent.git",
+  "author": "coetzeexu <xujianfeng.xjf@antgroup.com>",
   "license": "MIT",
   "exports": {
     ".": {

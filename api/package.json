@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "## env setup",
   "license": "ISC",
-  "author": "",
+  "author": "brokun <brokun0128@gmail.com>",
   "main": "index.js",
   "directories": {
     "test": "tests"
