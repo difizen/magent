@@ -1,4 +1,4 @@
-# @difizen/magent-core
+# @difizen/magent-platform
 
 ## 0.1.27
 

@@ -1,6 +1,6 @@
 {
   "name": "@difizen/magent-ui",
-  "version": "0.1.0",
+  "version": "0.1.27",
   "private": true,
   "type": "module",
   "keywords": [
@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
-    "@difizen/magent-flow": "^0.1.26",
-    "@difizen/magent-core": "^0.1.26",
+    "@difizen/magent-flow": "^0.1.27",
+    "@difizen/magent-core": "^0.1.27",
     "@difizen/mana-app": "^0.1.8",
     "@difizen/mana-react": "^0.1.8",
     "@rjsf/antd": "^5.18.2",
