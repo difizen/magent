@@ -9,7 +9,7 @@ import { AgentsPageModule } from './views/agents/module.js';
 import { BaseLayoutModule } from './views/base-layout/module.js';
 import { DebugModule } from './views/debug/module.js';
 import { KnowledgePageModule } from './views/knowledge/module.js';
-import { PluginPageModule } from './views/plugins/module.js';
+import { PluginsPageModule } from './views/plugins/module.js';
 import { PortalsModule } from './views/portal-layout/module.js';
 import { SessionsViewModule } from './views/sessions/module.js';
 import { ToolPageModule } from './views/tools/module.js';
@@ -29,5 +29,5 @@ export const AUModule = new ManaModule()
     PortalsModule,
     AgentFlowModule,
     DebugModule,
-    PluginPageModule,
+    PluginsPageModule,
   );

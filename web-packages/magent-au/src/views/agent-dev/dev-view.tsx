@@ -13,7 +13,7 @@ import { DebugDrawer } from '../debug/debug-drawer.js';
 import './index.less';
 
 const viewId = 'magent-agent-dev';
-export const slot = `${viewId}-slot`;
+export const AgentDevSlot = `${viewId}-slot`;
 
 const AgentDevComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {

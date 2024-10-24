@@ -12,7 +12,7 @@ import {
   AgentConfigOption,
 } from './protocol.js';
 
-export const AgentBotModule = ManaModule.create().register(
+export const AgentModule = ManaModule.create().register(
   AgentManager,
   AgentModel,
   AgentConfig,

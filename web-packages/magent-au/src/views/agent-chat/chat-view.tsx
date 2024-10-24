@@ -25,7 +25,7 @@ import { SessionsView } from '../sessions/view.js';
 import './index.less';
 
 const viewId = 'magent-agent-chat';
-export const slot = `${viewId}-slot`;
+export const AgentChatSlot = `${viewId}-slot`;
 
 const AgentChatComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {
