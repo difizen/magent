@@ -1,9 +1,9 @@
 import { AgentDevModule, AUDataModule } from '@difizen/magent-au';
 import { ManaAppPreset, ManaComponents, ManaModule, Slot } from '@difizen/mana-app';
 
-import { RagAgentApp } from './app.js';
+import { AgentApp } from './app.js';
 
-const AppModule = ManaModule.create().register(RagAgentApp);
+const AppModule = ManaModule.create().register(AgentApp);
 
 const App = (): JSX.Element => {
   return (

@@ -225,17 +225,28 @@ export const FlowWithTabs = (props: { toolbar?: React.ReactNode }) => {
 
   return (
     <div className="flex flex-1">
-      <Tabs className="agent-flow-tabs" defaultActiveKey="node" centered>
-        <Tabs.TabPane key="node" tab="节点">
-          <NodesPanel
-            className="w-[200px] z-10 h-full"
-            nodes={templateNodes as NodeDataType[]}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="settings" tab="配置">
-          <CharacterSetting></CharacterSetting>
-        </Tabs.TabPane>
-      </Tabs>
+      <Tabs
+        className="agent-flow-tabs"
+        defaultActiveKey="node"
+        centered
+        items={[
+          {
+            key: 'node',
+            label: '节点',
+            children: (
+              <NodesPanel
+                className="w-[200px] z-10 h-full"
+                nodes={templateNodes as NodeDataType[]}
+              />
+            ),
+          },
+          {
+            key: 'settings',
+            label: '配置',
+            children: <CharacterSetting></CharacterSetting>,
+          },
+        ]}
+      ></Tabs>
 
       <Flow classNames="flex-1" nodeTypes={nodeTypes} toolbar={toolbar} />
     </div>
