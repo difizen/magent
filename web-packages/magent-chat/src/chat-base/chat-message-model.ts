@@ -6,6 +6,9 @@ import dayjs from 'dayjs';
 
 import { AIChatMessageItemModel } from './ai-message-item-model.js';
 import { ChatMessageItemManager } from './chat-message-item-manager.js';
+import type { ChatMessageItemOption } from './chat-message-item-model.js';
+import type { ITokenSummary } from './chat-messasge-summary.js';
+import { ChatMessageSummaryProvider } from './chat-messasge-summary.js';
 import { ChatService } from './chat-service.js';
 import type {
   IChatMessage,
@@ -15,6 +18,7 @@ import type {
   IChatEvent,
   IChatMessageItem,
 } from './protocol.js';
+import { ChatEvent } from './protocol.js';
 import { ChatProtocol } from './protocol.js';
 
 export interface ChatMessageOption extends IChatMessage {
@@ -24,6 +28,8 @@ export interface ChatMessageOption extends IChatMessage {
 @autoFactory()
 export class DefaultChatMessageModel implements Disposable {
   @inject(ChatService) protected chatService: ChatService;
+  @inject(ChatMessageSummaryProvider)
+  protected summaryProvider: ChatMessageSummaryProvider;
 
   protected _id: string | undefined;
   get id(): string | undefined {
@@ -108,30 +114,35 @@ export class DefaultChatMessageModel implements Disposable {
     }
     if (option.messages && option.messages.length > 0) {
       const items = option.messages.map((item) =>
-        this.itemManager.createChatMessageItem({
-          parent: this,
-          content: item.content,
-          sender: item.sender,
-          created: item.sender.type === 'AI' ? option.modified : option.created,
-        }),
+        this.itemManager.createChatMessageItem(this.toChatMessageItemOption(item)),
       );
       this.items = items;
       this.onMessageItemEmitter.fire(items[items.length - 1]);
     }
   }
 
-  protected send = async <T extends ChatMessageOption>(option: T) => {
+  protected createTokenSummary(opt: ITokenSummary) {
+    return this.summaryProvider.create(opt);
+  }
+
+  protected toChatMessageItemOption(item: IChatMessageItem): ChatMessageItemOption {
+    return {
+      parent: this,
+      content: item.content,
+      sender: item.sender,
+    };
+  }
+
+  protected async send<T extends ChatMessageOption>(option: T) {
     if (!ChatProtocol.isChatMessageCreate(option)) {
       return;
     }
     const { input, stream = true } = option;
     this.sending = true;
 
-    const human = this.itemManager.createChatMessageItem({
-      parent: this,
-      sender: { type: 'HUMAN' },
-      content: input!,
-    });
+    const human = this.itemManager.createChatMessageItem(
+      this.toChatMessageItemOption({ sender: { type: 'HUMAN' }, content: input }),
+    );
 
     const opt: ChatMessageOption = {
       ...option,
@@ -145,7 +156,7 @@ export class DefaultChatMessageModel implements Disposable {
       await this.chatStream(option);
     }
     this.sending = false;
-  };
+  }
 
   protected chat = async (option: ChatMessageOption) => {
     const { input } = option;
@@ -159,15 +170,32 @@ export class DefaultChatMessageModel implements Disposable {
     }
   };
 
-  protected handleMessageItem = (item: IChatMessageItem) => {
-    const msgItem = this.itemManager.createChatMessageItem({
-      ...item,
-      parent: this,
-    });
+  protected handleMessageItem(item: IChatMessageItem) {
+    const msgItem = this.itemManager.createChatMessageItem(
+      this.toChatMessageItemOption(item),
+    );
     this.items.push(msgItem);
     this.onMessageItemEmitter.fire(msgItem);
     return msgItem;
-  };
+  }
+
+  protected handleChatEvent(event: IChatEvent, item: BaseChatMessageItemModel) {
+    if (item instanceof AIChatMessageItemModel) {
+      if (ChatEvent.isResult(event)) {
+        this.updateSummary({});
+      }
+      item.handleEventData(event);
+      this.onMessageItemEmitter.fire(item);
+    }
+  }
+
+  protected updateSummary(opt: ITokenSummary) {
+    if (!this.token) {
+      this.token = this.summaryProvider.create(opt);
+    } else {
+      this.token.fromMeta(opt);
+    }
+  }
 
   protected chatStream = async (option: ChatMessageOption) => {
     const { input } = option;
@@ -179,8 +207,8 @@ export class DefaultChatMessageModel implements Disposable {
           current = this.handleMessageItem(item);
         },
         (event: IChatEvent) => {
-          if (current instanceof AIChatMessageItemModel) {
-            current.handleEventData(event);
+          if (current) {
+            this.handleChatEvent(event, current);
           }
         },
       );

@@ -13,7 +13,25 @@ import type { APISession, SessionOption } from '../session/protocol.js';
 import { toSessionOption } from '../session/protocol.js';
 
 import type { APIMessage, AUMessageCreate } from './protocol.js';
+import { AUChatEvent } from './protocol.js';
 
+function stringToReadableStream(inputString: string) {
+  // Convert the string into a Uint8Array
+  const encoder = new TextEncoder();
+  const uint8Array = encoder.encode(inputString);
+
+  // Create a new ReadableStream
+  const readableStream = new ReadableStream({
+    start(controller) {
+      // Enqueue the Uint8Array into the stream
+      controller.enqueue(uint8Array);
+      // Close the stream
+      controller.close();
+    },
+  });
+
+  return readableStream;
+}
 @singleton()
 export class AUChatService extends ChatService {
   @inject(Fetcher) fetcher: Fetcher;
@@ -61,11 +79,19 @@ export class AUChatService extends ChatService {
       adapter: 'fetch',
     });
     if (res.status === 200) {
-      const stream = res.data;
-      const reader = stream
-        .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new EventSourceParserStream())
-        .getReader();
+      let reader;
+      if (typeof res.data === 'string') {
+        reader = stringToReadableStream(res.data)
+          .pipeThrough(new TextDecoderStream())
+          .pipeThrough(new EventSourceParserStream())
+          .getReader();
+      } else {
+        const stream = res.data;
+        reader = stream
+          .pipeThrough(new TextDecoderStream())
+          .pipeThrough(new EventSourceParserStream())
+          .getReader();
+      }
 
       messgeCallback({
         sender: { type: 'AI', id: agentId },
@@ -82,7 +108,9 @@ export class AUChatService extends ChatService {
 
           break;
         }
-        eventCallback(value);
+        const data = JSON.parse(value.data);
+        const event = AUChatEvent.format(value.event || 'chunk', data);
+        eventCallback(event);
       }
       return;
     }

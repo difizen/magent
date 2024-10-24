@@ -37,11 +37,11 @@ export const AIMessageAddon = (props: AIMessageProps) => {
   if (message.token) {
     content = (
       <div className={`chat-message-addon`}>
-        {message.token.total_tokens && (
+        {message.token.totalTokens && (
           <div className={`chat-message-addon-item`}>
-            <span>Total token: {message.token.total_tokens}</span>
-            <span>Completion: {message.token.completion_tokens}</span>
-            <span>Prompt: {message.token.prompt_tokens}</span>
+            <span>Total token: {message.token.totalTokens}</span>
+            <span>Completion: {message.token.completionTokens}</span>
+            <span>Prompt: {message.token.promptTokens}</span>
           </div>
         )}
         {message.token.endTime && (
@@ -49,7 +49,9 @@ export const AIMessageAddon = (props: AIMessageProps) => {
             <span>
               结束时间: {message.token.endTime?.format('YYYY-MM-DD HH:mm:ss')}
             </span>
-            <span>耗时: {message.token.responseTime}</span>
+            {message.token.responseTime && (
+              <span>耗时: {message.token.responseTime}</span>
+            )}
           </div>
         )}
       </div>
