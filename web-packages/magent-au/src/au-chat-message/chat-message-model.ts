@@ -2,26 +2,23 @@ import type {
   BaseChatMessageItemModel,
   ChatMessageOption,
   IChatEvent,
+  IChatMessageItem,
 } from '@difizen/magent-chat';
 import { DefaultChatMessageModel, ChatMessageItemManager } from '@difizen/magent-chat';
 import { autoFactory, AutoFactoryOption, Fetcher } from '@difizen/magent-core';
 import { Deferred } from '@difizen/mana-app';
 import { inject, prop } from '@difizen/mana-app';
-import dayjs from 'dayjs';
-import { EventSourceParserStream } from 'eventsource-parser/stream';
 
 import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
 
-import { AUAgentChatMessageItem } from './ai-message-item.js';
-import { AnswerState, AUChatEvent } from './protocol.js';
+import { AUChatEvent } from './protocol.js';
 import { AUChatMessageType } from './protocol.js';
 import type {
-  APIMessage,
   ChainItem,
   ChatEventResult,
   AUMessageOption,
-  AUMessageCreate,
+  AUChatMessageItemOption,
 } from './protocol.js';
 import type { AUChatMessageOption } from './protocol.js';
 
@@ -83,14 +80,13 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     await agent.ready;
     if (option.messages && option.messages.length > 0) {
       const messages = option.messages.map((item) =>
-        this.itemManager.createChatMessageItem({
-          parent: this,
-          content: item.content,
-          sender: item.sender,
-          created: item.sender.type === 'AI' ? option.modified : option.created,
-          planner: agent!.planner?.id,
-          agentId: this.agentId,
-        }),
+        this.itemManager.createChatMessageItem(
+          this.toChatMessageItemOption({
+            content: item.content,
+            sender: item.sender,
+            created: item.sender.type === 'AI' ? option.modified : option.created,
+          }),
+        ),
       );
       this.messages = messages;
       this.onMessageItemEmitter.fire(messages[messages.length - 1]);
@@ -98,142 +94,47 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
   };
 
   override updateMeta(option: ChatMessageOption) {
-    super.updateMeta(option);
     if ('agentId' in option) {
       this.agentId = option['agentId'];
     }
-    this.getAgent(this.agentId);
     this.parent = option.parent;
+    if (option.modified) {
+      this.updateSummary({ end_time: option.modified });
+    }
+    super.updateMeta(option);
+    this.getAgent(this.agentId);
   }
 
-  protected doChat = async (option: AUMessageCreate) => {
-    const { agentId, sessionId, input } = option;
-    const res = await this.fetcher.post<APIMessage>(
-      `/api/v1/agents/${option.agentId}/chat`,
-      {
-        agent_id: agentId,
-        session_id: sessionId,
-        input: input,
-      },
-    );
-
-    if (res.status === 200) {
-      this.sending = false;
-      const data = res.data;
-      this.id = data.message_id.toString();
-      this.created = dayjs(data.gmt_created);
-      this.modified = dayjs(data.gmt_modified);
-      if (res.data.output) {
-        const ai = this.itemManager.createChatMessageItem({
-          parent: this,
-          sender: { type: 'AI' },
-          content: res.data.output,
-          planner: this.agent?.planner?.id,
-          agentId: this.agentId,
-        });
-        this.messages.push(ai);
-        this.onMessageItemEmitter.fire(ai);
-      }
-    }
-  };
-
-  protected handleChatEvent = (e: IChatEvent, ai: AUAgentChatMessageItem) => {
-    if (!e) {
-      return;
-    }
-    try {
-      if (AUChatEvent.isResult(e)) {
-        const result: ChatEventResult = e;
-        this.invocationChain = result.invocation_chain;
-        this.onMessageItemEmitter.fire(ai);
-      }
-
-      ai.handleEventData(e);
-      this.onMessageItemEmitter.fire(ai);
-    } catch (e) {
-      console.warn('[chat] recerved server send event', event);
-      console.error(e);
-    }
-  };
-
-  protected doStreamChat = async (option: AUMessageCreate) => {
-    const { agentId, sessionId, input } = option;
-
-    const url = `/api/v1/agents/${option.agentId}/stream-chat`;
-    const msg = {
-      agent_id: agentId,
-      session_id: sessionId,
-      input: input,
-    };
-    const res = await this.fetcher.post<ReadableStream<Uint8Array>>(url, msg, {
-      headers: {
-        Accept: 'text/event-stream',
-      },
-      responseType: 'stream',
-      adapter: 'fetch',
-    });
-    if (res.status === 200) {
-      this.sending = false;
-      const stream = res.data;
-      const reader = stream
-        .pipeThrough(new TextDecoderStream())
-        .pipeThrough(new EventSourceParserStream())
-        .getReader();
-
-      let alreayDone = false;
-      const ai = this.itemManager.createChatMessageItem({
-        parent: this,
-        sender: { type: 'AI' },
-        content: '',
-        planner: this.agent?.planner?.id,
-        agentId: this.agentId,
+  override handleChatEvent(event: IChatEvent, item: BaseChatMessageItemModel) {
+    if (AUChatEvent.isResult(event)) {
+      const result: ChatEventResult = event;
+      this.invocationChain = result.invocation_chain;
+      this.updateSummary({
+        total_tokens: event.token_usage.total_tokens,
+        completion_tokens: event.token_usage.completion_tokens,
+        prompt_tokens: event.token_usage.prompt_tokens,
+        start_time: event.start_time,
+        end_time: event.end_time,
+        response_time: event.response_time,
       });
-      ai.state = AnswerState.RECEIVING;
-      this.messages.push(ai);
-      this.onMessageItemEmitter.fire(ai);
-      if (ai instanceof AUAgentChatMessageItem) {
-        while (!alreayDone) {
-          const { value, done } = await reader.read();
-          if (done) {
-            alreayDone = true;
-            break;
-          }
-          const data = JSON.parse(value.data);
-          const event = AUChatEvent.format(value.event || 'chunk', data);
-          this.handleChatEvent(event, ai);
-        }
-      }
-      ai.state = AnswerState.SUCCESS;
-      return;
     }
-  };
+    super.handleChatEvent(event, item);
+  }
 
-  protected override send = async <T extends ChatMessageOption>(option: T) => {
+  override toChatMessageItemOption(item: IChatMessageItem): AUChatMessageItemOption {
+    return {
+      parent: this,
+      content: item.content,
+      sender: item.sender,
+      agentId: this.agentId,
+      planner: this.agent?.planner?.id,
+    };
+  }
+
+  protected override async send<T extends ChatMessageOption>(option: T) {
     if (!AUChatMessageType.isCreate(option)) {
       return;
     }
-    const { input, stream = true } = option;
-    this.sending = true;
-
-    const human = this.itemManager.createChatMessageItem({
-      parent: this,
-      sender: { type: 'HUMAN' },
-      content: input,
-      planner: this.agent?.planner?.id,
-      agentId: this.agentId,
-    });
-    const opt: AUMessageOption = {
-      ...option,
-      messages: [human.option],
-    };
-
-    this.updateMeta(opt);
-    // this.startTime = dayjs();
-    if (!stream) {
-      await this.doChat(option);
-    } else {
-      await this.doStreamChat(option);
-    }
-    this.sending = false;
-  };
+    super.send(option);
+  }
 }

@@ -9,6 +9,10 @@ import {
 } from './chat-message-item-model.js';
 import { ChatMessageManager } from './chat-message-manager.js';
 import { DefaultChatMessageModel } from './chat-message-model.js';
+import {
+  ChatMessageSummaryProvider,
+  DefaultChatMessageSummary,
+} from './chat-messasge-summary.js';
 import { ChatService } from './chat-service.js';
 import { ConversationManager } from './conversation-manager.js';
 import { DefaultConversationModel } from './conversation-model.js';
@@ -26,5 +30,7 @@ export const ChatBaseModule = ManaModule.create('magent-chat-base')
     AIChatMessageItemModel,
     ChatMessageItemManager,
     DefaultChatMessageItemContribution,
+    DefaultChatMessageSummary,
+    ChatMessageSummaryProvider,
   )
   .contribution(ChatMessageItemContribution);

@@ -1,6 +1,6 @@
 ---
-title: RAG Chat
-order: 1
+title: RAG 对话
+order: 6
 ---
 
 # RAG agent chat

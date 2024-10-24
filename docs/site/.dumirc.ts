@@ -1,4 +1,15 @@
 import { defineConfig } from 'dumi';
+const DEPLOY_ENV = process.env.DEPLOY_ENV;
+
+const nav = [
+  { title: '介绍', link: '/introduction' },
+  { title: '教程', link: '/tutorial' },
+  { title: '示例', link: '/examples' },
+];
+
+if (DEPLOY_ENV !== 'vercel') {
+  nav.push({ title: 'AU', link: '/au' }, { title: 'libro', link: '/libro' });
+}
 
 export default defineConfig({
   themeConfig: {
@@ -6,13 +17,7 @@ export default defineConfig({
     name: 'magent',
     link: '/',
     logo: '/logo.svg',
-    nav: [
-      { title: '介绍', link: '/introduction' },
-      { title: '教程', link: '/tutorial' },
-      { title: '示例', link: '/examples' },
-      { title: 'AU', link: '/au' },
-      { title: 'libro', link: '/libro' },
-    ],
+    nav: nav,
     gitRepo: { owner: 'difizen', name: 'magent' },
     qrcodes: [
       {

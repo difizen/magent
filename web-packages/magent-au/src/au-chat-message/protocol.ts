@@ -53,6 +53,8 @@ export type AUChatMessageOption = AUMessageCreate | AUMessageOption;
 export interface APIContentItem {
   type: 'human' | 'ai';
   content: string;
+  gmt_created: string;
+  gmt_modified: string;
 }
 export interface APIMessage {
   message_id: number;

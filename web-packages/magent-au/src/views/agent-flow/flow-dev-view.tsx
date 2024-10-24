@@ -17,7 +17,7 @@ import { AgentFlowView } from './agent-flow-view.js';
 import './index.less';
 
 const viewId = 'magent-agent-flow-dev';
-export const slot = `${viewId}-slot`;
+export const AgentFlowDevSlot = `${viewId}-slot`;
 
 const AgentFlowDevComponent = forwardRef<HTMLDivElement>(
   function AgentsViewComponent(props, ref) {

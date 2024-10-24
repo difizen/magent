@@ -1,6 +1,6 @@
 import { ManaModule } from '@difizen/mana-app';
 
-import { AgentBotModule } from './agent/module.js';
+import { AgentModule } from './agent/module.js';
 import { ChatMessageModule } from './au-chat-message/module.js';
 import { AUCommonModule } from './common/module.js';
 import { ModelModule } from './model/module.js';
@@ -15,7 +15,7 @@ export const AUDataModule = new ManaModule('au-data')
     SessionModule,
     ChatMessageModule,
     ModelModule,
-    AgentBotModule,
+    AgentModule,
     ToolModule,
     PluginModule,
   );
