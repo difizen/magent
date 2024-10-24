@@ -37,6 +37,7 @@ export class AIChatMessageItemModel extends DefaultChatMessageItemModel {
       this.handleResult(e);
     }
   }
+
   appendChunk(e: ChatEventChunk) {
     this.content = `${this.content}${e.output}`;
   }

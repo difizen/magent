@@ -2,11 +2,13 @@ import { AutoFactoryOption } from '@difizen/magent-core';
 import { AsyncModel } from '@difizen/magent-core';
 import { autoFactory } from '@difizen/magent-core';
 import type { Event, Disposable } from '@difizen/mana-app';
+import { equals } from '@difizen/mana-app';
 import { DisposableCollection, Emitter, inject, prop } from '@difizen/mana-app';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 
 import { ChatMessageManager } from './chat-message-manager.js';
+import type { ChatMessageOption } from './chat-message-model.js';
 import { ChatService } from './chat-service.js';
 import type {
   BaseChatMessageItemModel,
@@ -107,8 +109,27 @@ export class DefaultConversationModel
     this.toDispose.dispose();
   };
 
+  protected toChatMessageOption(msg: IChatMessage): ChatMessageOption {
+    return {
+      ...msg,
+      parent: this,
+    };
+  }
+
+  protected disposeMessage = (msg: BaseChatMessageModel) => {
+    this.messages = this.messages.filter((item) => !equals(item, msg));
+  };
+
   sendMessage = (msg: IChatMessage) => {
-    const message = this.messageManager.getOrCreate({ ...msg, parent: this });
+    const message = this.messageManager.getOrCreate(this.toChatMessageOption(msg));
+    const toDispose = message.onMessageItem((e) => {
+      this.onMessageEmitter.fire(e);
+    });
+    this.toDispose.push(toDispose);
+    message.onDispose(() => {
+      toDispose.dispose();
+      this.disposeMessage(message);
+    });
     this.messages.push(message);
   };
 }

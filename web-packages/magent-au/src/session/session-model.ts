@@ -1,27 +1,18 @@
-import type { DefaultChatMessageModel } from '@difizen/magent-chat';
+import type { DefaultChatMessageModel, IChatMessage } from '@difizen/magent-chat';
 import { DefaultConversationModel } from '@difizen/magent-chat';
-import type { ToAutoFactory } from '@difizen/magent-core';
-import {
-  autoFactory,
-  AutoFactoryOption,
-  Fetcher,
-  toAutoFactory,
-} from '@difizen/magent-core';
+import { autoFactory, AutoFactoryOption, Fetcher } from '@difizen/magent-core';
 import { equals } from '@difizen/mana-app';
 import { inject, prop } from '@difizen/mana-app';
 import dayjs from 'dayjs';
 
-import { AUChatMessageModel } from '../au-chat-message/chat-message-model.js';
-// import type { AUMessageCreate } from '../au-chat-message/protocol.js';
+import type { AUChatMessageModel } from '../au-chat-message/chat-message-model.js';
+import type { AUChatMessageOption } from '../au-chat-message/protocol.js';
 
 import type { SessionOption } from './protocol.js';
 import { SessionOptionType } from './protocol.js';
 
 @autoFactory()
 export class SessionModel extends DefaultConversationModel {
-  @inject(toAutoFactory(AUChatMessageModel))
-  declare messageFactory: ToAutoFactory<typeof DefaultChatMessageModel>;
-
   fetcher: Fetcher;
   agentId: string;
 
@@ -61,7 +52,11 @@ export class SessionModel extends DefaultConversationModel {
     super.fromMeta(option);
   }
 
-  protected disposeMessage = (msg: AUChatMessageModel) => {
+  protected override disposeMessage = (msg: DefaultChatMessageModel) => {
     this.messages = this.messages.filter((item) => !equals(item, msg));
   };
+
+  protected override toChatMessageOption(msg: IChatMessage): AUChatMessageOption {
+    return { ...msg, parent: this, sessionId: this.id!, agentId: this.agentId };
+  }
 }
