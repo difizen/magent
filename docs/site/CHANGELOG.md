@@ -1,5 +1,16 @@
 # @difizen/magent-docs
 
+## 0.1.28
+
+### Patch Changes
+
+- [#62](https://github.com/difizen/magent/pull/62) [`40d37b6`](https://github.com/difizen/magent/commit/40d37b6af7e6facb1ac582491a42685ebbca2a4d) Thanks [@sunshinesmilelk](https://github.com/sunshinesmilelk)! - chore: update denpendencies for magent-libro
+
+- Updated dependencies [[`40d37b6`](https://github.com/difizen/magent/commit/40d37b6af7e6facb1ac582491a42685ebbca2a4d)]:
+  - @difizen/magent-libro@0.1.28
+  - @difizen/magent-au@0.1.28
+  - @difizen/magent-chat@0.1.28
+
 ## 0.1.27
 
 ### Patch Changes
