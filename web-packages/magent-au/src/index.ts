@@ -17,5 +17,8 @@ export * from './views/portal-layout/index.js';
 export * from './views/agents/index.js';
 export * from './views/agent-dev/index.js';
 export * from './views/agent-chat/index.js';
+export * from './views/agent-flow/index.js';
 export * from './views/plugins/index.js';
 export * from './views/knowledge/index.js';
+export * from './views/base-layout/index.js';
+export * from './views/common/index.js';

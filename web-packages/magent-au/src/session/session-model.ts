@@ -35,6 +35,12 @@ export class SessionModel extends DefaultConversationModel {
   ) {
     super(option);
     this.option = option;
+    if (option.id) {
+      this.id = option.id;
+    }
+    if (option.agentId) {
+      this.agentId = option.agentId;
+    }
     this.fetcher = fetcher;
     this.initialize(option);
   }
@@ -57,6 +63,11 @@ export class SessionModel extends DefaultConversationModel {
   };
 
   protected override toChatMessageOption(msg: IChatMessage): AUChatMessageOption {
-    return { ...msg, parent: this, sessionId: this.id!, agentId: this.agentId };
+    return {
+      ...msg,
+      parent: this,
+      sessionId: this.id || this.option.id!,
+      agentId: this.agentId || this.option.agentId,
+    };
   }
 }
