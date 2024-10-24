@@ -50,7 +50,6 @@
     "@ant-design/icons": "^5.1.0",
     "@difizen/magent-chat": "^0.1.27",
     "@difizen/magent-core": "^0.1.27",
-    "@difizen/magent-flow": "^0.1.27",
     "@difizen/mana-app": "latest",
     "@difizen/mana-l10n": "latest",
     "@difizen/mana-react": "latest",
