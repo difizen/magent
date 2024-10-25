@@ -125,7 +125,7 @@ export class AUChatMessageModel extends DefaultChatMessageModel {
     return {
       parent: this,
       content: item.content,
-      sender: item.sender,
+      sender: { ...item.sender, avatar: this.agent?.avatar },
       agentId: this.agentId,
       planner: this.agent?.planner?.id,
     };

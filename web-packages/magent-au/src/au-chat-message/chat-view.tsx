@@ -1,5 +1,5 @@
 import { VerticalAlignBottomOutlined } from '@ant-design/icons';
-import type { IChatMessage } from '@difizen/magent-chat';
+import type { BaseChatMessageItemModel, IChatMessage } from '@difizen/magent-chat';
 import { ChatView } from '@difizen/magent-chat';
 import {
   Deferred,
@@ -12,12 +12,16 @@ import {
   ViewInstance,
   ViewOption,
 } from '@difizen/mana-app';
-import { FloatButton } from 'antd';
+import { Avatar, FloatButton } from 'antd';
+import classnames from 'classnames';
 import classNames from 'classnames';
 
 import { AgentIcon } from '../agent/agent-icon.js';
 import { AgentManager } from '../agent/agent-manager.js';
 import type { AgentModel } from '../agent/agent-model.js';
+
+import { AUAgentChatMessageItem } from './ai-message-item.js';
+import { HumanIcon } from './icon.js';
 
 const viewId = 'magent-chat';
 
@@ -67,6 +71,22 @@ const AUMessages = () => {
   );
 };
 
+const AUAvatar = (props: { item: BaseChatMessageItemModel; className?: string }) => {
+  const { item, className } = props;
+  const type = item.sender.type;
+  if (type === 'AI' && item instanceof AUAgentChatMessageItem) {
+    if (item instanceof AUAgentChatMessageItem) {
+      return (
+        <AgentIcon
+          agent={item.agent}
+          className={classnames('chat-message-avatar', className)}
+        />
+      );
+    }
+  }
+  return <Avatar className="chat-message-avatar" src={<HumanIcon />} />;
+};
+
 export interface ChatViewOption extends IChatMessage {
   id: string;
 }
@@ -76,6 +96,7 @@ export interface ChatViewOption extends IChatMessage {
 export class AUChatView extends ChatView {
   @inject(AgentManager) agentManager: AgentManager;
   override Messages = AUMessages;
+  override AvatarRender = AUAvatar;
 
   @prop()
   agent?: AgentModel;

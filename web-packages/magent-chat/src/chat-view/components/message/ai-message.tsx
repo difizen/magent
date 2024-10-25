@@ -145,7 +145,7 @@ export const AIMessage = (props: AIMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
-      <AvatarRender type="AI" id={item.sender.id} />
+      <AvatarRender item={item} />
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
 

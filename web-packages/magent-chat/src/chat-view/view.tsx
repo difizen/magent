@@ -25,9 +25,9 @@ import remarkGfm from 'remark-gfm';
 
 import { ConversationManager } from '../chat-base/conversation-manager.js';
 import type {
+  BaseChatMessageItemModel,
   BaseConversationModel,
   IChatMessage,
-  IChatMessageSender,
 } from '../chat-base/protocol.js';
 
 import { Input } from './components/input/index.js';
@@ -40,8 +40,12 @@ export interface ChatProps {
   className?: string;
 }
 
-const DefaultAvatar = (props: IChatMessageSender & { className?: string }) => {
-  const { type, className } = props;
+const DefaultAvatar = (props: {
+  item: BaseChatMessageItemModel;
+  className?: string;
+}) => {
+  const { item, className } = props;
+  const type = item.sender.type;
   if (type === 'AI') {
     return (
       <Avatar
