@@ -20,6 +20,8 @@ import classnames from 'classnames';
 import type { RefObject } from 'react';
 import { forwardRef } from 'react';
 import { useEffect, useRef } from 'react';
+import breaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
 
 import { ConversationManager } from '../chat-base/conversation-manager.js';
 import type {
@@ -29,6 +31,8 @@ import type {
 } from '../chat-base/protocol.js';
 
 import { Input } from './components/input/index.js';
+import { CodeBlock } from './components/markdown/code-block/index.js';
+import { DefaultMarkdown, ImageModal } from './components/markdown/index.js';
 import { DefaultChatMessage, DefaultChatMessageItem } from './default-chat-message.js';
 import './index.less';
 
@@ -144,6 +148,14 @@ export class ChatView extends BaseView {
   Footer = DefaultFooter;
   ChatMessage = DefaultChatMessage;
   ChatMessageItem = DefaultChatMessageItem;
+  Markdown = DefaultMarkdown;
+
+  getMarkdownProps() {
+    return {
+      components: { code: CodeBlock, img: ImageModal },
+      remarkPlugins: [remarkGfm, breaks],
+    };
+  }
 
   option: ChatViewOption;
 
