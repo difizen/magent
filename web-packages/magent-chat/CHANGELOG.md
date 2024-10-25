@@ -1,5 +1,16 @@
 # @difizen/magent-chat
 
+## 0.1.29
+
+### Patch Changes
+
+- [#64](https://github.com/difizen/magent/pull/64) [`dd8d500`](https://github.com/difizen/magent/commit/dd8d5008d51f826949613036e625bd4813b9c726) Thanks [@BroKun](https://github.com/BroKun)! - All magent-ui features can now be developed via docs.
+
+- [#64](https://github.com/difizen/magent/pull/64) [`5271ea2`](https://github.com/difizen/magent/commit/5271ea2d874acd93c68487106403b93306a62595) Thanks [@BroKun](https://github.com/BroKun)! - Easily customize chat panel user avatars and markdown renderer.
+
+- Updated dependencies [[`dd8d500`](https://github.com/difizen/magent/commit/dd8d5008d51f826949613036e625bd4813b9c726), [`5271ea2`](https://github.com/difizen/magent/commit/5271ea2d874acd93c68487106403b93306a62595)]:
+  - @difizen/magent-core@0.1.29
+
 ## 0.1.28
 
 ### Patch Changes
