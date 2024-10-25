@@ -49,7 +49,7 @@ export const HumanMessage = (props: HumanMessageProps) => {
 
   return (
     <div className={classNames('chat-message-main')}>
-      <AvatarRender type="HUMAN" id={item.sender.id} />
+      <AvatarRender item={item} />
       <div className="chat-message-human">
         <TextMessage content={content} />
         <HumanMessageAddon {...props} />

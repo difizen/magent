@@ -10,6 +10,7 @@ import type { DefaultConversationModel } from './conversation-model.js';
 export interface IChatMessageSender {
   id?: string;
   type: 'HUMAN' | 'AI';
+  avatar?: string;
 }
 
 export interface IChatMessageItem {
