@@ -173,16 +173,20 @@ export class ChatView extends BaseView {
     return true;
   }
 
+  protected toMessageOption(msgContent: string) {
+    return {
+      stream: true,
+      ...this.option,
+      sender: { type: 'HUMAN' },
+      input: msgContent,
+    };
+  }
+
   sendMessage = async (msgContent: string) => {
     if (!this.id) {
       return;
     }
-    const msg: IChatMessage = {
-      ...this.option,
-      sender: { type: 'HUMAN' },
-      input: msgContent,
-      stream: true,
-    };
+    const msg: IChatMessage = this.toMessageOption(msgContent);
     delete msg.id;
     delete msg.messages;
     delete msg.created;
@@ -195,11 +199,17 @@ export class ChatView extends BaseView {
     this.initConversation();
   }
 
-  protected initConversation = async () => {
-    this.conversation = this.conversationManager.getOrCreate({
+  protected toConversationOption() {
+    return {
       ...this.option,
       messages: [],
-    });
+    };
+  }
+
+  protected initConversation = async () => {
+    this.conversation = this.conversationManager.getOrCreate(
+      this.toConversationOption(),
+    );
     const toDispose = this.conversation.onMessage(() =>
       setImmediate(() => {
         if (!this.showToBottomBtn) {
