@@ -15,7 +15,6 @@ import type {
 } from '../../../chat-base/protocol.js';
 import { AnswerState } from '../../../chat-base/protocol.js';
 import type { ChatView } from '../../view.js';
-import { Markdown } from '../markdown/index.js';
 
 interface AIMessageProps {
   message: BaseChatMessageModel;
@@ -68,6 +67,8 @@ export const AIMessageAddon = (props: AIMessageProps) => {
 
 export const AIMessageContent = (props: AIMessageProps) => {
   const item = useObserve(props.item);
+  const instance = useInject<ChatView>(ViewInstance);
+  const Markdown = instance.Markdown;
   const content: ReactNode = item.content;
   if (!content) {
     return (
@@ -96,8 +97,9 @@ export const AIMessageContent = (props: AIMessageProps) => {
         <div className={classNames('markdown-message-md', 'chat-message-ai-content')}>
           <span className={`markdown-message-md-pop`}>
             <Markdown
-              className={item.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
               type="message"
+              {...instance.getMarkdownProps()}
+              className={item.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
             >
               {item.content}
             </Markdown>

@@ -3,10 +3,6 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
-import breaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm';
-
-import { CodeBlock } from './code-block/index.js';
 import './index.less';
 
 // const PreBlock = (...args:any) => {
@@ -18,9 +14,11 @@ export interface MarkdownProps {
   children: any;
   className?: string;
   type?: 'message' | 'content';
+  components?: Record<string, any>;
+  remarkPlugins?: any[];
 }
 
-function ImageModal({ src, alt }: any) {
+export function ImageModal({ src, alt }: any) {
   const [visible, setVisible] = useState(false);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
@@ -99,8 +97,8 @@ function ImageModal({ src, alt }: any) {
   );
 }
 
-export const Markdown = (props: MarkdownProps) => {
-  const { type = 'message', className } = props;
+export const DefaultMarkdown = (props: MarkdownProps) => {
+  const { type = 'message', className, ...mdProps } = props;
 
   useEffect(() => {
     const links = document.querySelectorAll('a');
@@ -119,8 +117,7 @@ export const Markdown = (props: MarkdownProps) => {
         type === 'message' && `chat-msg-md-message`,
         className,
       )}
-      components={{ code: CodeBlock, img: ImageModal }}
-      remarkPlugins={[remarkGfm, breaks]}
+      {...mdProps}
     >
       {props.children}
     </ReactMarkdown>
