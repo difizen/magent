@@ -6,14 +6,14 @@ import type { ConversationOption, IChatEvent, IChatMessageItem } from './protoco
 @singleton()
 export class ChatService {
   chat = async (msg: any): Promise<IChatMessageItem[]> => {
-    throw new Error('Unimplemented');
+    return [];
   };
   chatStream = async (
     msg: any,
     messgeCallback: (event: IChatMessageItem) => void,
     eventCallback: (event: IChatEvent) => void,
   ): Promise<void> => {
-    throw new Error('Unimplemented');
+    return undefined;
   };
 
   getConversationMessages = async (
