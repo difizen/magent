@@ -85,7 +85,7 @@ export function DebugDrawerComponent({
           <div className="magent-summary-container">
             <div className="magent-summary-title-container">
               <div className="magent-summary-title-data">
-                {`耗时 ${selectedMessage?.token?.responseTime} | ${selectedMessage?.token?.total_tokens} Tokens`}
+                {`耗时 ${selectedMessage?.token?.responseTime} | ${selectedMessage?.token?.totalTokens} Tokens`}
               </div>
             </div>
             <div className="magent-des-container">
