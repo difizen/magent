@@ -49,7 +49,7 @@ def init_db(session: Session) -> None:
     if not user:
         user_in = AccountCreate(
             email=settings.FIRST_SUPERUSER,
-            password=settings.FIRST_SUPERUSER_PASSWORD,
+            password=settings.POSTGRES_PASSWORD.get_secret_value(),
             name=settings.FIRST_SUPERUSER,
             avatar=settings.FIRST_SUPERUSER_AVATAR
         )
