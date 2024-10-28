@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { CopyOutlined } from '@ant-design/icons';
+import { CopyOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 import copy from 'copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -15,16 +15,25 @@ export const CodeBlock = (props: any) => {
 
     return (
       <pre className={`chat-msg-md-code-wrap`}>
-        {lang && <div className={`chat-msg-md-code-lang`}>{lang}</div>}
-        <CopyOutlined
-          onClick={() => {
-            copy(children);
-            message.success('代码已复制');
-          }}
-          className={`chat-msg-md-code-copy`}
-        />
+        <div className={`chat-msg-md-code-type`}>
+          {lang && <div className={`chat-msg-md-code-lang`}>{lang}</div>}
+          <div className={`chat-msg-md-code-opArea`}>
+            <div className={`chat-msg-md-code-op`}>
+              <PlayCircleOutlined />
+            </div>
+            <div
+              className={`chat-msg-md-code-op`}
+              onClick={() => {
+                copy(children);
+                message.success('代码已复制');
+              }}
+            >
+              <CopyOutlined />
+            </div>
+          </div>
+        </div>
         <SyntaxHighlighter
-          className={`chat-msg-md-code-pre`}
+          className={`chat-msg-md-code-content`}
           language={lang}
           style={oneDark}
         >
