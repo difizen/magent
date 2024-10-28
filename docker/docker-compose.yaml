@@ -10,10 +10,12 @@ services:
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
       DB_USERNAME: postgres
-      DB_PASSWORD: magent123456
+      DB_PASSWORD_FILE: /run/secrets/postgres_password
       DB_HOST: db
       DB_PORT: 5432
       DB_DATABASE: magent
+    secrets:
+      - db_password
 
     depends_on:
       - db
@@ -32,11 +34,13 @@ services:
     environment:
       PGUSER: postgres
       # The password for the default postgres user.
-      POSTGRES_PASSWORD: magent123456
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       # The name of the default postgres database.
       POSTGRES_DB: magent
       # postgres data directory
       PGDATA: /var/lib/postgresql/data/pgdata
+    secrets:
+      - postgres_password
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
     # uncomment to expose db(postgresql) port to host
@@ -64,3 +68,6 @@ services:
     ports:
       - '8080:8080'
       #- "443:443"
+secrets:
+  postgres_password:
+    external: true

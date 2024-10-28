@@ -1,11 +1,12 @@
 import warnings
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic_core import MultiHostUrl
 from typing import Literal
 from typing_extensions import Self
 
 from pydantic import (
     PostgresDsn,
+    SecretStr,
     computed_field,
     model_validator,
 )
@@ -26,11 +27,10 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str = 'localhost'
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = 'postgres'
-    POSTGRES_PASSWORD: str = 'magent123456'
+    POSTGRES_PASSWORD: SecretStr
     POSTGRES_DB: str = 'magent'
 
     FIRST_SUPERUSER: str = 'default@magent.com'
-    FIRST_SUPERUSER_PASSWORD: str = 'magent123456'
     FIRST_SUPERUSER_AVATAR: str = 'https://api.dicebear.com/7.x/miniavs/svg?seed=1'
 
     @computed_field  # type: ignore[misc]
@@ -39,7 +39,7 @@ class Settings(BaseSettings):
         return MultiHostUrl.build(
             scheme="postgresql+psycopg2",
             username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
+            password=self.POSTGRES_PASSWORD.get_secret_value(),
             host=self.POSTGRES_SERVER,
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
@@ -58,12 +58,17 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:
-        self._check_default_secret("POSTGRES_PASSWORD", self.POSTGRES_PASSWORD)
         self._check_default_secret(
-            "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
-        )
-
+            "POSTGRES_PASSWORD", self.POSTGRES_PASSWORD.get_secret_value())
         return self
 
+    class Config:
+        # 指定 Docker Secrets 的目录
+        secrets_dir = '/run/secrets'
 
-settings = Settings()
+
+try:
+    # 创建配置实例
+    settings = Settings()  # type: ignore
+except Exception as e:
+    print(f"Error loading settings: {e}")
