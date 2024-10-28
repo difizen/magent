@@ -1,5 +1,14 @@
 # @difizen/magent-chat
 
+## 0.1.30
+
+### Patch Changes
+
+- [#66](https://github.com/difizen/magent/pull/66) [`0c11700`](https://github.com/difizen/magent/commit/0c117008e40bc85590eb7f7dea8c304f2af8033f) Thanks [@sunshinesmilelk](https://github.com/sunshinesmilelk)! - export ImageModal
+
+- Updated dependencies [[`0c11700`](https://github.com/difizen/magent/commit/0c117008e40bc85590eb7f7dea8c304f2af8033f)]:
+  - @difizen/magent-core@0.1.30
+
 ## 0.1.29
 
 ### Patch Changes
