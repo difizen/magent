@@ -77,6 +77,7 @@ export class AUAgentChatMessageItem extends AIChatMessageItemModel {
   }
 
   override appendChunk(e: ChatEventChunk) {
+    this.state = AnswerState.RECEIVING;
     this.content = `${this.content}${e.output}`;
   }
 

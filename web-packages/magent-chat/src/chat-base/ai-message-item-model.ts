@@ -39,15 +39,17 @@ export class AIChatMessageItemModel extends DefaultChatMessageItemModel {
   }
 
   appendChunk(e: ChatEventChunk) {
+    this.state = AnswerState.RECEIVING;
     this.content = `${this.content}${e.output}`;
   }
 
   handleResult(e: ChatEventResult) {
-    this.content = e.output;
     this.state = AnswerState.SUCCESS;
+    this.content = e.output;
   }
 
   handleError(e: ChatEventError) {
+    this.state = AnswerState.FAIL;
     // {"error": {"error_msg": "The node type is not supported"}, "type": "error"}
     this.error = { message: e.message };
   }
