@@ -57,6 +57,7 @@
     "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.10",
     "eventsource-parser": "^1.1.2",
+    "lodash.debounce": "^4.0.8",
     "react-markdown": "^9.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "react-zoom-pan-pinch": "^3.6.1",
@@ -67,6 +68,7 @@
   "devDependencies": {
     "@types/react": "^18.2.25",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/uuid": "^9.0.2"
   },
   "peerDependencies": {

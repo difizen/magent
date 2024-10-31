@@ -27,6 +27,47 @@
   }
 }
 
+.chat-message-ai-recommend-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@keyframes chat-message-ai-recommend-questions-item-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message-ai-recommend-questions-item {
+  max-width: 100%;
+  display: flex;
+  animation: chat-message-ai-recommend-questions-item-fade-in 0.3s
+    cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+}
+
+.chat-message-ai-recommend-questions-item-container {
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 4%);
+  border-radius: 12px;
+  color: rgba(0, 0, 0, 85%);
+  font-weight: 400;
+  width: fit-content;
+
+  .chat-message-ai-recommend-questions-item-arrow {
+    margin-left: 10px;
+  }
+}
+
 .chat-message-human-sending {
   margin-right: 8px;
 }

@@ -3,10 +3,12 @@ import {
   DislikeOutlined,
   LikeOutlined,
   LoadingOutlined,
+  RightOutlined,
 } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
+import debounce from 'lodash.debounce';
 import type { ReactNode } from 'react';
 
 import type {
@@ -62,6 +64,39 @@ export const AIMessageAddon = (props: AIMessageProps) => {
       {content}
       <AIMessageError {...props} />
     </>
+  );
+};
+
+export const RecommendQuestions = (props: { message: BaseChatMessageModel }) => {
+  const instance = useInject<ChatView>(ViewInstance);
+  if (
+    !props.message ||
+    !props.message.recommentQustions ||
+    !props.message.recommentQustions.length
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="chat-message-ai-recommend-questions">
+      {props.message.recommentQustions.map((question, idx) => {
+        return (
+          <div
+            key={`${props.message.id}-question-${idx}`}
+            style={{ width: 'auto', animationDelay: `${0.07 * (idx + 2)}s` }}
+            className="chat-message-ai-recommend-questions-item"
+            onClick={async () => {
+              debounce(() => instance?.sendMessage(question), 500);
+            }}
+          >
+            <div className="chat-message-ai-recommend-questions-item-container">
+              <span>{question}</span>
+              <RightOutlined className="chat-message-ai-recommend-questions-item-arrow" />
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
@@ -162,6 +197,8 @@ export const AIMessage = (props: AIMessageProps) => {
           </div> */}
           <div className={'chat-message-actions'}>{actions.filter(Boolean)}</div>
         </div>
+
+        <RecommendQuestions message={props.message} />
       </div>
     </div>
   );
