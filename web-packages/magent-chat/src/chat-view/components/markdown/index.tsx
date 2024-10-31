@@ -36,6 +36,28 @@ export function ImageModal({ src, alt }: any) {
     };
   }, [src]);
 
+  if (alt === 'cursor') {
+    return (
+      <div
+        style={{
+          display: 'inline-block',
+          transform: 'translateY(3px)',
+        }}
+      >
+        <img
+          src={src}
+          alt={alt}
+          style={{
+            cursor: 'pointer',
+            userSelect: 'none',
+            width: '2px',
+            height: '15px',
+          }}
+        />
+      </div>
+    );
+  }
+
   const maxModalWidth = window.innerWidth * 0.8; // 80% of the viewport width
   const maxModalHeight = window.innerHeight * 0.8; // 80% of the viewport height
 
