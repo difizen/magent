@@ -101,7 +101,8 @@ export const AIMessageContent = (props: AIMessageProps) => {
               {...instance.getMarkdownProps()}
               className={item.state !== AnswerState.RECEIVING ? 'tp-md' : ''}
             >
-              {item.content}
+              {item.content +
+                `${item.state === AnswerState.RECEIVING ? '![cursor](https://mdn.alipayobjects.com/huamei_enmr8b/afts/img/A*Ou5LR4JY3j8AAAAAAAAAAAAADtGPAQ/original)' : ''}`}
             </Markdown>
           </span>
         </div>
