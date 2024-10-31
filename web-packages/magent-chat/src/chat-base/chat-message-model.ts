@@ -61,6 +61,9 @@ export class DefaultChatMessageModel implements Disposable {
   @prop()
   sending = false;
 
+  @prop()
+  recommentQustions?: string[];
+
   get ready(): Promise<DefaultChatMessageModel> {
     return this.readyDeferred.promise;
   }
