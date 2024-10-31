@@ -80,10 +80,13 @@ export class AIChatMessageItem extends ChatMessageItem {
   }
 
   appendChunk(e: ChatEventChunk) {
+    this.state = AnswerState.RECEIVING;
     this.content = `${this.content}${e.output}`;
   }
 
   handleError(e: ChatEventError) {
+    this.state = AnswerState.FAIL;
+
     // {"error": {"error_msg": "The node type is not supported"}, "type": "error"}
     this.error = e.error;
   }
@@ -95,6 +98,7 @@ export class AIChatMessageItem extends ChatMessageItem {
   }
 
   handleResult(e: ChatEventResult) {
+    this.state = AnswerState.SUCCESS;
     this.content = e.output;
   }
 }

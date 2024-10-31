@@ -248,7 +248,7 @@ export class ChatMessageModel implements Disposable {
           this.handleChatEvent(value, ai);
         }
       }
-      ai.state = AnswerState.SUCCESS;
+      // ai.state = AnswerState.SUCCESS;
       return;
     }
   };
