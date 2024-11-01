@@ -4,14 +4,13 @@ import {
   ScheduleTwoTone,
   SoundTwoTone,
 } from '@ant-design/icons';
+import { PromptEditor } from '@difizen/ai-flow';
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import type { CollapseProps } from 'antd';
 import { Collapse } from 'antd';
 import { memo, useEffect, useState } from 'react';
 
 import type { AgentConfigView } from '../../view.js';
-
-import { TextArea } from './textarea.js';
 import './index.less';
 
 const clsPrefix = 'character-settings';
@@ -33,15 +32,20 @@ export const CharacterSetting = memo(function CharacterSetting() {
           ),
           children: (
             <div className={`${clsPrefix}-body`}>
-              <TextArea
+              <PromptEditor
+                placeholder="请输入人设"
+                className={`${clsPrefix}-textarea`}
                 value={prompt?.introduction}
-                onChange={(e) => {
+                onChange={(value) => {
                   if (prompt) {
-                    prompt.introduction = e.target.value;
+                    prompt.introduction = value;
                   }
                 }}
-                className={`${clsPrefix}-textarea`}
-              ></TextArea>
+                variableBlock={{
+                  show: true,
+                  variables: [],
+                }}
+              />
             </div>
           ),
         },
@@ -55,15 +59,20 @@ export const CharacterSetting = memo(function CharacterSetting() {
           ),
           children: (
             <div className={`${clsPrefix}-body`}>
-              <TextArea
+              <PromptEditor
+                placeholder="请输入目标"
+                className={`${clsPrefix}-textarea`}
                 value={prompt?.target}
-                onChange={(e) => {
+                onChange={(value) => {
                   if (prompt) {
-                    prompt.target = e.target.value;
+                    prompt.target = value;
                   }
                 }}
-                className={`${clsPrefix}-textarea`}
-              ></TextArea>
+                variableBlock={{
+                  show: true,
+                  variables: [],
+                }}
+              />
             </div>
           ),
         },
@@ -77,15 +86,20 @@ export const CharacterSetting = memo(function CharacterSetting() {
           ),
           children: (
             <div className={`${clsPrefix}-body`}>
-              <TextArea
+              <PromptEditor
+                placeholder="请输入要求"
+                className={`${clsPrefix}-textarea`}
                 value={prompt?.instruction}
-                onChange={(e) => {
+                onChange={(value) => {
                   if (prompt) {
-                    prompt.instruction = e.target.value;
+                    prompt.instruction = value;
                   }
                 }}
-                className={`${clsPrefix}-textarea`}
-              ></TextArea>
+                variableBlock={{
+                  show: true,
+                  variables: [],
+                }}
+              />
             </div>
           ),
         },
@@ -102,13 +116,18 @@ export const CharacterSetting = memo(function CharacterSetting() {
     ),
     children: (
       <div className={`${clsPrefix}-body`}>
-        <TextArea
-          value={agent.openingSpeech}
-          onChange={(e) => {
-            agent.openingSpeech = e.target.value;
-          }}
+        <PromptEditor
+          placeholder="请输入开场白"
           className={`${clsPrefix}-textarea`}
-        ></TextArea>
+          value={agent.openingSpeech}
+          onChange={(value) => {
+            agent.openingSpeech = value;
+          }}
+          variableBlock={{
+            show: true,
+            variables: [],
+          }}
+        />
       </div>
     ),
   });
