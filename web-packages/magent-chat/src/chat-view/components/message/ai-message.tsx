@@ -5,6 +5,7 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
+import { l10n } from '@difizen/mana-l10n';
 import classNames from 'classnames';
 import copy from 'copy-to-clipboard';
 import type { ReactNode } from 'react';
@@ -46,10 +47,13 @@ export const AIMessageAddon = (props: AIMessageProps) => {
         {message.token.endTime && (
           <div className={`chat-message-addon-item`}>
             <span>
-              结束时间: {message.token.endTime?.format('YYYY-MM-DD HH:mm:ss')}
+              {l10n.t('结束时间')}:{' '}
+              {message.token.endTime?.format('YYYY-MM-DD HH:mm:ss')}
             </span>
             {message.token.responseTime && (
-              <span>耗时: {message.token.responseTime}</span>
+              <span>
+                {l10n.t('耗时')}: {message.token.responseTime}
+              </span>
             )}
           </div>
         )}

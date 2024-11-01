@@ -1,5 +1,6 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
+import { l10n } from '@difizen/mana-l10n';
 import { Space } from 'antd';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
@@ -24,7 +25,9 @@ export const HumanMessageAddon = (props: HumanMessageProps) => {
   }
   return (
     <div className={`chat-message-addon`}>
-      <span>开始时间: {message.created.format('YYYY-MM-DD HH:mm:ss')}</span>
+      <span>
+        {l10n.t('开始时间')}: {message.created.format('YYYY-MM-DD HH:mm:ss')}
+      </span>
     </div>
   );
 };

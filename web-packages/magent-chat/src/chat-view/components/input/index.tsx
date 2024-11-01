@@ -1,4 +1,5 @@
 import { useInject, ViewInstance } from '@difizen/mana-app';
+import { l10n } from '@difizen/mana-l10n';
 import { Input as AntdInput, Tooltip } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classnames from 'classnames';
@@ -135,24 +136,24 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
       <div className={`${prefixCls}-searchInput`}>
         <div className={`${prefixCls}-textArea`}>
           <div className={`${prefixCls}-upload`}>
-            <Tooltip placement="top" title={'不支持上传图片'}>
+            <Tooltip placement="top" title={l10n.t('不支持上传图片')}>
               <div>
                 <ImgIcon />
               </div>
             </Tooltip>
 
-            <Tooltip placement="top" title={'不支持上传音频'}>
+            <Tooltip placement="top" title={l10n.t('不支持上传音频')}>
               <div>
                 <AudioIcon />
               </div>
             </Tooltip>
 
-            <Tooltip placement="top" title={'不支持上传视频'}>
+            <Tooltip placement="top" title={l10n.t('不支持上传视频')}>
               <div>
                 <VideoIcon />
               </div>
             </Tooltip>
-            <Tooltip placement="top" title={'不支持上传文件'}>
+            <Tooltip placement="top" title={l10n.t('不支持上传文件')}>
               <div>
                 <FolderIcon />
               </div>
@@ -162,7 +163,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
             <AntdInput.TextArea
               ref={ref}
               value={value}
-              placeholder={'输入聊天内容'}
+              placeholder={l10n.t('输入聊天内容')}
               variant="borderless"
               autoSize={{ minRows: 1 }}
               style={{ resize: 'none', padding: '0px 16px', maxHeight: 80 }}
