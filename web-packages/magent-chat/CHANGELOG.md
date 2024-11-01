@@ -1,5 +1,11 @@
 # @difizen/magent-chat
 
+## 0.1.31
+
+### Patch Changes
+
+- [#76](https://github.com/difizen/magent/pull/76) [`cf6cb6c`](https://github.com/difizen/magent/commit/cf6cb6cb70d489849cf0cc625a3b21f89a589d54) Thanks [@BroKun](https://github.com/BroKun)! - [chat] Supports localization.
+
 ## 0.1.30
 
 ### Patch Changes
