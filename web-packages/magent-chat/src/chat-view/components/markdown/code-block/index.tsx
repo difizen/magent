@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { CopyOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { l10n } from '@difizen/mana-l10n';
 import { message } from 'antd';
 import copy from 'copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -25,7 +26,7 @@ export const CodeBlock = (props: any) => {
               className={`chat-msg-md-code-op`}
               onClick={() => {
                 copy(children);
-                message.success('代码已复制');
+                message.success(l10n.t('代码已复制'));
               }}
             >
               <CopyOutlined />

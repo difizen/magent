@@ -15,6 +15,7 @@ import {
   ViewOption,
 } from '@difizen/mana-app';
 import { useInject } from '@difizen/mana-app';
+import { l10n } from '@difizen/mana-l10n';
 import { Avatar, FloatButton } from 'antd';
 import classnames from 'classnames';
 import type { RefObject } from 'react';
@@ -100,7 +101,11 @@ const DefaultInput = () => {
 };
 
 const DefaultFooter = () => {
-  return <div className="chat-footer">内容由AI生成，无法确保真实准确，仅供参考。</div>;
+  return (
+    <div className="chat-footer">
+      {l10n.t('内容由AI生成，无法确保真实准确，仅供参考。')}
+    </div>
+  );
 };
 
 export const ChatComponent = forwardRef<HTMLDivElement, ChatProps>(
