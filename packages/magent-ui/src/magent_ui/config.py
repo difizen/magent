@@ -150,10 +150,19 @@ class AppConfig():
         config_count += 1
         print('config:', config_count)
 
+    def get_resource_path(self):
+        resource_path = self.project_root_path / 'app' / 'resources'
+        if os.path.exists(os.path.join(self.project_root_path, 'platform/difizen/resources')):
+            new_resource_path = self.project_root_path / 'platform' / 'difizen' / 'resources'
+            logger.info(
+                '[magent] It is recommended to use the %s folder for resources instead of %s. ' % (resource_path, new_resource_path))
+            return new_resource_path
+        return resource_path
+
     def load_config(self, project_root_path: Path, **kwargs):
         config = load_config(kwargs, project_root_path)
         self.project_root_path = project_root_path
-        self.resource_dir_path = project_root_path / 'app' / 'resources'
+        self.resource_dir_path = self.get_resource_path()
         self.config = config
         self.port = config.get('port', 8888)
         base_root_path = '/'
