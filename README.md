@@ -64,4 +64,5 @@ MAGENT_UI_SERVER_XX
 #### 通过钉钉群联系我们
 
 😊 加入我们的钉钉答疑群与我们联系。
+
 ![](./docs/site/public/magent-dingding-group.png)
