@@ -4,6 +4,7 @@ import logging
 import os
 import importlib.util
 from pathlib import Path
+from agentuniverse_product.service.util.common_util import get_resources_path
 
 logger = logging.getLogger("uvicorn")
 
@@ -148,15 +149,9 @@ class AppConfig():
     def __init__(self):
         global config_count
         config_count += 1
-        print('config:', config_count)
 
     def get_resource_path(self):
-        resource_path = self.project_root_path / 'app' / 'resources'
-        if os.path.exists(os.path.join(self.project_root_path, 'platform/difizen/resources')):
-            new_resource_path = self.project_root_path / 'platform' / 'difizen' / 'resources'
-            logger.info(
-                '[magent] It is recommended to use the %s folder for resources instead of %s. ' % (resource_path, new_resource_path))
-            return new_resource_path
+        resource_path = get_resources_path()
         return resource_path
 
     def load_config(self, project_root_path: Path, **kwargs):
