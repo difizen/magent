@@ -74,7 +74,6 @@ class MessageOutput(BaseModel):
 async def chat(agent_id, model: MessageCreate):
     output_dict = AgentService.chat(
         model.agent_id, model.session_id, model.input)
-    print(output_dict)
     return MessageOutput.model_validate(output_dict)
 
 
@@ -105,6 +104,4 @@ async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
 
 @router.post("/agents/{agent_id}/stream-chat")
 async def stream_chat(agent_id, model: MessageCreate):
-    print(agent_id)
-    print(model)
     return EventSourceResponse(send_message(model), media_type="text/event-stream")

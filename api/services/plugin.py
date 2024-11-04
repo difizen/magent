@@ -39,7 +39,6 @@ class PluginService:
     @staticmethod
     def get_all(session: Session) -> List[PluginModel]:
         plugin_orms = PluginHelper.get_all_plugin(session)
-        print('plugin_orms', plugin_orms)
         return [PluginModel.model_validate(plugin_orm) for plugin_orm in plugin_orms]
 
     @staticmethod
@@ -210,7 +209,6 @@ class PluginAPIService:
                         body_schema = interface['operation']['requestBody']['content'][content_type]['schema']
                         required = body_schema.get('required', [])
                         properties = body_schema.get('properties', {})
-                        print('properties', properties)
                         # for name, property in properties.items():
                         # tool = ToolParameter(
                         #     name=name,
