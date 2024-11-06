@@ -9,10 +9,12 @@
 
 -e file:api
 -e file:packages/magent-ui
+-e file:packages/magent-ui-langchain
 agentuniverse==0.0.11
     # via magent-api
 aiofiles==24.1.0
     # via magent-ui
+    # via magent-ui-langchain
 aiohttp==3.9.5
     # via dashscope
     # via langchain
@@ -181,6 +183,7 @@ jinja2==3.1.4
     # via fastapi
     # via flask
     # via magent-ui
+    # via magent-ui-langchain
     # via myst-parser
     # via sphinx
 jiter==0.5.0
@@ -375,6 +378,7 @@ python-dotenv==1.0.1
 python-multipart==0.0.9
     # via fastapi
     # via magent-ui
+    # via magent-ui-langchain
 pytz==2024.1
     # via pandas
 pyyaml==6.0.1
@@ -461,6 +465,7 @@ sqlalchemy==2.0.25
 sse-starlette==2.1.2
     # via magent-api
     # via magent-ui
+    # via magent-ui-langchain
 starlette==0.37.2
     # via fastapi
     # via sse-starlette
