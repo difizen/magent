@@ -4,7 +4,7 @@ import { l10n } from '@difizen/mana-l10n';
 import { message } from 'antd';
 import copy from 'copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import './index.less';
 
@@ -36,7 +36,7 @@ export const CodeBlock = (props: any) => {
         <SyntaxHighlighter
           className={`chat-msg-md-code-content`}
           language={lang}
-          style={oneDark}
+          // style={oneDark}
         >
           {typeof children === 'string' ? children.trim() : children}
         </SyntaxHighlighter>

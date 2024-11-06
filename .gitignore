@@ -325,3 +325,4 @@ agent_universe.db
 
 
 packages/magent-ui/src/magent_ui/static
+packages/magent-ui-langchain/src/magent_ui_langchain/static
