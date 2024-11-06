@@ -1,0 +1,32 @@
+[project]
+name = "magent-ui-langchain"
+version = "0.1.17.dev1"
+description = ""
+authors = [{ name = "brokun", email = "brokun0128@gmail.com" }]
+
+dependencies = [
+  "sse-starlette>=2.1.2",
+  "jinja2>=3.1.4",
+  "python-multipart>=0.0.9",
+  "aiofiles>=24.1.0",
+]
+readme = "README.md"
+requires-python = ">= 3.10"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/magent_ui_langchain"]
+
+[tool.rye.scripts]
+dev = "python src/magent_ui_langchain/dev.py"

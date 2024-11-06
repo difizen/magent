@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="default">
+  <head>
+    <meta charset="utf-8" />
+    <base href="{{static_url}}/" />
+    <link
+      id="favicon"
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{{static_url}}/favicon.ico"
+    />
+    <link type="text/css" rel="stylesheet" href="{{static_url}}/umi.css" />
+    <script id="mana-config-data" type="application/json">
+      {{ page_config | tojson }}
+    </script>
+    <script type="text/javascript">
+      /* Remove token from URL. */
+      (function () {
+        var parsedUrl = new URL(window.location.href);
+        if (parsedUrl.searchParams.get('token')) {
+          parsedUrl.searchParams.delete('token');
+          window.history.replaceState({}, '', parsedUrl.href);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="{{static_url}}/umi.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>
