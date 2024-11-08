@@ -45,7 +45,9 @@ export class AIChatMessageItemModel extends DefaultChatMessageItemModel {
 
   handleResult(e: ChatEventResult) {
     this.state = AnswerState.SUCCESS;
-    this.content = e.output;
+    if (e.output) {
+      this.content = e.output;
+    }
   }
 
   handleError(e: ChatEventError) {
