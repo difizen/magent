@@ -9,7 +9,7 @@ logger = logging.getLogger("uvicorn")
 default_config = {
     'thread_worker': 20,
     'host': '0.0.0.0',
-    'port': 8888,
+    'port': 9563,
     'base_url': None,
     'open_browser': True,
     'log_level': None,
@@ -153,7 +153,7 @@ class AppConfig():
         self.project_root_path = project_root_path
         self.resource_dir_path = self.project_root_path / 'app' / 'resources'
         self.config = config
-        self.port = config.get('port', 8888)
+        self.port = config.get('port', 9563)
         base_root_path = '/'
         root_path = config.get('root_path', base_root_path)
         self.root_path = root_path
