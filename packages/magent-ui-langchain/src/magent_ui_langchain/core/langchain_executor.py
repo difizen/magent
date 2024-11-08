@@ -19,6 +19,7 @@ class LLMStreamExecutor(StreamExecutor):
             result = self.object.astream(value)
             return result
 
+
 class ChainStreamExecutor(StreamExecutor):
     @staticmethod
     def recognizer(object):
@@ -50,7 +51,7 @@ class RunnableExecutor(StreamExecutor):
     def recognizer(object):
         return isinstance(object, Runnable)
 
-    def invoke(self, value) -> AsyncIterator[Any] | None:
+    def invoke(self, value) -> Any | None:
         if not isinstance(self.object, Runnable):
             return None
 
@@ -58,11 +59,10 @@ class RunnableExecutor(StreamExecutor):
             result = self.object.invoke(value)
             return result
 
-
     def invoke_stream(self, value) -> AsyncIterator[Any] | None:
         if not isinstance(self.object, Runnable):
             return None
 
         with get_openai_callback() as cb:
-            result = self.object.stream(value)
+            result = self.object.astream(value)
             return result
