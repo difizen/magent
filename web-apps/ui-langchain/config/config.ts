@@ -24,14 +24,14 @@ export default defineConfig({
   runtimePublicPath: {},
   proxy: {
     '/api': {
-      target: 'http://localhost:8888/',
+      target: 'http://localhost:9563/',
       changeOrigin: true,
       secure: false,
       pathRewrite: {},
       ws: true,
     },
     '/resources': {
-      target: 'http://localhost:8888/',
+      target: 'http://localhost:9563/',
       changeOrigin: true,
       secure: false,
       pathRewrite: {},

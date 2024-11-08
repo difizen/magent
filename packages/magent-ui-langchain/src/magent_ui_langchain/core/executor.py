@@ -17,7 +17,7 @@ class Executor(BaseModel, ABC):
 
 class StreamExecutor(Executor):
     @abstractmethod
-    def invoke(self, value) -> AsyncIterator[Any] | None:
+    def invoke_stream(self, value) -> AsyncIterator[Any] | None:
         """Chat invoke"""
         raise NotImplementedError(
             "Each adapter must implement the `invoke` method.")

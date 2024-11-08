@@ -6,6 +6,8 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from sse_starlette import EventSourceResponse, ServerSentEvent
 
+from langchain_core.messages.ai import AIMessageChunk
+
 from magent_ui_langchain.core.current_executor import get_current_executor
 from magent_ui_langchain.core.executor import StreamExecutor
 
@@ -42,38 +44,46 @@ class SSEType(enum.Enum):
     EOF = "EOF"
     RESULT = "result"
 
+async def async_generator_from_sync(gen):
+    for item in gen:
+        yield item
 
-async def send_message(model: MessageCreate) -> AsyncIterable[ServerSentEvent]:
+async def send_message(model: MessageCreate, stream: bool) -> AsyncIterable[ServerSentEvent]:
     current = get_current_executor()
     if current is None:
         yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error executor"}, ensure_ascii=False))
         return
-    if isinstance(current, StreamExecutor):
-        msg_iterator = current.invoke(model)
+    if isinstance(current, StreamExecutor) and stream:
+        msg_iterator = async_generator_from_sync(current.invoke_stream(model.input))
         if msg_iterator is None:
-            yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error stream invoke"}, ensure_ascii=False))
+            yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error stream invoke_stream"}, ensure_ascii=False))
             return
-        async for msg_chunk in msg_iterator:
-            type = msg_chunk.get("type", None)
-            # TODO: handle langchain info
-            if type == "error":
-                yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps(msg_chunk, ensure_ascii=False))
-            if type == "token":
-                yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.conversation_id, data=json.dumps(msg_chunk, ensure_ascii=False))
-            if type == "intermediate_steps":
-                yield ServerSentEvent(event=SSEType.STEPS.value, id=model.conversation_id, data=json.dumps(msg_chunk, ensure_ascii=False))
-            if type == "final_result":
-                yield ServerSentEvent(event=SSEType.RESULT.value, id=model.conversation_id, data=json.dumps(msg_chunk, ensure_ascii=False))
-    else:
-        msg_iterator = current.invoke(model)
-        if msg_iterator is None:
-            yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error invoke"}, ensure_ascii=False))
-            return
-        else:
-            # TODO: handle langchain info
-            raise HTTPException(500)
-
+        try:
+          async for msg_chunk in msg_iterator:
+              if isinstance(msg_chunk, AIMessageChunk):
+                if hasattr(msg_chunk, 'response_metadata') and len(msg_chunk.response_metadata) > 0: # 最后一次返回
+                  yield ServerSentEvent(event=SSEType.RESULT.value, id=model.conversation_id, data=json.dumps({"output": msg_chunk.content, "id": msg_chunk.id, "response_metadata": msg_chunk.response_metadata}, ensure_ascii=False))
+                else:
+                  yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.conversation_id, data=json.dumps({"output": msg_chunk.content, "id": msg_chunk.id}, ensure_ascii=False))
+        except Exception as e:
+          yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error in stream execute"}, ensure_ascii=False))
+          return
 
 @router.post("/chat-stream")
 async def stream_chat(model: MessageCreate):
-    return EventSourceResponse(send_message(model), media_type="text/event-stream")
+    return EventSourceResponse(send_message(model, stream=True), media_type="text/event-stream")
+
+@router.post("/chat")
+async def chat(model: MessageCreate):
+    current = get_current_executor()
+    if current is None:
+        return {"error_message": "error executor"}
+
+    try:
+      result = current.invoke(model.input)
+      output_dict = { 'id': result.id, 'output': result.content, 'response_metadata': result.response_metadata}
+      return output_dict
+    except Exception as e:
+      return {"error_message": "chat execute error"}
+
+

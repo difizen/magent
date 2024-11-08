@@ -9,6 +9,8 @@ import { inject, singleton, timeout } from '@difizen/mana-app';
 import dayjs from 'dayjs';
 import { EventSourceParserStream } from 'eventsource-parser/stream';
 
+import type { APIMessage } from './protocol.js';
+
 function stringToReadableStream(inputString: string) {
   // Convert the string into a Uint8Array
   const encoder = new TextEncoder();
@@ -60,6 +62,26 @@ export class LangchainChatService extends ChatService {
         },
       ],
     };
+  };
+
+  override chat = async (option: any): Promise<IChatMessageItem[]> => {
+    const { input } = option;
+    const res = await this.fetcher.post<APIMessage>(`/api/v1/chat`, {
+      conversation_id: 'conversation_2',
+      input: input,
+    });
+
+    if (res.status === 200) {
+      if (res.data.output) {
+        return [
+          {
+            sender: { type: 'AI', id: 'openai' },
+            content: res.data.output,
+          },
+        ];
+      }
+    }
+    return [];
   };
 
   override chatStream = async (
