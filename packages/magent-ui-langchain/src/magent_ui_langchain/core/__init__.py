@@ -1,6 +1,5 @@
 from .adapter_registry import adapter_registry
-from .langchain_executor import LLMStreamExecutor, ChainStreamExecutor, RunnableStreamExecutor
-
+from .langchain_executor import LLMStreamExecutor, ChainStreamExecutor, RunnableExecutor
 
 adapter_registry.register_adapter(
     LLMStreamExecutor.recognizer, LLMStreamExecutor, 1)
@@ -11,4 +10,5 @@ adapter_registry.register_adapter(
 
 
 adapter_registry.register_adapter(
-    RunnableStreamExecutor.recognizer, RunnableStreamExecutor)
+    RunnableExecutor.recognizer, RunnableExecutor)
+

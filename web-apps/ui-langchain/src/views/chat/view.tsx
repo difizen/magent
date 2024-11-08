@@ -68,6 +68,7 @@ export class LangchainChatView extends BaseView {
   protected async initialize() {
     const chatView = await this.viewManager.getOrCreateView(ChatView, {
       id: 'langchain',
+      stream: true,
     });
     this.chat = chatView;
   }
