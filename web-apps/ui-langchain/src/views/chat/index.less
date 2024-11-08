@@ -1,5 +1,18 @@
-.magent-agent-chat-layout {
-  height: 100%;
+@media (max-width: 768px) {
+  .magent-langchain-chat-layout {
+    &-container {
+      padding: 0 !important;
+    }
+  }
+
+  // .chat-message-main:not(.chat-message-main-ai) {
+  //   .chat-message-avatar {
+  //   }
+  // }
+}
+
+.magent-langchain-chat-layout {
+  height: calc(100vh - 16px);
 
   &-container {
     gap: 16px;
