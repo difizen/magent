@@ -301,8 +301,10 @@ lib
 
 .DS_Store
 
-# dumi
+# dumi/umi
 
+**/.umi
+**/.umi-production
 **/.dumi/tmp
 **/.dumi/tmp-production
 
@@ -324,4 +326,4 @@ docker/volumes
 agent_universe.db
 
 
-packages/magent-ui/src/magent_ui/static
+packages/**/src/**/static
