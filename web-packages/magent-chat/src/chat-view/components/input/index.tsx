@@ -1,6 +1,7 @@
+import { PlusCircleOutlined } from '@ant-design/icons';
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import { l10n } from '@difizen/mana-l10n';
-import { Input as AntdInput, Tooltip } from 'antd';
+import { Button, Input as AntdInput } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classnames from 'classnames';
 import type { ChangeEvent, ReactNode, KeyboardEvent, FC } from 'react';
@@ -8,7 +9,7 @@ import { forwardRef, useCallback, useMemo, useState } from 'react';
 
 import type { ChatView } from '../../view.js';
 
-import { AudioIcon, FolderIcon, ImgIcon, SendIcon, VideoIcon } from './icon.js';
+import { SendIcon } from './icon.js';
 
 import './index.less';
 
@@ -94,6 +95,9 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
 
   const onSubmit = useCallback(
     (v: string) => {
+      if (!v) {
+        return;
+      }
       props.onSubmit?.(v);
       setV('');
     },
@@ -107,17 +111,18 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
 
   function onInputKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     e.persist();
-    const { metaKey, ctrlKey, altKey, keyCode } = e;
+    const { metaKey, ctrlKey, altKey, shiftKey, keyCode } = e;
 
     if (keyCode === 13) {
       if (open) {
         e.preventDefault();
-      } else if (isEnterSend && (metaKey || ctrlKey || altKey)) {
+      } else if (isEnterSend && (metaKey || ctrlKey || altKey || shiftKey)) {
         const event = insertAtCaret(
           e as unknown as ChangeEvent<HTMLTextAreaElement>,
           '\n',
         );
         setTimeout(() => onInputChange(event), 0);
+        e.preventDefault();
       } else if (isEnterSend) {
         e.preventDefault();
         if (sendEnable) {
@@ -134,31 +139,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
   return (
     <div className={classnames(prefixCls, wrapperClassName)}>
       <div className={`${prefixCls}-searchInput`}>
-        <div className={`${prefixCls}-textArea`}>
-          <div className={`${prefixCls}-upload`}>
-            <Tooltip placement="top" title={l10n.t('不支持上传图片')}>
-              <div>
-                <ImgIcon />
-              </div>
-            </Tooltip>
-
-            <Tooltip placement="top" title={l10n.t('不支持上传音频')}>
-              <div>
-                <AudioIcon />
-              </div>
-            </Tooltip>
-
-            <Tooltip placement="top" title={l10n.t('不支持上传视频')}>
-              <div>
-                <VideoIcon />
-              </div>
-            </Tooltip>
-            <Tooltip placement="top" title={l10n.t('不支持上传文件')}>
-              <div>
-                <FolderIcon />
-              </div>
-            </Tooltip>
-          </div>
+        <div className={`${prefixCls}-textArea-container`}>
           <div className={`${prefixCls}-input`}>
             <AntdInput.TextArea
               ref={ref}
@@ -173,10 +154,17 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
             />
           </div>
         </div>
-        <div className={`${prefixCls}-iconBottom`}>
+        <div className={`${prefixCls}-input-operation`}>
+          {false && (
+            <div className={`${prefixCls}-upload`}>
+              <Button className={`${prefixCls}-upload-button`}>
+                <PlusCircleOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
+              </Button>
+            </div>
+          )}
           <div
             className={classnames(`${prefixCls}-sendButton`, {
-              [`${prefixCls}-send-button-disabled`]: !instance.sendable,
+              [`${prefixCls}-sendButton-disabled`]: !v || !instance.sendable,
             })}
             onClick={() => {
               if (instance.sendable) {
