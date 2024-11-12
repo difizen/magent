@@ -144,14 +144,24 @@
 
 .chat-message-human {
   background-color: #e6f4ff;
+  box-shadow:
+    0 1px 2px 0 rgba(0, 0, 0, 3%),
+    0 1px 6px -1px rgba(0, 0, 0, 2%),
+    0 2px 4px 0 rgba(0, 0, 0, 2%);
   border-radius: 8px;
 }
 
 .chat-message-ai {
-  background-color: #f8f8fb;
+  background-color: #fff;
   border-radius: 8px;
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0%);
+  box-shadow:
+    0 1px 2px 0 rgba(0, 0, 0, 3%),
+    0 1px 6px -1px rgba(0, 0, 0, 2%),
+    0 2px 4px 0 rgba(0, 0, 0, 2%);
+  color: rgba(0, 0, 0, 88%);
+  font-size: 14px;
 
   & > :first-child {
     width: 100%;

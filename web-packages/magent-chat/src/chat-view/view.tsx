@@ -92,7 +92,7 @@ const DefaultInput = () => {
   const instance = useInject<ChatView>(ViewInstance);
   return (
     <>
-      <div className="chat-content-input-mask"></div>
+      {/* <div className="chat-content-input-mask"></div> */}
       <div className="chat-content-input-main">
         <Input onSubmit={(v) => instance.sendMessage(v)} />
       </div>
