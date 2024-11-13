@@ -13,6 +13,8 @@ import {
 import { BoxPanel } from '@difizen/mana-react';
 import { forwardRef } from 'react';
 
+import { Greeting } from './greeting/index.js';
+
 import './index.less';
 
 const viewId = 'magent-langchain-chat';
@@ -70,6 +72,7 @@ export class LangchainChatView extends BaseView {
       id: 'langchain',
       stream: true,
     });
+    chatView.Greeting = Greeting;
     this.chat = chatView;
   }
 
