@@ -63,6 +63,20 @@ const DefaultAvatar = (props: {
   );
 };
 
+export const DefaultGreeting = () => {
+  const prefixCls = 'chat-content-greeting';
+  return (
+    <div className={`${prefixCls}`}>
+      <div className={`${prefixCls}-greet`}>
+        <div className={`${prefixCls}-greet-title`}>你好，我是AI Chat Bot</div>
+        <div className={`${prefixCls}-greet-content`}>
+          切勿输入公司内部信息，包括不限于业务数据、目标策略、个人信息等。
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const DefaultMessages = () => {
   const instance = useInject<ChatView>(ViewInstance);
   const ChatMessage = instance.ChatMessage;
@@ -82,7 +96,7 @@ const DefaultMessages = () => {
           )}
         </>
       ) : (
-        <></>
+        <instance.Greeting />
       )}
     </>
   );
@@ -153,6 +167,7 @@ export class ChatView extends BaseView {
 
   AvatarRender = DefaultAvatar;
   Messages = DefaultMessages;
+  Greeting = DefaultGreeting;
   Input = DefaultInput;
   Footer = DefaultFooter;
   ChatMessage = DefaultChatMessage;
