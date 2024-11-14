@@ -4,7 +4,8 @@
     "rootDir": "./src",
     "declaration": true,
     "declarationDir": "es",
-    "outDir": "es"
+    "outDir": "es",
+    "moduleResolution": "node"
   },
   "types": ["jest"],
   "exclude": ["node_modules"],
