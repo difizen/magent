@@ -65,10 +65,11 @@ export class LangchainChatService extends ChatService {
   };
 
   override chat = async (option: any): Promise<IChatMessageItem[]> => {
-    const { input } = option;
+    const { input, image } = option;
     const res = await this.fetcher.post<APIMessage>(`/api/v1/chat`, {
       conversation_id: 'conversation_2',
       input: input,
+      image: image,
     });
 
     if (res.status === 200) {
@@ -89,12 +90,13 @@ export class LangchainChatService extends ChatService {
     messgeCallback: (event: IChatMessageItem) => void,
     eventCallback: (event: IChatEvent) => void,
   ) => {
-    const { input } = option;
+    const { input, image } = option;
 
     const url = `/api/v1/chat-stream`;
     const msg = {
       conversation_id: 'conversation_1',
       input: input,
+      image: image,
     };
     const res = await this.fetcher.post<ReadableStream<Uint8Array>>(url, msg, {
       headers: {
