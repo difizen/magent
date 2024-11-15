@@ -16,7 +16,7 @@
   "scripts": {
     "build": "umi build",
     "analyze": "ANALYZE=1 umi build",
-    "start": "PORT=3200 UMI_DEV_SERVER_COMPRESS=none umi dev ",
+    "start": "HOST=0.0.0.0 PORT=3200 UMI_DEV_SERVER_COMPRESS=none umi dev ",
     "postinstall": "umi setup",
     "setup": "umi setup",
     "clean": "git clean -fX .",
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
-    "@difizen/magent-core": "^0.1.30",
     "@difizen/magent-chat": "^0.1.30",
+    "@difizen/magent-core": "^0.1.30",
     "@difizen/mana-app": "^0.1.8",
     "@difizen/mana-react": "^0.1.8",
     "@rjsf/antd": "^5.18.2",
@@ -47,7 +47,8 @@
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "timeago.js": "^4.0.2",
-    "umi": "^4.3.18"
+    "umi": "^4.3.18",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.23.7",

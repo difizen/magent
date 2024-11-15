@@ -108,7 +108,7 @@ const DefaultInput = () => {
     <>
       {/* <div className="chat-content-input-mask"></div> */}
       <div className="chat-content-input-main">
-        <Input onSubmit={(v) => instance.sendMessage(v)} />
+        <Input onSubmit={(text, image) => instance.sendMessage(text, image)} />
       </div>
     </>
   );
@@ -183,6 +183,10 @@ export class ChatView extends BaseView {
 
   option: ChatViewOption;
 
+  allowUploadingImage = false;
+
+  handleUploadImage = () => Promise<void>;
+
   @prop()
   showToBottomBtn = false;
 
@@ -209,20 +213,21 @@ export class ChatView extends BaseView {
     return true;
   }
 
-  protected toMessageOption(msgContent: string) {
+  protected toMessageOption(msgContent: string, image?: string) {
     return {
       stream: true,
       ...this.option,
       sender: { type: 'HUMAN' },
       input: msgContent,
+      ...(image !== undefined && { image }),
     };
   }
 
-  sendMessage = async (msgContent: string) => {
+  sendMessage = async (msgContent: string, image?: string) => {
     if (!this.id) {
       return;
     }
-    const msg: IChatMessage = this.toMessageOption(msgContent);
+    const msg: IChatMessage = this.toMessageOption(msgContent, image);
     delete msg.id;
     delete msg.messages;
     delete msg.created;

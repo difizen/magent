@@ -11,6 +11,8 @@ from langchain_core.messages.ai import AIMessageChunk
 from magent_ui_langchain.core.current_executor import get_current_executor
 from magent_ui_langchain.core.executor import StreamExecutor
 
+from typing import Optional
+
 router = APIRouter()
 chat_router = router
 
@@ -24,7 +26,7 @@ class MessageSenderType(enum.Enum):
 class MessageCreate(BaseModel):
     conversation_id: str
     input: str
-
+    image: Optional[str] = None
 
 class MessageOutput(BaseModel):
     message_id: int
@@ -56,20 +58,29 @@ async def send_message(model: MessageCreate, stream: bool) -> AsyncIterable[Serv
         yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error executor"}, ensure_ascii=False))
         return
     if isinstance(current, StreamExecutor) and stream:
-        msg_iterator = current.invoke_stream(model.input)
+        msg_iterator = current.invoke_stream(model.input, getattr(model, 'image', None))
         if msg_iterator is None:
             yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error stream invoke_stream"}, ensure_ascii=False))
             return
+
         try:
+            total_content = '' # 存储所有的模型返回，最后一次返回给接口，重要为了兼容qwen的多模态表现和文本态不一致
             async for msg_chunk in msg_iterator:
                 print(msg_chunk)
+                content = msg_chunk.content
+                if isinstance(content, list) and content:
+                    content = content[0].get('text', '')
+                if not content:
+                    content = ''
+                total_content += content
                 if isinstance(msg_chunk, AIMessageChunk):
                     # 最后一次返回
                     if msg_chunk.response_metadata is not None and len(msg_chunk.response_metadata) > 0:
-                        yield ServerSentEvent(event=SSEType.RESULT.value, id=model.conversation_id, data=json.dumps({"output": msg_chunk.content, "id": msg_chunk.id, "response_metadata": msg_chunk.response_metadata}, ensure_ascii=False))
+                        yield ServerSentEvent(event=SSEType.RESULT.value, id=model.conversation_id, data=json.dumps({"output": total_content, "id": msg_chunk.id, "response_metadata": msg_chunk.response_metadata}, ensure_ascii=False))
                     else:
-                        yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.conversation_id, data=json.dumps({"output": msg_chunk.content, "id": msg_chunk.id}, ensure_ascii=False))
+                        yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.conversation_id, data=json.dumps({"output": content, "id": msg_chunk.id}, ensure_ascii=False))
         except Exception as e:
+            print('Exception', e)
             yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error in stream execute"}, ensure_ascii=False))
             return
 
@@ -86,8 +97,11 @@ async def chat(model: MessageCreate):
         return {"error_message": "error executor"}
 
     try:
-        result = current.invoke(model.input)
-        output_dict = {'id': result.id, 'output': result.content,
+        result = current.invoke(model.input, getattr(model, 'image', None))
+        content = result.content
+        if isinstance(msg_chunk.content, list):
+            content = msg_chunk.content[0]['text']
+        output_dict = {'id': result.id, 'output': content,
                        'response_metadata': result.response_metadata}
         return output_dict
     except Exception as e:
