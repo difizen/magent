@@ -88,7 +88,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
   } = props;
 
   // const videoInputRef = useRef(null);
-  const imageInputRef = useRef(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const [images, setImages] = useState<{ key: string; url: string }[] | undefined>();
   const [videos, setVideos] = useState<
@@ -120,7 +120,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     imageUrlsRef.current = imageUrlsRef.current?.filter((item) => item.key !== key);
     if (imageUrlsRef.current?.length === 0) {
       // 重置输入框的值
-      imageInputRef.current!.value = null;
+      imageInputRef.current!.value = '';
     }
   };
 
@@ -177,7 +177,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
       if (instance.allowUploadingImage) {
         clearAllUploadingFilesRef();
         clearAllUploadingFilesState();
-        imageInputRef.current!.value = null;
+        imageInputRef.current!.value = '';
         // videoInputRef.current!.value = null;
       }
     },

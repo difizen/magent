@@ -185,7 +185,8 @@ export class ChatView extends BaseView {
 
   allowUploadingImage = false;
 
-  handleUploadImage = () => Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleUploadImage = (e: any, calback: (params: any) => void) => Promise<void>;
 
   @prop()
   showToBottomBtn = false;
