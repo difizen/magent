@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useInject, ViewInstance } from '@difizen/mana-app';
 import { l10n } from '@difizen/mana-l10n';
-import { Button, Input as AntdInput } from 'antd';
+import { Button, Input as AntdInput, Popover } from 'antd';
 import type { TextAreaRef } from 'antd/es/input/TextArea.js';
 import classnames from 'classnames';
 import type { ChangeEvent, ReactNode, KeyboardEvent, FC } from 'react';
+import { useRef } from 'react';
 import { forwardRef, useCallback, useMemo, useState } from 'react';
 
 import type { ChatView } from '../../view.js';
@@ -12,6 +14,7 @@ import type { ChatView } from '../../view.js';
 import { SendIcon } from './icon.js';
 
 import './index.less';
+import { UploadingFilePreview } from './uploading-file-preview.js';
 
 function insertAtCaret(e: ChangeEvent<HTMLTextAreaElement>, valueToInsert?: string) {
   const target = e.target;
@@ -56,7 +59,7 @@ export interface InputProps {
   /**
    * isEnterSend 为 true 时，用于直接提交
    */
-  onSubmit?: (value: string) => void;
+  onSubmit?: (value: string, image?: string) => void;
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyDown?: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
   sendEnable?: boolean;
@@ -84,6 +87,75 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     value = v,
   } = props;
 
+  // const videoInputRef = useRef(null);
+  const imageInputRef = useRef(null);
+
+  const [images, setImages] = useState<{ key: string; url: string }[] | undefined>();
+  const [videos, setVideos] = useState<
+    { key: string; url: string; thumb: string }[] | undefined
+  >();
+
+  const imageUrlsRef = useRef<string[] | undefined>(undefined); // 模型可以直接使用的图片地址
+  const videoUrlsRef = useRef<string[] | undefined>(undefined);
+
+  const clearAllUploadingFilesState = () => {
+    setImages(undefined);
+    setVideos(undefined);
+  };
+
+  const clearAllUploadingFilesRef = () => {
+    imageUrlsRef.current = undefined;
+    videoUrlsRef.current = undefined;
+  };
+
+  const handleDeleteUploadImage = (key: string) => {
+    setImages((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      return prev.filter((item) => item.key !== key);
+    });
+    imageUrlsRef.current = imageUrlsRef.current?.filter((item) => item !== key);
+    if (imageUrlsRef.current?.length === 0) {
+      // 重置输入框的值
+      imageInputRef.current!.value = null;
+    }
+  };
+
+  const handleDeleteUploadVideo = (key: string) => {
+    setVideos((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      return prev.filter((item) => item.key !== key);
+    });
+    videoUrlsRef.current = videoUrlsRef.current?.filter((item) => item !== key);
+    // if (videoUrlsRef.current?.length === 0) {
+    //   // 重置输入框的值
+    //   videoInputRef.current!.value = null;
+    // }
+  };
+
+  const updateUploadingFiles = (params: {
+    images: { key: string; url: string }[] | undefined;
+    videos: { key: string; url: string; thumb: string }[] | undefined;
+  }) => {
+    clearAllUploadingFilesState();
+    clearAllUploadingFilesRef();
+
+    if (params.images && params.images.length > 0) {
+      setImages(params.images);
+      imageUrlsRef.current = params.images.map((img) => img.url);
+      return;
+    }
+
+    if (params.videos && params.videos.length > 0) {
+      setVideos(params.videos);
+      videoUrlsRef.current = params.videos.map((video) => video.url);
+      return;
+    }
+  };
+
   // fix tips: '/' =>> ''
   const open = useMemo(() => {
     if (value === '') {
@@ -94,13 +166,20 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
   }, [tips, value]);
 
   const onSubmit = useCallback(
-    (v: string) => {
+    (v: string, i?: string) => {
       if (!v) {
         return;
       }
-      props.onSubmit?.(v);
+      props.onSubmit?.(v, i);
       setV('');
+      if (instance.allowUploadingImage) {
+        clearAllUploadingFilesRef();
+        clearAllUploadingFilesState();
+        imageInputRef.current!.value = null;
+        // videoInputRef.current!.value = null;
+      }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [props],
   );
 
@@ -128,7 +207,10 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
         if (sendEnable) {
           setTimeout(() => {
             const target = e.currentTarget || e.target;
-            onSubmit(target.value);
+            onSubmit(
+              target.value,
+              imageUrlsRef.current ? imageUrlsRef.current[0] : undefined,
+            );
           }, 0);
         }
       }
@@ -138,44 +220,83 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
 
   return (
     <div className={classnames(prefixCls, wrapperClassName)}>
-      <div className={`${prefixCls}-searchInput`}>
-        <div className={`${prefixCls}-textArea-container`}>
-          <div className={`${prefixCls}-input`}>
-            <AntdInput.TextArea
-              ref={ref}
-              value={value}
-              placeholder={l10n.t('输入聊天内容')}
-              variant="borderless"
-              autoSize={{ minRows: 1 }}
-              style={{ resize: 'none', padding: '0px 16px', maxHeight: 80 }}
-              onChange={onInputChange}
-              onKeyDown={onInputKeyDown}
-              className={`${prefixCls}-textArea`}
+      <Popover
+        overlayClassName={`${prefixCls}-preview-popover`}
+        arrow={false}
+        content={
+          (images && images.length > 0) || (videos && videos.length > 0) ? (
+            <UploadingFilePreview
+              images={images}
+              videos={videos}
+              handleDeleteUploadImage={handleDeleteUploadImage}
+              handleDeleteUploadVideo={handleDeleteUploadVideo}
             />
-          </div>
-        </div>
-        <div className={`${prefixCls}-input-operation`}>
-          {false && (
-            <div className={`${prefixCls}-upload`}>
-              <Button className={`${prefixCls}-upload-button`}>
-                <PlusCircleOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
-              </Button>
+          ) : (
+            ''
+          )
+        }
+        open={(images && images.length > 0) || (videos && videos.length > 0)}
+        trigger="click"
+        placement="topLeft"
+      >
+        <div className={`${prefixCls}-searchInput`}>
+          <div className={`${prefixCls}-textArea-container`}>
+            <div className={`${prefixCls}-input`}>
+              <AntdInput.TextArea
+                ref={ref}
+                value={value}
+                placeholder={l10n.t('输入聊天内容')}
+                variant="borderless"
+                autoSize={{ minRows: 1 }}
+                style={{ resize: 'none', padding: '0px 16px', maxHeight: 80 }}
+                onChange={onInputChange}
+                onKeyDown={onInputKeyDown}
+                className={`${prefixCls}-textArea`}
+              />
             </div>
-          )}
-          <div
-            className={classnames(`${prefixCls}-sendButton`, {
-              [`${prefixCls}-sendButton-disabled`]: !v || !instance.sendable,
-            })}
-            onClick={() => {
-              if (instance.sendable) {
-                onSubmit(value || v);
-              }
-            }}
-          >
-            <SendIcon />
+          </div>
+          <div className={`${prefixCls}-input-operation`}>
+            {instance.allowUploadingImage && (
+              <div className={`${prefixCls}-upload`}>
+                <Button className={`${prefixCls}-upload-button`}>
+                  <label>
+                    <input
+                      type="file"
+                      multiple={false}
+                      accept="image/*"
+                      onChange={async (e) => {
+                        if (instance.handleUploadImage) {
+                          await instance.handleUploadImage(e, updateUploadingFiles);
+                        }
+                      }}
+                      ref={imageInputRef}
+                      hidden
+                    />
+                    <PlusCircleOutlined
+                      style={{ fontSize: '20px', cursor: 'pointer' }}
+                    />
+                  </label>
+                </Button>
+              </div>
+            )}
+            <div
+              className={classnames(`${prefixCls}-sendButton`, {
+                [`${prefixCls}-sendButton-disabled`]: !v || !instance.sendable,
+              })}
+              onClick={() => {
+                if (instance.sendable) {
+                  onSubmit(
+                    value || v,
+                    imageUrlsRef.current ? imageUrlsRef.current[0] : undefined,
+                  );
+                }
+              }}
+            >
+              <SendIcon />
+            </div>
           </div>
         </div>
-      </div>
+      </Popover>
     </div>
   );
 });
