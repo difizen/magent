@@ -95,8 +95,10 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
     { key: string; url: string; thumb: string }[] | undefined
   >();
 
-  const imageUrlsRef = useRef<string[] | undefined>(undefined); // 模型可以直接使用的图片地址
-  const videoUrlsRef = useRef<string[] | undefined>(undefined);
+  const imageUrlsRef = useRef<{ key: string; url: string }[] | undefined>(undefined); // 模型可以直接使用的图片地址
+  const videoUrlsRef = useRef<
+    { key: string; url: string; thumb: string }[] | undefined
+  >(undefined);
 
   const clearAllUploadingFilesState = () => {
     setImages(undefined);
@@ -115,7 +117,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
       }
       return prev.filter((item) => item.key !== key);
     });
-    imageUrlsRef.current = imageUrlsRef.current?.filter((item) => item !== key);
+    imageUrlsRef.current = imageUrlsRef.current?.filter((item) => item.key !== key);
     if (imageUrlsRef.current?.length === 0) {
       // 重置输入框的值
       imageInputRef.current!.value = null;
@@ -129,7 +131,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
       }
       return prev.filter((item) => item.key !== key);
     });
-    videoUrlsRef.current = videoUrlsRef.current?.filter((item) => item !== key);
+    videoUrlsRef.current = videoUrlsRef.current?.filter((item) => item.key !== key);
     // if (videoUrlsRef.current?.length === 0) {
     //   // 重置输入框的值
     //   videoInputRef.current!.value = null;
@@ -145,13 +147,13 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
 
     if (params.images && params.images.length > 0) {
       setImages(params.images);
-      imageUrlsRef.current = params.images.map((img) => img.url);
+      imageUrlsRef.current = params.images;
       return;
     }
 
     if (params.videos && params.videos.length > 0) {
       setVideos(params.videos);
-      videoUrlsRef.current = params.videos.map((video) => video.url);
+      videoUrlsRef.current = params.videos;
       return;
     }
   };
@@ -209,7 +211,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
             const target = e.currentTarget || e.target;
             onSubmit(
               target.value,
-              imageUrlsRef.current ? imageUrlsRef.current[0] : undefined,
+              imageUrlsRef.current ? imageUrlsRef.current[0].url : undefined,
             );
           }, 0);
         }
@@ -287,7 +289,7 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
                 if (instance.sendable) {
                   onSubmit(
                     value || v,
-                    imageUrlsRef.current ? imageUrlsRef.current[0] : undefined,
+                    imageUrlsRef.current ? imageUrlsRef.current[0].url : undefined,
                   );
                 }
               }}
