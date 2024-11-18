@@ -27,6 +27,3 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/magent_ui_langchain"]
-
-[tool.rye.scripts]
-dev = "python src/magent_ui_langchain/dev.py"
