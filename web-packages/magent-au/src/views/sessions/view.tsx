@@ -105,6 +105,7 @@ const SessionsViewComponent = forwardRef<HTMLDivElement>(
           icon={<PlusOutlined className={'chat-histroy-icon'} />}
           // loading={sessionSnap.convCreating}
           onClick={instance.createSession}
+          className={'chat-histroy-add-button'}
         >
           开启新会话
         </Button>
