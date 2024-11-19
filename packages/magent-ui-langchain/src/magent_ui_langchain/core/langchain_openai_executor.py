@@ -48,4 +48,4 @@ class OpenAIAdaptor(RunnableAdaptor):
 
     def invoke_stream(self, value, image=None) -> AsyncIterator[BaseEvent] | None:
         with get_openai_callback() as cb:
-            return super().invoke(value, image)
+            return super().invoke_stream(value, image)

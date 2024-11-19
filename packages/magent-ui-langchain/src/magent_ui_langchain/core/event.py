@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class BaseOutputMessage(BaseModel):
+    id: str
     output: str
 
 
