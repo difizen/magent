@@ -1,15 +1,11 @@
-import asyncio
 import enum
 import json
-from typing import AsyncIterable, List
-from fastapi import APIRouter, HTTPException
+from typing import AsyncIterable
+from fastapi import APIRouter
 from pydantic import BaseModel
 from sse_starlette import EventSourceResponse, ServerSentEvent
-
-from langchain_core.messages.ai import AIMessageChunk
-
-from magent_ui_langchain.core.current_executor import get_current_executor
-from magent_ui_langchain.core.executor import StreamExecutor
+from magent_ui_langchain.core.current_executor import get_current_invoke_adaptor
+from magent_ui_langchain.core.base_adaptor import StreamInvokeAdaptor
 
 from typing import Optional
 
@@ -27,6 +23,7 @@ class MessageCreate(BaseModel):
     conversation_id: str
     input: str
     image: Optional[str] = None
+
 
 class MessageOutput(BaseModel):
     message_id: int
@@ -53,36 +50,28 @@ async def async_generator_from_sync(gen):
 
 
 async def send_message(model: MessageCreate, stream: bool) -> AsyncIterable[ServerSentEvent]:
-    current = get_current_executor()
+    current = get_current_invoke_adaptor()
     if current is None:
         yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error executor"}, ensure_ascii=False))
         return
-    if isinstance(current, StreamExecutor) and stream:
-        msg_iterator = current.invoke_stream(model.input, getattr(model, 'image', None))
+    if isinstance(current, StreamInvokeAdaptor) and stream:
+        msg_iterator = current.invoke_stream(
+            model.input, image=getattr(model, 'image', None))
         if msg_iterator is None:
             yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error stream invoke_stream"}, ensure_ascii=False))
             return
-
         try:
-            total_content = '' # 存储所有的模型返回，最后一次返回给接口，重要为了兼容qwen的多模态表现和文本态不一致
-            async for msg_chunk in msg_iterator:
-                print(msg_chunk)
-                content = msg_chunk.content
-                if isinstance(content, list) and content:
-                    content = content[0].get('text', '')
-                if not content:
-                    content = ''
-                total_content += content
-                if isinstance(msg_chunk, AIMessageChunk):
-                    # 最后一次返回
-                    if msg_chunk.response_metadata is not None and len(msg_chunk.response_metadata) > 0:
-                        yield ServerSentEvent(event=SSEType.RESULT.value, id=model.conversation_id, data=json.dumps({"output": total_content, "id": msg_chunk.id, "response_metadata": msg_chunk.response_metadata}, ensure_ascii=False))
-                    else:
-                        yield ServerSentEvent(event=SSEType.CHUNK.value, id=model.conversation_id, data=json.dumps({"output": content, "id": msg_chunk.id}, ensure_ascii=False))
+            async for event in msg_iterator:
+                data = ''
+                if isinstance(event.data, str):
+                    data = event.data
+                else:
+                    data = event.data.model_dump_json()
+                yield ServerSentEvent(event=event.type, id=event.id, data=data)
         except Exception as e:
             print('Exception', e)
             yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error in stream execute"}, ensure_ascii=False))
-            return
+            raise e
 
 
 @router.post("/chat-stream")
@@ -92,12 +81,13 @@ async def stream_chat(model: MessageCreate):
 
 @router.post("/chat")
 async def chat(model: MessageCreate):
-    current = get_current_executor()
+    current = get_current_invoke_adaptor()
     if current is None:
         return {"error_message": "error executor"}
 
     try:
-        result = current.invoke(model.input, getattr(model, 'image', None))
+        result = current.invoke(
+            model.input, image=getattr(model, 'image', None))
         content = result.content
         if isinstance(msg_chunk.content, list):
             content = msg_chunk.content[0]['text']

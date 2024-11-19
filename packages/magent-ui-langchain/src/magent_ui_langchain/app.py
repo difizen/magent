@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -31,8 +31,20 @@ templates_dir = os.path.join(BASE_DIR, 'templates')
 templates = Jinja2Templates(directory=templates_dir)
 
 
-def launch(object: Any, **kwargs):
-    process_object(object)
+def launch(object: Any, llm_type: str | None = None, **kwargs):
+    '''
+    Launch the langchain server.
+
+        +----------------------+------------------+
+        | llm_type             | model_name       |
+        +======================+==================+
+        | openai               | chatgpt/gpt4o ...|
+        +----------------------+------------------+
+        | tongyi               | qwen/qwen-max ...|
+        +----------------------+------------------+
+
+    '''
+    process_object(object, llm_type)
 
     logger.info("Current log level is")
     project_root_path = Path.cwd()

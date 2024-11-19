@@ -1,14 +1,13 @@
-from .adapter_registry import adapter_registry
-from .langchain_executor import LLMStreamExecutor, ChainStreamExecutor, RunnableExecutor
+from .adaptor_registry import adaptor_registry
+from .langchain_adaptor import RunnableAdaptor
+from .langchain_openai_executor import OpenAIAdaptor
+from .langchain_tongyi_executor import TongyiAdaptor
 
-adapter_registry.register_adapter(
-    LLMStreamExecutor.recognizer, LLMStreamExecutor, 1)
+adaptor_registry.register_adaptor(
+    RunnableAdaptor.recognizer, RunnableAdaptor)
 
+adaptor_registry.register_adaptor(
+    OpenAIAdaptor.recognizer, OpenAIAdaptor, 10)
 
-adapter_registry.register_adapter(
-    ChainStreamExecutor.recognizer, ChainStreamExecutor, 1)
-
-
-adapter_registry.register_adapter(
-    RunnableExecutor.recognizer, RunnableExecutor)
-
+adaptor_registry.register_adaptor(
+    TongyiAdaptor.recognizer, TongyiAdaptor, 10)
