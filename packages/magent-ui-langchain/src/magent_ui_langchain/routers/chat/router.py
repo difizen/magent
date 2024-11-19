@@ -51,6 +51,7 @@ async def async_generator_from_sync(gen):
 
 async def send_message(model: MessageCreate, stream: bool) -> AsyncIterable[ServerSentEvent]:
     current = get_current_invoke_adaptor()
+    id = model.conversation_id
     if current is None:
         yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error executor"}, ensure_ascii=False))
         return
@@ -58,7 +59,7 @@ async def send_message(model: MessageCreate, stream: bool) -> AsyncIterable[Serv
         msg_iterator = current.invoke_stream(
             model.input, image=getattr(model, 'image', None))
         if msg_iterator is None:
-            yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error stream invoke_stream"}, ensure_ascii=False))
+            yield ServerSentEvent(event=SSEType.ERROR.value, id=id, data=json.dumps({"error_message": "error stream invoke_stream"}, ensure_ascii=False))
             return
         try:
             async for event in msg_iterator:
@@ -67,10 +68,11 @@ async def send_message(model: MessageCreate, stream: bool) -> AsyncIterable[Serv
                     data = event.data
                 else:
                     data = event.data.model_dump_json()
-                yield ServerSentEvent(event=event.type, id=event.id, data=data)
+                if len(event.id) > 0:
+                    id = event.id
+                yield ServerSentEvent(event=event.type, id=id, data=data)
         except Exception as e:
-            print('Exception', e)
-            yield ServerSentEvent(event=SSEType.ERROR.value, id=model.conversation_id, data=json.dumps({"error_message": "error in stream execute"}, ensure_ascii=False))
+            yield ServerSentEvent(event=SSEType.ERROR.value, id=id, data=json.dumps({"error_message": "error in stream execute"}, ensure_ascii=False))
             raise e
 
 

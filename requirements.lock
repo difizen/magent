@@ -35,6 +35,8 @@ async-timeout==4.0.3
     # via langchain
 attrs==23.2.0
     # via aiohttp
+    # via jsonschema
+    # via referencing
 certifi==2024.7.4
     # via httpcore
     # via httpx
@@ -60,6 +62,8 @@ fastapi-cli==0.0.4
     # via fastapi
 fastapi-pagination==0.12.26
     # via magent-api
+fastjsonschema==2.20.0
+    # via nbformat
 frozenlist==1.4.1
     # via aiohttp
     # via aiosignal
@@ -92,6 +96,17 @@ jsonpatch==1.33
     # via langchain-core
 jsonpointer==3.0.0
     # via jsonpatch
+jsonschema==4.23.0
+    # via nbformat
+jsonschema-specifications==2024.10.1
+    # via jsonschema
+jupyter-client==8.6.3
+    # via langchain-example
+    # via nbclient
+jupyter-core==5.7.2
+    # via jupyter-client
+    # via nbclient
+    # via nbformat
 langchain==0.3.7
     # via langchain-community
     # via langchain-example
@@ -126,6 +141,11 @@ multidict==6.0.5
     # via yarl
 mypy-extensions==1.0.0
     # via typing-inspect
+nbclient==0.10.0
+    # via langchain-example
+nbformat==5.10.4
+    # via langchain-example
+    # via nbclient
 numpy==1.26.4
     # via langchain
     # via langchain-community
@@ -136,6 +156,8 @@ orjson==3.10.6
 packaging==23.2
     # via langchain-core
     # via marshmallow
+platformdirs==4.3.6
+    # via jupyter-core
 psycopg2-binary==2.9.9
     # via magent-api
 pydantic==2.8.2
@@ -154,6 +176,8 @@ pydantic-settings==2.6.1
     # via magent-api
 pygments==2.18.0
     # via rich
+python-dateutil==2.9.0.post0
+    # via jupyter-client
 python-dotenv==1.0.1
     # via pydantic-settings
     # via uvicorn
@@ -166,6 +190,11 @@ pyyaml==6.0.1
     # via langchain-community
     # via langchain-core
     # via uvicorn
+pyzmq==26.2.0
+    # via jupyter-client
+referencing==0.35.1
+    # via jsonschema
+    # via jsonschema-specifications
 regex==2024.7.24
     # via tiktoken
 requests==2.32.3
@@ -178,8 +207,13 @@ requests-toolbelt==1.0.0
     # via langsmith
 rich==13.7.1
     # via typer
+rpds-py==0.21.0
+    # via jsonschema
+    # via referencing
 shellingham==1.5.4
     # via typer
+six==1.16.0
+    # via python-dateutil
 sniffio==1.3.1
     # via anyio
     # via httpx
@@ -202,8 +236,15 @@ tenacity==8.5.0
     # via langchain-core
 tiktoken==0.8.0
     # via langchain-openai
+tornado==6.4.1
+    # via jupyter-client
 tqdm==4.66.4
     # via openai
+traitlets==5.14.3
+    # via jupyter-client
+    # via jupyter-core
+    # via nbclient
+    # via nbformat
 typer==0.12.3
     # via fastapi-cli
 typing-extensions==4.12.2

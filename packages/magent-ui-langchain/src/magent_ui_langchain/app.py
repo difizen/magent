@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 from typing import Any, Optional
 from fastapi import FastAPI, Request
@@ -109,4 +110,4 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
         )
 
     uvicorn_config = to_uvicorn_config(app_config.config)
-    uvicorn.run(app, log_level='info', **uvicorn_config)
+    uvicorn.run(app, log_level='info', loop="asyncio", **uvicorn_config)
