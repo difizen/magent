@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator
-from .event import BaseEvent
+from .event import BaseEvent, BaseOutputMessage
 
 from pydantic import BaseModel
 
@@ -23,7 +23,7 @@ class InvokeAdaptor(BaseModel, ABC):
     input_adaptor: InputAdaptor | None = None
 
     @abstractmethod
-    def invoke(self, value, *args, **kwargs) -> Any | None:
+    def invoke(self, value, *args, **kwargs) -> BaseOutputMessage | None:
         """Chat invoke"""
         raise NotImplementedError(
             "Each adaptor must implement the `invoke` method.")
