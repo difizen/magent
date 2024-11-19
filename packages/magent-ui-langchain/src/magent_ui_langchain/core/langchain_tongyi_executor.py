@@ -1,8 +1,6 @@
-from typing import Any, AsyncIterator, Dict, Sequence
-from langchain_community.callbacks.manager import get_openai_callback
-from langchain_core.messages import HumanMessage, AIMessage, AIMessageChunk, BaseMessage, BaseMessageChunk
+from typing import Any, Dict, Sequence
+from langchain_core.messages import HumanMessage
 from langchain_core.runnables import Runnable, RunnableBinding
-from .event import BaseEvent
 from .langchain_adaptor import RunnableAdaptor
 from .utils import is_community_installed, is_in_array_or_has_prefix
 
@@ -28,14 +26,14 @@ class TongyiAdaptor(RunnableAdaptor):
     def recognizer(object, llm_type: str | None = None):
         if not isinstance(object, Runnable):
             return False
-        if llm_type == 'openai':
+        if llm_type == 'tongyi':
             return True
         if isinstance(object, RunnableBinding):
             return TongyiAdaptor.recognizer(object.bound)
         if not is_community_installed():
             return False
-        from langchain_community.chat_models.openai import ChatOpenAI
-        if isinstance(object, ChatOpenAI):
+        from langchain_community.chat_models.tongyi import ChatTongyi
+        if isinstance(object, ChatTongyi):
             return is_in_array_or_has_prefix(tongyi_models, object.model_name)
         return False
 

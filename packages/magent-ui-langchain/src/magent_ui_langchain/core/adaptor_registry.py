@@ -38,10 +38,10 @@ class AdaptorRegistry:
         if issubclass(adaptor_cls, InvokeAdaptor):
             self.invoke_adaptors.append((priority, recognizer, adaptor_cls))
             # Sort adaptors by priority
-            self.invoke_adaptors.sort(key=lambda x: x[0])
+            self.invoke_adaptors.sort(key=lambda x: x[0], reverse=True)
         if issubclass(adaptor_cls, InputAdaptor):
             self.input_adaptors.append((priority, recognizer, adaptor_cls))
-            self.input_adaptors.sort(key=lambda x: x[0])
+            self.input_adaptors.sort(key=lambda x: x[0], reverse=True)
 
     def get_invoke_adaptor(self, obj: Any, llm_type: str | None = None) -> InvokeAdaptor:
         """

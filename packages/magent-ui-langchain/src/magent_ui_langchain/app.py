@@ -1,23 +1,25 @@
-from magent_ui_core.utils import attempt_import, is_ipython
-import nest_asyncio
-import asyncio
-from pathlib import Path
-from typing import Any, Optional
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from contextlib import asynccontextmanager
-import webbrowser
-import uvicorn
-import logging
-import os
-
-from uvicorn.config import LOGGING_CONFIG
-
-from magent_ui_langchain.routers.main import api_router
-from magent_ui_langchain.config import to_uvicorn_config, app_config
 from magent_ui_core.current_executor import process_object
+from magent_ui_langchain.config import to_uvicorn_config, app_config
+from magent_ui_langchain.routers.main import api_router
+from uvicorn.config import LOGGING_CONFIG
+import os
+import logging
+import uvicorn
+import webbrowser
+from contextlib import asynccontextmanager
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Request
+from typing import Any, Optional
+from pathlib import Path
+import asyncio
+import nest_asyncio
+from magent_ui_core.utils import attempt_import, is_ipython
+<< << << < HEAD
+== == == =
+>>>>>> > 18a04bc(feat(langchain): input & output format)
+
 
 # 应用 nest_asyncio 以解决事件循环冲突
 nest_asyncio.apply()
