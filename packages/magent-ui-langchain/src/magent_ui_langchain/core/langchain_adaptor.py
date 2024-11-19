@@ -5,7 +5,7 @@ from langchain_core.runnables import Runnable
 from langchain_core.messages import HumanMessage, AIMessage, AIMessageChunk, BaseMessage, BaseMessageChunk
 from langchain_core.agents import AgentAction
 from .base_adaptor import InputAdaptor, StreamInvokeAdaptor
-from .event import BaseEvent, ChunkEvent, ResultEvent
+from .event import BaseEvent, BaseOutputMessage, ChunkEvent, ResultEvent
 
 
 def merge_strings(input_list):
@@ -49,14 +49,24 @@ class RunnableAdaptor(StreamInvokeAdaptor, InputAdaptor):
             return self.input_adaptor
         return self
 
-    def invoke(self, value, image=None) -> Any | None:
+    def invoke(self, value, image=None) -> BaseOutputMessage | None:
         if not isinstance(self.object, Runnable):
             return None
-
-        with get_openai_callback() as cb:
-            messages = self.get_input_adaptor().to_input_message(value, image)
-            result = self.object.invoke(messages)
-            return result
+        messages = self.get_input_adaptor().to_input_message(value, image)
+        message = self.object.invoke(messages)
+        data_list = []
+        id = ''
+        if isinstance(message, AIMessage):
+            if message.id is not None:
+                id = message.id
+            if isinstance(message.content, str):
+                data_list.append(message.content)
+            if isinstance(message.content, list):
+                data_list.append(merge_strings(message.content))
+            else:
+                print("Can not handle message content", message)
+        data = data_list.pop()
+        return BaseOutputMessage(id=id, output=data)
 
     def aimessages_to_event_data(self, messages: Sequence[BaseMessage | BaseMessageChunk]) -> List[str]:
         data_list = []

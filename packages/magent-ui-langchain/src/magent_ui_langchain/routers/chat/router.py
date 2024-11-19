@@ -84,15 +84,8 @@ async def chat(model: MessageCreate):
     current = get_current_invoke_adaptor()
     if current is None:
         return {"error_message": "error executor"}
-
     try:
-        result = current.invoke(
+        return current.invoke(
             model.input, image=getattr(model, 'image', None))
-        content = result.content
-        if isinstance(msg_chunk.content, list):
-            content = msg_chunk.content[0]['text']
-        output_dict = {'id': result.id, 'output': content,
-                       'response_metadata': result.response_metadata}
-        return output_dict
     except Exception as e:
         return {"error_message": "chat execute error"}
