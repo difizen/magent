@@ -54,6 +54,6 @@ agent = initialize_agent(
     tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
 
-chain = llm_with_tools | PydanticToolsParser(tools=[IPythonExecutor])
+# chain = llm_with_tools | PydanticToolsParser(tools=[IPythonExecutor])
 
 launch(agent)
