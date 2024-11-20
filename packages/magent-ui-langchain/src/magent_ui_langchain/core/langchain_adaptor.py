@@ -92,6 +92,7 @@ class RunnableAdaptor(StreamInvokeAdaptor, InputAdaptor):
     async def to_output_event(self, value: AsyncIterator, *args, **kwargs) -> AsyncIterator[BaseEvent]:
         first = True
         gathered = None
+        gather_output = ''
         id = ''
         async for msg_chunk in value:
             # id = msg_chunk.id
@@ -106,11 +107,39 @@ class RunnableAdaptor(StreamInvokeAdaptor, InputAdaptor):
             if isinstance(msg_chunk, BaseMessageChunk) and len(msg_chunk.content) > 0:
                 data_list = self.aimessages_to_event_data([msg_chunk])
             if isinstance(msg_chunk, AddableDict):
-                messages = msg_chunk.get('messages', [])
-                data_list = self.aimessages_to_event_data(messages)
-                step_list = self.steps_to_event_data(
-                    msg_chunk.get('steps', []))
-                data_list.extend(step_list)
+                # if 'actions' in msg_chunk:
+                #   for action in msg_chunk['actions']:
+                #     if isinstance(action, AgentAction):
+                        # print(f"Action: {action.log}")
+                        # print('--------------------------------')
+
+                # Check and display agent steps
+                if 'steps' in msg_chunk:
+                    for step in msg_chunk['steps']:
+                        if isinstance(step, AgentStep):
+                            data_list.append(step.action.log)
+                            # print(f"{step.action.log}")
+                            gather_output += f"{step.action.log}"
+                            if hasattr(step, 'observation') and step.observation is not None:
+                                # print(f"\nObservation: {step.observation}")
+                                data_list.append(f"\nObservation: {step.observation}")
+                                gather_output += f"\nObservation: {step.observation}"
+                            data_list.append("\nThought: ")
+                            gather_output += "\nThought: "
+                            # print('--------------------------------')
+
+                # Check and display final output
+                if 'output' in msg_chunk:
+                    for message in msg_chunk['messages']:
+                        # print(f"{message.content}")
+                        data_list.append(f"{message.content}")
+                        gather_output += f"{message.content}"
+                        # print('--------------------------------')
+                # messages = msg_chunk.get('messages', [])
+                # data_list = self.aimessages_to_event_data(messages)
+                # step_list = self.steps_to_event_data(
+                #     msg_chunk.get('steps', []))
+                # data_list.extend(step_list)
 
             if isinstance(msg_chunk, AgentAction) or isinstance(msg_chunk, AgentFinish) or isinstance(msg_chunk, AgentStep):
                 data_list = self.aimessages_to_event_data(msg_chunk.messages)
@@ -125,7 +154,7 @@ class RunnableAdaptor(StreamInvokeAdaptor, InputAdaptor):
             yield ResultEvent(id=id, data=BaseOutputMessage(id=id, output=data_list.pop()))
 
         if isinstance(gathered, AddableDict):
-            yield ResultEvent(id=id, data=BaseOutputMessage(id=id, output=gathered.get('output', '')))
+            yield ResultEvent(id=id, data=BaseOutputMessage(id=id, output=gather_output))
 
     def invoke_stream(self, value, image=None) -> AsyncIterator[BaseEvent] | None:
         if not isinstance(self.object, Runnable):
