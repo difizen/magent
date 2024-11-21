@@ -24,6 +24,9 @@ from magent_ui_core.utils import attempt_import, is_ipython
 # 应用 nest_asyncio 以解决事件循环冲突
 nest_asyncio.apply()
 
+# 应用 nest_asyncio 以解决事件循环冲突
+nest_asyncio.apply()
+
 # Use uvicorn's default logging configuration
 logging.config.dictConfig(LOGGING_CONFIG)  # type: ignore
 

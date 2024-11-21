@@ -117,13 +117,12 @@ class RunnableAdaptor(StreamInvokeAdaptor, InputAdaptor):
                 if 'steps' in msg_chunk:
                     for step in msg_chunk['steps']:
                         if isinstance(step, AgentStep):
-                            data_list.append(step.action.log)
-                            # print(f"{step.action.log}")
-                            gather_output += f"{step.action.log}"
+                            data_list.append(f'<span style="color: #007427;">{step.action.log}</span>')
+                            gather_output += f'<span style="color: #007427;">{step.action.log}</span>'
                             if hasattr(step, 'observation') and step.observation is not None:
                                 # print(f"\nObservation: {step.observation}")
-                                data_list.append(f"\nObservation: {step.observation}")
-                                gather_output += f"\nObservation: {step.observation}"
+                                data_list.append(f'\nObservation: <font color="#258f8f">{step.observation}</font>')
+                                gather_output += f'\nObservation: <font color="#258f8f">{step.observation}</font>'
                             data_list.append("\nThought: ")
                             gather_output += "\nThought: "
                             # print('--------------------------------')
@@ -132,8 +131,8 @@ class RunnableAdaptor(StreamInvokeAdaptor, InputAdaptor):
                 if 'output' in msg_chunk:
                     for message in msg_chunk['messages']:
                         # print(f"{message.content}")
-                        data_list.append(f"{message.content}")
-                        gather_output += f"{message.content}"
+                        data_list.append(f'<span style="color: #007427;">{message.content}</span>')
+                        gather_output += f'<span style="color: #007427;">{message.content}</span>'
                         # print('--------------------------------')
                 # messages = msg_chunk.get('messages', [])
                 # data_list = self.aimessages_to_event_data(messages)
