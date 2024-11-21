@@ -1,3 +1,4 @@
+import nest_asyncio
 import asyncio
 from pathlib import Path
 from typing import Any, Optional
@@ -12,10 +13,12 @@ import logging
 import os
 from uvicorn.config import LOGGING_CONFIG
 
-
 from magent_ui_langchain.routers.main import api_router
 from magent_ui_langchain.config import to_uvicorn_config, app_config
 from magent_ui_langchain.core.current_executor import process_object
+
+# 应用 nest_asyncio 以解决事件循环冲突
+nest_asyncio.apply()
 
 # Use uvicorn's default logging configuration
 logging.config.dictConfig(LOGGING_CONFIG)  # type: ignore
@@ -28,22 +31,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 static_dir = os.path.join(BASE_DIR, 'static')
 templates_dir = os.path.join(BASE_DIR, 'templates')
 
-
 templates = Jinja2Templates(directory=templates_dir)
-
 
 def launch(object: Any, llm_type: str | None = None, **kwargs):
     '''
     Launch the langchain server.
-
-        +----------------------+------------------+
-        | llm_type             | model_name       |
-        +======================+==================+
-        | openai               | chatgpt/gpt4o ...|
-        +----------------------+------------------+
-        | tongyi               | qwen/qwen-max ...|
-        +----------------------+------------------+
-
     '''
     process_object(object, llm_type)
 
@@ -71,19 +63,9 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
 
     # static
     if os.path.exists(static_dir):
-        app.mount(app_config.full_static_path, StaticFiles(directory=static_dir,
-                                                           html=True), name="static")
+        app.mount(app_config.full_static_path, StaticFiles(directory=static_dir, html=True), name="static")
     else:
         logger.info('Can not find static directory. ', static_dir)
-
-    # resources
-    # if not app_config.resource_dir_path.exists():
-    #     logger.info('Resource directory not exist. create at',
-    #                 app_config.resource_dir_path)
-    #     os.makedirs(app_config.resource_dir_path)
-
-    # app.mount(app_config.full_resource_path, StaticFiles(directory=app_config.resource_dir_path,
-    #                                                      html=True))
 
     # auto redirect to app url
     @app.get(app_config.root_path, response_class=HTMLResponse)
@@ -91,8 +73,7 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
         return RedirectResponse(url=f"{app_config.app_url}/")
 
     # html as default, app_path included
-    html_root = app_config.root_path if app_config.root_path.endswith(
-        '/') else f"{app_config.root_path}/"
+    html_root = app_config.root_path if app_config.root_path.endswith('/') else f"{app_config.root_path}/"
 
     @app.get(html_root+"{path:path}", response_class=HTMLResponse)
     async def to_app_page(request: Request):
@@ -103,11 +84,11 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
             "appUrl": app_config.app_url,
             "staticUrl": app_config.static_url,
         }
-        return templates.TemplateResponse(
-            request=request, name="index.html", context={
-                "page_config": page_config, "static_url": app_config.static_url
-            }
-        )
+        return templates.TemplateResponse(request=request, name="index.html", context={
+            "page_config": page_config, "static_url": app_config.static_url
+        })
 
     uvicorn_config = to_uvicorn_config(app_config.config)
-    uvicorn.run(app, log_level='info', loop="asyncio", **uvicorn_config)
+    # 使用 asyncio.run() 运行 uvicorn
+    asyncio.run(uvicorn.run(app, log_level='info', loop="asyncio", **uvicorn_config))
+
