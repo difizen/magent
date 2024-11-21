@@ -11,6 +11,8 @@ import webbrowser
 import uvicorn
 import logging
 import os
+import qrcode
+from IPython.display import display, HTML, Image
 from uvicorn.config import LOGGING_CONFIG
 
 from magent_ui_langchain.routers.main import api_router
@@ -49,10 +51,21 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        if app_config.open_browser:
-            url = f"http://localhost:{app_config.port}{app_config.root_path}"
-            webbrowser.open(url)
+        url = f"http://localhost:{app_config.port}{app_config.root_path}"
         logger.info(f"Server is running at {url}")
+
+        # 生成二维码并在 Jupyter Notebook 中显示
+        qr_img = qrcode.make(url)
+        qr_img_path = "qrcode.png"
+        qr_img.save(qr_img_path)
+
+        # 在 Jupyter Notebook 的输出区域打印 URL 和二维码
+        display(HTML(f"<h2>Server is running at: <a href='{url}'>{url}</a></h2>"))
+        display(Image(filename=qr_img_path))
+
+        if app_config.open_browser:
+            webbrowser.open(url)
+
         yield
         logger.info('Server finished')
 
