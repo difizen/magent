@@ -5,7 +5,7 @@ description = ""
 authors = [{ name = "brokun", email = "brokun0128@gmail.com" }]
 
 dependencies = [
-  "magent-ui-langchain>=0.1.16",
+  "magent-ui-langchain>=0.1.0.dev0",
   "langchain>=0.3.7",
   "nbformat>=5.10.4",
   "langchain-community>=0.3.7",
