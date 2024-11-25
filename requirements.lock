@@ -10,10 +10,12 @@
 -e file:api
 -e file:examples/langchain-example
 -e file:packages/magent-ui
+-e file:packages/magent-ui-core
 -e file:packages/magent-ui-langchain
     # via langchain-example
 aiofiles==24.1.0
     # via magent-ui
+    # via magent-ui-core
     # via magent-ui-langchain
 aiohttp==3.9.5
     # via langchain
@@ -58,6 +60,7 @@ exceptiongroup==1.2.2
     # via anyio
 fastapi==0.111.1
     # via magent-api
+    # via magent-ui-core
 fastapi-cli==0.0.4
     # via fastapi
 fastapi-pagination==0.12.26
@@ -89,6 +92,7 @@ idna==3.7
 jinja2==3.1.4
     # via fastapi
     # via magent-ui
+    # via magent-ui-core
     # via magent-ui-langchain
 jiter==0.5.0
     # via openai
@@ -146,6 +150,8 @@ nbclient==0.10.0
 nbformat==5.10.4
     # via langchain-example
     # via nbclient
+nest-asyncio==1.6.0
+    # via magent-ui-core
 numpy==1.26.4
     # via langchain
     # via langchain-community
@@ -184,6 +190,7 @@ python-dotenv==1.0.1
 python-multipart==0.0.9
     # via fastapi
     # via magent-ui
+    # via magent-ui-core
     # via magent-ui-langchain
 pyyaml==6.0.1
     # via langchain
@@ -226,6 +233,7 @@ sqlalchemy==2.0.25
 sse-starlette==2.1.2
     # via magent-api
     # via magent-ui
+    # via magent-ui-core
     # via magent-ui-langchain
 starlette==0.37.2
     # via fastapi
