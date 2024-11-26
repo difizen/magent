@@ -17,3 +17,10 @@ export type ChatMessageItemRenderContribution<
 export const ChatMessageItemRenderContribution = Syringe.defineToken(
   'ChatMessageRenderContribution',
 );
+
+export type MesssageOpProvider = FC<{
+  message: BaseChatMessageModel;
+  item: BaseChatMessageItemModel;
+}>;
+
+export const MesssageOpProvider = Symbol('MesssageOpProvider');
