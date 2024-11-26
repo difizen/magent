@@ -1,6 +1,6 @@
 {
   "name": "@difizen/magent-chat",
-  "version": "0.1.32",
+  "version": "0.1.33",
   "description": "",
   "keywords": [
     "chat",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.0",
-    "@difizen/magent-core": "^0.1.30",
+    "@difizen/magent-core": "^0.1.33",
     "@difizen/mana-app": "latest",
     "@difizen/mana-l10n": "^0.1.27",
     "@difizen/mana-react": "latest",
