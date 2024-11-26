@@ -1,5 +1,15 @@
 # @difizen/magent-au
 
+## 0.1.33
+
+### Patch Changes
+
+- [#89](https://github.com/difizen/magent/pull/89) [`a61a066`](https://github.com/difizen/magent/commit/a61a066191f7dc33303ccec70df0133f86e24188) Thanks [@xujingli](https://github.com/xujingli)! - Fix typo and specify the function return type. Refactor the message operation functions.
+
+- Updated dependencies [[`a61a066`](https://github.com/difizen/magent/commit/a61a066191f7dc33303ccec70df0133f86e24188)]:
+  - @difizen/magent-chat@0.1.33
+  - @difizen/magent-core@0.1.33
+
 ## 0.1.30
 
 ### Patch Changes
