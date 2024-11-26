@@ -1,14 +1,7 @@
-import {
-  CopyOutlined,
-  DislikeOutlined,
-  LikeOutlined,
-  LoadingOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
+import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
 import { l10n } from '@difizen/mana-l10n';
 import classNames from 'classnames';
-import copy from 'copy-to-clipboard';
 import debounce from 'lodash.debounce';
 import type { ReactNode } from 'react';
 
@@ -17,6 +10,7 @@ import type {
   BaseChatMessageModel,
 } from '../../../chat-base/protocol.js';
 import { AnswerState } from '../../../chat-base/protocol.js';
+import { MesssageOpProvider } from '../../protocol.js';
 import type { ChatView } from '../../view.js';
 
 interface AIMessageProps {
@@ -159,29 +153,14 @@ export const AIMessage = (props: AIMessageProps) => {
   const instance = useInject<ChatView>(ViewInstance);
   const conversation = instance.conversation;
   const AvatarRender = instance.AvatarRender;
+
+  const MesssageOp = useInject<MesssageOpProvider>(MesssageOpProvider);
+
   if (!conversation) {
     return null;
   }
 
   // const [contentHover, setContentHover] = useState<boolean>(false);
-
-  const actions = [
-    <span key="action-tag-3" className={`chat-message-action-tag`}>
-      <LikeOutlined />
-    </span>,
-    <span key="action-tag-2" className={`chat-message-action-tag`}>
-      <DislikeOutlined />
-    </span>,
-    <span
-      key="action-tag-1"
-      className={`chat-message-action-tag`}
-      onClick={() => {
-        copy(item.content);
-      }}
-    >
-      <CopyOutlined />
-    </span>,
-  ];
 
   return (
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
@@ -189,18 +168,7 @@ export const AIMessage = (props: AIMessageProps) => {
       <div className={`chat-message-container`}>
         <AIMessageContent {...props} />
 
-        <div style={{ paddingTop: 8, display: 'flex' }}>
-          {/* <div
-            className={'chat-message-retry'}
-            onClick={() => {
-              // TODO:
-            }}
-          >
-            <ReloadOutlined style={{ marginRight: '5px' }} />
-            重新生成
-          </div> */}
-          <div className={'chat-message-actions'}>{actions.filter(Boolean)}</div>
-        </div>
+        <MesssageOp item={props.item} message={props.message} />
 
         <RecommendQuestions message={props.message} />
       </div>
