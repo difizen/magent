@@ -1,3 +1,4 @@
+import type { FecterResponse } from '@difizen/magent-core';
 import { Fetcher } from '@difizen/magent-core';
 import { inject, singleton } from '@difizen/mana-app';
 
@@ -33,7 +34,9 @@ export class AgentManager {
     return agent;
   };
 
-  create = async (option: AgentModelCreateOption) => {
+  create = async (
+    option: AgentModelCreateOption,
+  ): Promise<FecterResponse<AgentModelOption[], any>> => {
     let res;
     if (option.planner.id === 'workflow_planner') {
       res = await this.doCreateWorkflowAgent(option);
@@ -43,10 +46,14 @@ export class AgentManager {
     return res;
   };
 
-  protected doCreateNormalAgent = async (option: AgentModelCreateOption) => {
+  protected doCreateNormalAgent = async (
+    option: AgentModelCreateOption,
+  ): Promise<FecterResponse<AgentModelOption[], any>> => {
     return await this.fetcher.post<AgentModelOption[]>(`/api/v1/agents`, option);
   };
-  protected doCreateWorkflowAgent = async (option: AgentModelCreateOption) => {
+  protected doCreateWorkflowAgent = async (
+    option: AgentModelCreateOption,
+  ): Promise<FecterResponse<AgentModelOption[], any>> => {
     return await this.fetcher.post<AgentModelOption[]>(
       `/api/v1/agents/workflow`,
       option,
