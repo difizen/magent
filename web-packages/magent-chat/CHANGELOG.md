@@ -1,5 +1,11 @@
 # @difizen/magent-chat
 
+## 0.1.34
+
+### Patch Changes
+
+- [#91](https://github.com/difizen/magent/pull/91) [`b488cd5`](https://github.com/difizen/magent/commit/b488cd5a09795d8983447eabe4c828b80ce07e05) Thanks [@xujingli](https://github.com/xujingli)! - export magent-chat protocol
+
 ## 0.1.33
 
 ### Patch Changes
