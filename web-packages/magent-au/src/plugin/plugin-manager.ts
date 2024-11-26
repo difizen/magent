@@ -1,4 +1,5 @@
 import { Fetcher } from '@difizen/magent-core';
+import type { FecterResponse } from '@difizen/magent-core';
 import { inject, prop, singleton } from '@difizen/mana-app';
 
 import type { PluginModel } from './plugin-model.js';
@@ -44,7 +45,7 @@ export class PluginManager {
     return plugin;
   };
 
-  create = async (option: PluginMeta) => {
+  create = async (option: PluginMeta): Promise<FecterResponse<string>> => {
     const res = await this.fetcher.post<string>(`/api/v1/plugins/openapi`, option);
     return res;
   };

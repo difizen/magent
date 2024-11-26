@@ -12,7 +12,7 @@ import {
   ViewInstance,
 } from '@difizen/mana-app';
 import { Button } from 'antd';
-// import yaml from 'js-yaml';
+import type { AxiosResponse } from 'axios';
 import { forwardRef, useEffect, useState } from 'react';
 
 import { AgentManager } from '@/modules/agent/agent-manager.js';
@@ -335,7 +335,9 @@ export class AgentFlowView extends BaseView {
     return await this.getWorkflowInfo(workflowId);
   };
 
-  saveGraph = async (graph: Graph) => {
+  saveGraph = async (
+    graph: Graph,
+  ): Promise<AxiosResponse<WorkflowMeta, any> | undefined> => {
     await this.agent.ready;
     if (!this.workflowId || !this.workflow) {
       return;
