@@ -1,5 +1,11 @@
 # @difizen/magent-chat
 
+## 0.1.35
+
+### Patch Changes
+
+- [#93](https://github.com/difizen/magent/pull/93) [`bb8bd8a`](https://github.com/difizen/magent/commit/bb8bd8a1a685a3963707eec5d98b798533038885) Thanks [@xujingli](https://github.com/xujingli)! - add msgId to fit aistudio scene
+
 ## 0.1.34
 
 ### Patch Changes
