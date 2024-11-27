@@ -107,6 +107,7 @@ export interface IChatEvent {
 export interface ChatEventChunk extends IChatEvent {
   output: string;
   type: 'chunk';
+  msgId?: string;
   [key: string]: any;
 }
 
