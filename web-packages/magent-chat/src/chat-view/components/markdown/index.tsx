@@ -16,6 +16,7 @@ export interface MarkdownProps {
   type?: 'message' | 'content';
   components?: Record<string, any>;
   remarkPlugins?: any[];
+  rehypePlugins?: any[];
 }
 
 export function ImageModal({ src, alt }: any) {
