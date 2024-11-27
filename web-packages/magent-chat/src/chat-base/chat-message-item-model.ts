@@ -23,6 +23,7 @@ export class DefaultChatMessageItemModel {
   };
 
   id?: string;
+  msgId?: string;
   sender: IChatMessageSender;
 
   option: ChatMessageItemOption;

@@ -41,6 +41,9 @@ export class AIChatMessageItemModel extends DefaultChatMessageItemModel {
   appendChunk(e: ChatEventChunk) {
     this.state = AnswerState.RECEIVING;
     this.content = `${this.content}${e.output}`;
+    if (!this.msgId && e.msgId) {
+      this.msgId = e.msgId;
+    }
   }
 
   handleResult(e: ChatEventResult) {
