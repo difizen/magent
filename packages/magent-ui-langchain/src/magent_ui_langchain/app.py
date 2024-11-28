@@ -16,9 +16,6 @@ from pathlib import Path
 import asyncio
 import nest_asyncio
 from magent_ui_core.utils import attempt_import, is_ipython
-<< << << < HEAD
-== == == =
->>>>>> > 18a04bc(feat(langchain): input & output format)
 
 
 # 应用 nest_asyncio 以解决事件循环冲突
