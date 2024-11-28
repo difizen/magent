@@ -173,6 +173,20 @@
     width: 100%;
   }
 
+  &-waiting {
+    padding: 10px 0 2px 12px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 60%);
+
+    .chat-message-ai-content {
+      min-height: 30px;
+    }
+  }
+
+  &-fail {
+    padding: 8px 16px;
+  }
+
   &-receiving {
     color: var(--mana-text-quaternary);
     padding: 8px 16px;
@@ -183,6 +197,7 @@
 
     .chat-message-ai-content {
       box-shadow: var(--mana-ant-box-shadow-tabs-overflow-bottom);
+      min-height: 30px;
     }
 
     .chat-message-addon-error {
