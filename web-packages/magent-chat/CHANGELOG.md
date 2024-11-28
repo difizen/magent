@@ -1,5 +1,11 @@
 # @difizen/magent-chat
 
+## 0.1.36
+
+### Patch Changes
+
+- [#96](https://github.com/difizen/magent/pull/96) [`b708cee`](https://github.com/difizen/magent/commit/b708cee440ee1eaf03fa600de0c9ff11c6fe39c3) Thanks [@xujingli](https://github.com/xujingli)! - add chat error and waiting status
+
 ## 0.1.35
 
 ### Patch Changes
