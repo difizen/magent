@@ -1,4 +1,4 @@
-from .adaptor_registry import adaptor_registry
+from magent_ui_core import adaptor_registry
 from .langchain_adaptor import RunnableAdaptor
 from .langchain_openai_executor import OpenAIAdaptor
 from .langchain_tongyi_executor import TongyiAdaptor

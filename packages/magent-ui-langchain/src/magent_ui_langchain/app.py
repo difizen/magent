@@ -1,3 +1,4 @@
+from magent_ui_core.utils import attempt_import, is_ipython
 import nest_asyncio
 import asyncio
 from pathlib import Path
@@ -11,13 +12,12 @@ import webbrowser
 import uvicorn
 import logging
 import os
-import qrcode
-from IPython.display import display, HTML, Image
+
 from uvicorn.config import LOGGING_CONFIG
 
 from magent_ui_langchain.routers.main import api_router
 from magent_ui_langchain.config import to_uvicorn_config, app_config
-from magent_ui_langchain.core.current_executor import process_object
+from magent_ui_core.current_executor import process_object
 
 # 应用 nest_asyncio 以解决事件循环冲突
 nest_asyncio.apply()
@@ -34,6 +34,7 @@ static_dir = os.path.join(BASE_DIR, 'static')
 templates_dir = os.path.join(BASE_DIR, 'templates')
 
 templates = Jinja2Templates(directory=templates_dir)
+
 
 def launch(object: Any, llm_type: str | None = None, **kwargs):
     '''
@@ -53,15 +54,16 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
     async def lifespan(app: FastAPI):
         url = f"http://localhost:{app_config.port}{app_config.root_path}"
         logger.info(f"Server is running at {url}")
+        if is_ipython() and attempt_import('qrcode') is not None:
+            # 生成二维码并在 Jupyter Notebook 中显示
+            import qrcode
+            qr_img = qrcode.make(url)
 
-        # 生成二维码并在 Jupyter Notebook 中显示
-        qr_img = qrcode.make(url)
-        qr_img_path = "qrcode.png"
-        qr_img.save(qr_img_path)
-
-        # 在 Jupyter Notebook 的输出区域打印 URL 和二维码
-        display(HTML(f"<h2>Server is running at: <a href='{url}'>{url}</a></h2>"))
-        display(Image(filename=qr_img_path))
+            from IPython.display import display, HTML, Image  # type: ignore
+            # 在 Jupyter Notebook 的输出区域打印 URL 和二维码
+            display(
+                HTML(f"<h2>Server is running at: <a href='{url}'>{url}</a></h2>"))
+            display(qr_img)
 
         if app_config.open_browser:
             webbrowser.open(url)
@@ -76,7 +78,8 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
 
     # static
     if os.path.exists(static_dir):
-        app.mount(app_config.full_static_path, StaticFiles(directory=static_dir, html=True), name="static")
+        app.mount(app_config.full_static_path, StaticFiles(
+            directory=static_dir, html=True), name="static")
     else:
         logger.info('Can not find static directory. ', static_dir)
 
@@ -86,7 +89,8 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
         return RedirectResponse(url=f"{app_config.app_url}/")
 
     # html as default, app_path included
-    html_root = app_config.root_path if app_config.root_path.endswith('/') else f"{app_config.root_path}/"
+    html_root = app_config.root_path if app_config.root_path.endswith(
+        '/') else f"{app_config.root_path}/"
 
     @app.get(html_root+"{path:path}", response_class=HTMLResponse)
     async def to_app_page(request: Request):
@@ -102,6 +106,12 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
         })
 
     uvicorn_config = to_uvicorn_config(app_config.config)
-    # 使用 asyncio.run() 运行 uvicorn
-    asyncio.run(uvicorn.run(app, log_level='info', loop="asyncio", **uvicorn_config))
 
+    if is_ipython():
+        # 在 Jupyter Notebook 中运行
+        import asyncio
+        asyncio.run(uvicorn.run(app, log_level='info',
+                                loop="asyncio", **uvicorn_config))  # type: ignore
+    else:
+        uvicorn.run(app, log_level='info',
+                    loop="asyncio", **uvicorn_config)

@@ -12,8 +12,9 @@ import logging
 import os
 from uvicorn.config import LOGGING_CONFIG
 
-from magent_ui_core.config import to_uvicorn_config, app_config
-from magent_ui_core.core.current_executor import process_object
+from .config import to_uvicorn_config, app_config
+from .current_executor import process_object
+from .utils import is_ipython
 
 # 应用 nest_asyncio 以解决事件循环冲突
 nest_asyncio.apply()
@@ -95,5 +96,12 @@ def launch(object: Any, llm_type: str | None = None, **kwargs):
     # 使用 asyncio.run() 运行 uvicorn
     # asyncio.run(uvicorn.run(app, log_level='info',
     #             loop="asyncio", **uvicorn_config))
-    uvicorn.run(app, log_level='info',
-                loop="asyncio", **uvicorn_config)
+
+    if is_ipython():
+        # 在 Jupyter Notebook 中运行
+        import asyncio
+        asyncio.run(uvicorn.run(app, log_level='info',
+                                loop="asyncio", **uvicorn_config))  # type: ignore
+    else:
+        uvicorn.run(app, log_level='info',
+                    loop="asyncio", **uvicorn_config)

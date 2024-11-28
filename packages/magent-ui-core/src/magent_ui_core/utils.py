@@ -27,3 +27,26 @@ def is_in_array_or_has_prefix(string_array, target_string):
             return True
 
     return False
+
+
+def is_ipython() -> bool:
+    """
+    Check if interface is launching from iPython
+    :return is_ipython (bool): True or False
+    """
+    is_ipython = False
+    try:  # Check if running interactively using ipython.
+        from IPython import get_ipython  # type: ignore
+
+        if get_ipython() is not None:
+            is_ipython = True
+    except (ImportError, NameError):
+        pass
+    return is_ipython
+
+
+def attempt_import(module):
+    try:
+        return __import__(module)
+    except ImportError:
+        return None
