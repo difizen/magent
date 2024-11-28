@@ -11,6 +11,9 @@ export function MessageOp({
   message: BaseChatMessageModel;
   item: BaseChatMessageItemModel;
 }) {
+  if (!item.content) {
+    return null;
+  }
   return (
     <div style={{ paddingTop: 8, display: 'flex' }}>
       {/* <div

@@ -1,6 +1,7 @@
 import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 import { useInject, useObserve, ViewInstance } from '@difizen/mana-app';
 import { l10n } from '@difizen/mana-l10n';
+import { Alert } from 'antd';
 import classNames from 'classnames';
 import debounce from 'lodash.debounce';
 import type { ReactNode } from 'react';
@@ -109,11 +110,27 @@ export const AIMessageContent = (props: AIMessageProps) => {
         className={classNames({
           ['chat-message-ai-empty']: true,
           ['chat-message-ai-error']: item.error,
+          ['chat-message-ai-waiting']: item.state === AnswerState.WAITING,
         })}
       >
         <div className="chat-message-ai-content">
           {item.state === AnswerState.RECEIVING && (
             <LoadingOutlined className="chat-message-ai-receiving" />
+          )}
+          {item.state === AnswerState.FAIL && (
+            <Alert
+              message={l10n.t('生成失败，请重试！')}
+              type="error"
+              description={item.error?.message || ''}
+              showIcon
+              className="chat-message-ai-fail"
+            />
+          )}
+          {item.state === AnswerState.WAITING && (
+            <span className="chat-message-ai-waiting">
+              <LoadingOutlined style={{ marginRight: '12px' }} />
+              {l10n.t('请求中...')}
+            </span>
           )}
         </div>
         <AIMessageAddon {...props} />
@@ -142,6 +159,15 @@ export const AIMessageContent = (props: AIMessageProps) => {
 
         {item.state === AnswerState.RECEIVING && (
           <LoadingOutlined className="chat-message-ai-receiving" />
+        )}
+        {item.state === AnswerState.FAIL && (
+          <Alert
+            message={l10n.t('生成失败，请重试！')}
+            type="error"
+            description={item.error?.message || ''}
+            showIcon
+            className="chat-message-ai-fail"
+          />
         )}
         <AIMessageAddon {...props} />
       </div>
