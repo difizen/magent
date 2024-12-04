@@ -131,7 +131,7 @@
       "source.fixAll.eslint": "explicit"
     }
   },
-  "cSpell.words": ["magent", "uvicorn"],
+  "cSpell.words": ["llms", "magent", "qwen", "tongyi", "uvicorn"],
   "python.analysis.typeCheckingMode": "basic",
   "python.analysis.autoImportCompletions": true
 }

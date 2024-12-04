@@ -1,1 +1,1 @@
-recursive-include src/magent_ui/static *
+recursive-include src/magent_ui_magent/static *

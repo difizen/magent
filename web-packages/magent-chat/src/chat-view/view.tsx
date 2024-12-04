@@ -21,6 +21,7 @@ import classnames from 'classnames';
 import type { RefObject } from 'react';
 import { forwardRef } from 'react';
 import { useEffect, useRef } from 'react';
+import rehypeRaw from 'rehype-raw';
 import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
@@ -178,6 +179,7 @@ export class ChatView extends BaseView {
     return {
       components: { code: CodeBlock, img: ImageModal },
       remarkPlugins: [remarkGfm, breaks],
+      rehypePlugins: [rehypeRaw],
     };
   }
 

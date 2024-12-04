@@ -21,10 +21,9 @@ PEER Multi-Agent Dialogue
 
 #### Future Plans
 
-- November
-  - [ ] Workflow nodes support code nodes
-  - [ ] Workflow nodes support intent recognition
-  - [ ] Clearer debugging information
+- [ ] Workflow nodes support code nodes
+- [ ] Workflow nodes support intent recognition
+- [ ] Clearer debugging information
 
 #### Configuration
 

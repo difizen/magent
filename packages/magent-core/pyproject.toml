@@ -1,15 +1,10 @@
 [project]
-name = "magent-ui-langchain"
+name = "magent-core"
 version = "0.1.0.dev"
 description = ""
 authors = [{ name = "brokun", email = "brokun0128@gmail.com" }]
 
-dependencies = [
-  "sse-starlette>=2.1.2",
-  "jinja2>=3.1.4",
-  "python-multipart>=0.0.9",
-  "aiofiles>=24.1.0",
-]
+dependencies = ["pydantic>=2.7.3"]
 readme = "README.md"
 requires-python = ">= 3.9"
 
@@ -26,4 +21,4 @@ dev-dependencies = []
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/magent_ui_langchain"]
+packages = ["src/magent_core"]
