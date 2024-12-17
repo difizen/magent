@@ -51,7 +51,7 @@
   --tw-contain-size:  ;
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
-  --tw-contain-style:  
+  --tw-contain-style:
 }
 
 ::backdrop {
@@ -105,7 +105,7 @@
   --tw-contain-size:  ;
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
-  --tw-contain-style:  
+  --tw-contain-style:
 }
 
 .pointer-events-none {
@@ -474,12 +474,12 @@
 
 .border-blue-500 {
   --tw-border-opacity: 1;
-  border-color: rgb(59 130 246 / var(--tw-border-opacity))
+  border-color: rgb(59 130 246 / var(--tw-border-opacity, 1))
 }
 
 .border-gray-200 {
   --tw-border-opacity: 1;
-  border-color: rgb(229 231 235 / var(--tw-border-opacity))
+  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1))
 }
 
 .border-transparent {
@@ -488,57 +488,57 @@
 
 .\!bg-gray-50 {
   --tw-bg-opacity: 1 !important;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity)) !important
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1)) !important
 }
 
 .bg-blue-100 {
   --tw-bg-opacity: 1;
-  background-color: rgb(219 234 254 / var(--tw-bg-opacity))
+  background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1))
 }
 
 .bg-blue-400 {
   --tw-bg-opacity: 1;
-  background-color: rgb(96 165 250 / var(--tw-bg-opacity))
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
 }
 
 .bg-blue-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(239 246 255 / var(--tw-bg-opacity))
+  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1))
 }
 
 .bg-gray-100 {
   --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity))
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1))
 }
 
 .bg-gray-200 {
   --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity))
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1))
 }
 
 .bg-gray-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity))
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1))
 }
 
 .bg-green-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(240 253 244 / var(--tw-bg-opacity))
+  background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1))
 }
 
 .bg-red-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(254 242 242 / var(--tw-bg-opacity))
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1))
 }
 
 .bg-white {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
 }
 
 .bg-yellow-50 {
   --tw-bg-opacity: 1;
-  background-color: rgb(254 252 232 / var(--tw-bg-opacity))
+  background-color: rgb(254 252 232 / var(--tw-bg-opacity, 1))
 }
 
 .p-1 {
@@ -616,52 +616,52 @@
 
 .text-\[\#155EEF\] {
   --tw-text-opacity: 1;
-  color: rgb(21 94 239 / var(--tw-text-opacity))
+  color: rgb(21 94 239 / var(--tw-text-opacity, 1))
 }
 
 .text-\[\#2970FF\] {
   --tw-text-opacity: 1;
-  color: rgb(41 112 255 / var(--tw-text-opacity))
+  color: rgb(41 112 255 / var(--tw-text-opacity, 1))
 }
 
 .text-\[\#444CE7\] {
   --tw-text-opacity: 1;
-  color: rgb(68 76 231 / var(--tw-text-opacity))
+  color: rgb(68 76 231 / var(--tw-text-opacity, 1))
 }
 
 .text-blue-500 {
   --tw-text-opacity: 1;
-  color: rgb(59 130 246 / var(--tw-text-opacity))
+  color: rgb(59 130 246 / var(--tw-text-opacity, 1))
 }
 
 .text-gray-300 {
   --tw-text-opacity: 1;
-  color: rgb(209 213 219 / var(--tw-text-opacity))
+  color: rgb(209 213 219 / var(--tw-text-opacity, 1))
 }
 
 .text-gray-400 {
   --tw-text-opacity: 1;
-  color: rgb(156 163 175 / var(--tw-text-opacity))
+  color: rgb(156 163 175 / var(--tw-text-opacity, 1))
 }
 
 .text-gray-50 {
   --tw-text-opacity: 1;
-  color: rgb(249 250 251 / var(--tw-text-opacity))
+  color: rgb(249 250 251 / var(--tw-text-opacity, 1))
 }
 
 .text-gray-700 {
   --tw-text-opacity: 1;
-  color: rgb(55 65 81 / var(--tw-text-opacity))
+  color: rgb(55 65 81 / var(--tw-text-opacity, 1))
 }
 
 .text-gray-800 {
   --tw-text-opacity: 1;
-  color: rgb(31 41 55 / var(--tw-text-opacity))
+  color: rgb(31 41 55 / var(--tw-text-opacity, 1))
 }
 
 .text-gray-900 {
   --tw-text-opacity: 1;
-  color: rgb(17 24 39 / var(--tw-text-opacity))
+  color: rgb(17 24 39 / var(--tw-text-opacity, 1))
 }
 
 .opacity-30 {
@@ -703,7 +703,7 @@
 
 .hover\:bg-gray-50:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity))
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1))
 }
 
 .hover\:shadow-2xl:hover {

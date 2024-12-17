@@ -61,14 +61,15 @@
     "react-markdown": "^9.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "react-zoom-pan-pinch": "^3.6.1",
+    "rehype-raw": "^7.0.0",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.25",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "@types/lodash.debounce": "^4.0.9",
     "@types/uuid": "^9.0.2"
   },
   "peerDependencies": {

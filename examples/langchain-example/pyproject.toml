@@ -1,0 +1,36 @@
+[project]
+name = "langchain-example"
+version = "0.1.0"
+description = ""
+authors = [{ name = "brokun", email = "brokun0128@gmail.com" }]
+
+dependencies = [
+  "magent-ui-langchain>=0.1.0.dev0",
+  "langchain>=0.3.7",
+  "nbformat>=5.10.4",
+  "langchain-community>=0.3.7",
+  "jupyter-client>=8.6.3",
+  "nbclient>=0.10.0",
+]
+readme = "README.md"
+requires-python = ">= 3.10"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/langchain_example"]
+
+[tool.rye.scripts]
+dev = "python src/langchain_example/dev.py"
+interpreter = "python src/langchain_example/interpreter.py"
+tongyi = "python src/langchain_example/tongyi.py"

@@ -3,15 +3,11 @@
 # from langchain_openai import ChatOpenAI
 from magent_ui_langchain import launch
 
-from langchain_community.chat_models import ChatTongyi
+from langchain_community.chat_models.tongyi import ChatTongyi
 
 tongyi_chat = ChatTongyi(
     model="qwen-vl-max",
-    temperature=0,
-    max_tokens=None,
-    timeout=None,
     max_retries=2,
-)
+)  # type: ignore
 
 launch(tongyi_chat)
-

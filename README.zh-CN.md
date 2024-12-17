@@ -4,7 +4,10 @@
 
 ## magent-ui
 
-为本地代码研发提供辅助产品化能力，方便用户调试
+为本地代码研发提供辅助产品化能力，方便用户调试。支持多种 Agent 研发框架。
+
+- [agentUniverse](https://github.com/alipay/agentUniverse)
+- [langchain](https://github.com/langchain-ai/langchain)
 
 ### agentUniverse
 
@@ -21,10 +24,9 @@ PEER 多智能体对话
 
 #### 后续计划
 
-- 11 月
-  - [ ] 工作流节点支持代码节点
-  - [ ] 工作流节点支持意图识别
-  - [ ] 更清晰的调试信息
+- [ ] 工作流节点支持代码节点
+- [ ] 工作流节点支持意图识别
+- [ ] 更清晰的调试信息
 
 #### 配置
 

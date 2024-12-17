@@ -11,10 +11,7 @@ dependencies = [
   "pydantic-settings>=2.3.2",
   "psycopg2-binary>=2.9.9",
   "fastapi-pagination>=0.12.25",
-  "langchain>=0.1.20",
-  "langchain-community>=0.0.38",
   "sse-starlette>=2.1.2",
-  "agentuniverse>=0.0.11",
   "langchain_openai",
 ]
 readme = "README.md"
