@@ -11,7 +11,11 @@ import type {
   BaseChatMessageModel,
 } from '../../../chat-base/protocol.js';
 import { AnswerState } from '../../../chat-base/protocol.js';
-import { MesssageOpProvider } from '../../protocol.js';
+import {
+  MesssageAddonViewProvider,
+  MesssageContentViewProvider,
+  MesssageOpProvider,
+} from '../../protocol.js';
 import type { ChatView } from '../../view.js';
 
 interface AIMessageProps {
@@ -102,6 +106,9 @@ export const RecommendQuestions = (props: { message: BaseChatMessageModel }) => 
 export const AIMessageContent = (props: AIMessageProps) => {
   const item = useObserve(props.item);
   const instance = useInject<ChatView>(ViewInstance);
+  const MesssageAddonView = useInject<MesssageAddonViewProvider>(
+    MesssageAddonViewProvider,
+  );
   const Markdown = instance.Markdown;
   const content: ReactNode = item.content;
   if (!content) {
@@ -133,7 +140,7 @@ export const AIMessageContent = (props: AIMessageProps) => {
             </span>
           )}
         </div>
-        <AIMessageAddon {...props} />
+        <MesssageAddonView {...props} />
       </div>
     );
   } else {
@@ -169,7 +176,7 @@ export const AIMessageContent = (props: AIMessageProps) => {
             className="chat-message-ai-fail"
           />
         )}
-        <AIMessageAddon {...props} />
+        <MesssageAddonView {...props} />
       </div>
     );
   }
@@ -181,6 +188,9 @@ export const AIMessage = (props: AIMessageProps) => {
   const AvatarRender = instance.AvatarRender;
 
   const MesssageOp = useInject<MesssageOpProvider>(MesssageOpProvider);
+  const MesssageContentView = useInject<MesssageContentViewProvider>(
+    MesssageContentViewProvider,
+  );
 
   if (!conversation) {
     return null;
@@ -192,7 +202,8 @@ export const AIMessage = (props: AIMessageProps) => {
     <div className={classNames('chat-message-main', 'chat-message-main-ai')}>
       <AvatarRender item={item} />
       <div className={`chat-message-container`}>
-        <AIMessageContent {...props} />
+        {/* <AIMessageContent {...props} /> */}
+        <MesssageContentView {...props} />
 
         <MesssageOp item={props.item} message={props.message} />
 
