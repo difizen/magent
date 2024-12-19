@@ -1,6 +1,6 @@
 [project]
 name = "magent-ui"
-version = "0.1.17.dev1"
+version = "0.1.17.dev4"
 description = ""
 authors = [
   { name = "brokun", email = "brokun0128@gmail.com" },
@@ -18,7 +18,7 @@ readme = "README.md"
 requires-python = ">= 3.10"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling==1.26.3", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.rye]

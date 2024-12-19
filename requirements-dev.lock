@@ -9,6 +9,7 @@
 
 -e file:api
 -e file:examples/langchain-example
+-e file:packages/magent-core
 -e file:packages/magent-ui
 -e file:packages/magent-ui-core
 -e file:packages/magent-ui-langchain
@@ -173,6 +174,7 @@ pydantic==2.8.2
     # via langchain-core
     # via langsmith
     # via magent-api
+    # via magent-core
     # via openai
     # via pydantic-settings
 pydantic-core==2.20.1
