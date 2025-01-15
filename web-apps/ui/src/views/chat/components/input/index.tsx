@@ -173,13 +173,9 @@ export const Input = forwardRef<TextAreaRef, InputProps>(function Input(
         </div>
         <div className={`${prefixCls}-iconBottom`}>
           <div
-            className={classnames(`${prefixCls}-sendButton`, {
-              [`${prefixCls}-send-button-disabled`]: !instance.agent?.planner,
-            })}
+            className={classnames(`${prefixCls}-sendButton`)}
             onClick={() => {
-              if (instance.agent?.planner) {
-                onSubmit(value || v);
-              }
+              onSubmit(value || v);
             }}
           >
             <SendIcon />
